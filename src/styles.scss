@@ -1,0 +1,15 @@
+/* ArchiFlow — Global Styles
+ * Design system e tokens serão adicionados nos próximos PRs
+ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
