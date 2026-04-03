@@ -4,7 +4,7 @@ Interface web em **Angular 17** para a plataforma de gestão de projetos de arqu
 Projeto de Portfólio — Católica SC · Linha: Web Applications  
 Autor: Gabriel Felipe Alves Bandoch
 
-![CI](https://github.com/seu-usuario/archiflow-frontend/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/GabrielBandoch/ArchiFlow/actions/workflows/ci.yml/badge.svg)
 
 ---
 
