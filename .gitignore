@@ -1,0 +1,29 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Angular build output
+dist/
+.angular/
+
+# Test & coverage
+coverage/
+*.lcov
+
+# Environment — não commitar arquivos de produção com segredos
+src/environments/environment.production.local.ts
+
+# IDE
+.idea/
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
