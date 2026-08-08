@@ -1,0 +1,153 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.image-side {
+  display: none;
+  width: 55%;
+  background-color: var(--af-inverse-surface);
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+}
+
+.bg-image {
+  object-fit: cover;
+  transform: scale(1.05);
+  transition: transform 20s ease-out;
+
+  &:hover {
+    transform: scale(1.0);
+  }
+}
+
+.dark-overlay {
+  inset: 0;
+  background: linear-gradient(to top, rgba(48, 48, 48, 0.9) 0%, rgba(48, 48, 48, 0.4) 60%, transparent 100%);
+  pointer-events: none;
+}
+
+.image-text-content {
+  bottom: 0;
+  left: 0;
+  padding: 80px;
+  box-sizing: border-box;
+}
+
+.image-title {
+  color: var(--af-on-primary);
+  max-width: 576px;
+}
+
+.indicator-bar {
+  width: 48px;
+  height: 4px;
+  background-color: var(--af-primary);
+  margin-top: var(--af-space-lg);
+  border-radius: var(--af-radius-full);
+}
+
+.form-side {
+  width: 100%;
+  padding: var(--af-space-xl) var(--af-space-lg);
+  background-color: var(--af-surface-container-lowest);
+  box-sizing: border-box;
+
+  @media (min-width: 768px) {
+    width: 45%;
+    padding: 80px;
+  }
+}
+
+.logo-icon {
+  color: var(--af-primary);
+  font-size: 32px;
+  font-variation-settings: 'FILL' 1;
+}
+
+.logo-text {
+  color: var(--af-on-surface);
+}
+
+.form-container {
+  max-width: 400px;
+  margin: auto;
+}
+
+.intro-title {
+  color: var(--af-on-surface);
+}
+
+.intro-subtitle {
+  color: var(--af-on-surface-variant);
+}
+
+.password-label-row {
+  margin-bottom: -22px;
+  position: relative;
+  z-index: 15;
+}
+
+.btn-arrow-icon {
+  font-size: 18px;
+}
+
+.alert-error {
+  background-color: var(--af-error-container);
+  border: 1px solid rgba(186, 26, 26, 0.15);
+  color: var(--af-on-error-container);
+  padding: 12px;
+  border-radius: var(--af-radius-default);
+  font-size: 13px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.footer-area {
+  border-top: 1px solid rgba(211, 196, 185, 0.3);
+  padding-top: var(--af-space-md);
+  box-sizing: border-box;
+
+  @media (min-width: 768px) {}
+}
+
+.footer-copy,
+.footer-version {
+  color: var(--af-outline);
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}

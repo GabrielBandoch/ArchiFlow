@@ -1,0 +1,99 @@
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--af-space-xs);
+  width: 100%;
+}
+
+.input-label {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--af-on-surface-variant);
+  margin-left: 4px;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.form-input {
+  width: 100%;
+  height: 52px;
+  padding: 0 var(--af-space-md);
+  border-radius: var(--af-radius-default);
+  border: 1px solid var(--af-outline-variant);
+  background-color: var(--af-surface-container-lowest);
+  color: var(--af-on-surface);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &::placeholder {
+    color: var(--af-outline);
+    opacity: 0.6;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--af-outline);
+  }
+
+  &:focus:not(:disabled) {
+    border-color: var(--af-primary);
+    box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.15); /* Soft Terracotta outer glow */
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    background-color: var(--af-surface-container-low);
+    cursor: not-allowed;
+  }
+}
+
+/* Com ícone à esquerda */
+.has-icon {
+  .form-input {
+    padding-left: 44px; /* Espaço para o ícone */
+  }
+
+  .input-icon {
+    position: absolute;
+    left: var(--af-space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--af-outline-variant);
+    pointer-events: none;
+    font-size: 20px;
+    transition: color 0.3s ease;
+  }
+
+  .form-input:focus ~ .input-icon {
+    color: var(--af-primary);
+  }
+}
+
+/* Estado de Erro */
+.has-error {
+  .form-input {
+    border-color: var(--af-error);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.15);
+    }
+  }
+
+  .input-icon {
+    color: var(--af-error) !important;
+  }
+}
+
+.input-error-msg {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--af-error);
+  margin-left: 4px;
+}

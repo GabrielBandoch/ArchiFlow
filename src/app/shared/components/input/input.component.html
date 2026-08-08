@@ -1,0 +1,17 @@
+<div class="input-group">
+  <label *ngIf="label" [for]="id" class="input-label">{{ label }}</label>
+  <div class="input-wrapper" [ngClass]="{'has-icon': icon, 'has-error': error}">
+    <span *ngIf="icon" class="material-symbols-outlined input-icon">{{ icon }}</span>
+    <input 
+      [id]="id" 
+      [type]="type" 
+      [placeholder]="placeholder" 
+      [disabled]="disabled"
+      [value]="value"
+      [required]="required"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      class="form-input">
+  </div>
+  <div *ngIf="error" class="input-error-msg">{{ error }}</div>
+</div>

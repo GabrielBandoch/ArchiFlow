@@ -1,6 +1,8 @@
-/* ArchiFlow — Global Styles
- * Design system e tokens serão adicionados nos próximos PRs
- */
+@use './styles/variables';
+@use './styles/flex';
+@use './styles/spacing';
+@use './styles/typography';
+@use './styles/utilities';
 
 * {
   box-sizing: border-box;
@@ -10,6 +12,25 @@
 
 html, body {
   height: 100%;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--af-background);
+  color: var(--af-on-background);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--af-on-surface);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--af-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--af-primary-container);
+  }
 }
