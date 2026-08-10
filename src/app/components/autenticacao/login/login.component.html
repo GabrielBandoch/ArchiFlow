@@ -1,0 +1,77 @@
+<div class="login-page d-flex w-full h-full overflow-hidden">
+  <div class="image-side position-relative h-full">
+    <img 
+      alt="Modern architectural interior" 
+      class="bg-image w-full h-full" 
+      src="assets/images/login-architecture.png"
+    />
+    <div class="dark-overlay position-absolute"></div>
+    <div class="image-text-content position-absolute z-10">
+      <h1 class="image-title">
+        Gerencie seus projetos com transparência e organização.
+      </h1>
+      <div class="indicator-bar"></div>
+    </div>
+  </div>
+
+  <div class="form-side d-flex flex-direction-column justify-content-between position-relative overflow-y-auto h-full">
+    <div class="logo-header d-flex align-items-center gap-sm animate-fade-in-up">
+      <span class="material-symbols-outlined logo-icon">architecture</span>
+      <span class="logo-text">ArchiFlow</span>
+    </div>
+
+    <div class="form-container w-full">
+      <div class="form-intro margin-bottom-xl animate-fade-in-up delay-100">
+        <h2 class="intro-title">Bem-vindo de volta</h2>
+        <p class="intro-subtitle font-body-md">Insira suas credenciais para acessar seu workspace.</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form d-flex flex-direction-column gap-lg">
+        <div class="animate-fade-in-up delay-200">
+          <app-input 
+            id="email" 
+            type="email" 
+            label="E-mail corporativo" 
+            placeholder="nome@estudio.com.br" 
+            icon="mail" 
+            formControlName="email"
+            [error]="submitted && f['email'].errors ? (f['email'].errors['required'] ? 'O e-mail é obrigatório.' : 'Insira um e-mail válido.') : undefined">
+          </app-input>
+        </div>
+
+        <div class="animate-fade-in-up delay-300">
+          <div class="password-label-row d-flex justify-content-end">
+            <span class="forgot-password-link font-label-md">
+              <a href="#">Esqueci a senha</a>
+            </span>
+          </div>
+          <app-input 
+            id="senha" 
+            type="password" 
+            label="Senha" 
+            placeholder="••••••••" 
+            icon="lock" 
+            formControlName="senha"
+            [error]="submitted && f['senha'].errors ? 'A senha é obrigatória.' : undefined">
+          </app-input>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert-error animate-fade-in-up">
+          {{ errorMessage }}
+        </div>
+
+        <div class="animate-fade-in-up delay-400">
+          <app-button type="submit" [loading]="loading">
+            Entrar
+            <span class="material-symbols-outlined btn-arrow-icon">arrow_forward</span>
+          </app-button>
+        </div>
+      </form>
+    </div>
+
+    <div class="footer-area d-flex justify-content-between align-items-center gap-md margin-top-xl animate-fade-in-up delay-400">
+      <span class="footer-copy font-label-sm">© 2026 ArchiFlow Technologies</span>
+      <span class="footer-version font-label-sm">Versão 3.2.0 (Studio)</span>
+    </div>
+  </div>
+</div>

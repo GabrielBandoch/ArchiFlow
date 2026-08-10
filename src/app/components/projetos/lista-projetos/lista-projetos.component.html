@@ -1,0 +1,20 @@
+<div class="projetos-container">
+  <div class="projetos-header">
+    <h1 class="title">Painel de Projetos</h1>
+    <p class="subtitle">Estrutura inicial do módulo de projetos configurada.</p>
+  </div>
+
+  <div class="content-wrapper">
+    <app-card 
+      cardTitle="Módulo em Desenvolvimento" 
+      cardSubtitle="Aguardando Integração">
+      <p class="alert-info-text">
+        A estrutura de pastas e componentes compartilhados foi criada e testada com sucesso. Os dados reais de projetos serão integrados nas próximas etapas de desenvolvimento, conforme a definição dos endpoints e contratos do backend.
+      </p>
+      
+      <div card-footer>
+        <app-button variant="secondary" [disabled]="true">Carregando...</app-button>
+      </div>
+    </app-card>
+  </div>
+</div>

@@ -1,0 +1,137 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.showcase-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.showcase-header {
+  border-bottom: 2px solid var(--af-surface-container);
+}
+
+.btn-link-login {
+  color: var(--af-primary);
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--af-primary-container);
+  }
+}
+
+.showcase-section {
+  border-bottom: 1px solid var(--af-surface-container-low);
+  padding-bottom: var(--af-space-xl);
+}
+
+.section-title {
+  margin-bottom: var(--af-space-md);
+  color: var(--af-primary);
+  border-left: 4px solid var(--af-primary);
+  padding-left: var(--af-space-sm);
+}
+
+.color-card {
+  width: 180px;
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-surface-container);
+  border-radius: var(--af-radius-md);
+  padding: var(--af-space-md);
+  box-shadow: var(--af-shadow-sm);
+}
+
+.color-swatch {
+  height: 80px;
+  border-radius: var(--af-radius-default);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.swatch-primary {
+  background-color: var(--af-primary);
+}
+
+.swatch-charcoal {
+  background-color: #1f1f1f;
+}
+
+.swatch-background {
+  background-color: var(--af-background);
+}
+
+.swatch-surface-lowest {
+  background-color: var(--af-surface-container-lowest);
+}
+
+.swatch-outline {
+  background-color: var(--af-outline);
+}
+
+.color-name {
+  color: var(--af-on-surface);
+  font-weight: 600;
+  margin-top: var(--af-space-xs);
+}
+
+.color-hex {
+  color: var(--af-outline);
+  font-size: 12px;
+}
+
+.bg-white {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-surface-container-low);
+}
+
+.border-radius-md {
+  border-radius: var(--af-radius-md);
+}
+
+.text-outline {
+  color: var(--af-outline);
+}
+
+.button-swatch {
+  width: 240px;
+}
+
+.input-swatch {
+  width: 100%;
+  max-width: 260px;
+}
+
+.card-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  width: 100%;
+}
+
+.card-swatch {
+  width: 100%;
+}
+
+.typo-item {
+  border-bottom: 1px solid var(--af-surface-container);
+  padding-bottom: var(--af-space-md);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.icon-display {
+  font-size: 32px;
+  color: var(--af-primary);
+}
+
+.utility-demo-box {
+  background-color: var(--af-surface-container-low);
+  border: 1px dashed var(--af-outline-variant);
+  width: 100%;
+  box-sizing: border-box;
+}

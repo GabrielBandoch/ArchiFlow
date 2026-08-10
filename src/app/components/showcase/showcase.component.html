@@ -1,0 +1,188 @@
+<div class="showcase-page padding-xl d-flex flex-direction-column gap-xl">
+  <header class="showcase-header d-flex justify-content-between align-items-center padding-bottom-md">
+    <div>
+      <h1 class="font-headline-lg">ArchiFlow Design System</h1>
+      <p class="font-body-lg text-outline">Catálogo vivo de componentes e diretrizes visuais da plataforma.</p>
+    </div>
+    <a routerLink="/login" class="btn-link-login font-label-md">Ir para o Login →</a>
+  </header>
+
+  <section class="showcase-section d-flex flex-direction-column gap-md">
+    <h2 class="section-title font-headline-md">1. Cores e Tokens</h2>
+    <div class="color-grid d-flex flex-wrap gap-md">
+      <div class="color-card d-flex flex-direction-column gap-xs">
+        <div class="color-swatch swatch-primary"></div>
+        <span class="color-name font-label-sm">Primary (Terracota)</span>
+        <span class="color-hex font-body-md">#765538</span>
+      </div>
+      <div class="color-card d-flex flex-direction-column gap-xs">
+        <div class="color-swatch swatch-charcoal"></div>
+        <span class="color-name font-label-sm">Charcoal (Sidebar)</span>
+        <span class="color-hex font-body-md">#1F1F1F</span>
+      </div>
+      <div class="color-card d-flex flex-direction-column gap-xs">
+        <div class="color-swatch swatch-background"></div>
+        <span class="color-name font-label-sm">Background</span>
+        <span class="color-hex font-body-md">#FCF9F8</span>
+      </div>
+      <div class="color-card d-flex flex-direction-column gap-xs">
+        <div class="color-swatch swatch-surface-lowest"></div>
+        <span class="color-name font-label-sm">Surface Lowest</span>
+        <span class="color-hex font-body-md">#FFFFFF</span>
+      </div>
+      <div class="color-card d-flex flex-direction-column gap-xs">
+        <div class="color-swatch swatch-outline"></div>
+        <span class="color-name font-label-sm">Outline</span>
+        <span class="color-hex font-body-md">#81756B</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="showcase-section d-flex flex-direction-column gap-md">
+    <h2 class="section-title font-headline-md">2. Escala Tipográfica</h2>
+    <div class="typography-list d-flex flex-direction-column gap-md padding-md bg-white border-radius-md">
+      <div class="typo-item">
+        <span class="typo-label font-label-sm text-outline">Headline Large (32px)</span>
+        <h1 class="font-headline-lg margin-top-xs">Gerencie seus projetos com transparência.</h1>
+      </div>
+      <div class="typo-item">
+        <span class="typo-label font-label-sm text-outline">Headline Medium (24px)</span>
+        <h2 class="font-headline-md margin-top-xs">Bem-vindo ao ArchiFlow</h2>
+      </div>
+      <div class="typo-item">
+        <span class="typo-label font-label-sm text-outline">Body Large (16px)</span>
+        <p class="font-body-lg margin-top-xs">A plataforma foi concebida sob medida para a gestão comercial de escritórios de arquitetura.</p>
+      </div>
+      <div class="typo-item">
+        <span class="typo-label font-label-sm text-outline">Body Medium (14px)</span>
+        <p class="font-body-md margin-top-xs">Insira suas credenciais corporativas no painel lateral para acessar as etapas de projetos.</p>
+      </div>
+      <div class="typo-item">
+        <span class="typo-label font-label-sm text-outline">Label Medium (13px)</span>
+        <span class="font-label-md d-block margin-top-xs">E-MAIL CORPORATIVO</span>
+      </div>
+      <div class="typo-item">
+        <span class="typo-label font-label-sm text-outline">Label Small (11px)</span>
+        <span class="font-label-sm d-block margin-top-xs">© 2026 ARCHIFLOW TECHNOLOGIES</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="showcase-section d-flex flex-direction-column gap-md">
+    <h2 class="section-title font-headline-md">3. Botões (app-button)</h2>
+    <div class="component-show-grid d-flex flex-direction-column gap-lg padding-lg bg-white border-radius-md">
+      
+      <div class="d-flex flex-direction-column gap-sm">
+        <span class="font-label-sm text-outline">Variante Primary</span>
+        <div class="button-row d-flex gap-md">
+          <div class="button-swatch"><app-button>Entrar</app-button></div>
+          <div class="button-swatch"><app-button [disabled]="true">Entrar Desativado</app-button></div>
+          <div class="button-swatch"><app-button [loading]="true">Entrar</app-button></div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-direction-column gap-sm">
+        <span class="font-label-sm text-outline">Variante Secondary</span>
+        <div class="button-row d-flex gap-md">
+          <div class="button-swatch"><app-button variant="secondary">Cancelar</app-button></div>
+          <div class="button-swatch"><app-button variant="secondary" [disabled]="true">Cancelar Desativado</app-button></div>
+          <div class="button-swatch"><app-button variant="secondary" [loading]="true">Cancelar</app-button></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="showcase-section d-flex flex-direction-column gap-md">
+    <h2 class="section-title font-headline-md">4. Inputs (app-input)</h2>
+    <div class="component-show-grid d-flex flex-direction-column gap-lg padding-lg bg-white border-radius-md">
+      
+      <div class="input-demo-row d-flex flex-wrap gap-lg">
+        <!-- Normal Input -->
+        <div class="input-swatch">
+          <app-input 
+            id="input-normal" 
+            label="E-mail" 
+            placeholder="nome@estudio.com.br">
+          </app-input>
+        </div>
+
+        <div class="input-swatch">
+          <app-input 
+            id="input-icon" 
+            label="Senha corporativa" 
+            placeholder="••••••••" 
+            icon="lock">
+          </app-input>
+        </div>
+
+        <div class="input-swatch">
+          <app-input 
+            id="input-error" 
+            label="E-mail corporativo" 
+            placeholder="exemplo-invalido" 
+            icon="mail"
+            [error]="inputError">
+          </app-input>
+        </div>
+
+        <div class="input-swatch">
+          <app-input 
+            id="input-disabled" 
+            label="Workspace Bloqueado" 
+            placeholder="Apenas Leitura" 
+            icon="architecture"
+            [error]="undefined">
+          </app-input>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="showcase-section d-flex flex-direction-column gap-md">
+    <h2 class="section-title font-headline-md">5. Cards (app-card)</h2>
+    <div class="component-show-grid d-flex flex-direction-column gap-lg padding-lg bg-white border-radius-md">
+      
+      <div class="card-demo-grid d-flex gap-lg">
+        <div class="card-swatch">
+          <app-card cardTitle="Card Padrão">
+            <p class="font-body-md">Este é um exemplo de card básico contendo apenas o corpo de conteúdo e título estrutural.</p>
+          </app-card>
+        </div>
+
+        <div class="card-swatch">
+          <app-card 
+            cardTitle="Projeto Alpha" 
+            cardSubtitle="Arquitetura Residencial" 
+            [hoverable]="true"
+            [hasFooter]="true">
+            <p class="font-body-md">Card configurado como hoverable (responsivo à interação do mouse) e com cabeçalho e rodapé estruturados.</p>
+            <div card-footer class="d-flex gap-sm w-full justify-content-end">
+              <app-button variant="secondary">Detalhes</app-button>
+            </div>
+          </app-card>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="showcase-section d-flex flex-direction-column gap-md">
+    <h2 class="section-title font-headline-md">6. Demonstração de Utilities de Layout</h2>
+    <div class="component-show-grid padding-lg bg-white border-radius-md d-flex flex-direction-column gap-md">
+      <span class="font-label-sm text-outline">Layout construído 100% com as classes utilitárias SCSS (flex, alignment, gap)</span>
+      
+      <div class="utility-demo-box d-flex align-items-center justify-content-between padding-md gap-lg border-radius-md">
+        <div class="d-flex align-items-center gap-sm">
+          <span class="material-symbols-outlined icon-display">info</span>
+          <div class="d-flex flex-direction-column">
+            <span class="font-label-md">Validação das utility classes</span>
+            <span class="font-body-md text-outline">Todo o alinhamento e espaçamento deste bloco foi feito via HTML.</span>
+          </div>
+        </div>
+        <app-button variant="secondary">Ação</app-button>
+      </div>
+    </div>
+  </section>
+</div>

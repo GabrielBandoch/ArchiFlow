@@ -1,0 +1,43 @@
+<div class="layout-container">
+  <aside class="sidebar">
+    <div class="logo-area">
+      <span class="material-symbols-outlined logo-icon">architecture</span>
+      <span class="logo-text">ArchiFlow</span>
+    </div>
+
+    <nav class="nav-menu">
+      <a routerLink="/projetos" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">folder</span>
+        <span class="nav-label">Projetos</span>
+      </a>
+    </nav>
+
+    <div class="user-profile" *ngIf="authService.currentUser$ | async as user">
+      <div class="user-info">
+        <span class="user-name">{{ user.nome }}</span>
+        <span class="user-email">{{ user.email }}</span>
+      </div>
+      <button (click)="onLogout()" class="btn-logout" title="Sair da conta">
+        <span class="material-symbols-outlined">logout</span>
+        <span class="logout-label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-section">
+    <header class="header">
+      <h2 class="page-title">Workspace</h2>
+      <div class="header-actions">
+        <span class="badge">Ativo</span>
+      </div>
+    </header>
+
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+
+    <footer class="footer">
+      <span class="footer-text">© 2026 ArchiFlow Technologies</span>
+    </footer>
+  </div>
+</div>
