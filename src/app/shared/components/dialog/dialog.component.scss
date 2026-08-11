@@ -1,0 +1,115 @@
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-container {
+  background-color: var(--af-surface-container-lowest);
+  border-radius: var(--af-radius-lg);
+  box-shadow: var(--af-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  animation: dialog-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  max-height: 90vh;
+  width: 90%;
+
+  /* Dialog Sizes */
+  &.dialog-size-sm {
+    max-width: 400px;
+  }
+  
+  &.dialog-size-md {
+    max-width: 550px;
+  }
+  
+  &.dialog-size-lg {
+    max-width: 800px;
+  }
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--af-space-lg);
+    border-bottom: 1px solid var(--af-outline-variant);
+    background-color: var(--af-surface-container-low);
+
+    .dialog-title {
+      margin: 0;
+      color: var(--af-on-surface);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .dialog-btn-close {
+      background: transparent;
+      border: none;
+      color: var(--af-on-surface-variant);
+      cursor: pointer;
+      border-radius: var(--af-radius-full);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: var(--af-surface-container-high);
+      }
+
+      span {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .dialog-body {
+    padding: var(--af-space-lg);
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--af-space-sm);
+    padding: var(--af-space-lg);
+    border-top: 1px solid var(--af-outline-variant);
+    background-color: var(--af-surface-container-low);
+
+    /* Hide footer container if it has no content projected */
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+@keyframes dialog-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dialog-container.overflow-visible {
+  overflow: visible !important;
+}
+
+.dialog-body.overflow-visible {
+  overflow: visible !important;
+}

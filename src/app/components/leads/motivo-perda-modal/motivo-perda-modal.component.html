@@ -1,0 +1,20 @@
+<app-dialog [show]="true" dialogTitle="Motivo de Perda do Lead" size="sm" (close)="onCancel()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
+    <p class="font-body-md text-on-surface-variant m-0">Por favor, informe a justificativa ou o motivo pelo qual este lead foi perdido.</p>
+    
+    <app-input 
+      id="motivoPerda" 
+      type="text" 
+      label="Justificativa / Motivo" 
+      placeholder="Ex: Preço elevado, sem retorno do cliente..." 
+      formControlName="motivoPerda"
+      [required]="true"
+      [error]="submitted && f['motivoPerda'].errors ? 'O motivo é obrigatório (máx. 500 caracteres).' : undefined">
+    </app-input>
+
+    <div dialog-footer class="d-flex justify-content-end gap-sm">
+      <app-button variant="secondary" (btnClick)="onCancel()">Cancelar</app-button>
+      <app-button type="submit" variant="primary">Confirmar Perda</app-button>
+    </div>
+  </form>
+</app-dialog>

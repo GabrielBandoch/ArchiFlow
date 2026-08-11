@@ -41,3 +41,19 @@
 .opacity-100 {
   opacity: 1 !important;
 }
+
+.text-primary {
+  color: var(--af-primary) !important;
+}
+
+.text-on-surface {
+  color: var(--af-on-surface) !important;
+}
+
+.text-on-surface-variant {
+  color: var(--af-on-surface-variant) !important;
+}
+
+.text-error {
+  color: var(--af-error) !important;
+}

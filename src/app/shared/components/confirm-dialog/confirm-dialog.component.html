@@ -1,0 +1,9 @@
+<app-dialog [show]="true" [dialogTitle]="title" size="sm" (close)="onCancel()">
+  <div class="padding-top-sm padding-bottom-sm">
+    <p class="font-body-lg m-0">{{ message }}</p>
+  </div>
+  <div dialog-footer class="d-flex justify-content-end gap-sm">
+    <app-button variant="secondary" (btnClick)="onCancel()">Cancelar</app-button>
+    <app-button variant="primary" (btnClick)="onConfirm()">Confirmar</app-button>
+  </div>
+</app-dialog>

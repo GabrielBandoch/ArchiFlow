@@ -1,0 +1,90 @@
+<div class="leads-container p-0">
+  <div class="d-flex justify-content-between align-items-center margin-bottom-lg animate-fade-in-up">
+    <div>
+      <h2 class="font-headline-lg m-0">Quadro de Leads</h2>
+      <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Acompanhe e gerencie as oportunidades de novos projetos.</p>
+    </div>
+    <div class="d-flex gap-sm">
+      <app-button variant="secondary" routerLink="/leads/origens">
+        <span class="material-symbols-outlined btn-icon">settings</span>
+        Origens de Lead
+      </app-button>
+      <app-button variant="primary" (btnClick)="openCreateModal()">
+        <span class="material-symbols-outlined btn-icon">add</span>
+        Novo Lead
+      </app-button>
+    </div>
+  </div>
+
+  <div class="kanban-board d-flex gap-md animate-fade-in-up delay-100" 
+       (wheel)="onBoardWheel($event)"
+       (mousedown)="onBoardMouseDown($event)"
+       (mousemove)="onBoardMouseMove($event)"
+       (mouseup)="onBoardMouseUpOrLeave($event)"
+       (mouseleave)="onBoardMouseUpOrLeave($event)">
+    
+    <div *ngFor="let col of columns" 
+         class="kanban-column d-flex flex-direction-column" 
+         [class.opacity-80]="col.status === StatusLeadEnum.Convertido"
+         [class.opacity-60]="col.status === StatusLeadEnum.Perdido"
+         (dragover)="onDragOver($event)" 
+         (drop)="onDrop($event, col.status)">
+      
+      <div class="column-header d-flex justify-content-between align-items-center">
+        <div class="header-title d-flex align-items-center gap-sm">
+          <span class="status-indicator" [class]="col.class"></span>
+          <h3>{{ col.title }}</h3>
+        </div>
+        <span class="badge">{{ col.leads.length }}</span>
+      </div>
+
+      <div class="column-cards kanban-scrollbar d-flex flex-direction-column gap-sm">
+        <div class="no-leads" *ngIf="col.leads.length === 0">Nenhum lead</div>
+        
+        <div *ngFor="let lead of col.leads" 
+             class="lead-card d-flex flex-direction-column" 
+             draggable="true" 
+             (dragstart)="onDragStart($event, lead.id)"
+             (click)="verDetalhes(lead)">
+          
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="origin-tag" *ngIf="lead.origem">{{ lead.origem }}</span>
+            <span *ngIf="!lead.origem"></span>
+            <button class="btn-delete" (click)="excluirLead(lead, $event)" title="Excluir Lead">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+
+          <h4 class="lead-title">{{ lead.nome }}</h4>
+
+          <div class="card-body d-flex flex-direction-column gap-xs">
+            <div class="body-item d-flex align-items-center gap-sm" *ngIf="lead.telefone">
+              <span class="material-symbols-outlined">call</span>
+              <span>{{ lead.telefone }}</span>
+            </div>
+            <div class="body-item d-flex align-items-center gap-sm">
+              <span class="material-symbols-outlined">mail</span>
+              <span class="truncate">{{ lead.email }}</span>
+            </div>
+          </div>
+
+          <div class="card-footer d-flex justify-content-between align-items-center">
+            <span class="date-text">
+              {{ col.status === StatusLeadEnum.Novo ? 'Recebido: ' : 'Modificado: ' }} 
+              {{ (lead.atualizadoEm || lead.criadoEm) | date:'dd/MM/yyyy' }}
+            </span>
+            <button *ngIf="col.status !== StatusLeadEnum.Convertido && col.status !== StatusLeadEnum.Perdido" 
+                    class="btn-convert" 
+                    (click)="converterParaCliente(lead, $event)" 
+                    title="Converter em Cliente">
+              <span class="material-symbols-outlined">person_add</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

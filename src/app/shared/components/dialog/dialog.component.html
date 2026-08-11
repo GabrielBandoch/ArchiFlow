@@ -1,0 +1,23 @@
+<div class="dialog-overlay" *ngIf="show" (click)="onBackdropClick($event)">
+  <div class="dialog-container" 
+       [class]="'dialog-size-' + size" 
+       [class.overflow-visible]="overflowVisible"
+       (click)="$event.stopPropagation()">
+    
+    <div class="dialog-header">
+      <h3 class="dialog-title" *ngIf="dialogTitle">{{ dialogTitle }}</h3>
+      <button class="dialog-btn-close" (click)="onClose()" title="Fechar">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="dialog-body" [class.overflow-visible]="overflowVisible">
+      <ng-content></ng-content>
+    </div>
+
+    <div class="dialog-footer">
+      <ng-content select="[dialog-footer]"></ng-content>
+    </div>
+
+  </div>
+</div>

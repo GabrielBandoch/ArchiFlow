@@ -3,39 +3,3 @@
   width: 100%;
   height: 100%;
 }
-
-.projetos-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--af-space-xl);
-}
-
-.projetos-header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--af-space-xs);
-}
-
-.title {
-  font-family: inherit;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--af-on-surface);
-}
-
-.subtitle {
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--af-on-surface-variant);
-}
-
-.content-wrapper {
-  max-width: 600px;
-}
-
-.alert-info-text {
-  font-family: inherit;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--af-on-surface-variant);
-}

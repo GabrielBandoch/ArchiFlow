@@ -1,21 +1,21 @@
 .gap-xs {
-  gap: var(--af-space-xs) !important; /* 4px */
+  gap: var(--af-space-xs) !important;
 }
 
 .gap-sm {
-  gap: var(--af-space-sm) !important; /* 8px */
+  gap: var(--af-space-sm) !important;
 }
 
 .gap-md {
-  gap: var(--af-space-md) !important; /* 16px */
+  gap: var(--af-space-md) !important;
 }
 
 .gap-lg {
-  gap: var(--af-space-lg) !important; /* 24px */
+  gap: var(--af-space-lg) !important;
 }
 
 .gap-xl {
-  gap: var(--af-space-xl) !important; /* 32px */
+  gap: var(--af-space-xl) !important;
 }
 
 .m-0 {
@@ -125,4 +125,84 @@
 
 .padding-bottom-xl {
   padding-bottom: var(--af-space-xl) !important;
+}
+
+.margin-left-xs {
+  margin-left: var(--af-space-xs) !important;
+}
+
+.margin-left-sm {
+  margin-left: var(--af-space-sm) !important;
+}
+
+.margin-left-md {
+  margin-left: var(--af-space-md) !important;
+}
+
+.margin-left-lg {
+  margin-left: var(--af-space-lg) !important;
+}
+
+.margin-left-xl {
+  margin-left: var(--af-space-xl) !important;
+}
+
+.margin-right-xs {
+  margin-right: var(--af-space-xs) !important;
+}
+
+.margin-right-sm {
+  margin-right: var(--af-space-sm) !important;
+}
+
+.margin-right-md {
+  margin-right: var(--af-space-md) !important;
+}
+
+.margin-right-lg {
+  margin-right: var(--af-space-lg) !important;
+}
+
+.margin-right-xl {
+  margin-right: var(--af-space-xl) !important;
+}
+
+.padding-left-xs {
+  padding-left: var(--af-space-xs) !important;
+}
+
+.padding-left-sm {
+  padding-left: var(--af-space-sm) !important;
+}
+
+.padding-left-md {
+  padding-left: var(--af-space-md) !important;
+}
+
+.padding-left-lg {
+  padding-left: var(--af-space-lg) !important;
+}
+
+.padding-left-xl {
+  padding-left: var(--af-space-xl) !important;
+}
+
+.padding-right-xs {
+  padding-right: var(--af-space-xs) !important;
+}
+
+.padding-right-sm {
+  padding-right: var(--af-space-sm) !important;
+}
+
+.padding-right-md {
+  padding-right: var(--af-space-md) !important;
+}
+
+.padding-right-lg {
+  padding-right: var(--af-space-lg) !important;
+}
+
+.padding-right-xl {
+  padding-right: var(--af-space-xl) !important;
 }
