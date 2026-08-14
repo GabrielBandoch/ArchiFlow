@@ -16,4 +16,24 @@ export class LeadForm {
       resumo: ['', [Validators.required]]
     });
   }
+
+  static createMotivoPerda(fb: FormBuilder): FormGroup {
+    return fb.group({
+      motivoPerda: ['', [Validators.required, Validators.maxLength(500)]]
+    });
+  }
+
+  static convertLead(fb: FormBuilder): FormGroup {
+    return fb.group({
+      cpfCnpj: [''],
+      telefone: [''],
+      cep: [''],
+      logradouro: [''],
+      numero: [''],
+      complemento: [''],
+      bairro: [''],
+      cidade: [''],
+      uf: ['']
+    });
+  }
 }

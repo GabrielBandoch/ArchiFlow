@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
+import { LeadForm } from '../lead.form';
 
 @Component({
   selector: 'app-motivo-perda-modal',
@@ -18,9 +19,7 @@ export class MotivoPerdaModalComponent {
   submitted = false;
 
   constructor() {
-    this.form = this.fb.group({
-      motivoPerda: ['', [Validators.required, Validators.maxLength(500)]]
-    });
+    this.form = LeadForm.createMotivoPerda(this.fb);
   }
 
   get f() { return this.form.controls; }

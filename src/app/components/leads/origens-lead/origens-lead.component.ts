@@ -1,9 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
 import { OrigemLeadService } from '../../../core/api/origem-lead.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { OrigemLead } from '../../../models/origem-lead.model';
+import { OrigemLeadForm } from './origem-lead.form';
 
 @Component({
   selector: 'app-origens-lead',
@@ -26,13 +27,8 @@ export class OrigensLeadComponent implements OnInit {
   editingOrigemId: string | null = null;
 
   constructor() {
-    this.form = this.fb.group({
-      descricao: ['', [Validators.required, Validators.maxLength(100)]]
-    });
-
-    this.editForm = this.fb.group({
-      descricao: ['', [Validators.required, Validators.maxLength(100)]]
-    });
+    this.form = OrigemLeadForm.create(this.fb);
+    this.editForm = OrigemLeadForm.create(this.fb);
   }
 
   ngOnInit(): void {
