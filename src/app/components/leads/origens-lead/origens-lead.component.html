@@ -1,0 +1,111 @@
+<div class="origens-container padding-bottom-lg animate-fade-in-up">
+  
+  <div class="d-flex align-items-center gap-md margin-bottom-lg">
+    <app-button variant="secondary" routerLink="/leads" class="btn-back-circle">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </app-button>
+    <div>
+      <h2 class="font-headline-lg m-0">Origens de Leads</h2>
+      <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Cadastre e gerencie os canais de entrada dos seus leads (redes sociais, indicações, etc.).</p>
+    </div>
+  </div>
+
+  <div class="grid-layout">
+    
+    <div class="form-card">
+      <app-card>
+        <h3 class="font-title-lg margin-bottom-md">Nova Origem</h3>
+        
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
+          <app-input 
+            id="descricao" 
+            type="text" 
+            label="Nome da Origem / Canal" 
+            placeholder="Ex: Instagram Direct, WhatsApp, Indicação..." 
+            formControlName="descricao"
+            [required]="true"
+            [error]="submitted && f['descricao'].errors ? 'O nome da origem é obrigatório (máx. 100 caracteres).' : undefined">
+          </app-input>
+
+          <app-button type="submit" variant="primary">Cadastrar</app-button>
+        </form>
+      </app-card>
+    </div>
+
+    <div class="table-card">
+      <app-card>
+        <h3 class="font-title-lg margin-bottom-md">Canais Cadastrados</h3>
+        
+        <div class="table-responsive">
+          <table class="origens-table">
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th>Status</th>
+                <th>Criado em</th>
+                <th class="text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of origens" [class.inactive-row]="!o.ativo">
+                
+                <td>
+                  <div *ngIf="editingOrigemId !== o.id; else editMode">
+                    <span class="font-weight-medium">{{ o.descricao }}</span>
+                  </div>
+                  <ng-template #editMode>
+                    <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()" class="d-flex gap-sm align-items-center w-100">
+                      <app-input 
+                        id="edit-descricao" 
+                        type="text" 
+                        placeholder="Nome da origem..."
+                        formControlName="descricao" 
+                        [required]="true"
+                        [error]="editSubmitted && ef['descricao'].errors ? 'O nome é obrigatório (máx. 100).' : undefined"
+                        class="flex-grow-1">
+                      </app-input>
+                      <button type="submit" class="btn-action-icon btn-confirm" title="Salvar">
+                        <span class="material-symbols-outlined">check</span>
+                      </button>
+                      <button type="button" class="btn-action-icon btn-cancel" (click)="cancelarEdicao()" title="Cancelar">
+                        <span class="material-symbols-outlined">close</span>
+                      </button>
+                    </form>
+                  </ng-template>
+                </td>
+
+                <td>
+                  <span class="badge" [class]="o.ativo ? 'status-ativo' : 'status-inativo'">
+                    {{ o.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+
+                <td>{{ o.criadoEm | date:'dd/MM/yyyy HH:mm' }}</td>
+
+                <td class="text-right">
+                  <div class="d-flex justify-content-end gap-xs" *ngIf="editingOrigemId !== o.id">
+                    <button class="btn-action-icon" (click)="iniciarEdicao(o)" title="Editar" [disabled]="!o.ativo">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button class="btn-action-icon btn-delete" (click)="desativarOrigem(o)" title="Desativar" *ngIf="o.ativo">
+                      <span class="material-symbols-outlined">block</span>
+                    </button>
+                    <button class="btn-action-icon btn-confirm" (click)="reativarOrigem(o)" title="Reativar" *ngIf="!o.ativo">
+                      <span class="material-symbols-outlined">check_circle</span>
+                    </button>
+                  </div>
+                </td>
+
+              </tr>
+              <tr *ngIf="origens.length === 0">
+                <td colspan="4" class="text-center text-on-surface-variant padding-lg">Nenhum canal cadastrado.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </app-card>
+    </div>
+
+  </div>
+
+</div>

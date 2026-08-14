@@ -4,6 +4,9 @@ import { RouterLink } from '@angular/router';
 import { ButtonComponent } from './components/button/button.component';
 import { CardComponent } from './components/card/card.component';
 import { InputComponent } from './components/input/input.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { SelectComponent } from './components/select/select.component';
 
 export const CORE_IMPORTS = [
   CommonModule,
@@ -17,5 +20,8 @@ export const FORM_IMPORTS = [
 export const DESIGN_SYSTEM = [
   ButtonComponent,
   CardComponent,
-  InputComponent
+  InputComponent,
+  DialogComponent,
+  ConfirmDialogComponent,
+  SelectComponent
 ] as const;

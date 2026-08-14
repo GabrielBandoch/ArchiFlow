@@ -1,0 +1,111 @@
+<app-dialog [show]="lead !== null" [dialogTitle]="lead?.nome || ''" size="lg" [overflowVisible]="true" (close)="onClose()">
+  
+  <div class="modal-grid-body">
+    <div class="info-section">
+      <div class="status-row" *ngIf="lead">
+        <span class="badge" [class]="getStatusClass(lead.status)">
+          {{ lead.statusLabel }}
+        </span>
+      </div>
+
+      <h4 class="section-title">Dados de Contato</h4>
+      <div class="d-flex flex-direction-column gap-md">
+        <div class="d-flex gap-sm align-items-start">
+          <span class="material-symbols-outlined info-icon">mail</span>
+          <div>
+            <span class="info-label">E-mail</span>
+            <a href="mailto:{{ lead?.email }}" class="info-val">{{ lead?.email }}</a>
+          </div>
+        </div>
+        <div class="d-flex gap-sm align-items-start" *ngIf="lead?.telefone">
+          <span class="material-symbols-outlined info-icon">call</span>
+          <div>
+            <span class="info-label">Telefone</span>
+            <span class="info-val">{{ lead?.telefone }}</span>
+          </div>
+        </div>
+        <div class="d-flex gap-sm align-items-start" *ngIf="lead?.origem">
+          <span class="material-symbols-outlined info-icon">source</span>
+          <div>
+            <span class="info-label">Origem</span>
+            <span class="info-val">{{ lead?.origem }}</span>
+          </div>
+        </div>
+        <div class="d-flex gap-sm align-items-start" *ngIf="lead?.status === StatusLeadEnum.Perdido && lead?.motivoPerda">
+          <span class="material-symbols-outlined info-icon text-error">warning</span>
+          <div>
+            <span class="info-label text-error">Motivo da Perda</span>
+            <span class="info-val text-error font-weight-semibold">{{ lead?.motivoPerda }}</span>
+          </div>
+        </div>
+        <div class="d-flex gap-sm align-items-start">
+          <span class="material-symbols-outlined info-icon">calendar_today</span>
+          <div>
+            <span class="info-label">Criado em</span>
+            <span class="info-val">{{ lead?.criadoEm | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="convert-box" *ngIf="lead && lead.status !== StatusLeadEnum.Convertido">
+        <p class="convert-text">Negociação concluída com sucesso?</p>
+        <app-button variant="primary" (btnClick)="converterParaCliente($event)">
+          Converter em Cliente
+        </app-button>
+      </div>
+    </div>
+
+    <div class="history-section">
+      <h4 class="section-title">Histórico de Interações</h4>
+      
+      <form [formGroup]="historyForm" (ngSubmit)="adicionarHistorico()" class="add-history-form">
+        <app-select
+          id="canal"
+          label="Canal"
+          placeholder="Selecione o canal de contato..."
+          formControlName="canal"
+          [options]="canalOptions">
+        </app-select>
+
+        <app-select
+          id="resumoOption"
+          label="Resumo da Conversa"
+          placeholder="Selecione um resumo padrão..."
+          formControlName="resumoOption"
+          [options]="resumoOptions">
+        </app-select>
+
+        <div *ngIf="historyForm.get('resumoOption')?.value === 'Outro'" class="animate-fade-in-up">
+          <app-input 
+            id="resumo" 
+            type="text" 
+            label="Resumo Personalizado" 
+            placeholder="Descreva o que foi conversado..." 
+            formControlName="resumo"
+            [required]="true"
+            [error]="submitted && f['resumo'].errors ? 'O resumo da conversa é obrigatório.' : undefined">
+          </app-input>
+        </div>
+
+        <app-button type="submit" variant="secondary">Adicionar Interação</app-button>
+      </form>
+
+      <div class="history-timeline">
+        <div class="timeline-empty" *ngIf="lead?.historicoContatos?.length === 0">
+          Nenhuma interação registrada.
+        </div>
+        <div class="timeline-item" *ngFor="let h of lead?.historicoContatos">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-channel">{{ h.canal }}</span>
+              <span class="timeline-date">{{ h.dataContato | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <p class="timeline-summary">{{ h.resumo }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</app-dialog>

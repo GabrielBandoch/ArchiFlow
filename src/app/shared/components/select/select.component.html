@@ -1,0 +1,44 @@
+<div class="select-group">
+  <label *ngIf="label" [for]="id" class="select-label">{{ label }}</label>
+  
+  <div class="select-wrapper" [class.has-error]="error" [class.is-open]="isOpen" [class.is-disabled]="disabled">
+    <button 
+      type="button" 
+      [id]="id" 
+      (click)="toggleDropdown()" 
+      [disabled]="disabled" 
+      class="form-select-trigger d-flex justify-content-between align-items-center">
+      
+      <div class="selected-content d-flex align-items-center gap-sm">
+        <span *ngIf="getSelectedOption()?.icon" class="material-symbols-outlined option-icon">{{ getSelectedOption()?.icon }}</span>
+        <div class="d-flex flex-direction-column align-items-start">
+          <span *ngIf="getSelectedOption(); else showPlaceholder" class="selected-label">{{ getSelectedOption()?.label }}</span>
+          <ng-template #showPlaceholder>
+            <span class="placeholder-text">{{ placeholder }}</span>
+          </ng-template>
+        </div>
+      </div>
+      
+      <span class="material-symbols-outlined arrow-icon">expand_more</span>
+    </button>
+
+    <div class="options-list-container" *ngIf="isOpen">
+      <ul class="options-list">
+        <li 
+          *ngFor="let opt of options" 
+          (click)="selectOption(opt)" 
+          [class.is-selected]="opt.value === value" 
+          class="option-item d-flex align-items-center gap-sm">
+          
+          <span *ngIf="opt.icon" class="material-symbols-outlined option-icon">{{ opt.icon }}</span>
+          <div class="d-flex flex-direction-column align-items-start">
+            <span class="option-label">{{ opt.label }}</span>
+            <span *ngIf="opt.subLabel" class="option-sublabel">{{ opt.subLabel }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="select-error-msg">{{ error }}</div>
+</div>

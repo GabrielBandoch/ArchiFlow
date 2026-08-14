@@ -6,6 +6,10 @@
     </div>
 
     <nav class="nav-menu">
+      <a routerLink="/leads" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">person_search</span>
+        <span class="nav-label">Leads</span>
+      </a>
       <a routerLink="/projetos" routerLinkActive="active" class="nav-item">
         <span class="material-symbols-outlined nav-icon">folder</span>
         <span class="nav-label">Projetos</span>
@@ -39,5 +43,12 @@
     <footer class="footer">
       <span class="footer-text">© 2026 ArchiFlow Technologies</span>
     </footer>
+  </div>
+</div>
+
+<div class="af-global-loading" *ngIf="loadingService.loading$ | async">
+  <div class="af-loading-spinner-container">
+    <div class="af-loading-spinner"></div>
+    <span class="af-loading-text">Carregando informações...</span>
   </div>
 </div>

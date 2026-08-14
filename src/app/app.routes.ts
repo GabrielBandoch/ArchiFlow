@@ -28,6 +28,21 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'leads',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/leads/leads.component').then(m => m.LeadsComponent)
+      },
+      {
+        path: 'origens',
+        loadComponent: () => import('./components/leads/origens-lead/origens-lead.component').then(m => m.OrigensLeadComponent)
+      }
+    ]
+  },
+  {
     path: '',
     redirectTo: 'projetos',
     pathMatch: 'full'

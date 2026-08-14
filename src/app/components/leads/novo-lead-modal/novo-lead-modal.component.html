@@ -1,0 +1,47 @@
+<app-dialog [show]="show" dialogTitle="Novo Lead" size="sm" [overflowVisible]="true" (close)="onClose()">
+  <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
+    
+    <app-input 
+      id="nome" 
+      type="text" 
+      label="Nome Completo" 
+      placeholder="Ex: Carlos Mendonça" 
+      formControlName="nome"
+      [required]="true"
+      [error]="submitted && f['nome'].errors ? 'O nome é obrigatório (máx. 200 caracteres).' : undefined">
+    </app-input>
+
+    <app-input 
+      id="email" 
+      type="email" 
+      label="E-mail" 
+      placeholder="carlos@exemplo.com" 
+      formControlName="email"
+      [required]="true"
+      [error]="submitted && f['email'].errors ? (f['email'].errors['required'] ? 'O e-mail é obrigatório.' : 'Insira um e-mail válido.') : undefined">
+    </app-input>
+
+    <app-input 
+      id="telefone" 
+      type="text" 
+      label="Telefone" 
+      placeholder="(47) 99999-9999" 
+      formControlName="telefone"
+      [error]="submitted && f['telefone'].errors ? 'Telefone muito longo (máx. 20 caracteres).' : undefined">
+    </app-input>
+
+    <app-select
+      id="origemId"
+      label="Origem do Contato"
+      placeholder="Selecione uma origem..."
+      formControlName="origemId"
+      [options]="origensOptions">
+    </app-select>
+
+    <div dialog-footer class="d-flex justify-content-end gap-sm">
+      <app-button variant="secondary" (btnClick)="onClose()">Cancelar</app-button>
+      <app-button type="submit" variant="primary">Criar Lead</app-button>
+    </div>
+
+  </form>
+</app-dialog>
