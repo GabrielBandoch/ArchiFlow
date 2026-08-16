@@ -34,7 +34,6 @@ export class ConversaoLeadModalComponent implements OnInit {
   tipoPessoa: 'PF' | 'PJ' = 'PF';
   buscandoCep = false;
   
-  // State control
   isConverted = false;
   clienteId = '';
   clienteNome = '';
@@ -162,7 +161,6 @@ export class ConversaoLeadModalComponent implements OnInit {
 
     const val = this.convertForm.value;
     
-    // Consolida o endereço estruturado
     let enderecoConsolidado = '';
     if (val.logradouro || val.cidade || val.cep) {
       const partes: string[] = [];

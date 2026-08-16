@@ -60,14 +60,12 @@ export class ListaClientesComponent implements OnInit {
   filtrarClientes(): void {
     let result = this.clientes;
 
-    // Filtro por status do portal
     if (this.filtroStatus === 'ativos') {
       result = result.filter(c => c.ativo);
     } else if (this.filtroStatus === 'inativos') {
       result = result.filter(c => !c.ativo);
     }
 
-    // Filtro por busca textual
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
       result = result.filter(c => 

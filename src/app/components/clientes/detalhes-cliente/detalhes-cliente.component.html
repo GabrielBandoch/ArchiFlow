@@ -1,6 +1,4 @@
 <div class="dossier-page" *ngIf="cliente && !loading">
-  
-  <!-- Navegação Superior -->
   <nav class="dossier-nav">
     <button class="nav-back-btn" (click)="voltar()">
       <span class="material-symbols-outlined">west</span>
@@ -8,14 +6,9 @@
     </button>
   </nav>
 
-  <!-- Card Unificado de Perfil e Dados Cadastrais -->
   <section class="profile-unified-card">
-    
-    <!-- Linha Superior: Avatar com Upload, Nome e Botões de Ação -->
     <div class="profile-top-row">
       <div class="profile-identity">
-        
-        <!-- Avatar Interativo com Imagem ou Monograma -->
         <div class="profile-avatar-wrap" (click)="fileInput.click()" title="Clique para alterar foto de perfil">
           <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-photo" [alt]="cliente.nome" />
           <div *ngIf="!cliente.fotoUrl" class="profile-avatar">
@@ -43,7 +36,6 @@
         </div>
       </div>
 
-      <!-- Ações -->
       <div class="profile-actions">
         <app-button variant="secondary" (btnClick)="abrirModalEdicao()">
           <span class="material-symbols-outlined icon-btn">edit</span>
@@ -62,10 +54,7 @@
 
     <div class="profile-divider"></div>
 
-    <!-- Grid de Informações e Dados Cadastrais Integrados -->
     <div class="profile-details-grid">
-      
-      <!-- E-mail Principal -->
       <div class="detail-block">
         <span class="detail-label">E-mail Principal</span>
         <a class="detail-value link" [href]="'mailto:' + cliente.email">
@@ -74,7 +63,6 @@
         </a>
       </div>
 
-      <!-- Telefone / WhatsApp -->
       <div class="detail-block">
         <span class="detail-label">Telefone / WhatsApp</span>
         <div class="detail-value" *ngIf="cliente.telefone">
@@ -86,7 +74,6 @@
         <span class="detail-value text-muted" *ngIf="!cliente.telefone">Não informado</span>
       </div>
 
-      <!-- CPF / CNPJ -->
       <div class="detail-block">
         <span class="detail-label">Documento (CPF / CNPJ)</span>
         <div class="detail-value-wrap" *ngIf="cliente.cpfCnpj">
@@ -98,7 +85,6 @@
         <span class="detail-value text-muted" *ngIf="!cliente.cpfCnpj">Não informado</span>
       </div>
 
-      <!-- Endereço do Imóvel / Obra -->
       <div class="detail-block span-all">
         <span class="detail-label">Endereço do Imóvel / Obra</span>
         <div class="detail-value-wrap" *ngIf="cliente.endereco">
@@ -110,15 +96,10 @@
         </div>
         <span class="detail-value text-muted" *ngIf="!cliente.endereco">Endereço não cadastrado</span>
       </div>
-
     </div>
-
   </section>
 
-  <!-- Seção Inferior: 2 Colunas Lado a Lado (Mesma Altura, Mesma Largura) -->
   <div class="bottom-dual-grid">
-    
-    <!-- Coluna 1: Projetos Vinculados (50%) -->
     <section class="studio-panel">
       <div class="panel-header">
         <div class="title-with-pill">
@@ -151,7 +132,6 @@
       </div>
     </section>
 
-    <!-- Coluna 2: Histórico de Interações (50%) -->
     <section class="studio-panel">
       <div class="panel-header">
         <div class="title-with-pill">
@@ -183,12 +163,9 @@
         </div>
       </div>
     </section>
-
   </div>
-
 </div>
 
-<!-- Carregamento -->
 <div *ngIf="loading" class="dossier-loading">
   <div class="studio-spinner"></div>
   <p>Carregando ficha do cliente...</p>

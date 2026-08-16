@@ -1,6 +1,4 @@
 <div class="clientes-page">
-  
-  <!-- Header Editorial do Estúdio -->
   <header class="page-header">
     <div class="header-main">
       <h1 class="page-heading">Clientes</h1>
@@ -15,10 +13,7 @@
     </div>
   </header>
 
-  <!-- Seção Principal -->
   <div *ngIf="clientes.length > 0; else emptyStateCRM" class="table-container-card">
-    
-    <!-- Filtros e Busca Simplificados -->
     <div class="table-toolbar">
       <div class="search-field">
         <span class="material-symbols-outlined search-icon">search</span>
@@ -52,7 +47,6 @@
       </nav>
     </div>
 
-    <!-- Tabela Humanizada de Clientes -->
     <div class="table-wrapper">
       <table class="studio-table">
         <thead>
@@ -66,8 +60,6 @@
         </thead>
         <tbody>
           <tr *ngFor="let cliente of clientesFiltrados" (click)="verDetalhes(cliente.id)">
-            
-            <!-- Identificação -->
             <td class="cell-client">
               <div class="avatar-monogram">
                 <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-table-photo" [alt]="cliente.nome" />
@@ -79,7 +71,6 @@
               </div>
             </td>
 
-            <!-- Contatos -->
             <td class="cell-contact">
               <div class="contact-details">
                 <span class="contact-email">{{ cliente.email }}</span>
@@ -87,14 +78,12 @@
               </div>
             </td>
 
-            <!-- Projetos Vinculados -->
             <td class="cell-projects text-center">
               <span class="project-tag" [class.has-project]="(cliente.projetosAtivosCount || 0) > 0">
                 {{ (cliente.projetosAtivosCount || 0) }} {{ (cliente.projetosAtivosCount === 1) ? 'projeto' : 'projetos' }}
               </span>
             </td>
 
-            <!-- Status do Portal com Switch Discreto -->
             <td class="cell-portal text-center" (click)="$event.stopPropagation()">
               <div class="portal-switch-wrap">
                 <label class="switch-ui">
@@ -111,14 +100,11 @@
               </div>
             </td>
 
-            <!-- Ação de Navegação -->
             <td class="cell-arrow text-right">
               <span class="material-symbols-outlined nav-icon">chevron_right</span>
             </td>
-
           </tr>
 
-          <!-- Sem Resultados -->
           <tr *ngIf="clientesFiltrados.length === 0">
             <td colspan="5" class="empty-row">
               <p>Nenhum cliente encontrado para os filtros selecionados.</p>
@@ -132,10 +118,8 @@
     <div class="table-footer">
       <span>{{ clientesFiltrados.length }} de {{ clientes.length }} {{ clientes.length === 1 ? 'cliente cadastrado' : 'clientes cadastrados' }}</span>
     </div>
-
   </div>
 
-  <!-- Estado Vazio Amigável -->
   <ng-template #emptyStateCRM>
     <div class="empty-state-card">
       <div class="empty-icon-art">
@@ -153,5 +137,4 @@
       </div>
     </div>
   </ng-template>
-
 </div>

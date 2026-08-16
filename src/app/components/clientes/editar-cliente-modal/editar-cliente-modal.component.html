@@ -1,8 +1,5 @@
 <app-dialog [show]="show" dialogTitle="Editar Ficha do Cliente" size="lg" (close)="onClose()">
-  
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="studio-form">
-    
-    <!-- Dados Principais -->
     <div class="form-section-title">
       <span>Identificação Principal</span>
     </div>
@@ -27,7 +24,6 @@
       </div>
     </div>
 
-    <!-- Seletor Tipo de Pessoa (PF / PJ) -->
     <div class="tipo-pessoa-pills">
       <button 
         type="button" 
@@ -69,7 +65,6 @@
       </div>
     </div>
 
-    <!-- Seção de Endereço com ViaCEP -->
     <div class="form-section-title margin-top">
       <span>Endereço do Imóvel / Obra</span>
     </div>
@@ -160,5 +155,4 @@
       </app-button>
     </div>
   </form>
-
 </app-dialog>

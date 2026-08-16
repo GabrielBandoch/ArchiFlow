@@ -2,20 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-
-export interface ViaCepResponse {
-  cep: string;
-  logradouro: string;
-  complemento: string;
-  bairro: string;
-  localidade: string;
-  uf: string;
-  ibge?: string;
-  gia?: string;
-  ddd?: string;
-  siafi?: string;
-  erro?: boolean;
-}
+import { UrlBuilder } from '../utils/url-builder';
+import { ViaCepResponse } from '../../models/via-cep.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +16,14 @@ export class ViaCepService {
     if (cepLimpo.length !== 8) {
       return of(null);
     }
-    return this.http.get<ViaCepResponse>(`https://viacep.com.br/ws/${cepLimpo}/json/`).pipe(
+
+    const url = new UrlBuilder('https://viacep.com.br')
+      .segment('ws')
+      .segment(cepLimpo)
+      .segment('json')
+      .build();
+
+    return this.http.get<ViaCepResponse>(url).pipe(
       map(res => (res && !res.erro) ? res : null),
       catchError(() => of(null))
     );

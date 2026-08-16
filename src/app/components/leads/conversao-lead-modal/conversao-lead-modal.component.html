@@ -1,5 +1,4 @@
 <app-dialog [show]="show" dialogTitle="Converter Lead em Cliente" size="lg" (close)="onClose()">
-  
   <div *ngIf="!isConverted">
     <div class="lead-context-card">
       <div class="lead-avatar-badge">
@@ -12,8 +11,6 @@
     </div>
 
     <form [formGroup]="convertForm" (ngSubmit)="onSubmit()" class="studio-form">
-      
-      <!-- Seletor Tipo de Pessoa (PF / PJ) -->
       <div class="form-section-title">
         <span>Identificação Fiscal</span>
       </div>
@@ -59,7 +56,6 @@
         </div>
       </div>
 
-      <!-- Seção de Endereço com ViaCEP -->
       <div class="form-section-title margin-top">
         <span>Endereço do Projeto / Imóvel</span>
       </div>
@@ -152,7 +148,6 @@
     </form>
   </div>
 
-  <!-- Sucesso Humanizado -->
   <div *ngIf="isConverted" class="studio-success-panel">
     <div class="success-check-icon">
       <span class="material-symbols-outlined">check</span>
@@ -172,5 +167,4 @@
       </app-button>
     </div>
   </div>
-
 </app-dialog>

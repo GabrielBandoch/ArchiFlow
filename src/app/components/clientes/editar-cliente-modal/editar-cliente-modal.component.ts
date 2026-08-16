@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
 import { ClienteService } from '../../../core/api/cliente.service';
 import { ViaCepService } from '../../../core/services/via-cep.service';
@@ -152,7 +152,6 @@ export class EditarClienteModalComponent implements OnInit {
 
     const val = this.form.value;
 
-    // Consolidação de endereço
     let enderecoConsolidado = val.logradouro || '';
     if (val.numero || val.bairro || val.cidade || val.cep) {
       const partes: string[] = [];
