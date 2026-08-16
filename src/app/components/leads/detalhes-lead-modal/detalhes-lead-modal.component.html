@@ -53,6 +53,15 @@
           Converter em Cliente
         </app-button>
       </div>
+
+      <div class="convert-box success-box" *ngIf="lead && lead.status === StatusLeadEnum.Convertido">
+        <p class="convert-text" style="color: #2e7d32; font-weight: 600; margin-bottom: 8px;">
+          ✓ Este lead já é um Cliente ativo
+        </p>
+        <app-button variant="primary" (btnClick)="irParaClientes()">
+          Ver no Diretório de Clientes
+        </app-button>
+      </div>
     </div>
 
     <div class="history-section">

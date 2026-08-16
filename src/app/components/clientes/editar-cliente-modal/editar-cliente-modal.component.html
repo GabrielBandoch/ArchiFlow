@@ -1,0 +1,164 @@
+<app-dialog [show]="show" dialogTitle="Editar Ficha do Cliente" size="lg" (close)="onClose()">
+  
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="studio-form">
+    
+    <!-- Dados Principais -->
+    <div class="form-section-title">
+      <span>Identificação Principal</span>
+    </div>
+
+    <div class="form-row-2">
+      <div class="field-item">
+        <label class="field-label">Nome Completo / Razão Social *</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          placeholder="Nome do cliente" 
+          formControlName="nome" />
+      </div>
+
+      <div class="field-item">
+        <label class="field-label">E-mail Principal *</label>
+        <input 
+          type="email" 
+          class="field-input" 
+          placeholder="cliente@exemplo.com" 
+          formControlName="email" />
+      </div>
+    </div>
+
+    <!-- Seletor Tipo de Pessoa (PF / PJ) -->
+    <div class="tipo-pessoa-pills">
+      <button 
+        type="button" 
+        class="pill-btn" 
+        [class.active]="tipoPessoa === 'PF'" 
+        (click)="setTipoPessoa('PF')">
+        <span class="material-symbols-outlined">person</span>
+        Pessoa Física
+      </button>
+      <button 
+        type="button" 
+        class="pill-btn" 
+        [class.active]="tipoPessoa === 'PJ'" 
+        (click)="setTipoPessoa('PJ')">
+        <span class="material-symbols-outlined">domain</span>
+        Pessoa Jurídica
+      </button>
+    </div>
+
+    <div class="form-row-2">
+      <div class="field-item">
+        <label class="field-label">{{ tipoPessoa === 'PF' ? 'CPF do Titular' : 'CNPJ da Empresa' }}</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          [placeholder]="tipoPessoa === 'PF' ? '000.000.000-00' : '00.000.000/0001-00'" 
+          formControlName="cpfCnpj" 
+          (input)="onCpfCnpjInput($event)" />
+      </div>
+
+      <div class="field-item">
+        <label class="field-label">Telefone de Contato</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          placeholder="(00) 00000-0000" 
+          formControlName="telefone" 
+          (input)="onTelefoneInput($event)" />
+      </div>
+    </div>
+
+    <!-- Seção de Endereço com ViaCEP -->
+    <div class="form-section-title margin-top">
+      <span>Endereço do Imóvel / Obra</span>
+    </div>
+
+    <div class="form-row-cep">
+      <div class="field-item cep-item">
+        <label class="field-label">CEP</label>
+        <div class="cep-field-wrap">
+          <input 
+            type="text" 
+            class="field-input" 
+            placeholder="00000-000" 
+            formControlName="cep" 
+            (input)="onCepInput($event)" />
+          <div class="cep-spinner" *ngIf="buscandoCep">
+            <span class="mini-spin"></span>
+          </div>
+          <div class="cep-success" *ngIf="!buscandoCep && form.get('cep')?.value?.length >= 8">
+            <span class="material-symbols-outlined">check</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-item street-item">
+        <label class="field-label">Rua / Logradouro</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          placeholder="Ex: Av. XV de Novembro" 
+          formControlName="logradouro" />
+      </div>
+    </div>
+
+    <div class="form-row-3">
+      <div class="field-item">
+        <label class="field-label">Número</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          placeholder="123" 
+          formControlName="numero" />
+      </div>
+
+      <div class="field-item">
+        <label class="field-label">Complemento</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          placeholder="Apto, Sala, Bloco..." 
+          formControlName="complemento" />
+      </div>
+
+      <div class="field-item">
+        <label class="field-label">Bairro</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          placeholder="Bairro" 
+          formControlName="bairro" />
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="field-item">
+        <label class="field-label">Cidade</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          placeholder="Cidade" 
+          formControlName="cidade" />
+      </div>
+
+      <div class="field-item">
+        <label class="field-label">Estado (UF)</label>
+        <input 
+          type="text" 
+          class="field-input" 
+          placeholder="UF" 
+          maxlength="2"
+          formControlName="uf" />
+      </div>
+    </div>
+
+    <div dialog-footer class="studio-modal-actions">
+      <app-button variant="secondary" (btnClick)="onClose()">Cancelar</app-button>
+      <app-button type="submit" variant="primary">
+        Salvar Alterações
+      </app-button>
+    </div>
+  </form>
+
+</app-dialog>

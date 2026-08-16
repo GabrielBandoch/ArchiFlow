@@ -43,6 +43,21 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'clientes',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/clientes/lista-clientes/lista-clientes.component').then(m => m.ListaClientesComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./components/clientes/detalhes-cliente/detalhes-cliente.component').then(m => m.DetalhesClienteComponent)
+      }
+    ]
+  },
+  {
     path: '',
     redirectTo: 'projetos',
     pathMatch: 'full'

@@ -1,0 +1,176 @@
+<app-dialog [show]="show" dialogTitle="Converter Lead em Cliente" size="lg" (close)="onClose()">
+  
+  <div *ngIf="!isConverted">
+    <div class="lead-context-card">
+      <div class="lead-avatar-badge">
+        {{ lead?.nome?.substring(0, 2)?.toUpperCase() }}
+      </div>
+      <div class="lead-meta">
+        <h4 class="lead-name">{{ lead?.nome }}</h4>
+        <p class="lead-sub">{{ lead?.email }} • Origem: {{ lead?.origem || 'Contato Comercial' }}</p>
+      </div>
+    </div>
+
+    <form [formGroup]="convertForm" (ngSubmit)="onSubmit()" class="studio-form">
+      
+      <!-- Seletor Tipo de Pessoa (PF / PJ) -->
+      <div class="form-section-title">
+        <span>Identificação Fiscal</span>
+      </div>
+
+      <div class="tipo-pessoa-pills">
+        <button 
+          type="button" 
+          class="pill-btn" 
+          [class.active]="tipoPessoa === 'PF'" 
+          (click)="setTipoPessoa('PF')">
+          <span class="material-symbols-outlined">person</span>
+          Pessoa Física
+        </button>
+        <button 
+          type="button" 
+          class="pill-btn" 
+          [class.active]="tipoPessoa === 'PJ'" 
+          (click)="setTipoPessoa('PJ')">
+          <span class="material-symbols-outlined">domain</span>
+          Pessoa Jurídica
+        </button>
+      </div>
+
+      <div class="form-row-2">
+        <div class="field-item">
+          <label class="field-label">{{ tipoPessoa === 'PF' ? 'CPF do Titular' : 'CNPJ da Empresa' }}</label>
+          <input 
+            type="text" 
+            class="field-input" 
+            [placeholder]="tipoPessoa === 'PF' ? '000.000.000-00' : '00.000.000/0001-00'" 
+            formControlName="cpfCnpj" 
+            (input)="onCpfCnpjInput($event)" />
+        </div>
+
+        <div class="field-item">
+          <label class="field-label">Telefone de Contato</label>
+          <input 
+            type="text" 
+            class="field-input" 
+            placeholder="(00) 00000-0000" 
+            formControlName="telefone" 
+            (input)="onTelefoneInput($event)" />
+        </div>
+      </div>
+
+      <!-- Seção de Endereço com ViaCEP -->
+      <div class="form-section-title margin-top">
+        <span>Endereço do Projeto / Imóvel</span>
+      </div>
+
+      <div class="form-row-cep">
+        <div class="field-item cep-item">
+          <label class="field-label">CEP</label>
+          <div class="cep-field-wrap">
+            <input 
+              type="text" 
+              class="field-input" 
+              placeholder="00000-000" 
+              formControlName="cep" 
+              (input)="onCepInput($event)" />
+            <div class="cep-spinner" *ngIf="buscandoCep">
+              <span class="mini-spin"></span>
+            </div>
+            <div class="cep-success" *ngIf="!buscandoCep && convertForm.get('cep')?.value?.length >= 8">
+              <span class="material-symbols-outlined">check</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-item street-item">
+          <label class="field-label">Rua / Logradouro</label>
+          <input 
+            type="text" 
+            class="field-input" 
+            placeholder="Ex: Av. XV de Novembro" 
+            formControlName="logradouro" />
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="field-item">
+          <label class="field-label">Número</label>
+          <input 
+            type="text" 
+            class="field-input" 
+            placeholder="123" 
+            formControlName="numero" />
+        </div>
+
+        <div class="field-item">
+          <label class="field-label">Complemento</label>
+          <input 
+            type="text" 
+            class="field-input" 
+            placeholder="Apto, Sala, Bloco..." 
+            formControlName="complemento" />
+        </div>
+
+        <div class="field-item">
+          <label class="field-label">Bairro</label>
+          <input 
+            type="text" 
+            class="field-input" 
+            placeholder="Bairro" 
+            formControlName="bairro" />
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="field-item">
+          <label class="field-label">Cidade</label>
+          <input 
+            type="text" 
+            class="field-input" 
+            placeholder="Cidade" 
+            formControlName="cidade" />
+        </div>
+
+        <div class="field-item">
+          <label class="field-label">Estado (UF)</label>
+          <input 
+            type="text" 
+            class="field-input" 
+            placeholder="UF" 
+            maxlength="2"
+            formControlName="uf" />
+        </div>
+      </div>
+
+      <div dialog-footer class="studio-modal-actions">
+        <app-button variant="secondary" (btnClick)="onClose()">Cancelar</app-button>
+        <app-button type="submit" variant="primary">
+          Confirmar e Criar Cliente
+        </app-button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Sucesso Humanizado -->
+  <div *ngIf="isConverted" class="studio-success-panel">
+    <div class="success-check-icon">
+      <span class="material-symbols-outlined">check</span>
+    </div>
+    
+    <div class="success-copy">
+      <h3>Cliente Criado</h3>
+      <p class="client-highlight">{{ clienteNome }}</p>
+      <p class="success-note">
+        O cadastro foi concluído e as instruções de acesso ao Portal do Cliente foram enviadas para <strong>{{ clienteEmail }}</strong>.
+      </p>
+    </div>
+
+    <div dialog-footer class="studio-modal-actions justify-center w-100">
+      <app-button variant="primary" (btnClick)="concluirERedirecionar()">
+        Ver Perfil do Cliente
+      </app-button>
+    </div>
+  </div>
+
+</app-dialog>

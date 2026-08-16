@@ -6,6 +6,9 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Lead, StatusLead } from '../../../models/lead.model';
 import { LeadForm } from '../lead.form';
 import { SelectOption } from '../../../shared/components/select/select.component';
+import { DialogService } from '../../../core/services/dialog.service';
+import { ConversaoLeadModalComponent } from '../conversao-lead-modal/conversao-lead-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-detalhes-lead-modal',
@@ -18,6 +21,8 @@ export class DetalhesLeadModalComponent implements OnInit {
   private fb = inject(FormBuilder);
   private leadService = inject(LeadService);
   private notificationService = inject(NotificationService);
+  private dialogService = inject(DialogService);
+  private router = inject(Router);
 
   @Input() lead: Lead | null = null;
   @Output() close = new EventEmitter<void>();
@@ -26,6 +31,11 @@ export class DetalhesLeadModalComponent implements OnInit {
   historyForm!: FormGroup;
   submitted = false;
   StatusLeadEnum = StatusLead;
+
+  irParaClientes(): void {
+    this.onClose();
+    this.router.navigate(['/clientes']);
+  }
 
   canalOptions: SelectOption[] = [
     { value: 'WhatsApp', label: 'WhatsApp', subLabel: 'Mensagem instantânea', icon: 'chat' },
@@ -108,7 +118,13 @@ export class DetalhesLeadModalComponent implements OnInit {
   converterParaCliente(event: MouseEvent): void {
     event.stopPropagation();
     if (!this.lead) return;
-    this.notificationService.warning('A conversão automática de leads em clientes e a geração de credenciais do Portal do Cliente serão integradas no Módulo 2.');
+    this.onClose();
+    const ref = this.dialogService.open(ConversaoLeadModalComponent, {
+      data: { lead: this.lead }
+    });
+    ref.instance.convertedSuccess.subscribe(() => {
+      this.saved.emit();
+    });
   }
 
   getStatusClass(status: StatusLead): string {

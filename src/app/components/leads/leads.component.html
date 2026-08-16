@@ -43,7 +43,8 @@
         
         <div *ngFor="let lead of col.leads" 
              class="lead-card d-flex flex-direction-column" 
-             draggable="true" 
+             [class.converted-card]="col.status === StatusLeadEnum.Convertido"
+             [draggable]="col.status !== StatusLeadEnum.Convertido" 
              (dragstart)="onDragStart($event, lead.id)"
              (click)="verDetalhes(lead)">
           

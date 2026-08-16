@@ -19,9 +19,8 @@ export class DialogService {
     const instance = componentRef.instance as any;
 
     if (config?.data) {
-      if ('lead' in instance) {
-        instance.lead = config.data.lead;
-      } else if ('data' in instance) {
+      Object.assign(instance, config.data);
+      if ('data' in instance) {
         instance.data = config.data;
       }
     }

@@ -1,0 +1,212 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.studio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+
+  &.margin-top {
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #f0ece8;
+  }
+
+  span {
+    font-size: 12.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #7c7267;
+  }
+}
+
+.tipo-pessoa-pills {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  background-color: #faf8f6;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #ece7e3;
+  box-sizing: border-box;
+
+  .pill-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 500;
+    color: #7c7267;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+
+    span {
+      font-size: 18px;
+    }
+
+    &:hover {
+      color: #2b2623;
+    }
+
+    &.active {
+      background-color: #ffffff;
+      color: var(--af-primary);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(43, 38, 35, 0.08);
+    }
+  }
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 540px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: minmax(0, 100px) minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 540px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.form-row-cep {
+  display: grid;
+  grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 540px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  box-sizing: border-box;
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5c534b;
+    white-space: nowrap;
+  }
+
+  .field-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid #e0dbd6;
+    background-color: #faf8f6;
+    color: #2b2623;
+    font-family: inherit;
+    font-size: 13.5px;
+    transition: all 0.15s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--af-primary);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.08);
+    }
+
+    &::placeholder {
+      color: #9c9288;
+      opacity: 0.7;
+    }
+  }
+}
+
+.cep-field-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+
+  .field-input {
+    padding-right: 32px;
+  }
+
+  .cep-spinner {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+
+    .mini-spin {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #e0dbd6;
+      border-top: 2px solid var(--af-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+  }
+
+  .cep-success {
+    position: absolute;
+    right: 10px;
+    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+
+    span {
+      font-size: 16px;
+    }
+  }
+}
+
+.studio-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f0ece8;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

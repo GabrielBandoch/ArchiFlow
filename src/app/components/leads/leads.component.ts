@@ -9,6 +9,7 @@ import { NovoLeadModalComponent } from './novo-lead-modal/novo-lead-modal.compon
 import { DetalhesLeadModalComponent } from './detalhes-lead-modal/detalhes-lead-modal.component';
 import { MotivoPerdaModalComponent } from './motivo-perda-modal/motivo-perda-modal.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ConversaoLeadModalComponent } from './conversao-lead-modal/conversao-lead-modal.component';
 
 @Component({
   selector: 'app-leads',
@@ -71,6 +72,14 @@ export class LeadsComponent implements OnInit {
     if (event.dataTransfer) {
       const leadId = event.dataTransfer.getData('text/plain');
       if (leadId) {
+        const lead = this.leads.find(l => l.id === leadId);
+        if (lead && lead.status === StatusLead.Convertido) {
+          this.notificationService.warning('Leads convertidos em clientes não podem ser movidos de volta no funil.');
+          return;
+        }
+        if (lead && lead.status === targetStatus) {
+          return;
+        }
         if (targetStatus === StatusLead.Perdido) {
           const ref = this.dialogService.open(MotivoPerdaModalComponent);
           ref.instance.confirm.subscribe((motivoPerda: string) => {
@@ -176,7 +185,16 @@ export class LeadsComponent implements OnInit {
 
   converterParaCliente(lead: Lead, event: MouseEvent): void {
     event.stopPropagation();
-    this.notificationService.warning('A conversão automática de leads em clientes e a geração de credenciais do Portal do Cliente serão integradas no Módulo 2.');
+    if (!lead.nome || !lead.email || !lead.origemId) {
+      this.notificationService.error('Não é possível converter o lead. É obrigatório que Nome, E-mail e Origem estejam preenchidos.');
+      return;
+    }
+    const ref = this.dialogService.open(ConversaoLeadModalComponent, {
+      data: { lead }
+    });
+    ref.instance.convertedSuccess.subscribe(() => {
+      this.carregarLeads();
+    });
   }
 
   excluirLead(lead: Lead, event: MouseEvent): void {

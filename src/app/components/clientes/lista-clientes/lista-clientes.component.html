@@ -1,0 +1,157 @@
+<div class="clientes-page">
+  
+  <!-- Header Editorial do Estúdio -->
+  <header class="page-header">
+    <div class="header-main">
+      <h1 class="page-heading">Clientes</h1>
+      <p class="page-subheading">Carteira de clientes, dados cadastrais e acessos ao portal.</p>
+    </div>
+    
+    <div class="header-actions">
+      <app-button variant="primary" (btnClick)="irParaLeads()">
+        <span class="material-symbols-outlined icon-prefix">add</span>
+        Novo Cliente
+      </app-button>
+    </div>
+  </header>
+
+  <!-- Seção Principal -->
+  <div *ngIf="clientes.length > 0; else emptyStateCRM" class="table-container-card">
+    
+    <!-- Filtros e Busca Simplificados -->
+    <div class="table-toolbar">
+      <div class="search-field">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Buscar por nome, e-mail ou documento..." 
+          [(ngModel)]="searchQuery" 
+          (ngModelChange)="filtrarClientes()" />
+      </div>
+
+      <nav class="filter-tabs">
+        <button 
+          class="filter-tab" 
+          [class.active]="filtroStatus === 'todos'" 
+          (click)="setFiltro('todos')">
+          Todos <span>{{ totalClientes }}</span>
+        </button>
+        <button 
+          class="filter-tab" 
+          [class.active]="filtroStatus === 'ativos'" 
+          (click)="setFiltro('ativos')">
+          Portal Ativo <span>{{ totalAtivos }}</span>
+        </button>
+        <button 
+          class="filter-tab" 
+          [class.active]="filtroStatus === 'inativos'" 
+          (click)="setFiltro('inativos')">
+          Sem Portal <span>{{ totalClientes - totalAtivos }}</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Tabela Humanizada de Clientes -->
+    <div class="table-wrapper">
+      <table class="studio-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Contato</th>
+            <th class="text-center">Projetos</th>
+            <th class="text-center">Portal do Cliente</th>
+            <th class="text-right"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cliente of clientesFiltrados" (click)="verDetalhes(cliente.id)">
+            
+            <!-- Identificação -->
+            <td class="cell-client">
+              <div class="avatar-monogram">
+                <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-table-photo" [alt]="cliente.nome" />
+                <span *ngIf="!cliente.fotoUrl">{{ cliente.nome.substring(0, 2).toUpperCase() }}</span>
+              </div>
+              <div class="client-info">
+                <span class="client-name">{{ cliente.nome }}</span>
+                <span class="client-doc" *ngIf="cliente.cpfCnpj">{{ cliente.cpfCnpj }}</span>
+              </div>
+            </td>
+
+            <!-- Contatos -->
+            <td class="cell-contact">
+              <div class="contact-details">
+                <span class="contact-email">{{ cliente.email }}</span>
+                <span class="contact-phone" *ngIf="cliente.telefone">{{ cliente.telefone }}</span>
+              </div>
+            </td>
+
+            <!-- Projetos Vinculados -->
+            <td class="cell-projects text-center">
+              <span class="project-tag" [class.has-project]="(cliente.projetosAtivosCount || 0) > 0">
+                {{ (cliente.projetosAtivosCount || 0) }} {{ (cliente.projetosAtivosCount === 1) ? 'projeto' : 'projetos' }}
+              </span>
+            </td>
+
+            <!-- Status do Portal com Switch Discreto -->
+            <td class="cell-portal text-center" (click)="$event.stopPropagation()">
+              <div class="portal-switch-wrap">
+                <label class="switch-ui">
+                  <input 
+                    type="checkbox" 
+                    [checked]="cliente.ativo" 
+                    (change)="toggleAcessoPortal(cliente, $event)" 
+                    id="toggle-{{ cliente.id }}" />
+                  <span class="slider-ui"></span>
+                </label>
+                <span class="portal-label" [class.active]="cliente.ativo">
+                  {{ cliente.ativo ? 'Ativo' : 'Inativo' }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Ação de Navegação -->
+            <td class="cell-arrow text-right">
+              <span class="material-symbols-outlined nav-icon">chevron_right</span>
+            </td>
+
+          </tr>
+
+          <!-- Sem Resultados -->
+          <tr *ngIf="clientesFiltrados.length === 0">
+            <td colspan="5" class="empty-row">
+              <p>Nenhum cliente encontrado para os filtros selecionados.</p>
+              <button class="btn-clear" (click)="searchQuery = ''; setFiltro('todos')">Limpar busca</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-footer">
+      <span>{{ clientesFiltrados.length }} de {{ clientes.length }} {{ clientes.length === 1 ? 'cliente cadastrado' : 'clientes cadastrados' }}</span>
+    </div>
+
+  </div>
+
+  <!-- Estado Vazio Amigável -->
+  <ng-template #emptyStateCRM>
+    <div class="empty-state-card">
+      <div class="empty-icon-art">
+        <span class="material-symbols-outlined">person_search</span>
+      </div>
+      <h2>Nenhum cliente cadastrado ainda</h2>
+      <p>
+        No ArchiFlow, os clientes são criados quando você converte um lead aprovado no quadro comercial. 
+        Você também pode cadastrar novos leads para iniciar o atendimento.
+      </p>
+      <div class="empty-actions">
+        <app-button variant="primary" (btnClick)="irParaLeads()">
+          Ir para Quadro de Leads
+        </app-button>
+      </div>
+    </div>
+  </ng-template>
+
+</div>
