@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ViaCepService } from './via-cep.service';
+import { ViaCepResponse } from '../../models/via-cep.model';
 
 describe('ViaCepService', () => {
   let service: ViaCepService;
@@ -32,7 +33,7 @@ describe('ViaCepService', () => {
   });
 
   it('should fetch and map valid CEP', (done) => {
-    const mockViaCepResponse = {
+    const mockViaCepResponse: ViaCepResponse = {
       cep: '89010-000',
       logradouro: 'Rua XV de Novembro',
       complemento: '',
@@ -48,12 +49,12 @@ describe('ViaCepService', () => {
     service.buscarCep('89010000').subscribe((res) => {
       expect(res).toBeTruthy();
       expect(res?.logradouro).toBe('Rua XV de Novembro');
-      expect(res?.cidade).toBe('Blumenau');
+      expect(res?.localidade).toBe('Blumenau');
       expect(res?.uf).toBe('SC');
       done();
     });
 
-    const req = httpMock.expectOne('https://viacep.com.br/ws/89010000/json/');
+    const req = httpMock.expectOne('https://viacep.com.br/ws/89010000/json');
     expect(req.request.method).toBe('GET');
     req.flush(mockViaCepResponse);
   });

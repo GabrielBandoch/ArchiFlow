@@ -33,8 +33,8 @@ describe('ClienteService', () => {
         id: '1',
         nome: 'Gabriel Felipe',
         email: 'gabriel@email.com',
-        temAcessoPortal: true,
-        dataCadastro: '2026-08-14'
+        ativo: true,
+        projetosAtivosCount: 0
       }
     ];
 
@@ -53,8 +53,8 @@ describe('ClienteService', () => {
       id: '1',
       nome: 'Gabriel Felipe',
       email: 'gabriel@email.com',
-      temAcessoPortal: true,
-      dataCadastro: '2026-08-14'
+      ativo: true,
+      projetosAtivosCount: 1
     };
 
     service.obterPorId('1').subscribe((cliente) => {
@@ -78,8 +78,8 @@ describe('ClienteService', () => {
       id: '1',
       nome: 'Gabriel Atualizado',
       email: 'gabriel@email.com',
-      temAcessoPortal: true,
-      dataCadastro: '2026-08-14'
+      ativo: true,
+      projetosAtivosCount: 0
     };
 
     service.atualizar(command).subscribe((res) => {
@@ -95,14 +95,24 @@ describe('ClienteService', () => {
   it('should toggle portal access (atualizarAcessoPortal)', () => {
     const command = {
       id: '1',
-      temAcessoPortal: true
+      ativo: true
     };
 
-    service.atualizarAcessoPortal(command).subscribe();
+    const mockResponse: Cliente = {
+      id: '1',
+      nome: 'Gabriel',
+      email: 'gabriel@email.com',
+      ativo: true,
+      projetosAtivosCount: 0
+    };
+
+    service.atualizarAcessoPortal(command).subscribe((res) => {
+      expect(res.ativo).toBeTrue();
+    });
 
     const req = httpMock.expectOne(`${baseUrl}/portal-access`);
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual(command);
-    req.flush(null);
+    req.flush(mockResponse);
   });
 });
