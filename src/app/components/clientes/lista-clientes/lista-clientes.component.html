@@ -1,8 +1,8 @@
-<div class="clientes-page">
-  <header class="page-header">
+<div class="clientes-page d-flex flex-direction-column gap-lg">
+  <header class="page-header d-flex align-items-center justify-content-between flex-wrap gap-md">
     <div class="header-main">
-      <h1 class="page-heading">Clientes</h1>
-      <p class="page-subheading">Carteira de clientes, dados cadastrais e acessos ao portal.</p>
+      <h1 class="page-heading font-headline-lg m-0">Clientes</h1>
+      <p class="page-subheading font-body-md text-on-surface-variant margin-top-xs m-0">Carteira de clientes, dados cadastrais e acessos ao portal.</p>
     </div>
     
     <div class="header-actions">
@@ -13,33 +13,33 @@
     </div>
   </header>
 
-  <div *ngIf="clientes.length > 0; else emptyStateCRM" class="table-container-card">
-    <div class="table-toolbar">
-      <div class="search-field">
-        <span class="material-symbols-outlined search-icon">search</span>
+  <div *ngIf="clientes.length > 0; else emptyStateCRM" class="table-container-card d-flex flex-direction-column">
+    <div class="table-toolbar d-flex align-items-center justify-content-between flex-wrap gap-md">
+      <div class="search-field d-flex align-items-center">
+        <span class="material-symbols-outlined search-icon text-on-surface-variant">search</span>
         <input 
           type="text" 
-          class="search-input" 
+          class="search-input font-body-md" 
           placeholder="Buscar por nome, e-mail ou documento..." 
           [(ngModel)]="searchQuery" 
           (ngModelChange)="filtrarClientes()" />
       </div>
 
-      <nav class="filter-tabs">
+      <nav class="filter-tabs d-flex align-items-center gap-xs">
         <button 
-          class="filter-tab" 
+          class="filter-tab font-label-md" 
           [class.active]="filtroStatus === 'todos'" 
           (click)="setFiltro('todos')">
           Todos <span>{{ totalClientes }}</span>
         </button>
         <button 
-          class="filter-tab" 
+          class="filter-tab font-label-md" 
           [class.active]="filtroStatus === 'ativos'" 
           (click)="setFiltro('ativos')">
           Portal Ativo <span>{{ totalAtivos }}</span>
         </button>
         <button 
-          class="filter-tab" 
+          class="filter-tab font-label-md" 
           [class.active]="filtroStatus === 'inativos'" 
           (click)="setFiltro('inativos')">
           Sem Portal <span>{{ totalClientes - totalAtivos }}</span>
@@ -47,45 +47,47 @@
       </nav>
     </div>
 
-    <div class="table-wrapper">
-      <table class="studio-table">
+    <div class="table-wrapper overflow-auto">
+      <table class="studio-table w-full">
         <thead>
           <tr>
-            <th>Cliente</th>
-            <th>Contato</th>
-            <th class="text-center">Projetos</th>
-            <th class="text-center">Portal do Cliente</th>
-            <th class="text-right"></th>
+            <th class="font-label-sm">Cliente</th>
+            <th class="font-label-sm">Contato</th>
+            <th class="text-center font-label-sm">Projetos</th>
+            <th class="text-center font-label-sm">Portal do Cliente</th>
+            <th class="text-right font-label-sm"></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let cliente of clientesFiltrados" (click)="verDetalhes(cliente.id)">
             <td class="cell-client">
-              <div class="avatar-monogram">
-                <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-table-photo" [alt]="cliente.nome" />
-                <span *ngIf="!cliente.fotoUrl">{{ cliente.nome.substring(0, 2).toUpperCase() }}</span>
-              </div>
-              <div class="client-info">
-                <span class="client-name">{{ cliente.nome }}</span>
-                <span class="client-doc" *ngIf="cliente.cpfCnpj">{{ cliente.cpfCnpj }}</span>
+              <div class="d-flex align-items-center gap-md">
+                <div class="avatar-monogram d-flex align-items-center justify-content-center">
+                  <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-table-photo" [alt]="cliente.nome" />
+                  <span *ngIf="!cliente.fotoUrl" class="font-weight-bold">{{ cliente.nome.substring(0, 2).toUpperCase() }}</span>
+                </div>
+                <div class="client-info d-flex flex-direction-column">
+                  <span class="client-name font-body-md font-weight-semibold">{{ cliente.nome }}</span>
+                  <span class="client-doc font-label-sm text-on-surface-variant" *ngIf="cliente.cpfCnpj">{{ cliente.cpfCnpj }}</span>
+                </div>
               </div>
             </td>
 
             <td class="cell-contact">
-              <div class="contact-details">
-                <span class="contact-email">{{ cliente.email }}</span>
-                <span class="contact-phone" *ngIf="cliente.telefone">{{ cliente.telefone }}</span>
+              <div class="contact-details d-flex flex-direction-column">
+                <span class="contact-email font-body-md">{{ cliente.email }}</span>
+                <span class="contact-phone font-label-sm text-on-surface-variant" *ngIf="cliente.telefone">{{ cliente.telefone }}</span>
               </div>
             </td>
 
             <td class="cell-projects text-center">
-              <span class="project-tag" [class.has-project]="(cliente.projetosAtivosCount || 0) > 0">
+              <span class="project-tag font-label-sm" [class.has-project]="(cliente.projetosAtivosCount || 0) > 0">
                 {{ (cliente.projetosAtivosCount || 0) }} {{ (cliente.projetosAtivosCount === 1) ? 'projeto' : 'projetos' }}
               </span>
             </td>
 
             <td class="cell-portal text-center" (click)="$event.stopPropagation()">
-              <div class="portal-switch-wrap">
+              <div class="portal-switch-wrap d-inline-flex align-items-center gap-xs">
                 <label class="switch-ui">
                   <input 
                     type="checkbox" 
@@ -94,43 +96,43 @@
                     id="toggle-{{ cliente.id }}" />
                   <span class="slider-ui"></span>
                 </label>
-                <span class="portal-label" [class.active]="cliente.ativo">
+                <span class="portal-label font-label-sm" [class.active]="cliente.ativo">
                   {{ cliente.ativo ? 'Ativo' : 'Inativo' }}
                 </span>
               </div>
             </td>
 
             <td class="cell-arrow text-right">
-              <span class="material-symbols-outlined nav-icon">chevron_right</span>
+              <span class="material-symbols-outlined nav-icon text-on-surface-variant">chevron_right</span>
             </td>
           </tr>
 
           <tr *ngIf="clientesFiltrados.length === 0">
-            <td colspan="5" class="empty-row">
-              <p>Nenhum cliente encontrado para os filtros selecionados.</p>
-              <button class="btn-clear" (click)="searchQuery = ''; setFiltro('todos')">Limpar busca</button>
+            <td colspan="5" class="empty-row text-center padding-xl">
+              <p class="font-body-md text-on-surface-variant m-0">Nenhum cliente encontrado para os filtros selecionados.</p>
+              <button class="btn-clear font-label-md margin-top-sm" (click)="searchQuery = ''; setFiltro('todos')">Limpar busca</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="table-footer">
-      <span>{{ clientesFiltrados.length }} de {{ clientes.length }} {{ clientes.length === 1 ? 'cliente cadastrado' : 'clientes cadastrados' }}</span>
+    <div class="table-footer d-flex align-items-center justify-content-between">
+      <span class="font-label-sm text-on-surface-variant">{{ clientesFiltrados.length }} de {{ clientes.length }} {{ clientes.length === 1 ? 'cliente cadastrado' : 'clientes cadastrados' }}</span>
     </div>
   </div>
 
   <ng-template #emptyStateCRM>
-    <div class="empty-state-card">
-      <div class="empty-icon-art">
+    <div class="empty-state-card d-flex flex-direction-column align-items-center justify-content-center text-center">
+      <div class="empty-icon-art d-flex align-items-center justify-content-center">
         <span class="material-symbols-outlined">person_search</span>
       </div>
-      <h2>Nenhum cliente cadastrado ainda</h2>
-      <p>
+      <h2 class="font-headline-md margin-top-md m-0">Nenhum cliente cadastrado ainda</h2>
+      <p class="font-body-md text-on-surface-variant margin-top-sm m-0">
         No ArchiFlow, os clientes são criados quando você converte um lead aprovado no quadro comercial. 
         Você também pode cadastrar novos leads para iniciar o atendimento.
       </p>
-      <div class="empty-actions">
+      <div class="empty-actions margin-top-lg">
         <app-button variant="primary" (btnClick)="irParaLeads()">
           Ir para Quadro de Leads
         </app-button>

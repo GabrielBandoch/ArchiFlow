@@ -67,6 +67,16 @@
         margin: 0 0 var(--af-space-sm) 0;
       }
 
+      &.success-box {
+        border-color: #a5d6a7;
+        background-color: #f1f8e9;
+        
+        .convert-text {
+          color: #2e7d32;
+          font-weight: 600;
+        }
+      }
+
       app-button {
         display: inline-block;
         width: 100%;
