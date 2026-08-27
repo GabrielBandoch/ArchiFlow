@@ -1,142 +1,246 @@
-<div class="clientes-page d-flex flex-direction-column gap-lg">
-  <header class="page-header d-flex align-items-center justify-content-between flex-wrap gap-md">
-    <div class="header-main">
-      <h1 class="page-heading font-headline-lg m-0">Clientes</h1>
-      <p class="page-subheading font-body-md text-on-surface-variant margin-top-xs m-0">Carteira de clientes, dados cadastrais e acessos ao portal.</p>
+<div class="clientes-page-container d-flex flex-direction-column gap-lg">
+  
+  <header class="page-header d-flex justify-content-between align-items-end flex-wrap gap-md">
+    <div class="header-titles d-flex flex-direction-column gap-xs">
+      <h1 class="page-title font-headline-lg m-0">Diretório de Clientes</h1>
+      <p class="page-subtitle font-body-md text-on-surface-variant m-0">Gerencie o portfólio de clientes do estúdio, dados cadastrais e credenciais do Portal do Cliente.</p>
     </div>
     
     <div class="header-actions">
       <app-button variant="primary" (btnClick)="irParaLeads()">
-        <span class="material-symbols-outlined icon-prefix">add</span>
-        Novo Cliente
+        <span class="material-symbols-outlined icon-left">person_add</span>
+        Novo Cliente (via Lead)
       </app-button>
     </div>
   </header>
 
-  <div *ngIf="clientes.length > 0; else emptyStateCRM" class="table-container-card d-flex flex-direction-column">
-    <div class="table-toolbar d-flex align-items-center justify-content-between flex-wrap gap-md">
-      <div class="search-field d-flex align-items-center">
-        <span class="material-symbols-outlined search-icon text-on-surface-variant">search</span>
+  <section class="kpi-grid" *ngIf="clientes.length > 0">
+    <div class="kpi-card d-flex align-items-center gap-md">
+      <div class="kpi-icon-box d-flex align-items-center justify-content-center flex-shrink-0">
+        <span class="material-symbols-outlined">group</span>
+      </div>
+      <div class="kpi-content d-flex flex-direction-column">
+        <span class="kpi-label font-label-sm text-on-surface-variant">Total de Clientes</span>
+        <div class="kpi-val-row d-flex align-items-center gap-xs">
+          <span class="kpi-value font-headline-md font-weight-bold">{{ totalClientes }}</span>
+          <span class="kpi-badge primary font-label-sm">Cadastrados</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-card d-flex align-items-center gap-md">
+      <div class="kpi-icon-box active-portal d-flex align-items-center justify-content-center flex-shrink-0">
+        <span class="material-symbols-outlined">key</span>
+      </div>
+      <div class="kpi-content d-flex flex-direction-column">
+        <span class="kpi-label font-label-sm text-on-surface-variant">Portal do Cliente</span>
+        <div class="kpi-val-row d-flex align-items-center gap-xs">
+          <span class="kpi-value font-headline-md font-weight-bold">{{ totalAtivos }}</span>
+          <span class="kpi-badge success font-label-sm">Acesso Ativo</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-card d-flex align-items-center gap-md">
+      <div class="kpi-icon-box projects d-flex align-items-center justify-content-center flex-shrink-0">
+        <span class="material-symbols-outlined">architecture</span>
+      </div>
+      <div class="kpi-content d-flex flex-direction-column">
+        <span class="kpi-label font-label-sm text-on-surface-variant">Projetos Vinculados</span>
+        <div class="kpi-val-row d-flex align-items-center gap-xs">
+          <span class="kpi-value font-headline-md font-weight-bold">{{ totalProjetos }}</span>
+          <span class="kpi-badge neutral font-label-sm">Em Andamento</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="clientes.length > 0; else emptyStateCRM" class="content-section d-flex flex-direction-column gap-md">
+    
+    <div class="toolbar-card d-flex align-items-center justify-content-between flex-wrap gap-md">
+      <div class="search-box position-relative d-flex align-items-center">
+        <span class="material-symbols-outlined search-icon">search</span>
         <input 
           type="text" 
           class="search-input font-body-md" 
-          placeholder="Buscar por nome, e-mail ou documento..." 
+          placeholder="Buscar por nome, e-mail, CPF/CNPJ..." 
           [(ngModel)]="searchQuery" 
           (ngModelChange)="filtrarClientes()" />
       </div>
 
-      <nav class="filter-tabs d-flex align-items-center gap-xs">
+      <div class="filter-chips d-flex align-items-center gap-xs">
         <button 
-          class="filter-tab font-label-md" 
+          class="chip-btn font-label-sm" 
           [class.active]="filtroStatus === 'todos'" 
           (click)="setFiltro('todos')">
-          Todos <span>{{ totalClientes }}</span>
+          Todos ({{ totalClientes }})
         </button>
         <button 
-          class="filter-tab font-label-md" 
+          class="chip-btn font-label-sm" 
           [class.active]="filtroStatus === 'ativos'" 
           (click)="setFiltro('ativos')">
-          Portal Ativo <span>{{ totalAtivos }}</span>
+          Portal Ativo ({{ totalAtivos }})
         </button>
         <button 
-          class="filter-tab font-label-md" 
+          class="chip-btn font-label-sm" 
           [class.active]="filtroStatus === 'inativos'" 
           (click)="setFiltro('inativos')">
-          Sem Portal <span>{{ totalClientes - totalAtivos }}</span>
+          Portal Inativo ({{ totalClientes - totalAtivos }})
         </button>
-      </nav>
+      </div>
     </div>
 
-    <div class="table-wrapper overflow-auto">
-      <table class="studio-table w-full">
-        <thead>
-          <tr>
-            <th class="font-label-sm">Cliente</th>
-            <th class="font-label-sm">Contato</th>
-            <th class="text-center font-label-sm">Projetos</th>
-            <th class="text-center font-label-sm">Portal do Cliente</th>
-            <th class="text-right font-label-sm"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let cliente of clientesFiltrados" (click)="verDetalhes(cliente.id)">
-            <td class="cell-client">
-              <div class="d-flex align-items-center gap-md">
-                <div class="avatar-monogram d-flex align-items-center justify-content-center">
-                  <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-table-photo" [alt]="cliente.nome" />
-                  <span *ngIf="!cliente.fotoUrl" class="font-weight-bold">{{ cliente.nome.substring(0, 2).toUpperCase() }}</span>
+    <div class="table-card w-full">
+      <div class="table-responsive w-full">
+        <table class="crm-table w-full">
+          <thead>
+            <tr>
+              <th class="th-client font-label-sm text-on-surface-variant">Cliente / Identificação</th>
+              <th class="th-contact font-label-sm text-on-surface-variant">Canais de Contato</th>
+              <th class="th-projects text-center font-label-sm text-on-surface-variant">Projetos</th>
+              <th class="th-portal text-right font-label-sm text-on-surface-variant">Acesso ao Portal</th>
+              <th class="th-actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cliente of clientesFiltrados" class="table-row" (click)="verDetalhes(cliente.id)">
+              
+              <td class="td-client">
+                <div class="client-cell d-flex align-items-center gap-sm">
+                  <div class="client-avatar d-flex align-items-center justify-content-center flex-shrink-0 font-label-md font-weight-bold">
+                    <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="client-avatar-photo" alt="Avatar" />
+                    <span *ngIf="!cliente.fotoUrl">{{ cliente.nome.substring(0, 2).toUpperCase() }}</span>
+                  </div>
+                  <div class="client-meta d-flex flex-direction-column">
+                    <span class="client-name font-body-md font-weight-semibold">{{ cliente.nome }}</span>
+                    <span class="client-sub font-label-sm text-on-surface-variant" *ngIf="cliente.cpfCnpj">{{ cliente.cpfCnpj }}</span>
+                    <span class="client-sub placeholder font-label-sm text-on-surface-variant" *ngIf="!cliente.cpfCnpj">Pessoa Física / Jurídica</span>
+                  </div>
                 </div>
-                <div class="client-info d-flex flex-direction-column">
-                  <span class="client-name font-body-md font-weight-semibold">{{ cliente.nome }}</span>
-                  <span class="client-doc font-label-sm text-on-surface-variant" *ngIf="cliente.cpfCnpj">{{ cliente.cpfCnpj }}</span>
+              </td>
+
+              <td class="td-contact">
+                <div class="contact-stack d-flex flex-direction-column gap-xs">
+                  <div class="contact-line email d-inline-flex align-items-center gap-xs font-label-md">
+                    <span class="material-symbols-outlined icon">mail</span>
+                    <span>{{ cliente.email }}</span>
+                  </div>
+                  <div class="contact-line phone d-inline-flex align-items-center gap-xs font-label-md" *ngIf="cliente.telefone">
+                    <span class="material-symbols-outlined icon">call</span>
+                    <span>{{ cliente.telefone }}</span>
+                  </div>
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <td class="cell-contact">
-              <div class="contact-details d-flex flex-direction-column">
-                <span class="contact-email font-body-md">{{ cliente.email }}</span>
-                <span class="contact-phone font-label-sm text-on-surface-variant" *ngIf="cliente.telefone">{{ cliente.telefone }}</span>
-              </div>
-            </td>
-
-            <td class="cell-projects text-center">
-              <span class="project-tag font-label-sm" [class.has-project]="(cliente.projetosAtivosCount || 0) > 0">
-                {{ (cliente.projetosAtivosCount || 0) }} {{ (cliente.projetosAtivosCount === 1) ? 'projeto' : 'projetos' }}
-              </span>
-            </td>
-
-            <td class="cell-portal text-center" (click)="$event.stopPropagation()">
-              <div class="portal-switch-wrap d-inline-flex align-items-center gap-xs">
-                <label class="switch-ui">
-                  <input 
-                    type="checkbox" 
-                    [checked]="cliente.ativo" 
-                    (change)="toggleAcessoPortal(cliente, $event)" 
-                    id="toggle-{{ cliente.id }}" />
-                  <span class="slider-ui"></span>
-                </label>
-                <span class="portal-label font-label-sm" [class.active]="cliente.ativo">
-                  {{ cliente.ativo ? 'Ativo' : 'Inativo' }}
+              <td class="td-projects text-center">
+                <span class="project-pill d-inline-flex align-items-center gap-xs font-label-sm" [class.has-projects]="cliente.projetosAtivosCount > 0">
+                  <span class="material-symbols-outlined icon">folder_open</span>
+                  {{ cliente.projetosAtivosCount }} {{ cliente.projetosAtivosCount === 1 ? 'projeto' : 'projetos' }}
                 </span>
-              </div>
-            </td>
+              </td>
 
-            <td class="cell-arrow text-right">
-              <span class="material-symbols-outlined nav-icon text-on-surface-variant">chevron_right</span>
-            </td>
-          </tr>
+              <td class="td-portal" (click)="$event.stopPropagation()">
+                <div class="portal-control d-flex align-items-center justify-content-end gap-sm">
+                  <span class="portal-status-label d-inline-flex align-items-center gap-xs font-label-sm" [class.active]="cliente.ativo">
+                    <span class="dot"></span>
+                    {{ cliente.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                  
+                  <div class="switch-toggle position-relative">
+                    <input 
+                      type="checkbox" 
+                      [checked]="cliente.ativo" 
+                      (change)="toggleAcessoPortal(cliente, $event)" 
+                      id="toggle-{{ cliente.id }}" />
+                    <label for="toggle-{{ cliente.id }}" class="switch-slider"></label>
+                  </div>
+                </div>
+              </td>
 
-          <tr *ngIf="clientesFiltrados.length === 0">
-            <td colspan="5" class="empty-row text-center padding-xl">
-              <p class="font-body-md text-on-surface-variant m-0">Nenhum cliente encontrado para os filtros selecionados.</p>
-              <button class="btn-clear font-label-md margin-top-sm" (click)="searchQuery = ''; setFiltro('todos')">Limpar busca</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+              <td class="td-actions text-right" (click)="$event.stopPropagation()">
+                <button type="button" class="row-action-btn d-inline-flex align-items-center justify-content-center" (click)="verDetalhes(cliente.id)" title="Ver ficha completa do cliente">
+                  <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+              </td>
 
-    <div class="table-footer d-flex align-items-center justify-content-between">
-      <span class="font-label-sm text-on-surface-variant">{{ clientesFiltrados.length }} de {{ clientes.length }} {{ clientes.length === 1 ? 'cliente cadastrado' : 'clientes cadastrados' }}</span>
+            </tr>
+
+            <tr *ngIf="clientesFiltrados.length === 0">
+              <td colspan="5" class="empty-search-cell">
+                <div class="empty-search-box d-flex flex-direction-column align-items-center justify-content-center text-center padding-xl">
+                  <span class="material-symbols-outlined">search_off</span>
+                  <h3 class="font-headline-md margin-top-xs m-0">Nenhum cliente encontrado</h3>
+                  <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Não encontramos clientes com os termos informados. Verifique os filtros aplicados.</p>
+                  <button type="button" class="btn-clear-filter font-label-md margin-top-sm" (click)="searchQuery = ''; setFiltro('todos')">Limpar Filtros</button>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer d-flex align-items-center justify-content-between padding-sm">
+        <span class="footer-count font-label-sm text-on-surface-variant">Exibindo <strong>{{ clientesFiltrados.length }}</strong> de <strong>{{ clientes.length }}</strong> clientes cadastrados</span>
+      </div>
+
     </div>
   </div>
 
-  <ng-template #emptyStateCRM>
-    <div class="empty-state-card d-flex flex-direction-column align-items-center justify-content-center text-center">
-      <div class="empty-icon-art d-flex align-items-center justify-content-center">
-        <span class="material-symbols-outlined">person_search</span>
+</div>
+
+<ng-template #emptyStateCRM>
+  <div class="onboarding-panel d-flex flex-direction-column align-items-center text-center padding-xl">
+    <div class="onboarding-header d-flex flex-direction-column align-items-center gap-xs">
+      <div class="onboarding-icon-circle d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">hub</span>
       </div>
-      <h2 class="font-headline-md margin-top-md m-0">Nenhum cliente cadastrado ainda</h2>
-      <p class="font-body-md text-on-surface-variant margin-top-sm m-0">
-        No ArchiFlow, os clientes são criados quando você converte um lead aprovado no quadro comercial. 
-        Você também pode cadastrar novos leads para iniciar o atendimento.
+      <h2 class="onboarding-title font-headline-lg m-0">Diretório de Clientes Vazio</h2>
+      <p class="onboarding-subtitle font-body-md text-on-surface-variant margin-top-xs m-0">
+        No ArchiFlow, os clientes nascem do seu funil comercial de leads. Quando um lead aprova o orçamento, converta-o para gerar o cliente e o acesso ao Portal automaticamente.
       </p>
-      <div class="empty-actions margin-top-lg">
-        <app-button variant="primary" (btnClick)="irParaLeads()">
-          Ir para Quadro de Leads
-        </app-button>
+    </div>
+
+    <div class="journey-grid margin-top-lg w-full">
+      <div class="journey-card d-flex flex-direction-column gap-xs position-relative">
+        <div class="journey-step-num font-label-sm font-weight-bold">1</div>
+        <div class="journey-icon-box d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">person_search</span>
+        </div>
+        <h4 class="journey-step-title font-body-lg font-weight-bold m-0">Capturar Lead</h4>
+        <p class="journey-step-desc font-body-md text-on-surface-variant m-0">
+          Cadastre contatos no quadro comercial. Registre interações, propostas e histórico de conversas.
+        </p>
+      </div>
+
+      <div class="journey-card d-flex flex-direction-column gap-xs position-relative">
+        <div class="journey-step-num font-label-sm font-weight-bold">2</div>
+        <div class="journey-icon-box d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">handshake</span>
+        </div>
+        <h4 class="journey-step-title font-body-lg font-weight-bold m-0">Fechar Proposta</h4>
+        <p class="journey-step-desc font-body-md text-on-surface-variant m-0">
+          Avance o lead pelas etapas de negociação até a aprovação da proposta de honorários.
+        </p>
+      </div>
+
+      <div class="journey-card highlight d-flex flex-direction-column gap-xs position-relative">
+        <div class="journey-step-num font-label-sm font-weight-bold">3</div>
+        <div class="journey-icon-box d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">key</span>
+        </div>
+        <h4 class="journey-step-title font-body-lg font-weight-bold m-0">Converter & Acesso</h4>
+        <p class="journey-step-desc font-body-md text-on-surface-variant m-0">
+          Ao converter o lead, o sistema cria o cliente e envia as credenciais do Portal do Cliente por e-mail.
+        </p>
       </div>
     </div>
-  </ng-template>
-</div>
+
+    <div class="onboarding-cta margin-top-lg">
+      <app-button variant="primary" (btnClick)="irParaLeads()">
+        <span class="material-symbols-outlined icon-left">arrow_forward</span>
+        Acessar Painel de Leads
+      </app-button>
+    </div>
+  </div>
+</ng-template>

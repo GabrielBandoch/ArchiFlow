@@ -1,11 +1,25 @@
-<div class="card" [ngClass]="{'card-hover': hoverable}">
+<div 
+  [ngClass]="[
+    'card', 
+    'card-' + variant, 
+    'card-pad-' + padding, 
+    hoverable ? 'card-hover' : '',
+    customClass
+  ]">
   <div *ngIf="cardTitle" class="card-header">
-    <h3 class="card-title">{{ cardTitle }}</h3>
-    <span *ngIf="cardSubtitle" class="card-subtitle">{{ cardSubtitle }}</span>
+    <div class="card-header-titles">
+      <h3 class="card-title">{{ cardTitle }}</h3>
+      <span *ngIf="cardSubtitle" class="card-subtitle">{{ cardSubtitle }}</span>
+    </div>
+    <div class="card-header-actions">
+      <ng-content select="[card-actions]"></ng-content>
+    </div>
   </div>
+
   <div class="card-content">
     <ng-content></ng-content>
   </div>
+
   <div *ngIf="hasFooter" class="card-footer">
     <ng-content select="[card-footer]"></ng-content>
   </div>

@@ -11,6 +11,9 @@ import { CommonModule } from '@angular/common';
 export class CardComponent {
   @Input() cardTitle?: string;
   @Input() cardSubtitle?: string;
+  @Input() variant: 'elevated' | 'outlined' | 'flat' = 'outlined';
+  @Input() padding: 'none' | 'sm' | 'md' | 'lg' = 'md';
   @Input() hoverable = false;
   @Input() hasFooter = false;
+  @Input() customClass = '';
 }

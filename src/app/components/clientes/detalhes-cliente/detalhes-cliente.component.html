@@ -1,17 +1,18 @@
-<div class="dossier-page" *ngIf="cliente && !loading">
+<div class="dossier-page d-flex flex-direction-column gap-lg" *ngIf="cliente && !loading">
+  
   <nav class="dossier-nav">
-    <button class="nav-back-btn d-inline-flex align-items-center gap-xs" (click)="voltar()">
+    <button type="button" class="nav-back-btn d-inline-flex align-items-center gap-xs font-label-md" (click)="voltar()">
       <span class="material-symbols-outlined">west</span>
-      <span class="font-label-md">Voltar para Clientes</span>
+      <span>Voltar para Clientes</span>
     </button>
   </nav>
 
-  <section class="profile-unified-card">
-    <div class="profile-top-row d-flex justify-content-between align-items-center flex-wrap gap-lg">
-      <div class="profile-identity d-flex align-items-center gap-lg">
+  <section class="profile-unified-card d-flex flex-direction-column gap-md">
+    <div class="profile-top-row d-flex align-items-center justify-content-between flex-wrap gap-md">
+      <div class="profile-identity d-flex align-items-center gap-md">
         <div class="profile-avatar-wrap position-relative" (click)="fileInput.click()" title="Clique para alterar foto de perfil">
           <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-photo" [alt]="cliente.nome" />
-          <div *ngIf="!cliente.fotoUrl" class="profile-avatar d-flex align-items-center justify-content-center">
+          <div *ngIf="!cliente.fotoUrl" class="profile-avatar d-flex align-items-center justify-content-center font-headline-md font-weight-bold">
             {{ cliente.nome.substring(0, 2).toUpperCase() }}
           </div>
           <div class="avatar-overlay position-absolute d-flex align-items-center justify-content-center">
@@ -20,16 +21,16 @@
           <input type="file" #fileInput (change)="onAvatarSelected($event)" accept="image/*" class="d-none" />
         </div>
         
-        <div class="profile-titles">
+        <div class="profile-titles d-flex flex-direction-column gap-xs">
           <div class="name-badge-row d-flex align-items-center gap-sm">
-            <h1 class="client-fullname font-headline-md m-0">{{ cliente.nome }}</h1>
+            <h1 class="client-fullname font-headline-lg m-0">{{ cliente.nome }}</h1>
             <span class="portal-badge font-label-sm" [class.active]="cliente.ativo">
               {{ cliente.ativo ? 'Portal Liberado' : 'Portal Suspenso' }}
             </span>
           </div>
-          <div class="avatar-actions-sub d-flex align-items-center gap-sm margin-top-xs">
-            <span class="client-since font-body-md text-on-surface-variant">Cliente do escritório desde 2026</span>
-            <button *ngIf="cliente.fotoUrl" class="btn-remove-photo font-label-sm" (click)="removerFoto()">
+          <div class="avatar-actions-sub d-flex align-items-center gap-sm font-label-sm text-on-surface-variant">
+            <span class="client-since">Cliente do escritório desde 2026</span>
+            <button *ngIf="cliente.fotoUrl" type="button" class="btn-remove-photo font-label-sm" (click)="removerFoto()">
               Remover foto
             </button>
           </div>
@@ -55,46 +56,46 @@
     <div class="profile-divider"></div>
 
     <div class="profile-details-grid">
-      <div class="detail-block">
-        <span class="detail-label font-label-sm text-on-surface-variant">E-mail Principal</span>
-        <a class="detail-value link d-flex align-items-center gap-xs font-body-md" [href]="'mailto:' + cliente.email">
+      <div class="detail-block d-flex flex-direction-column gap-xs">
+        <span class="detail-label font-label-sm text-on-surface-variant font-weight-semibold">E-mail Principal</span>
+        <a class="detail-value link d-inline-flex align-items-center gap-xs font-body-md" [href]="'mailto:' + cliente.email">
           <span class="material-symbols-outlined icon">mail</span>
           <span>{{ cliente.email }}</span>
         </a>
       </div>
 
-      <div class="detail-block">
-        <span class="detail-label font-label-sm text-on-surface-variant">Telefone / WhatsApp</span>
-        <div class="detail-value font-body-md" *ngIf="cliente.telefone">
-          <a class="link whatsapp d-flex align-items-center gap-xs" (click)="abrirWhatsApp()" title="Conversar no WhatsApp">
+      <div class="detail-block d-flex flex-direction-column gap-xs">
+        <span class="detail-label font-label-sm text-on-surface-variant font-weight-semibold">Telefone / WhatsApp</span>
+        <div class="detail-value" *ngIf="cliente.telefone">
+          <a class="link whatsapp d-inline-flex align-items-center gap-xs font-body-md" (click)="abrirWhatsApp()" title="Conversar no WhatsApp">
             <span class="material-symbols-outlined icon">chat</span>
             <span>{{ cliente.telefone }}</span>
           </a>
         </div>
-        <span class="detail-value text-muted font-body-md" *ngIf="!cliente.telefone">Não informado</span>
+        <span class="detail-value text-muted font-body-md text-on-surface-variant" *ngIf="!cliente.telefone">Não informado</span>
       </div>
 
-      <div class="detail-block">
-        <span class="detail-label font-label-sm text-on-surface-variant">Documento (CPF / CNPJ)</span>
+      <div class="detail-block d-flex flex-direction-column gap-xs">
+        <span class="detail-label font-label-sm text-on-surface-variant font-weight-semibold">Documento (CPF / CNPJ)</span>
         <div class="detail-value-wrap d-flex align-items-center gap-xs" *ngIf="cliente.cpfCnpj">
-          <span class="detail-value font-body-md font-medium">{{ cliente.cpfCnpj }}</span>
-          <button class="btn-copy-mini" (click)="copiarTexto(cliente.cpfCnpj, 'Documento')" title="Copiar documento">
+          <span class="detail-value font-medium font-body-md text-on-surface">{{ cliente.cpfCnpj }}</span>
+          <button type="button" class="btn-copy-mini d-inline-flex align-items-center justify-content-center" (click)="copiarTexto(cliente.cpfCnpj, 'Documento')" title="Copiar documento">
             <span class="material-symbols-outlined">content_copy</span>
           </button>
         </div>
-        <span class="detail-value text-muted font-body-md" *ngIf="!cliente.cpfCnpj">Não informado</span>
+        <span class="detail-value text-muted font-body-md text-on-surface-variant" *ngIf="!cliente.cpfCnpj">Não informado</span>
       </div>
 
-      <div class="detail-block span-all">
-        <span class="detail-label font-label-sm text-on-surface-variant">Endereço do Imóvel / Obra</span>
+      <div class="detail-block span-all d-flex flex-direction-column gap-xs">
+        <span class="detail-label font-label-sm text-on-surface-variant font-weight-semibold">Endereço do Imóvel / Obra</span>
         <div class="detail-value-wrap d-flex align-items-center gap-xs" *ngIf="cliente.endereco">
-          <span class="material-symbols-outlined icon-loc text-primary">location_on</span>
-          <span class="detail-value address-text font-body-md">{{ cliente.endereco }}</span>
-          <button class="btn-copy-mini" (click)="copiarTexto(cliente.endereco, 'Endereço')" title="Copiar endereço">
+          <span class="material-symbols-outlined icon-loc">location_on</span>
+          <span class="detail-value address-text font-body-md text-on-surface">{{ cliente.endereco }}</span>
+          <button type="button" class="btn-copy-mini d-inline-flex align-items-center justify-content-center" (click)="copiarTexto(cliente.endereco, 'Endereço')" title="Copiar endereço">
             <span class="material-symbols-outlined">content_copy</span>
           </button>
         </div>
-        <span class="detail-value text-muted font-body-md" *ngIf="!cliente.endereco">Endereço não cadastrado</span>
+        <span class="detail-value text-muted font-body-md text-on-surface-variant" *ngIf="!cliente.endereco">Endereço não cadastrado</span>
       </div>
     </div>
   </section>
@@ -102,71 +103,72 @@
   <div class="bottom-dual-grid">
     <section class="studio-panel d-flex flex-direction-column">
       <div class="panel-header d-flex align-items-center justify-content-between">
-        <div class="title-with-pill d-flex align-items-center gap-sm">
+        <div class="title-with-pill d-flex align-items-center gap-xs">
           <h2 class="font-headline-md m-0">Projetos Vinculados</h2>
           <span class="count-pill font-label-sm">{{ projetos.length }}</span>
         </div>
       </div>
 
-      <div class="panel-content flex-grow-1 overflow-y-auto">
+      <div class="panel-content flex-grow-1">
         <div class="projects-list d-flex flex-direction-column gap-sm" *ngIf="projetos.length > 0">
-          <div *ngFor="let proj of projetos" class="project-card-clean">
-            <div class="proj-top d-flex align-items-center justify-content-between">
+          <div *ngFor="let proj of projetos" class="project-card-clean d-flex flex-direction-column gap-xs clickable-project" (click)="abrirProjeto(proj.id)" title="Clique para abrir o projeto">
+            <div class="proj-top d-flex justify-content-between align-items-center">
               <div>
-                <h4 class="proj-name font-body-md font-weight-semibold m-0">{{ proj.nome }}</h4>
+                <h4 class="proj-name font-body-md font-weight-bold m-0">{{ proj.nome }}</h4>
                 <span class="proj-status font-label-sm text-on-surface-variant">{{ proj.statusLabel || 'Em Andamento' }}</span>
               </div>
-              <span class="proj-percent font-label-sm">{{ proj.progressoPercentual || 0 }}%</span>
+              <span class="proj-percent font-label-md font-weight-bold text-primary">{{ proj.progressoPercentual || 0 }}%</span>
             </div>
             
-            <div class="proj-progress-bg margin-top-xs">
+            <div class="proj-progress-bg w-full">
               <div class="proj-progress-bar" [style.width.%]="proj.progressoPercentual || 0"></div>
             </div>
           </div>
         </div>
 
-        <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center p-0" *ngIf="projetos.length === 0">
+        <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center padding-lg" *ngIf="projetos.length === 0">
           <span class="material-symbols-outlined empty-icon text-on-surface-variant">folder_open</span>
-          <p class="font-body-md text-on-surface-variant margin-top-xs">Nenhum projeto vinculado a este cliente no momento.</p>
+          <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Nenhum projeto vinculado a este cliente no momento.</p>
         </div>
       </div>
     </section>
 
     <section class="studio-panel d-flex flex-direction-column">
       <div class="panel-header d-flex align-items-center justify-content-between">
-        <div class="title-with-pill d-flex align-items-center gap-sm">
+        <div class="title-with-pill d-flex align-items-center gap-xs">
           <h2 class="font-headline-md m-0">Histórico de Interações</h2>
           <span class="count-pill font-label-sm">{{ historico.length }}</span>
         </div>
       </div>
 
-      <div class="panel-content flex-grow-1 overflow-y-auto">
+      <div class="panel-content flex-grow-1">
         <div class="timeline-list d-flex flex-direction-column gap-md" *ngIf="historico.length > 0">
           <div *ngFor="let item of historico" class="timeline-item-clean d-flex gap-sm">
-            <div class="timeline-bullet-col">
+            <div class="timeline-bullet-col d-flex flex-direction-column align-items-center">
               <div class="bullet-dot"></div>
             </div>
             
-            <div class="timeline-bubble flex-grow-1">
-              <div class="bubble-header d-flex align-items-center justify-content-between margin-bottom-xs">
-                <span class="channel-tag font-label-sm">{{ item.canal }}</span>
+            <div class="timeline-bubble d-flex flex-direction-column gap-xs flex-grow-1">
+              <div class="bubble-header d-flex justify-content-between align-items-center">
+                <span class="channel-tag font-label-sm font-weight-bold text-primary">{{ item.canal }}</span>
                 <span class="timestamp font-label-sm text-on-surface-variant">{{ item.dataContato | date:"dd/MM/yyyy 'às' HH:mm" }}</span>
               </div>
-              <p class="bubble-text font-body-md m-0">{{ item.resumo }}</p>
+              <p class="bubble-text font-body-md text-on-surface m-0">{{ item.resumo }}</p>
             </div>
           </div>
         </div>
 
-        <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center p-0" *ngIf="historico.length === 0">
+        <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center padding-lg" *ngIf="historico.length === 0">
           <span class="material-symbols-outlined empty-icon text-on-surface-variant">chat_bubble_outline</span>
-          <p class="font-body-md text-on-surface-variant margin-top-xs">Nenhuma anotação ou contato registrado ainda.</p>
+          <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Nenhuma anotação ou contato registrado ainda.</p>
         </div>
       </div>
     </section>
   </div>
+
 </div>
 
-<div *ngIf="loading" class="dossier-loading d-flex flex-direction-column align-items-center justify-content-center">
+<div *ngIf="loading" class="dossier-loading d-flex flex-direction-column align-items-center justify-content-center padding-xl">
   <div class="studio-spinner"></div>
-  <p class="font-body-md text-on-surface-variant margin-top-sm">Carregando ficha do cliente...</p>
+  <p class="font-body-md text-on-surface-variant margin-top-sm m-0">Carregando ficha do cliente...</p>
 </div>

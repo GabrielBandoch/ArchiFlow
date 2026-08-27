@@ -24,6 +24,10 @@ export const appRoutes: Routes = [
       {
         path: '',
         loadComponent: () => import('./components/projetos/lista-projetos/lista-projetos.component').then(m => m.ListaProjetosComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./components/projetos/detalhes-projeto/detalhes-projeto.component').then(m => m.DetalhesProjetoComponent)
       }
     ]
   },

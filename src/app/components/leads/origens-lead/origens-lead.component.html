@@ -64,12 +64,12 @@
                         [error]="editSubmitted && ef['descricao'].errors ? 'O nome é obrigatório (máx. 100).' : undefined"
                         class="flex-grow-1">
                       </app-input>
-                      <button type="submit" class="btn-action-icon btn-confirm" title="Salvar">
-                        <span class="material-symbols-outlined">check</span>
-                      </button>
-                      <button type="button" class="btn-action-icon btn-cancel" (click)="cancelarEdicao()" title="Cancelar">
+                      <app-button type="submit" variant="icon" size="sm" title="Salvar">
+                        <span class="material-symbols-outlined text-primary">check</span>
+                      </app-button>
+                      <app-button type="button" variant="icon" size="sm" (btnClick)="cancelarEdicao()" title="Cancelar">
                         <span class="material-symbols-outlined">close</span>
-                      </button>
+                      </app-button>
                     </form>
                   </ng-template>
                 </td>
@@ -84,15 +84,15 @@
 
                 <td class="text-right">
                   <div class="d-flex justify-content-end gap-xs" *ngIf="editingOrigemId !== o.id">
-                    <button class="btn-action-icon" (click)="iniciarEdicao(o)" title="Editar" [disabled]="!o.ativo">
+                    <app-button variant="icon" size="sm" (btnClick)="iniciarEdicao(o)" title="Editar" [disabled]="!o.ativo">
                       <span class="material-symbols-outlined">edit</span>
-                    </button>
-                    <button class="btn-action-icon btn-delete" (click)="desativarOrigem(o)" title="Desativar" *ngIf="o.ativo">
-                      <span class="material-symbols-outlined">block</span>
-                    </button>
-                    <button class="btn-action-icon btn-confirm" (click)="reativarOrigem(o)" title="Reativar" *ngIf="!o.ativo">
-                      <span class="material-symbols-outlined">check_circle</span>
-                    </button>
+                    </app-button>
+                    <app-button variant="icon" size="sm" (btnClick)="desativarOrigem(o)" title="Desativar" *ngIf="o.ativo">
+                      <span class="material-symbols-outlined text-error">block</span>
+                    </app-button>
+                    <app-button variant="icon" size="sm" (btnClick)="reativarOrigem(o)" title="Reativar" *ngIf="!o.ativo">
+                      <span class="material-symbols-outlined text-success">check_circle</span>
+                    </app-button>
                   </div>
                 </td>
 

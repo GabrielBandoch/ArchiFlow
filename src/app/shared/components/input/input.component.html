@@ -1,17 +1,45 @@
-<div class="input-group">
-  <label *ngIf="label" [for]="id" class="input-label">{{ label }}</label>
-  <div class="input-wrapper" [ngClass]="{'has-icon': icon, 'has-error': error}">
+<div class="input-group" [ngClass]="customClass">
+  <label *ngIf="label" [for]="id" class="input-label">
+    {{ label }} <span class="text-error" *ngIf="required">*</span>
+  </label>
+
+  <div class="input-wrapper" [ngClass]="{'has-icon': icon, 'has-error': error, 'is-checkbox': type === 'checkbox', 'is-textarea': type === 'textarea'}">
     <span *ngIf="icon" class="material-symbols-outlined input-icon">{{ icon }}</span>
+    
+    <textarea 
+      *ngIf="type === 'textarea'"
+      [id]="id"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [value]="value"
+      [required]="required"
+      [rows]="rows"
+      [attr.maxlength]="maxlength || null"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      class="form-input form-textarea">
+    </textarea>
+
     <input 
+      *ngIf="type !== 'textarea'"
       [id]="id" 
       [type]="type" 
       [placeholder]="placeholder" 
       [disabled]="disabled"
-      [value]="value"
+      [value]="type === 'checkbox' ? undefined : value"
+      [checked]="type === 'checkbox' ? value : undefined"
       [required]="required"
+      [attr.accept]="accept || null"
+      [attr.maxlength]="maxlength || null"
+      [attr.min]="min || null"
+      [attr.max]="max || null"
       (input)="onInput($event)"
+      (change)="type === 'file' ? onFileChange($event) : onInput($event)"
+      (keyup.enter)="onKeyUpEnter()"
       (blur)="onBlur()"
       class="form-input">
   </div>
-  <div *ngIf="error" class="input-error-msg">{{ error }}</div>
+  
+  <span *ngIf="hint && !error" class="input-hint-msg font-label-sm text-on-surface-variant margin-top-xs d-block">{{ hint }}</span>
+  <span *ngIf="error" class="input-error-msg font-label-sm text-error margin-top-xs d-block">{{ error }}</span>
 </div>

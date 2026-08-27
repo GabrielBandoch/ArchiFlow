@@ -1,15 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { ClienteService } from '../../../core/api/cliente.service';
-import { LeadService } from '../../../core/api/lead.service';
-import { ProjetoService } from '../../../core/api/projeto.service';
+import { ClienteService, LeadService, ProjetoService } from '../../../core/api';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Cliente } from '../../../models/cliente.model';
 import { Lead, HistoricoContatoLead } from '../../../models/lead.model';
 import { Projeto } from '../../../models/projeto.model';
 import { DialogService } from '../../../core/services/dialog.service';
-import { EditarClienteModalComponent } from '../editar-cliente-modal/editar-cliente-modal.component';
+import { EditarClienteModalComponent } from '../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component';
 
 @Component({
   selector: 'app-detalhes-cliente',
@@ -40,6 +38,12 @@ export class DetalhesClienteComponent implements OnInit {
     } else {
       this.notificationService.error('ID do cliente não fornecido.');
       this.router.navigate(['/clientes']);
+    }
+  }
+
+  abrirProjeto(projetoId: string): void {
+    if (projetoId) {
+      this.router.navigate(['/projetos', projetoId]);
     }
   }
 

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { Lead, HistoricoContatoLead } from '../../models/lead.model';
+import { environment } from '../../../../environments/environment';
+import { Lead, HistoricoContatoLead } from '../../../models/lead.model';
 import { 
   CriarLeadCommand, 
   AtualizarLeadCommand, 
   AtualizarStatusLeadCommand, 
   RegistrarContatoLeadCommand 
-} from '../../commands/lead.commands';
-import { UrlBuilder } from '../utils/url-builder';
+} from '../../../commands/lead.commands';
+import { UrlBuilder } from '../../utils/url-builder';
 
 @Injectable({
   providedIn: 'root'

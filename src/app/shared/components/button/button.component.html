@@ -1,7 +1,15 @@
 <button 
   [type]="type" 
   [disabled]="disabled || loading" 
-  [ngClass]="['btn', 'btn-' + variant]"
+  [title]="title || ''"
+  [attr.aria-label]="ariaLabel || null"
+  [ngClass]="[
+    'btn', 
+    'btn-' + variant, 
+    'btn-size-' + size, 
+    fullWidth ? 'btn-full-width' : '',
+    customClass
+  ]"
   (click)="onClick($event)">
   <span *ngIf="loading" class="spinner"></span>
   <span *ngIf="!loading" class="btn-content">

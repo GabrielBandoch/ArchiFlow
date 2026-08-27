@@ -10,9 +10,14 @@ import { CommonModule } from '@angular/common';
 })
 export class ButtonComponent {
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
-  @Input() variant: 'primary' | 'secondary' = 'primary';
+  @Input() variant: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost' | 'icon' | 'link' = 'primary';
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() fullWidth = false;
   @Input() disabled = false;
   @Input() loading = false;
+  @Input() customClass = '';
+  @Input() ariaLabel?: string;
+  @Input() title?: string;
 
   @Output() btnClick = new EventEmitter<MouseEvent>();
 

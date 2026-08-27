@@ -3,7 +3,7 @@ export interface Arquivo {
   projetoId: string;
   nome: string;
   urlStorage: string;
-  tipo: string;
+  tipo?: string;
   visivelCliente: boolean;
   criadoEm: string;
 }

@@ -1,0 +1,136 @@
+<app-dialog 
+  [show]="show" 
+  dialogTitle="Novo Projeto Arquitetônico" 
+  size="lg" 
+  [overflowVisible]="true" 
+  (close)="onClose()">
+  
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
+    
+    <div class="form-section-header">
+      <span class="section-badge-title">Identificação e Cliente</span>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-input 
+          id="nomeProjeto"
+          type="text" 
+          label="Nome do Projeto" 
+          placeholder="Ex: Residência Alphaville - Bloco B" 
+          formControlName="nome"
+          [required]="true"
+          [error]="submitted && f['nome'].errors ? 'O nome do projeto é obrigatório.' : undefined">
+        </app-input>
+      </div>
+
+      <div class="field-item">
+        <app-client-search
+          id="clienteSearch"
+          label="Cliente Vinculado"
+          placeholder="Digite o nome ou selecione na lista..."
+          [required]="true"
+          [clientes]="clientes"
+          [formControl]="$any(form.get('clienteId'))"
+          [error]="submitted && f['clienteId'].errors ? 'Selecione um cliente para vincular ao projeto.' : undefined">
+        </app-client-search>
+      </div>
+    </div>
+
+    <div class="form-section-header margin-top-xs">
+      <span class="section-badge-title">Especificações e Prazos</span>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-select
+          id="tipoProjeto"
+          label="Tipologia"
+          placeholder="Selecione a tipologia..."
+          formControlName="tipo"
+          [required]="true"
+          (valueChange)="onTipoChange($event)"
+          [options]="tipoOptions">
+        </app-select>
+      </div>
+
+      <div class="field-item">
+        <app-input 
+          id="metragemTotal"
+          type="number" 
+          label="Metragem Total (m²)" 
+          placeholder="Ex: 240.50" 
+          formControlName="metragemTotal">
+        </app-input>
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-input 
+          id="dataInicio"
+          type="date" 
+          label="Data de Início" 
+          formControlName="dataInicio"
+          [required]="true">
+        </app-input>
+      </div>
+
+      <div class="field-item">
+        <app-input 
+          id="dataPrevistaEntrega"
+          type="date" 
+          label="Previsão de Entrega" 
+          formControlName="dataPrevistaEntrega">
+        </app-input>
+      </div>
+    </div>
+
+    <div class="field-item w-full">
+      <app-select
+        id="templateProjeto"
+        label="Modelo de Etapas (Workflow)"
+        placeholder="Selecione o fluxo padrão..."
+        [(ngModel)]="selectedTemplateId"
+        [ngModelOptions]="{standalone: true}"
+        [options]="templateOptions">
+      </app-select>
+    </div>
+
+    <div class="template-preview-box d-flex flex-direction-column gap-xs" *ngIf="selectedTemplate">
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="template-title d-inline-flex align-items-center gap-xs">
+          <span class="material-symbols-outlined">{{ selectedTemplate.icone }}</span>
+          {{ selectedTemplate.nome }}
+        </span>
+        <span class="template-count-badge">{{ selectedTemplate.etapas.length }} etapas configuradas</span>
+      </div>
+      <p class="template-desc">{{ selectedTemplate.descricao }}</p>
+      
+      <div class="template-stages-chips d-flex align-items-center gap-xs flex-wrap" *ngIf="selectedTemplate.etapas.length > 0">
+        <span *ngFor="let e of selectedTemplate.etapas" class="stage-chip-pill">
+          <strong>{{ e.ordem }}.</strong> {{ e.nome }}
+        </span>
+      </div>
+    </div>
+
+    <div class="field-item w-full">
+      <app-input 
+        id="descricaoProjeto"
+        type="textarea" 
+        [rows]="3"
+        label="Escopo e Detalhes do Projeto" 
+        placeholder="Breve descrição dos requisitos arquitetônicos e objetivos do cliente..." 
+        formControlName="descricao">
+      </app-input>
+    </div>
+
+    <div dialog-footer class="d-flex justify-content-end gap-sm margin-top-md">
+      <app-button variant="secondary" (btnClick)="onClose()" [disabled]="saving">Cancelar</app-button>
+      <app-button type="submit" variant="primary" [disabled]="saving">
+        {{ saving ? 'Criando Projeto e Etapas...' : 'Criar Projeto' }}
+      </app-button>
+    </div>
+
+  </form>
+</app-dialog>

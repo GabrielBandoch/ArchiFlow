@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { ClienteService } from '../../../core/api/cliente.service';
+import { ClienteService } from '../../../core/api';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Cliente } from '../../../models/cliente.model';
 import { FormsModule } from '@angular/forms';

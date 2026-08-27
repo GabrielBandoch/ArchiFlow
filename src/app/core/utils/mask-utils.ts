@@ -1,4 +1,8 @@
 export class MaskUtils {
+  static clean(val: string): string {
+    return val ? val.replace(/\D/g, '') : '';
+  }
+
   static formatCpf(val: string): string {
     if (!val) return '';
     const v = val.replace(/\D/g, '').slice(0, 11);

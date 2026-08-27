@@ -7,6 +7,7 @@ import { InputComponent } from './components/input/input.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { SelectComponent } from './components/select/select.component';
+import { ClientSearchComponent } from './components/client-search/client-search.component';
 
 export const CORE_IMPORTS = [
   CommonModule,
@@ -23,5 +24,6 @@ export const DESIGN_SYSTEM = [
   InputComponent,
   DialogComponent,
   ConfirmDialogComponent,
-  SelectComponent
+  SelectComponent,
+  ClientSearchComponent
 ] as const;

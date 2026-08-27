@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { OrigemLeadService } from '../../../core/api/origem-lead.service';
+import { OrigemLeadService } from '../../../core/api';
 import { NotificationService } from '../../../core/services/notification.service';
 import { OrigemLead } from '../../../models/origem-lead.model';
 import { OrigemLeadForm } from './origem-lead.form';

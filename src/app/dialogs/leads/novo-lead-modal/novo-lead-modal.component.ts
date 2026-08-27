@@ -1,10 +1,9 @@
 import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { LeadService } from '../../../core/api/lead.service';
-import { OrigemLeadService } from '../../../core/api/origem-lead.service';
+import { LeadService, OrigemLeadService } from '../../../core/api';
 import { NotificationService } from '../../../core/services/notification.service';
-import { LeadForm } from '../lead.form';
+import { LeadForm } from '../../../components/leads/lead.form';
 import { OrigemLead } from '../../../models/origem-lead.model';
 import { SelectOption } from '../../../shared/components/select/select.component';
 

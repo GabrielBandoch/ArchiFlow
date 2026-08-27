@@ -8,7 +8,6 @@
   gap: 24px;
 }
 
-/* Navegação */
 .dossier-nav {
   .nav-back-btn {
     display: inline-flex;
@@ -33,7 +32,6 @@
   }
 }
 
-/* Card Unificado de Perfil e Dados Cadastrais */
 .profile-unified-card {
   background-color: #ffffff;
   border: 1px solid #e8e3df;
@@ -298,7 +296,6 @@
   }
 }
 
-/* Seção Inferior: Grid de 2 Colunas Lado a Lado */
 .bottom-dual-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -357,7 +354,6 @@
   }
 }
 
-/* Projetos */
 .projects-list {
   display: flex;
   flex-direction: column;
@@ -373,9 +369,16 @@
     gap: 10px;
     transition: all 0.15s ease;
 
-    &:hover {
-      border-color: #dacfc6;
+    &:hover,
+    &.clickable-project:hover {
+      border-color: var(--af-primary);
       background-color: #f7f3ef;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(43, 38, 35, 0.06);
+    }
+
+    &.clickable-project {
+      cursor: pointer;
     }
 
     .proj-top {
@@ -421,7 +424,6 @@
   }
 }
 
-/* Timeline */
 .timeline-list {
   display: flex;
   flex-direction: column;
@@ -499,7 +501,6 @@
   }
 }
 
-/* Estado Vazio */
 .panel-empty {
   padding: 40px 20px;
   text-align: center;
@@ -522,7 +523,6 @@
   }
 }
 
-/* Loading */
 .dossier-loading {
   display: flex;
   flex-direction: column;

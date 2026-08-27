@@ -1,15 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../shared';
-import { LeadService } from '../../core/api/lead.service';
+import { LeadService } from '../../core/api';
 import { NotificationService } from '../../core/services/notification.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { Lead, StatusLead, KanbanColumn } from '../../models/lead.model';
 import { AtualizarStatusLeadCommand } from '../../commands/lead.commands';
-import { NovoLeadModalComponent } from './novo-lead-modal/novo-lead-modal.component';
-import { DetalhesLeadModalComponent } from './detalhes-lead-modal/detalhes-lead-modal.component';
-import { MotivoPerdaModalComponent } from './motivo-perda-modal/motivo-perda-modal.component';
+import { NovoLeadModalComponent } from '../../dialogs/leads/novo-lead-modal/novo-lead-modal.component';
+import { DetalhesLeadModalComponent } from '../../dialogs/leads/detalhes-lead-modal/detalhes-lead-modal.component';
+import { MotivoPerdaModalComponent } from '../../dialogs/leads/motivo-perda-modal/motivo-perda-modal.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ConversaoLeadModalComponent } from './conversao-lead-modal/conversao-lead-modal.component';
+import { ConversaoLeadModalComponent } from '../../dialogs/leads/conversao-lead-modal/conversao-lead-modal.component';
 
 @Component({
   selector: 'app-leads',

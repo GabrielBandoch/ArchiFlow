@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { LeadService } from '../../../core/api/lead.service';
+import { LeadService } from '../../../core/api';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Lead, StatusLead } from '../../../models/lead.model';
-import { LeadForm } from '../lead.form';
+import { LeadForm } from '../../../components/leads/lead.form';
 import { SelectOption } from '../../../shared/components/select/select.component';
 import { DialogService } from '../../../core/services/dialog.service';
 import { ConversaoLeadModalComponent } from '../conversao-lead-modal/conversao-lead-modal.component';
@@ -58,29 +58,34 @@ export class DetalhesLeadModalComponent implements OnInit {
   constructor() {
     this.historyForm = LeadForm.createHistory(this.fb);
     this.historyForm.addControl('resumoOption', this.fb.control('', Validators.required));
-    
-    this.historyForm.get('resumoOption')?.valueChanges.subscribe(val => {
-      if (val && val !== 'Outro') {
-        this.historyForm.get('resumo')?.setValue(val);
-      } else if (val === 'Outro') {
-        this.historyForm.get('resumo')?.setValue('');
-      }
-    });
-  }
-
-  ngOnInit(): void {
-    this.historyForm.reset({
-      canal: '',
-      resumo: '',
-      resumoOption: ''
-    });
-    this.submitted = false;
   }
 
   get f() { return this.historyForm.controls; }
 
-  onClose(): void {
-    this.close.emit();
+  ngOnInit(): void {
+    this.historyForm.get('resumoOption')?.valueChanges.subscribe(val => {
+      const resumoCtrl = this.historyForm.get('resumo');
+      if (val === 'Outro') {
+        resumoCtrl?.setValue('');
+        resumoCtrl?.setValidators([Validators.required, Validators.maxLength(500)]);
+      } else if (val) {
+        resumoCtrl?.setValue(val);
+        resumoCtrl?.clearValidators();
+      }
+      resumoCtrl?.updateValueAndValidity();
+    });
+  }
+
+  getStatusClass(status: StatusLead): string {
+    switch (status) {
+      case StatusLead.Novo: return 'status-novo';
+      case StatusLead.EmContato: return 'status-contato';
+      case StatusLead.PropostaEnviada: return 'status-proposta';
+      case StatusLead.Negociando: return 'status-negociando';
+      case StatusLead.Convertido: return 'status-convertido';
+      case StatusLead.Perdido: return 'status-perdido';
+      default: return '';
+    }
   }
 
   adicionarHistorico(): void {
@@ -96,21 +101,19 @@ export class DetalhesLeadModalComponent implements OnInit {
     };
 
     this.leadService.registrarContato(command).subscribe({
-      next: (historico) => {
-        this.notificationService.success('Interação de contato registrada!');
-        if (this.lead) {
-          this.lead.historicoContatos = [
-            historico,
-            ...this.lead.historicoContatos
-          ];
-        }
+      next: () => {
+        this.notificationService.success('Interação registrada com sucesso.');
         this.historyForm.reset();
         this.submitted = false;
-        this.saved.emit();
+        this.leadService.obterPorId(this.lead!.id).subscribe({
+          next: (updated) => {
+            this.lead = updated;
+            this.saved.emit();
+          }
+        });
       },
-      error: (err) => {
-        console.error('Erro ao registrar histórico de contato', err);
-        this.notificationService.error('Erro ao registrar contato.');
+      error: () => {
+        this.notificationService.error('Erro ao registrar interação.');
       }
     });
   }
@@ -118,24 +121,21 @@ export class DetalhesLeadModalComponent implements OnInit {
   converterParaCliente(event: MouseEvent): void {
     event.stopPropagation();
     if (!this.lead) return;
+    const currentLead = this.lead;
     this.onClose();
+
     const ref = this.dialogService.open(ConversaoLeadModalComponent, {
-      data: { lead: this.lead }
+      data: { lead: currentLead }
     });
+
     ref.instance.convertedSuccess.subscribe(() => {
       this.saved.emit();
     });
   }
 
-  getStatusClass(status: StatusLead): string {
-    switch (status) {
-      case StatusLead.Novo: return 'status-novo';
-      case StatusLead.EmContato: return 'status-contato';
-      case StatusLead.PropostaEnviada: return 'status-proposta';
-      case StatusLead.Negociando: return 'status-negociando';
-      case StatusLead.Convertido: return 'status-convertido';
-      case StatusLead.Perdido: return 'status-perdido';
-      default: return '';
-    }
+  onClose(): void {
+    this.historyForm.reset();
+    this.submitted = false;
+    this.close.emit();
   }
 }

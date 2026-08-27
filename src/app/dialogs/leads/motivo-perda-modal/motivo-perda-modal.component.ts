@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { LeadForm } from '../lead.form';
+import { LeadForm } from '../../../components/leads/lead.form';
 
 @Component({
   selector: 'app-motivo-perda-modal',

@@ -25,10 +25,10 @@
         <span class="user-name">{{ user.nome }}</span>
         <span class="user-email">{{ user.email }}</span>
       </div>
-      <button (click)="onLogout()" class="btn-logout" title="Sair da conta">
+      <app-button variant="ghost" size="sm" (btnClick)="onLogout()" title="Sair da conta">
         <span class="material-symbols-outlined">logout</span>
-        <span class="logout-label">Sair</span>
-      </button>
+        <span class="logout-label font-label-sm">Sair</span>
+      </app-button>
     </div>
   </aside>
 

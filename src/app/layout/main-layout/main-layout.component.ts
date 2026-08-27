@@ -5,10 +5,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { LoadingService } from '../../core/services/loading.service';
 
+import { DESIGN_SYSTEM } from '../../shared';
+
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, DESIGN_SYSTEM],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })
