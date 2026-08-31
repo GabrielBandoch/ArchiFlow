@@ -1,0 +1,103 @@
+<div class="templates-page d-flex flex-direction-column gap-lg">
+  
+  <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-md">
+    <div class="header-titles d-flex flex-direction-column gap-xs">
+      <h1 class="page-title font-headline-md m-0">Modelos de Workflow & Etapas</h1>
+      <p class="page-subtitle font-body-md text-on-surface-variant m-0">
+        Gerencie os fluxos de trabalho, etapas e entregáveis técnicos padrão utilizados nos projetos do estúdio.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <app-button variant="primary" (btnClick)="abrirModalCriacao()">
+        <span class="material-symbols-outlined icon-btn-inline">add</span>
+        Novo Modelo de Workflow
+      </app-button>
+    </div>
+  </div>
+
+  <div class="loading-box d-flex justify-content-center align-items-center" *ngIf="loading">
+    <span class="material-symbols-outlined spinner-icon">progress_activity</span>
+    <span class="margin-left-xs font-body-md">Carregando modelos de workflow...</span>
+  </div>
+
+  <div class="templates-grid" *ngIf="!loading && templates.length > 0">
+    <div *ngFor="let template of templates" class="template-card d-flex flex-direction-column justify-content-between">
+      
+      <div class="template-card-top d-flex flex-direction-column gap-sm">
+        <div class="card-head-row d-flex align-items-start justify-content-between gap-sm">
+          <div class="card-title-group d-flex align-items-start gap-sm flex-grow-1 min-w-0">
+            <div class="template-icon-wrap flex-shrink-0">
+              <span class="material-symbols-outlined">{{ template.icone }}</span>
+            </div>
+            <div class="template-title-meta d-flex flex-direction-column min-w-0">
+              <h3 class="template-name font-weight-bold m-0" [title]="template.nome">{{ template.nome }}</h3>
+              <span class="template-code-badge font-label-xs">{{ template.codigo || template.id }}</span>
+            </div>
+          </div>
+
+          <div class="template-badge-col flex-shrink-0">
+            <span class="stage-pill-badge d-inline-flex align-items-center gap-xxs" [title]="template.etapas.length + ' etapas definidas'">
+              <span class="material-symbols-outlined badge-mini-icon">layers</span>
+              <span class="badge-text">{{ template.etapas.length }} {{ template.etapas.length === 1 ? 'etapa' : 'etapas' }}</span>
+            </span>
+          </div>
+        </div>
+
+        <p class="template-description font-body-sm text-on-surface-variant m-0">
+          {{ template.descricao || 'Sem descrição cadastrada.' }}
+        </p>
+
+        <div class="template-meta-strip d-flex align-items-center justify-content-between font-label-xs">
+          <span class="d-inline-flex align-items-center gap-xxs text-on-surface-variant">
+            <span class="material-symbols-outlined font-size-14">checklist</span>
+            <span>{{ obterTotalTarefas(template) }} entregáveis</span>
+          </span>
+          <span class="order-range-tag font-label-xs" *ngIf="template.etapas.length > 0">
+            1ª a {{ template.etapas.length }}ª fase
+          </span>
+        </div>
+
+        <div class="stages-preview-accordion margin-top-xs">
+          <div class="stages-list d-flex flex-direction-column gap-xs">
+            <div *ngFor="let etapa of template.etapas" class="stage-preview-row">
+              <div class="d-flex align-items-center gap-xs font-body-sm font-weight-semibold">
+                <span class="stage-num-pill">{{ etapa.ordem }}</span>
+                <span class="stage-name-text">{{ etapa.nome }}</span>
+              </div>
+
+              <div class="tasks-mini-chips d-flex flex-wrap gap-xs margin-top-xxs" *ngIf="etapa.tarefas && etapa.tarefas.length > 0">
+                <span *ngFor="let tarefa of etapa.tarefas" class="task-mini-chip" [title]="tarefa">
+                  {{ tarefa }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="template-card-footer d-flex justify-content-end align-items-center gap-xs margin-top-md">
+        <app-button variant="outline" size="sm" (btnClick)="editarTemplate(template)" title="Editar modelo e etapas">
+          <span class="material-symbols-outlined">edit</span>
+          Editar
+        </app-button>
+        <app-button variant="ghost" size="sm" (btnClick)="excluirTemplate(template)" title="Excluir modelo">
+          <span class="material-symbols-outlined text-error">delete</span>
+          <span class="text-error">Excluir</span>
+        </app-button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="empty-state-box d-flex flex-direction-column align-items-center justify-content-center" *ngIf="!loading && templates.length === 0">
+    <span class="material-symbols-outlined empty-state-icon">account_tree</span>
+    <h3 class="font-headline-sm margin-top-xs">Nenhum modelo cadastrado</h3>
+    <p class="text-on-surface-variant font-body-md">Cadastre o primeiro fluxo de trabalho padrão para padronizar as etapas do seu escritório.</p>
+    <app-button variant="primary" (btnClick)="abrirModalCriacao()" class="margin-top-sm">
+      <span class="material-symbols-outlined icon-btn-inline">add</span>
+      Criar Primeiro Modelo
+    </app-button>
+  </div>
+
+</div>

@@ -4,6 +4,7 @@ export interface TemplateTarefaItem {
 }
 
 export interface TemplateEtapaItem {
+  id?: string;
   ordem: number;
   nome: string;
   descricao: string;
@@ -12,8 +13,10 @@ export interface TemplateEtapaItem {
 
 export interface ProjectTemplate {
   id: string;
+  codigo?: string;
   nome: string;
   descricao: string;
   icone: string;
+  ativo?: boolean;
   etapas: TemplateEtapaItem[];
 }

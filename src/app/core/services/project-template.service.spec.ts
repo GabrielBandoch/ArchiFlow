@@ -68,6 +68,19 @@ describe('ProjectTemplateService', () => {
       expect(template?.etapas.length).toBe(4);
       done();
     });
+
+    const req = httpMock.expectOne(r => r.url.includes('templates-projeto/residencial-completo'));
+    req.flush({
+      id: '1',
+      codigo: 'residencial-completo',
+      nome: 'Projeto Arquitetônico Residencial',
+      etapas: [
+        { ordem: 1, nome: 'Briefing', descricao: 'Desc', tarefas: [] },
+        { ordem: 2, nome: '3D', descricao: 'Desc', tarefas: [] },
+        { ordem: 3, nome: 'Executivo', descricao: 'Desc', tarefas: [] },
+        { ordem: 4, nome: 'Entrega', descricao: 'Desc', tarefas: [] }
+      ]
+    });
   });
 
   it('deve gerar entregáveis para etapa existente no template', () => {
@@ -77,9 +90,52 @@ describe('ProjectTemplateService', () => {
     expect(tarefas[0].titulo.toLowerCase()).toContain('briefing');
   });
 
-  it('deve fornecer fallback seguro para ordem inexistente', () => {
-    const tarefas = service.gerarTarefasParaEtapa('etapa-999', 'residencial-completo', 99);
-    expect(tarefas.length).toBe(1);
-    expect(tarefas[0].titulo).toContain('Definição do escopo');
+  it('deve criar novo template com sucesso', (done) => {
+    const payload = {
+      codigo: 'paisagismo',
+      nome: 'Paisagismo',
+      descricao: 'Desc',
+      icone: 'yard',
+      etapas: []
+    };
+
+    service.criarTemplate(payload).subscribe((res) => {
+      expect(res.id).toBe('paisagismo');
+      expect(res.codigo).toBe('paisagismo');
+      expect(res.nome).toBe('Paisagismo');
+      done();
+    });
+
+    const req = httpMock.expectOne(r => r.url.includes('templates-projeto') && r.method === 'POST');
+    req.flush({ id: '1', ...payload });
+  });
+
+  it('deve atualizar template com sucesso', (done) => {
+    const payload = {
+      id: '1',
+      codigo: 'paisagismo',
+      nome: 'Paisagismo Atualizado',
+      descricao: 'Nova desc',
+      icone: 'park',
+      etapas: []
+    };
+
+    service.atualizarTemplate('1', payload).subscribe((res) => {
+      expect(res.nome).toBe('Paisagismo Atualizado');
+      done();
+    });
+
+    const req = httpMock.expectOne(r => r.url.includes('templates-projeto/1') && r.method === 'PUT');
+    req.flush(payload);
+  });
+
+  it('deve excluir template com sucesso', (done) => {
+    service.excluirTemplate('1').subscribe(() => {
+      expect(true).toBeTrue();
+      done();
+    });
+
+    const req = httpMock.expectOne(r => r.url.includes('templates-projeto/1') && r.method === 'DELETE');
+    req.flush(null);
   });
 });

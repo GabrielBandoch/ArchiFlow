@@ -16,9 +16,11 @@ export class ProjectTemplateService {
   private readonly defaultTemplates: ProjectTemplate[] = [
     {
       id: 'residencial-completo',
+      codigo: 'residencial-completo',
       nome: 'Projeto Arquitetônico Residencial',
       descricao: 'Fluxo completo para casas e edifícios: do levantamento ao caderno executivo final.',
       icone: 'home',
+      ativo: true,
       etapas: [
         {
           ordem: 1,
@@ -68,9 +70,11 @@ export class ProjectTemplateService {
     },
     {
       id: 'interiores-reforma',
+      codigo: 'interiores-reforma',
       nome: 'Design de Interiores & Reforma',
       descricao: 'Foco em estética, marcenaria sob medida, iluminação e produção de ambientes.',
       icone: 'chair',
+      ativo: true,
       etapas: [
         {
           ordem: 1,
@@ -117,9 +121,11 @@ export class ProjectTemplateService {
     },
     {
       id: 'comercial-corporativo',
+      codigo: 'comercial-corporativo',
       nome: 'Projeto Comercial & Corporativo',
       descricao: 'Projetos de escritórios, lojas e restaurantes com fluxo de clientes e normas técnicas.',
       icone: 'storefront',
+      ativo: true,
       etapas: [
         {
           ordem: 1,
@@ -155,9 +161,11 @@ export class ProjectTemplateService {
     },
     {
       id: 'consultoria-viabilidade',
+      codigo: 'consultoria-viabilidade',
       nome: 'Consultoria & Estudo de Viabilidade',
       descricao: 'Diagnóstico rápido de potencial construtivo e viabilidade para clientes e investidores.',
       icone: 'analytics',
+      ativo: true,
       etapas: [
         {
           ordem: 1,
@@ -183,9 +191,11 @@ export class ProjectTemplateService {
     },
     {
       id: 'personalizado',
+      codigo: 'personalizado',
       nome: 'Personalizado (Em Branco)',
       descricao: 'Comece sem etapas pré-definidas para montar um fluxo sob medida.',
       icone: 'tune',
+      ativo: true,
       etapas: []
     }
   ];
@@ -200,10 +210,13 @@ export class ProjectTemplateService {
         if (!items || items.length === 0) return this.defaultTemplates;
         return items.map(item => ({
           id: item.codigo || item.id,
+          codigo: item.codigo,
           nome: item.nome,
           descricao: item.descricao,
           icone: item.icone || 'home',
+          ativo: item.ativo !== false,
           etapas: (item.etapas || []).map((e: any) => ({
+            id: e.id,
             ordem: e.ordem,
             nome: e.nome,
             descricao: e.descricao,
@@ -216,13 +229,92 @@ export class ProjectTemplateService {
   }
 
   obterPorId(id: string): Observable<ProjectTemplate | undefined> {
-    const template = this.defaultTemplates.find(t => t.id === id);
-    return of(template);
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('templates-projeto')
+      .segment(id)
+      .build();
+
+    return this.http.get<any>(url).pipe(
+      map(item => ({
+        id: item.codigo || item.id,
+        codigo: item.codigo,
+        nome: item.nome,
+        descricao: item.descricao,
+        icone: item.icone || 'home',
+        ativo: item.ativo !== false,
+        etapas: (item.etapas || []).map((e: any) => ({
+          id: e.id,
+          ordem: e.ordem,
+          nome: e.nome,
+          descricao: e.descricao,
+          tarefas: e.tarefas || []
+        }))
+      })),
+      catchError(() => of(this.defaultTemplates.find(t => t.id === id)))
+    );
+  }
+
+  criarTemplate(command: any): Observable<ProjectTemplate> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('templates-projeto')
+      .build();
+
+    return this.http.post<any>(url, command).pipe(
+      map(item => ({
+        id: item.codigo || item.id,
+        codigo: item.codigo,
+        nome: item.nome,
+        descricao: item.descricao,
+        icone: item.icone || 'home',
+        ativo: item.ativo !== false,
+        etapas: (item.etapas || []).map((e: any) => ({
+          id: e.id,
+          ordem: e.ordem,
+          nome: e.nome,
+          descricao: e.descricao,
+          tarefas: e.tarefas || []
+        }))
+      }))
+    );
+  }
+
+  atualizarTemplate(id: string, command: any): Observable<ProjectTemplate> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('templates-projeto')
+      .segment(id)
+      .build();
+
+    return this.http.put<any>(url, { ...command, id }).pipe(
+      map(item => ({
+        id: item.codigo || item.id,
+        codigo: item.codigo,
+        nome: item.nome,
+        descricao: item.descricao,
+        icone: item.icone || 'home',
+        ativo: item.ativo !== false,
+        etapas: (item.etapas || []).map((e: any) => ({
+          id: e.id,
+          ordem: e.ordem,
+          nome: e.nome,
+          descricao: e.descricao,
+          tarefas: e.tarefas || []
+        }))
+      }))
+    );
+  }
+
+  excluirTemplate(id: string): Observable<void> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('templates-projeto')
+      .segment(id)
+      .build();
+
+    return this.http.delete<void>(url);
   }
 
   gerarTarefasParaEtapa(etapaId: string, templateId?: string, etapaOrdem?: number): TarefaEtapa[] {
     const template = this.defaultTemplates.find(t => t.id === templateId) || this.defaultTemplates[0];
-    const etapaTemplate = template.etapas.find(e => e.ordem === etapaOrdem);
+    const etapaTemplate = template?.etapas?.find(e => e.ordem === etapaOrdem);
 
     if (etapaTemplate && etapaTemplate.tarefas.length > 0) {
       return etapaTemplate.tarefas.map((titulo, idx) => ({
