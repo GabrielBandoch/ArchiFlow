@@ -7,10 +7,10 @@
 
 .select-label {
   font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--af-on-surface-variant);
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 .select-wrapper {
@@ -20,38 +20,40 @@
 
 .form-select-trigger {
   width: 100%;
-  height: 52px;
-  padding: 0 var(--af-space-md);
-  border-radius: var(--af-radius-default);
+  height: 38px;
+  padding: 0 12px;
+  border-radius: var(--af-radius-sm);
   border: 1px solid var(--af-outline-variant);
   background-color: var(--af-surface-container-lowest);
   color: var(--af-on-surface);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 400;
   outline: none;
   box-sizing: border-box;
   text-align: left;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   .placeholder-text {
-    color: var(--af-outline);
+    color: var(--af-on-surface-variant);
     opacity: 0.6;
   }
 
   .selected-label {
-    font-weight: 500;
+    font-weight: 400;
+    font-size: 13.5px;
   }
 
   .arrow-icon {
-    color: var(--af-outline-variant);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    color: var(--af-on-surface-variant);
+    font-size: 20px;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .option-icon {
     color: var(--af-primary);
-    font-size: 20px;
+    font-size: 18px;
   }
 
   &:hover:not(:disabled) {
@@ -60,14 +62,14 @@
 
   &:focus:not(:disabled) {
     border-color: var(--af-primary);
-    box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.15);
+    box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.12);
   }
 }
 
 .is-open {
   .form-select-trigger {
     border-color: var(--af-primary);
-    box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.15);
+    box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.12);
   }
 
   .arrow-icon {
@@ -102,22 +104,22 @@
   font-size: 11px;
   font-weight: 500;
   color: var(--af-error);
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 .options-list-container {
   position: absolute;
-  top: calc(100% + var(--af-space-xs));
+  top: calc(100% + 4px);
   left: 0;
   width: 100%;
   max-height: 240px;
   overflow-y: auto;
   background-color: var(--af-surface-container-lowest);
   border: 1px solid var(--af-outline-variant);
-  border-radius: var(--af-radius-default);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: var(--af-radius-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
   z-index: 1000;
-  animation: slide-down 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slide-down 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .options-list {
@@ -127,26 +129,26 @@
 }
 
 .option-item {
-  padding: var(--af-space-sm) var(--af-space-md);
-  border-radius: calc(var(--af-radius-default) - 2px);
+  padding: 8px 12px;
+  border-radius: 4px;
   cursor: pointer;
   color: var(--af-on-surface);
   transition: all 0.15s ease;
 
   .option-icon {
-    color: var(--af-outline-variant);
-    font-size: 20px;
+    color: var(--af-on-surface-variant);
+    font-size: 18px;
     transition: color 0.15s ease;
   }
 
   .option-label {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13.5px;
+    font-weight: 400;
   }
 
   .option-sublabel {
     font-size: 11px;
-    color: var(--af-outline);
+    color: var(--af-on-surface-variant);
     margin-top: 2px;
   }
 
@@ -179,7 +181,7 @@
 @keyframes slide-down {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-4px);
   }
 
   to {

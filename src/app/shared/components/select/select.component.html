@@ -1,5 +1,7 @@
 <div class="select-group">
-  <label *ngIf="label" [for]="id" class="select-label">{{ label }}</label>
+  <label *ngIf="label" [for]="id" class="select-label">
+    {{ label }} <span class="text-error" *ngIf="required">*</span>
+  </label>
   
   <div class="select-wrapper" [class.has-error]="error" [class.is-open]="isOpen" [class.is-disabled]="disabled">
     <button 

@@ -1,26 +1,31 @@
 export enum StatusProjeto {
-  Planejamento = 0,
-  EmDesenvolvimento = 1,
-  EmRevisao = 2,
-  Aprovado = 3,
-  Suspenso = 4,
-  Cancelado = 5
+  Briefing = 0,
+  Desenvolvimento = 1,
+  Revisao = 2,
+  Aprovacao = 3,
+  Execucao = 4,
+  Concluido = 5,
+  Cancelado = 6
 }
 
 export enum TipoProjeto {
   Residencial = 0,
   Comercial = 1,
   Corporativo = 2,
-  Interiores = 3,
-  Outros = 4
+  Interiores = 3
 }
 
 export enum StatusEtapa {
-  NaoIniciada = 0,
+  Pendente = 0,
   EmAndamento = 1,
-  PendenteRevisao = 2,
-  Concluida = 3,
-  Impedimento = 4
+  Concluida = 2
+}
+
+export interface TarefaEtapa {
+  id: string;
+  etapaId: string;
+  titulo: string;
+  concluida: boolean;
 }
 
 export interface EtapaProjeto {
@@ -32,6 +37,7 @@ export interface EtapaProjeto {
   statusLabel: string;
   ordem: number;
   dataConclusao?: string;
+  tarefas?: TarefaEtapa[];
 }
 
 export interface Projeto {
@@ -46,6 +52,7 @@ export interface Projeto {
   dataPrevistaEntrega?: string;
   metragemTotal: number;
   clienteId: string;
+  clienteNome?: string;
   criadoEm: string;
   atualizadoEm?: string;
   etapas: EtapaProjeto[];

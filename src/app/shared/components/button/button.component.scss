@@ -3,29 +3,64 @@
   align-items: center;
   justify-content: center;
   font-family: inherit;
-  font-size: 13px;
   font-weight: 600;
-  height: 52px;
-  padding: 0 var(--af-space-lg);
-  border-radius: var(--af-radius-default);
+  border-radius: var(--af-radius-sm);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   outline: none;
   user-select: none;
   box-sizing: border-box;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  width: 100%;
+  text-decoration: none;
+  white-space: nowrap;
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
     box-shadow: none !important;
     transform: none !important;
   }
 }
 
+.btn-full-width {
+  width: 100%;
+}
+
+/* Sizes */
+.btn-size-sm {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 11.5px;
+  gap: 4px;
+
+  .btn-content span.material-symbols-outlined {
+    font-size: 15px;
+  }
+}
+
+.btn-size-md {
+  height: 38px;
+  padding: 0 14px;
+  font-size: 13px;
+  gap: 6px;
+
+  .btn-content span.material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.btn-size-lg {
+  height: 46px;
+  padding: 0 20px;
+  font-size: 14px;
+  gap: 8px;
+
+  .btn-content span.material-symbols-outlined {
+    font-size: 20px;
+  }
+}
+
+/* Variants */
 .btn-primary {
   background-color: var(--af-primary);
   color: var(--af-on-primary);
@@ -43,12 +78,41 @@
 
 .btn-secondary {
   background-color: var(--af-surface-container-low);
-  color: var(--af-on-surface-variant);
+  color: var(--af-on-surface);
   border: 1px solid var(--af-outline-variant);
 
   &:hover:not(:disabled) {
-    background-color: var(--af-surface-container);
-    border-color: var(--af-outline);
+    background-color: var(--af-surface-container-high);
+    border-color: var(--af-primary);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--af-on-surface);
+  border: 1px solid var(--af-outline-variant);
+
+  &:hover:not(:disabled) {
+    background-color: var(--af-surface-container-low);
+    border-color: var(--af-primary);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--af-on-surface-variant);
+  border: none;
+
+  &:hover:not(:disabled) {
+    background-color: var(--af-surface-container-low);
     color: var(--af-on-surface);
   }
 
@@ -57,24 +121,78 @@
   }
 }
 
+.btn-danger {
+  background-color: var(--af-error, #ba1a1a);
+  color: #ffffff;
+  border-color: var(--af-error, #ba1a1a);
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    box-shadow: var(--af-shadow-sm);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+.btn-icon {
+  background-color: transparent;
+  color: var(--af-on-surface-variant);
+  border: 1px solid transparent;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--af-radius-sm);
+
+  span.material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--af-surface-container-low);
+    color: var(--af-on-surface);
+    border-color: var(--af-outline-variant);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+}
+
+.btn-link {
+  background-color: transparent;
+  color: var(--af-primary);
+  border: none;
+  padding: 0;
+  height: auto;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    text-decoration: underline;
+  }
+}
+
 .btn-content {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--af-space-xs);
+  gap: inherit;
 }
 
 .spinner {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--af-radius-full);
   border-top-color: var(--af-on-primary);
   animation: spin 0.8s linear infinite;
 }
 
-.btn-secondary .spinner {
-  border-top-color: var(--af-on-surface-variant);
+.btn-secondary .spinner,
+.btn-outline .spinner,
+.btn-ghost .spinner {
+  border-top-color: var(--af-primary);
   border-left-color: rgba(79, 69, 61, 0.3);
 }
 

@@ -1,0 +1,158 @@
+<div class="client-search-wrapper">
+  <label *ngIf="label" class="client-search-label" [attr.for]="id">
+    {{ label }} <span class="text-error" *ngIf="required">*</span>
+  </label>
+
+  <div *ngIf="clienteSelecionado" class="selected-client-chip d-flex align-items-center justify-content-between p-sm">
+    <div class="d-flex align-items-center gap-sm">
+      <div class="chip-avatar">
+        <img *ngIf="clienteSelecionado.fotoUrl" [src]="clienteSelecionado.fotoUrl" class="avatar-photo" alt="Avatar" />
+        <span *ngIf="!clienteSelecionado.fotoUrl">{{ clienteSelecionado.nome.substring(0, 2).toUpperCase() }}</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <span class="font-weight-semibold font-body-md text-on-surface">{{ clienteSelecionado.nome }}</span>
+        <span class="font-label-sm text-on-surface-variant">{{ clienteSelecionado.email }}</span>
+      </div>
+    </div>
+    <app-button variant="icon" size="sm" (btnClick)="limparSelecao()" title="Remover seleção" [disabled]="disabled">
+      <span class="material-symbols-outlined">close</span>
+    </app-button>
+  </div>
+
+  <div *ngIf="!clienteSelecionado" class="autocomplete-control-container">
+    <div class="search-input-box d-flex align-items-center" [class.has-error]="!!error">
+      <span class="material-symbols-outlined icon-prefix">person</span>
+      <input 
+        [id]="id"
+        type="text" 
+        class="input-search-native" 
+        [placeholder]="placeholder" 
+        [(ngModel)]="searchText" 
+        (input)="onInputSearch()"
+        [disabled]="disabled" />
+      
+      <button 
+        type="button" 
+        class="btn-trigger-modal" 
+        (click)="abrirModal()" 
+        title="Abrir busca avançada de clientes"
+        [disabled]="disabled">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+    </div>
+
+    <div *ngIf="showDropdown && sugestoes.length > 0" class="suggestions-dropdown-panel">
+      <div 
+        *ngFor="let c of sugestoes" 
+        class="suggestion-row d-flex align-items-center gap-sm p-sm" 
+        (click)="selecionarCliente(c)">
+        <div class="suggestion-avatar">
+          <img *ngIf="c.fotoUrl" [src]="c.fotoUrl" class="avatar-photo" alt="Avatar" />
+          <span *ngIf="!c.fotoUrl">{{ c.nome.substring(0, 2).toUpperCase() }}</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="font-weight-medium font-body-md text-on-surface">{{ c.nome }}</span>
+          <span class="font-label-sm text-on-surface-variant">{{ c.email }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="showDropdown && sugestoes.length === 0" class="suggestions-dropdown-panel p-sm text-center">
+      <span class="font-label-sm text-on-surface-variant">Nenhum cliente encontrado com "{{ searchText }}".</span>
+    </div>
+  </div>
+
+  <span class="font-label-sm text-error margin-top-xs d-block" *ngIf="error">
+    {{ error }}
+  </span>
+</div>
+
+<app-dialog [show]="showModal" dialogTitle="Pesquisar & Selecionar Cliente" size="lg" (close)="fecharModal()">
+  <div class="modal-search-content d-flex flex-direction-column gap-md">
+    
+    <div class="modal-search-bar d-flex align-items-center gap-xs">
+      <span class="material-symbols-outlined icon-search-modal">search</span>
+      <input 
+        type="text" 
+        class="modal-search-input" 
+        placeholder="Buscar por nome, e-mail, telefone ou CPF/CNPJ..." 
+        [(ngModel)]="modalSearchText" 
+        (ngModelChange)="filtrarModal()" />
+    </div>
+
+    <div class="modal-table-container" *ngIf="modalClientesFiltrados.length > 0">
+      <table class="modal-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>E-mail</th>
+            <th>Telefone</th>
+            <th class="text-right">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of clientesPaginados" (click)="selecionarViaModal(c)" class="table-row-selectable">
+            <td>
+              <div class="d-flex align-items-center gap-sm">
+                <div class="table-avatar">
+                  <img *ngIf="c.fotoUrl" [src]="c.fotoUrl" class="avatar-photo" alt="Avatar" />
+                  <span *ngIf="!c.fotoUrl">{{ c.nome.substring(0, 2).toUpperCase() }}</span>
+                </div>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-weight-semibold font-body-md text-on-surface">{{ c.nome }}</span>
+                  <span class="font-label-sm text-on-surface-variant" *ngIf="c.cpfCnpj">{{ c.cpfCnpj }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="font-body-md text-on-surface">{{ c.email }}</span>
+            </td>
+            <td>
+              <span class="font-body-md text-on-surface-variant">{{ c.telefone || '—' }}</span>
+            </td>
+            <td class="text-right">
+              <app-button variant="secondary" size="sm" (btnClick)="selecionarViaModal(c); $event.stopPropagation()">
+                Selecionar
+              </app-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="modalClientesFiltrados.length === 0" class="empty-results-box text-center p-lg">
+      <span class="material-symbols-outlined empty-results-icon">person_off</span>
+      <h4 class="font-headline-md margin-top-xs m-0">Nenhum cliente encontrado</h4>
+      <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Verifique os termos da busca.</p>
+    </div>
+
+    <div class="modal-footer-pagination d-flex justify-content-between align-items-center pt-sm" *ngIf="modalClientesFiltrados.length > 0">
+      <span class="font-label-sm text-on-surface-variant">
+        Página {{ paginaAtual }} de {{ totalPaginas }} ({{ modalClientesFiltrados.length }} clientes)
+      </span>
+
+      <div class="d-flex gap-xs">
+        <app-button 
+          variant="secondary"
+          size="sm"
+          [disabled]="paginaAtual <= 1" 
+          (btnClick)="paginaAnterior()">
+          <span class="material-symbols-outlined">chevron_left</span>
+          Anterior
+        </app-button>
+        <app-button 
+          variant="secondary"
+          size="sm"
+          [disabled]="paginaAtual >= totalPaginas" 
+          (btnClick)="proximaPagina()">
+          Próxima
+          <span class="material-symbols-outlined">chevron_right</span>
+        </app-button>
+      </div>
+    </div>
+
+    <div dialog-footer class="d-flex justify-content-end gap-sm margin-top-sm">
+      <app-button variant="secondary" (btnClick)="fecharModal()">Cancelar</app-button>
+    </div>
+  </div>
+</app-dialog>

@@ -24,6 +24,10 @@ export const appRoutes: Routes = [
       {
         path: '',
         loadComponent: () => import('./components/projetos/lista-projetos/lista-projetos.component').then(m => m.ListaProjetosComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./components/projetos/detalhes-projeto/detalhes-projeto.component').then(m => m.DetalhesProjetoComponent)
       }
     ]
   },
@@ -38,6 +42,41 @@ export const appRoutes: Routes = [
       },
       {
         path: 'origens',
+        loadComponent: () => import('./components/leads/origens-lead/origens-lead.component').then(m => m.OrigensLeadComponent)
+      }
+    ]
+  },
+  {
+    path: 'clientes',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/clientes/lista-clientes/lista-clientes.component').then(m => m.ListaClientesComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./components/clientes/detalhes-cliente/detalhes-cliente.component').then(m => m.DetalhesClienteComponent)
+      }
+    ]
+  },
+  {
+    path: 'configuracoes',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        redirectTo: 'templates-projeto',
+        pathMatch: 'full'
+      },
+      {
+        path: 'templates-projeto',
+        loadComponent: () => import('./components/configuracoes/templates-projeto/templates-projeto.component').then(m => m.TemplatesProjetoComponent)
+      },
+      {
+        path: 'origens-lead',
         loadComponent: () => import('./components/leads/origens-lead/origens-lead.component').then(m => m.OrigensLeadComponent)
       }
     ]

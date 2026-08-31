@@ -1,0 +1,165 @@
+<app-dialog 
+  [show]="show" 
+  [dialogTitle]="isEditing ? 'Editar Modelo de Workflow' : 'Novo Modelo de Workflow'" 
+  size="lg" 
+  (close)="onClose()">
+  
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
+    
+    <div class="form-section-header">
+      <span class="section-badge-title">Informações Gerais do Modelo</span>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-input 
+          id="templateNome"
+          type="text" 
+          label="Nome do Modelo" 
+          placeholder="Ex: Residencial Alto Padrão" 
+          formControlName="nome"
+          [required]="true"
+          [error]="submitted && f['nome'].errors ? 'O nome do modelo é obrigatório.' : undefined">
+        </app-input>
+      </div>
+
+      <div class="field-item">
+        <app-input 
+          id="templateCodigo"
+          type="text" 
+          label="Identificador / Código Único" 
+          placeholder="Ex: residencial-alto-padrao" 
+          formControlName="codigo"
+          [required]="true"
+          [disabled]="isEditing"
+          [error]="submitted && f['codigo'].errors ? 'O código do modelo é obrigatório.' : undefined">
+        </app-input>
+      </div>
+    </div>
+
+    <div class="field-item w-full">
+      <label class="icon-selector-label">Ícone Representativo</label>
+      <div class="icon-selector-grid">
+        <button 
+          type="button" 
+          *ngFor="let ic of availableIcons" 
+          class="icon-option-btn" 
+          [class.selected]="form.get('icone')?.value === ic.name"
+          (click)="selectIcon(ic.name)"
+          [title]="ic.label">
+          <span class="material-symbols-outlined">{{ ic.name }}</span>
+          <span class="icon-name-tag">{{ ic.label }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="field-item w-full">
+      <app-input 
+        id="templateDescricao"
+        type="textarea" 
+        [rows]="2"
+        label="Descrição do Fluxo" 
+        placeholder="Breve resumo sobre a finalidade deste fluxo de trabalho..." 
+        formControlName="descricao">
+      </app-input>
+    </div>
+
+    <div class="form-section-header margin-top-xs d-flex justify-content-between align-items-center">
+      <span class="section-badge-title">Etapas e Entregáveis Técnicos</span>
+      <app-button variant="outline" size="sm" type="button" (btnClick)="adicionarEtapa()">
+        <span class="material-symbols-outlined">add</span>
+        Adicionar Etapa
+      </app-button>
+    </div>
+
+    <div class="etapas-list d-flex flex-direction-column gap-md">
+      <div *ngIf="etapas.length === 0" class="empty-etapas-box">
+        <span class="material-symbols-outlined empty-icon">layers_clear</span>
+        <p class="m-0">Nenhuma etapa configurada. Clique em <strong>"+ Adicionar Etapa"</strong> para definir o fluxo.</p>
+      </div>
+
+      <div *ngFor="let etapa of etapas; let i = index" class="etapa-card-item">
+        <div class="etapa-card-header d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-xs">
+            <span class="etapa-ordem-badge">{{ i + 1 }}</span>
+            <span class="etapa-title-text font-weight-semibold">{{ etapa.nome || 'Nova Etapa' }}</span>
+          </div>
+
+          <div class="d-flex align-items-center gap-xs">
+            <button type="button" class="btn-action-icon" (click)="moverEtapa(i, -1)" [disabled]="i === 0" title="Mover para cima">
+              <span class="material-symbols-outlined">arrow_upward</span>
+            </button>
+            <button type="button" class="btn-action-icon" (click)="moverEtapa(i, 1)" [disabled]="i === etapas.length - 1" title="Mover para baixo">
+              <span class="material-symbols-outlined">arrow_downward</span>
+            </button>
+            <button type="button" class="btn-action-icon text-error" (click)="removerEtapa(i)" title="Excluir Etapa">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="etapa-card-body d-flex flex-direction-column gap-sm margin-top-sm">
+          <div class="form-grid-2">
+            <div class="field-item">
+              <app-input 
+                [id]="'etapaNome_' + i"
+                type="text" 
+                label="Nome da Etapa" 
+                placeholder="Ex: Estudo Preliminar" 
+                [(ngModel)]="etapa.nome"
+                [ngModelOptions]="{standalone: true}"
+                [required]="true">
+              </app-input>
+            </div>
+
+            <div class="field-item">
+              <app-input 
+                [id]="'etapaDesc_' + i"
+                type="text" 
+                label="Descrição / Objetivo" 
+                placeholder="Ex: Zoneamento e volumetria inicial" 
+                [(ngModel)]="etapa.descricao"
+                [ngModelOptions]="{standalone: true}">
+              </app-input>
+            </div>
+          </div>
+
+          <div class="tarefas-box d-flex flex-direction-column gap-xs">
+            <label class="tarefas-label font-label-sm">Entregáveis Técnicos / Checklist da Etapa</label>
+
+            <div class="tarefas-chips-container d-flex flex-wrap gap-xs align-items-center" *ngIf="etapa.tarefas.length > 0">
+              <span *ngFor="let t of etapa.tarefas; let tIndex = index" class="tarefa-chip-pill d-inline-flex align-items-center gap-xs">
+                <span>{{ t }}</span>
+                <button type="button" class="btn-remove-chip" (click)="removerTarefa(i, tIndex)" title="Remover entregável">
+                  <span class="material-symbols-outlined">close</span>
+                </button>
+              </span>
+            </div>
+
+            <div class="add-tarefa-input-row d-flex align-items-center gap-xs margin-top-xs">
+              <input 
+                type="text" 
+                class="form-tarefa-input flex-grow-1" 
+                [(ngModel)]="novaTarefaInputs[i]"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Digite o nome do entregável e pressione Adicionar..." 
+                (keydown.enter)="$event.preventDefault(); adicionarTarefa(i)" />
+              <app-button variant="secondary" size="sm" type="button" (btnClick)="adicionarTarefa(i)">
+                <span class="material-symbols-outlined">add</span>
+                Adicionar
+              </app-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div dialog-footer class="d-flex justify-content-end gap-sm margin-top-md">
+      <app-button variant="secondary" (btnClick)="onClose()" [disabled]="saving">Cancelar</app-button>
+      <app-button type="submit" variant="primary" [disabled]="saving">
+        {{ saving ? 'Salvando Modelo...' : (isEditing ? 'Atualizar Modelo' : 'Criar Modelo') }}
+      </app-button>
+    </div>
+
+  </form>
+</app-dialog>

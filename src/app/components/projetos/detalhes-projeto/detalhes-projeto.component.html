@@ -1,0 +1,415 @@
+<div class="detalhes-page d-flex flex-direction-column gap-lg" *ngIf="projeto">
+  
+  <nav class="breadcrumb-bar d-flex align-items-center gap-xs font-label-md">
+    <a routerLink="/projetos" class="breadcrumb-link d-flex align-items-center gap-xs">
+      <span class="material-symbols-outlined icon-home">arrow_back</span>
+      <span>Projetos</span>
+    </a>
+    <span class="breadcrumb-separator">/</span>
+    <span class="breadcrumb-current">{{ projeto.nome }}</span>
+  </nav>
+
+  <section class="dossier-hero-card d-flex justify-content-between align-items-start gap-lg flex-wrap">
+    <div class="hero-main-info d-flex flex-direction-column gap-xs flex-grow-1">
+      <div class="hero-badge-row d-flex align-items-center gap-xs">
+        <span class="status-pill font-label-sm" [class]="'status-' + projeto.statusLabel.toLowerCase()">
+          {{ projeto.statusLabel }}
+        </span>
+        <span class="tipo-pill font-label-sm">{{ projeto.tipoLabel }}</span>
+      </div>
+
+      <h1 class="hero-project-title font-headline-lg m-0">{{ projeto.nome }}</h1>
+
+      <div class="hero-meta-row d-flex align-items-center gap-md flex-wrap font-body-md text-on-surface-variant margin-top-xs">
+        <div class="meta-item-client d-flex align-items-center gap-xs" *ngIf="projeto.clienteId">
+          <span class="material-symbols-outlined">person</span>
+          <span>Cliente:</span>
+          <a [routerLink]="['/clientes', projeto.clienteId]" class="client-name-link font-weight-semibold">
+            {{ projeto.clienteNome || 'Visualizar ficha do cliente' }}
+          </a>
+        </div>
+
+        <div class="meta-item-id d-flex align-items-center gap-xs font-label-md">
+          <span class="label">ID:</span>
+          <span class="val">{{ projeto.id.substring(0, 8) }}</span>
+        </div>
+      </div>
+
+      <p class="hero-description font-body-md text-on-surface-variant margin-top-xs m-0" *ngIf="projeto.descricao">{{ projeto.descricao }}</p>
+    </div>
+
+    <div class="hero-progress-box d-flex flex-direction-column gap-sm">
+      <div class="progress-header-row d-flex justify-content-between align-items-center">
+        <span class="progress-title font-label-md font-weight-semibold">Progresso Global</span>
+        <span class="progress-percent-value font-headline-md font-weight-bold text-primary">{{ projeto.progressoPercentual }}%</span>
+      </div>
+
+      <div class="progress-track-bg w-full">
+        <div class="progress-track-fill" [style.width.%]="projeto.progressoPercentual"></div>
+      </div>
+
+      <div class="dates-meta-row d-flex justify-content-between align-items-center font-label-sm text-on-surface-variant">
+        <span class="date-item d-flex align-items-center gap-xs">
+          <span class="material-symbols-outlined">calendar_today</span>
+          Início: {{ projeto.dataInicio | date:'dd/MM/yyyy' }}
+        </span>
+        <span class="date-item d-flex align-items-center gap-xs" *ngIf="projeto.dataPrevistaEntrega">
+          <span class="material-symbols-outlined">timer</span>
+          Prazo: {{ projeto.dataPrevistaEntrega | date:'dd/MM/yyyy' }}
+        </span>
+      </div>
+
+      <div class="hero-actions-bottom d-flex align-items-center gap-xs margin-top-xs">
+        <div class="status-select-wrap flex-grow-1">
+          <app-select 
+            id="statusHero"
+            [options]="statusProjetoOptions" 
+            [ngModel]="projeto.status" 
+            (ngModelChange)="alterarStatusProjeto($event)">
+          </app-select>
+        </div>
+
+        <app-button 
+          variant="secondary" 
+          size="md" 
+          (btnClick)="abrirModalEdicao()" 
+          title="Editar dados cadastrais do projeto">
+          <span class="material-symbols-outlined">edit</span>
+          Editar
+        </app-button>
+      </div>
+    </div>
+  </section>
+
+  <div class="dossier-nav-tabs d-flex align-items-center gap-lg">
+    <button 
+      type="button" 
+      class="nav-tab-btn font-label-md" 
+      [class.active]="activeTab === 'etapas'" 
+      (click)="setTab('etapas')">
+      Etapas do Projeto ({{ projeto.etapas.length }})
+    </button>
+    <button 
+      type="button" 
+      class="nav-tab-btn font-label-md" 
+      [class.active]="activeTab === 'arquivos'" 
+      (click)="setTab('arquivos')">
+      Arquivos & Pranchas ({{ arquivos.length }})
+    </button>
+  </div>
+
+  <div class="dossier-bento-grid">
+    
+    <div class="bento-main-col d-flex flex-direction-column gap-md">
+      
+      <section class="panel-card d-flex flex-direction-column gap-md" *ngIf="activeTab === 'etapas'">
+        
+        <div class="panel-top-bar d-flex justify-content-between align-items-center flex-wrap gap-sm">
+          <div>
+            <h2 class="panel-heading font-headline-md m-0">Etapas do Projeto</h2>
+            <p class="panel-subheading font-label-sm text-on-surface-variant margin-top-xs m-0">Acompanhamento sequencial das fases arquitetônicas.</p>
+          </div>
+
+          <button type="button" class="btn-add-etapa d-inline-flex align-items-center gap-xs font-label-sm" (click)="abrirModalNovaEtapa()">
+            <span class="material-symbols-outlined">add</span>
+            NOVA ETAPA
+          </button>
+        </div>
+
+        <div class="stepper-section w-full" *ngIf="projeto.etapas.length > 0">
+          <div class="stepper-track-wrap position-relative w-full">
+            <div class="stepper-line-bg"></div>
+            <div class="stepper-line-active" [style.width.%]="projeto.progressoPercentual"></div>
+
+            <div class="stepper-nodes-row d-flex justify-content-between position-relative">
+              <div *ngFor="let etapa of projeto.etapas" class="stepper-step-item clickable-step d-flex flex-direction-column align-items-center text-center" (click)="toggleEtapaStatus(etapa)" title="Clique para avançar ou alternar o status desta etapa">
+                
+                <div *ngIf="etapa.status === StatusEtapa.Concluida" class="step-circle step-done d-flex align-items-center justify-content-center">
+                  <span class="material-symbols-outlined">check</span>
+                </div>
+
+                <div *ngIf="etapa.status === StatusEtapa.EmAndamento" class="step-circle step-current d-flex align-items-center justify-content-center">
+                  <div class="current-dot"></div>
+                </div>
+
+                <div *ngIf="etapa.status === StatusEtapa.Pendente" class="step-circle step-pending d-flex align-items-center justify-content-center font-label-sm font-weight-bold">
+                  {{ etapa.ordem }}
+                </div>
+
+                <span class="step-title font-label-sm margin-top-xs" [class.step-title-active]="etapa.status === StatusEtapa.EmAndamento" [class.step-title-done]="etapa.status === StatusEtapa.Concluida">
+                  {{ etapa.nome }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stepper-action-bar d-flex align-items-center justify-content-between flex-wrap gap-sm" *ngIf="projeto.etapas.length > 0">
+          <div class="current-etapa-info d-flex align-items-center gap-xs font-label-md">
+            <span class="label text-on-surface-variant">Etapa Atual:</span>
+            <span class="val font-weight-bold text-primary">{{ etapaAtiva ? etapaAtiva.nome : 'Todas concluídas' }}</span>
+          </div>
+
+          <div class="action-buttons-group d-flex align-items-center gap-xs" *ngIf="etapaAtiva">
+            <button 
+              *ngIf="etapaAtiva.status === StatusEtapa.Pendente" 
+              type="button" 
+              class="btn-trigger-step font-label-md" 
+              (click)="alterarStatusEtapa(etapaAtiva, StatusEtapa.EmAndamento)">
+              Iniciar {{ etapaAtiva.nome }}
+            </button>
+
+            <button 
+              *ngIf="etapaAtiva.status === StatusEtapa.EmAndamento" 
+              type="button" 
+              class="btn-trigger-step btn-done d-inline-flex align-items-center gap-xs font-label-md" 
+              (click)="alterarStatusEtapa(etapaAtiva, StatusEtapa.Concluida)">
+              <span class="material-symbols-outlined">task_alt</span>
+              Concluir {{ etapaAtiva.nome }}
+            </button>
+          </div>
+        </div>
+
+        <div class="etapas-list-wrap d-flex flex-direction-column gap-md" *ngIf="projeto.etapas.length > 0">
+          <div *ngFor="let etapa of projeto.etapas" class="etapa-card-item d-flex flex-direction-column gap-sm" [class.etapa-card-active]="etapa.status === StatusEtapa.EmAndamento" [class.etapa-card-done]="etapa.status === StatusEtapa.Concluida">
+            
+            <div class="etapa-card-header d-flex justify-content-between align-items-start gap-md flex-wrap">
+              <div class="etapa-header-left d-flex align-items-start gap-sm">
+                <div class="etapa-index-badge d-flex align-items-center justify-content-center font-label-md font-weight-bold" [class.badge-done]="etapa.status === StatusEtapa.Concluida" [class.badge-active]="etapa.status === StatusEtapa.EmAndamento">
+                  <span *ngIf="etapa.status !== StatusEtapa.Concluida">{{ etapa.ordem }}</span>
+                  <span *ngIf="etapa.status === StatusEtapa.Concluida" class="material-symbols-outlined">check</span>
+                </div>
+                <div class="etapa-info-text d-flex flex-direction-column gap-xs">
+                  <div class="etapa-title-row d-flex align-items-center gap-xs">
+                    <h3 class="etapa-name-heading font-body-lg font-weight-bold m-0">{{ etapa.nome }}</h3>
+                    <span class="etapa-pill font-label-sm" [class]="'pill-' + etapa.statusLabel.toLowerCase()">
+                      {{ etapa.statusLabel }}
+                    </span>
+                  </div>
+                  <p class="etapa-desc-text font-body-md text-on-surface-variant m-0" *ngIf="etapa.descricao">{{ etapa.descricao }}</p>
+                  <span class="etapa-conclusao-tag d-inline-flex align-items-center gap-xs font-label-sm text-on-surface-variant" *ngIf="etapa.dataConclusao">
+                    <span class="material-symbols-outlined">event_available</span>
+                    Concluída em {{ etapa.dataConclusao | date:'dd/MM/yyyy HH:mm' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="etapa-header-actions d-flex align-items-center gap-xs">
+                <button 
+                  *ngIf="etapa.status === StatusEtapa.Pendente" 
+                  type="button" 
+                  class="btn-stage-action btn-stage-start d-inline-flex align-items-center gap-xs font-label-sm" 
+                  (click)="alterarStatusEtapa(etapa, StatusEtapa.EmAndamento)" 
+                  title="Iniciar esta etapa">
+                  <span class="material-symbols-outlined">play_arrow</span>
+                  Iniciar Etapa
+                </button>
+
+                <button 
+                  *ngIf="etapa.status === StatusEtapa.EmAndamento" 
+                  type="button" 
+                  class="btn-stage-action btn-stage-finish d-inline-flex align-items-center gap-xs font-label-sm" 
+                  (click)="alterarStatusEtapa(etapa, StatusEtapa.Concluida)" 
+                  title="Concluir esta etapa e avançar">
+                  <span class="material-symbols-outlined">check_circle</span>
+                  Concluir Etapa
+                </button>
+
+                <button 
+                  *ngIf="etapa.status === StatusEtapa.Concluida" 
+                  type="button" 
+                  class="btn-stage-action btn-stage-reopen d-inline-flex align-items-center gap-xs font-label-sm" 
+                  (click)="alterarStatusEtapa(etapa, StatusEtapa.EmAndamento)" 
+                  title="Reabrir esta etapa para revisões">
+                  <span class="material-symbols-outlined">restart_alt</span>
+                  Reabrir
+                </button>
+              </div>
+            </div>
+
+            <div class="etapa-checklist-box d-flex flex-direction-column gap-sm">
+              <div class="checklist-top-row d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-xs font-label-sm font-weight-bold">
+                  <span class="material-symbols-outlined icon-tasks">checklist</span>
+                  <span class="checklist-heading">Entregáveis da Fase</span>
+                </div>
+                <span class="checklist-counter font-label-sm text-on-surface-variant">
+                  {{ getTarefasConcluidasCount(etapa) }} de {{ obterTarefas(etapa).length }} entregáveis prontos
+                </span>
+              </div>
+
+              <div class="checklist-items-list d-flex flex-direction-column gap-xs">
+                <div 
+                  *ngFor="let tarefa of obterTarefas(etapa)" 
+                  class="checklist-item-row d-flex align-items-center gap-sm" 
+                  [class.item-checked]="tarefa.concluida"
+                  (click)="toggleTarefa(etapa, tarefa)">
+                  
+                  <div class="custom-checkbox d-flex align-items-center justify-content-center" [class.checked]="tarefa.concluida">
+                    <span class="material-symbols-outlined" *ngIf="tarefa.concluida">check</span>
+                  </div>
+
+                  <span class="task-title-text font-body-md flex-grow-1">{{ tarefa.titulo }}</span>
+
+                  <button 
+                    type="button" 
+                    class="btn-remove-task d-inline-flex align-items-center justify-content-center" 
+                    (click)="removerTarefa(etapa, tarefa.id); $event.stopPropagation()" 
+                    title="Remover entregável">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="add-task-row w-full">
+                <input 
+                  #novaTarefaInput 
+                  type="text" 
+                  class="input-new-task font-body-md w-full" 
+                  placeholder="+ Adicionar novo entregável ou tarefa técnica (Pressione Enter)..." 
+                  (keyup.enter)="adicionarTarefa(etapa, novaTarefaInput)" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div *ngIf="projeto.etapas.length === 0" class="panel-empty-state d-flex flex-direction-column align-items-center justify-content-center text-center padding-xl">
+          <span class="material-symbols-outlined empty-state-icon text-on-surface-variant">format_list_numbered</span>
+          <h3 class="font-headline-md margin-top-xs m-0">Nenhuma etapa cadastrada</h3>
+          <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Adicione etapas para estruturar o cronograma do projeto.</p>
+        </div>
+
+      </section>
+
+      <section class="panel-card d-flex flex-direction-column gap-md" *ngIf="activeTab === 'arquivos'">
+        
+        <div class="panel-top-bar d-flex justify-content-between align-items-center flex-wrap gap-sm">
+          <div>
+            <h2 class="panel-heading font-headline-md m-0">Repositório de Pranchas e Documentos</h2>
+            <p class="panel-subheading font-label-sm text-on-surface-variant margin-top-xs m-0">Plantas, memoriais, modelos 3D e contratos com controle de visualização do cliente.</p>
+          </div>
+        </div>
+
+        <div class="upload-action-box d-flex align-items-center justify-content-between flex-wrap gap-md">
+          <label class="checkbox-custom-label d-inline-flex align-items-center gap-xs font-label-md">
+            <input type="checkbox" [(ngModel)]="novoArquivoVisivelCliente" />
+            <span>Disponibilizar no Portal do Cliente</span>
+          </label>
+
+          <app-button variant="primary" (btnClick)="fileUploadInput.click()" [disabled]="uploadingArquivo">
+            <span class="material-symbols-outlined">cloud_upload</span>
+            <span>{{ uploadingArquivo ? 'Enviando...' : 'Fazer Upload de Prancha/Arquivo' }}</span>
+          </app-button>
+          <input type="file" #fileUploadInput (change)="onFileSelected($event)" class="d-none" />
+        </div>
+
+        <div class="files-table-container w-full" *ngIf="arquivos.length > 0">
+          <table class="files-table w-full">
+            <thead>
+              <tr>
+                <th class="font-label-sm text-on-surface-variant">Documento</th>
+                <th class="font-label-sm text-on-surface-variant">Enviado em</th>
+                <th class="font-label-sm text-on-surface-variant text-center">Portal Cliente</th>
+                <th class="font-label-sm text-on-surface-variant text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let arq of arquivos" class="file-row">
+                <td>
+                  <div class="file-cell-main d-flex align-items-center gap-xs font-body-md">
+                    <span class="material-symbols-outlined file-type-icon">{{ getFileIcon(arq.nome) }}</span>
+                    <span class="file-name-text font-weight-medium">{{ arq.nome }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="file-date-text font-label-md text-on-surface-variant">{{ arq.criadoEm | date:'dd/MM/yyyy HH:mm' }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="visibility-tag d-inline-flex align-items-center gap-xs font-label-sm" [class.visible]="arq.visivelCliente">
+                    <span class="material-symbols-outlined">{{ arq.visivelCliente ? 'visibility' : 'visibility_off' }}</span>
+                    {{ arq.visivelCliente ? 'Visível' : 'Oculto' }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <div class="file-row-actions d-inline-flex align-items-center gap-xs">
+                    <a [href]="arq.urlStorage" target="_blank" class="btn-file-action d-inline-flex align-items-center justify-content-center" title="Baixar documento">
+                      <span class="material-symbols-outlined">download</span>
+                    </a>
+                    <button type="button" class="btn-file-action btn-file-delete d-inline-flex align-items-center justify-content-center" (click)="excluirArquivo(arq)" title="Excluir arquivo">
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="arquivos.length === 0" class="panel-empty-state d-flex flex-direction-column align-items-center justify-content-center text-center padding-xl">
+          <span class="material-symbols-outlined empty-state-icon text-on-surface-variant">folder_open</span>
+          <h3 class="font-headline-md margin-top-xs m-0">Nenhum arquivo enviado</h3>
+          <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Faça upload de plantas em PDF, arquivos CAD, renders ou contratos para centralizar a documentação.</p>
+        </div>
+
+      </section>
+
+    </div>
+
+    <aside class="bento-side-col d-flex flex-direction-column gap-md">
+      
+      <div class="side-card d-flex flex-direction-column gap-sm">
+        <h3 class="side-card-title font-headline-md m-0">Dados do Projeto</h3>
+
+        <div class="side-metrics-group d-flex flex-direction-column gap-xs">
+          <div class="metric-highlight-box d-flex flex-direction-column align-items-center justify-content-center text-center padding-sm" *ngIf="projeto.metragemTotal">
+            <span class="metric-val-num font-headline-lg font-weight-bold text-primary">{{ projeto.metragemTotal }}</span>
+            <span class="metric-unit-tag font-label-sm text-on-surface-variant">m² de área construída</span>
+          </div>
+
+          <div class="side-data-row d-flex justify-content-between align-items-center font-body-md">
+            <span class="data-label text-on-surface-variant">Tipo de Projeto:</span>
+            <span class="data-val font-weight-medium">{{ projeto.tipoLabel }}</span>
+          </div>
+
+          <div class="side-data-row d-flex justify-content-between align-items-center font-body-md">
+            <span class="data-label text-on-surface-variant">Etapas Concluídas:</span>
+            <span class="data-val font-weight-medium">{{ totalConcluidas }} de {{ projeto.etapas.length }}</span>
+          </div>
+
+          <div class="side-data-row d-flex justify-content-between align-items-center font-body-md" *ngIf="projeto.dataPrevistaEntrega">
+            <span class="data-label text-on-surface-variant">Previsão de Entrega:</span>
+            <span class="data-val font-weight-medium">{{ projeto.dataPrevistaEntrega | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-card d-flex flex-direction-column gap-sm">
+        <div class="side-card-header-row d-flex justify-content-between align-items-center">
+          <h3 class="side-card-title font-headline-md m-0">Arquivos Recentes</h3>
+          <button type="button" class="btn-link-action font-label-sm" (click)="setTab('arquivos')">Ver todos</button>
+        </div>
+
+        <div class="recent-files-list d-flex flex-direction-column gap-xs" *ngIf="arquivos.length > 0">
+          <div *ngFor="let arq of arquivos.slice(0, 4)" class="recent-file-item d-flex align-items-center gap-xs">
+            <span class="material-symbols-outlined recent-icon">{{ getFileIcon(arq.nome) }}</span>
+            <div class="recent-file-meta d-flex flex-direction-column flex-grow-1">
+              <span class="recent-name font-body-md font-weight-medium" [title]="arq.nome">{{ arq.nome }}</span>
+              <span class="recent-sub font-label-sm text-on-surface-variant">{{ arq.criadoEm | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <a [href]="arq.urlStorage" target="_blank" class="recent-download-link d-inline-flex align-items-center justify-content-center" title="Download">
+              <span class="material-symbols-outlined">download</span>
+            </a>
+          </div>
+        </div>
+
+        <div *ngIf="arquivos.length === 0" class="side-empty-note padding-sm text-center">
+          <span class="font-label-sm text-on-surface-variant">Nenhum arquivo enviado ainda.</span>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+</div>

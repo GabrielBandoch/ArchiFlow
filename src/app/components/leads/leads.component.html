@@ -43,16 +43,17 @@
         
         <div *ngFor="let lead of col.leads" 
              class="lead-card d-flex flex-direction-column" 
-             draggable="true" 
+             [class.converted-card]="col.status === StatusLeadEnum.Convertido"
+             [draggable]="col.status !== StatusLeadEnum.Convertido" 
              (dragstart)="onDragStart($event, lead.id)"
              (click)="verDetalhes(lead)">
           
           <div class="card-header d-flex justify-content-between align-items-center">
             <span class="origin-tag" *ngIf="lead.origem">{{ lead.origem }}</span>
             <span *ngIf="!lead.origem"></span>
-            <button class="btn-delete" (click)="excluirLead(lead, $event)" title="Excluir Lead">
+            <app-button variant="icon" size="sm" (btnClick)="excluirLead(lead, $event)" title="Excluir Lead">
               <span class="material-symbols-outlined">delete</span>
-            </button>
+            </app-button>
           </div>
 
           <h4 class="lead-title">{{ lead.nome }}</h4>
@@ -73,12 +74,14 @@
               {{ col.status === StatusLeadEnum.Novo ? 'Recebido: ' : 'Modificado: ' }} 
               {{ (lead.atualizadoEm || lead.criadoEm) | date:'dd/MM/yyyy' }}
             </span>
-            <button *ngIf="col.status !== StatusLeadEnum.Convertido && col.status !== StatusLeadEnum.Perdido" 
-                    class="btn-convert" 
-                    (click)="converterParaCliente(lead, $event)" 
-                    title="Converter em Cliente">
-              <span class="material-symbols-outlined">person_add</span>
-            </button>
+            <app-button 
+              *ngIf="col.status !== StatusLeadEnum.Convertido && col.status !== StatusLeadEnum.Perdido" 
+              variant="icon"
+              size="sm"
+              (btnClick)="converterParaCliente(lead, $event)" 
+              title="Converter em Cliente">
+              <span class="material-symbols-outlined text-primary">person_add</span>
+            </app-button>
           </div>
 
         </div>

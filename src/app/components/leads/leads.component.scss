@@ -1,5 +1,9 @@
 .leads-container {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .btn-icon {
@@ -10,13 +14,17 @@
 
 .kanban-board {
   flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
   overflow-x: auto;
-  padding-bottom: var(--af-space-md);
-  align-items: flex-start;
-  min-height: 450px;
+  overflow-y: hidden;
+  padding-bottom: 6px;
   scroll-behavior: smooth;
   cursor: grab;
   user-select: none;
+  box-sizing: border-box;
 
   &.grabbing {
     cursor: grabbing;
@@ -25,7 +33,7 @@
 }
 
 .kanban-scrollbar::-webkit-scrollbar {
-  height: 8px;
+  height: 6px;
   width: 6px;
 }
 .kanban-scrollbar::-webkit-scrollbar-track {
@@ -40,22 +48,30 @@
 }
 
 .kanban-column {
-  flex: 0 0 320px;
-  width: 320px;
+  flex: 1 0 280px;
+  min-width: 280px;
+  max-width: 360px;
   background-color: var(--af-surface-container-low);
   border-radius: var(--af-radius-md);
-  max-height: calc(100vh - 220px);
-  border: 1px solid rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--af-outline-variant);
+  box-shadow: 0 1px 4px rgba(43, 38, 35, 0.03);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 
   .column-header {
-    padding: var(--af-space-md);
+    padding: 12px 16px;
     border-bottom: 1px solid var(--af-outline-variant);
+    background-color: var(--af-surface-container);
+    flex-shrink: 0;
 
     .header-title {
       h3 {
         margin: 0;
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 0.85rem;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         color: var(--af-on-surface);
@@ -74,20 +90,25 @@
 
   .column-cards {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
-    padding: var(--af-space-sm);
-    min-height: 100px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
   }
 }
 
 .no-leads {
   text-align: center;
   color: var(--af-on-surface-variant);
-  font-size: 0.85rem;
-  padding: var(--af-space-lg);
+  font-size: 0.82rem;
+  padding: 16px 12px;
   border: 1px dashed var(--af-outline-variant);
   border-radius: var(--af-radius-default);
-  background: rgba(0, 0, 0, 0.01);
+  background: rgba(0, 0, 0, 0.015);
+  box-sizing: border-box;
 }
 
 .status-indicator {
@@ -106,13 +127,14 @@
 
 .lead-card {
   background-color: var(--af-surface-container-lowest);
-  padding: var(--af-space-md);
+  padding: 14px 16px;
   border-radius: var(--af-radius-default);
-  box-shadow: var(--af-shadow-sm);
-  border: 1px solid transparent;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 4px rgba(43, 38, 35, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: grab;
   position: relative;
+  flex-shrink: 0;
   
   &:active {
     cursor: grabbing;
@@ -120,13 +142,13 @@
   }
 
   &:hover {
-    box-shadow: var(--af-shadow-md);
+    box-shadow: 0 4px 12px rgba(43, 38, 35, 0.08);
     border-color: var(--af-outline-variant);
     transform: translateY(-2px);
   }
 
   .card-header {
-    margin-bottom: var(--af-space-sm);
+    margin-bottom: 8px;
 
     .origin-tag {
       background: var(--af-surface-container);
@@ -164,7 +186,7 @@
   }
 
   .lead-title {
-    margin: 0 0 var(--af-space-sm) 0;
+    margin: 0 0 8px 0;
     font-size: 0.95rem;
     font-weight: 700;
     color: var(--af-on-surface);
@@ -172,7 +194,7 @@
   }
 
   .card-body {
-    margin-bottom: var(--af-space-md);
+    margin-bottom: 12px;
 
     .body-item {
       font-size: 0.8rem;
@@ -194,7 +216,7 @@
 
   .card-footer {
     border-top: 1px solid var(--af-surface-container);
-    padding-top: var(--af-space-sm);
+    padding-top: 8px;
 
     .date-text {
       font-size: 0.72rem;

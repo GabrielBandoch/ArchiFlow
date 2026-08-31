@@ -7,34 +7,47 @@
 
 .input-label {
   font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--af-on-surface-variant);
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 .input-wrapper {
   position: relative;
   width: 100%;
+
+  &.is-checkbox {
+    display: flex;
+    align-items: center;
+    width: auto;
+
+    .form-input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--af-primary);
+    }
+  }
 }
 
 .form-input {
   width: 100%;
-  height: 52px;
-  padding: 0 var(--af-space-md);
-  border-radius: var(--af-radius-default);
+  height: 38px;
+  padding: 0 12px;
+  border-radius: var(--af-radius-sm);
   border: 1px solid var(--af-outline-variant);
   background-color: var(--af-surface-container-lowest);
   color: var(--af-on-surface);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 400;
   outline: none;
   box-sizing: border-box;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   &::placeholder {
-    color: var(--af-outline);
+    color: var(--af-on-surface-variant);
     opacity: 0.6;
   }
 
@@ -44,7 +57,7 @@
 
   &:focus:not(:disabled) {
     border-color: var(--af-primary);
-    box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.15); /* Soft Terracotta outer glow */
+    box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.12);
   }
 
   &:disabled {
@@ -54,21 +67,28 @@
   }
 }
 
-/* Com ícone à esquerda */
+.form-textarea {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 12px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
 .has-icon {
   .form-input {
-    padding-left: 44px; /* Espaço para o ícone */
+    padding-left: 38px;
   }
 
   .input-icon {
     position: absolute;
-    left: var(--af-space-md);
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--af-outline-variant);
+    color: var(--af-on-surface-variant);
     pointer-events: none;
-    font-size: 20px;
-    transition: color 0.3s ease;
+    font-size: 18px;
+    transition: color 0.2s ease;
   }
 
   .form-input:focus ~ .input-icon {
@@ -76,7 +96,6 @@
   }
 }
 
-/* Estado de Erro */
 .has-error {
   .form-input {
     border-color: var(--af-error);
@@ -95,5 +114,11 @@
   font-size: 11px;
   font-weight: 500;
   color: var(--af-error);
-  margin-left: 4px;
+  margin-left: 2px;
+}
+
+.input-hint-msg {
+  font-size: 11px;
+  color: var(--af-on-surface-variant);
+  margin-left: 2px;
 }

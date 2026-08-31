@@ -1,11 +1,11 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
   providers: [
@@ -24,15 +24,26 @@ export class InputComponent implements ControlValueAccessor {
   @Input() icon?: string;
   @Input() required = false;
   @Input() error?: string;
+  @Input() hint?: string;
+  @Input() accept?: string;
+  @Input() maxlength?: number | string;
+  @Input() min?: number | string;
+  @Input() max?: number | string;
+  @Input() rows = 3;
+  @Input() customClass = '';
 
-  value = '';
+  @Output() enterPress = new EventEmitter<void>();
+  @Output() fileSelect = new EventEmitter<Event>();
+  @Output() valueChange = new EventEmitter<any>();
+
+  value: any = '';
   disabled = false;
 
   onChange: any = () => {};
   onTouched: any = () => {};
 
   writeValue(value: any): void {
-    this.value = value || '';
+    this.value = value !== undefined && value !== null ? value : '';
   }
 
   registerOnChange(fn: any): void {
@@ -48,9 +59,22 @@ export class InputComponent implements ControlValueAccessor {
   }
 
   onInput(event: Event): void {
-    const element = event.target as HTMLInputElement;
-    this.value = element.value;
+    const element = event.target as HTMLInputElement | HTMLTextAreaElement;
+    if (this.type === 'checkbox' && element instanceof HTMLInputElement) {
+      this.value = element.checked;
+    } else {
+      this.value = element.value;
+    }
     this.onChange(this.value);
+    this.valueChange.emit(this.value);
+  }
+
+  onFileChange(event: Event): void {
+    this.fileSelect.emit(event);
+  }
+
+  onKeyUpEnter(): void {
+    this.enterPress.emit();
   }
 
   onBlur(): void {

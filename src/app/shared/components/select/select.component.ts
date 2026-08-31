@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, ElementRef, HostListener } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, forwardRef, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -23,7 +23,7 @@ export interface SelectOption {
     }
   ]
 })
-export class SelectComponent implements ControlValueAccessor {
+export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
   @Input() id = '';
   @Input() placeholder = 'Selecione...';
   @Input() label?: string;
@@ -35,15 +35,29 @@ export class SelectComponent implements ControlValueAccessor {
   disabled = false;
   isOpen = false;
 
+  private listener?: (event: Event) => void;
+
   onChange: any = () => {};
   onTouched: any = () => {};
 
   constructor(private elementRef: ElementRef) {}
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.isOpen = false;
+  ngOnInit(): void {
+    this.listener = (event: Event) => {
+      if (this.isOpen && !this.elementRef.nativeElement.contains(event.target as Node)) {
+        this.isOpen = false;
+        this.onTouched();
+      }
+    };
+    // Usa capture phase para interceptar cliques e foco mesmo se houver stopPropagation em modais
+    window.addEventListener('click', this.listener, true);
+    window.addEventListener('focusin', this.listener, true);
+  }
+
+  ngOnDestroy(): void {
+    if (this.listener) {
+      window.removeEventListener('click', this.listener, true);
+      window.removeEventListener('focusin', this.listener, true);
     }
   }
 
@@ -80,6 +94,6 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   getSelectedOption(): SelectOption | undefined {
-    return this.options.find(opt => opt.value === this.value);
+    return this.options.find(opt => String(opt.value) === String(this.value));
   }
 }

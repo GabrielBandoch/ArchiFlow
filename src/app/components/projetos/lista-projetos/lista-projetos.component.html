@@ -1,20 +1,184 @@
-<div class="d-flex flex-direction-column gap-xl">
-  <div class="d-flex flex-direction-column gap-xs">
-    <h1 class="font-headline-md m-0">Painel de Projetos</h1>
-    <p class="font-body-md text-on-surface-variant m-0">Estrutura inicial do módulo de projetos configurada.</p>
+<div class="projetos-page d-flex flex-direction-column gap-lg">
+  
+  <header class="page-header d-flex align-items-center justify-content-between flex-wrap gap-md">
+    <div class="header-main">
+      <h1 class="page-heading font-headline-lg m-0">Projetos Arquitetônicos</h1>
+      <p class="page-subheading font-body-md text-on-surface-variant margin-top-xs m-0">
+        Gestão executiva de projetos, etapas de trabalho, cronogramas e pranchas técnicas.
+      </p>
+    </div>
+    
+    <div class="header-actions">
+      <app-button variant="primary" (btnClick)="abrirCriarModal()">
+        <span class="material-symbols-outlined">add</span>
+        Novo Projeto
+      </app-button>
+    </div>
+  </header>
+
+  <section class="kpi-grid">
+    <div class="kpi-card d-flex align-items-center gap-md">
+      <div class="kpi-icon-box icon-total d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">architecture</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <span class="kpi-label font-label-sm text-on-surface-variant">Total de Projetos</span>
+        <span class="kpi-value font-headline-md font-weight-bold">{{ totalProjetos }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card d-flex align-items-center gap-md">
+      <div class="kpi-icon-box icon-active d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">running_with_errors</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <span class="kpi-label font-label-sm text-on-surface-variant">Em Andamento</span>
+        <span class="kpi-value font-headline-md font-weight-bold text-primary">{{ totalEmAndamento }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card d-flex align-items-center gap-md">
+      <div class="kpi-icon-box icon-done d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">task_alt</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <span class="kpi-label font-label-sm text-on-surface-variant">Concluídos</span>
+        <span class="kpi-value font-headline-md font-weight-bold">{{ totalConcluidos }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card d-flex align-items-center gap-md">
+      <div class="kpi-icon-box icon-area d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">square_foot</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <span class="kpi-label font-label-sm text-on-surface-variant">Área Total Projetada</span>
+        <span class="kpi-value font-headline-md font-weight-bold">{{ totalMetragem }} m²</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="table-container-card" *ngIf="projetos.length > 0; else emptyStateCRM">
+    
+    <div class="table-toolbar d-flex align-items-center justify-content-between flex-wrap gap-md">
+      <div class="search-field-container">
+        <app-input 
+          id="searchProjetos"
+          icon="search" 
+          placeholder="Buscar por nome, cliente ou tipo..." 
+          [(ngModel)]="searchQuery" 
+          (valueChange)="filtrarProjetos()">
+        </app-input>
+      </div>
+
+      <nav class="filter-tabs d-flex align-items-center gap-xs">
+        <button 
+          type="button" 
+          class="filter-tab font-label-sm" 
+          [class.active]="filtroStatus === 'todos'" 
+          (click)="setFiltro('todos')">
+          Todos <span>{{ totalProjetos }}</span>
+        </button>
+        <button 
+          type="button" 
+          class="filter-tab font-label-sm" 
+          [class.active]="filtroStatus === 'andamento'" 
+          (click)="setFiltro('andamento')">
+          Em Andamento <span>{{ totalEmAndamento }}</span>
+        </button>
+        <button 
+          type="button" 
+          class="filter-tab font-label-sm" 
+          [class.active]="filtroStatus === 'briefing'" 
+          (click)="setFiltro('briefing')">
+          Briefing
+        </button>
+        <button 
+          type="button" 
+          class="filter-tab font-label-sm" 
+          [class.active]="filtroStatus === 'concluidos'" 
+          (click)="setFiltro('concluidos')">
+          Concluídos <span>{{ totalConcluidos }}</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="projects-card-grid">
+      <article 
+        *ngFor="let proj of projetosFiltrados" 
+        class="proj-studio-card d-flex flex-direction-column gap-sm"
+        (click)="verDetalhes(proj.id)">
+        
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="type-pill font-label-sm font-weight-medium">{{ proj.tipoLabel }}</span>
+          <span class="status-badge font-label-sm" [class]="'status-' + proj.statusLabel.toLowerCase()">
+            {{ proj.statusLabel }}
+          </span>
+        </div>
+
+        <h3 class="proj-title font-title-lg font-weight-bold text-on-surface m-0">{{ proj.nome }}</h3>
+        
+        <p class="proj-excerpt font-body-md text-on-surface-variant m-0" *ngIf="proj.descricao">
+          {{ proj.descricao }}
+        </p>
+
+        <div class="client-sub d-flex align-items-center gap-md font-label-sm text-on-surface-variant margin-top-xs">
+          <span *ngIf="proj.clienteNome" class="d-inline-flex align-items-center gap-xs">
+            <span class="material-symbols-outlined icon-mini">person</span>
+            {{ proj.clienteNome }}
+          </span>
+          <span *ngIf="proj.metragemTotal" class="d-inline-flex align-items-center gap-xs">
+            <span class="material-symbols-outlined icon-mini">square_foot</span>
+            {{ proj.metragemTotal }} m²
+          </span>
+        </div>
+
+        <div class="progress-wrap margin-top-sm">
+          <div class="d-flex justify-content-between font-label-sm margin-bottom-xs">
+            <span class="text-on-surface-variant font-weight-medium">Progresso</span>
+            <span class="font-weight-bold text-primary">{{ proj.progressoPercentual }}%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="proj.progressoPercentual"></div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center font-label-sm text-on-surface-variant margin-top-xs">
+            <span>Início: {{ proj.dataInicio | date:'dd/MM/yyyy' }}</span>
+            <span *ngIf="proj.dataPrevistaEntrega">Entrega: {{ proj.dataPrevistaEntrega | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div *ngIf="projetosFiltrados.length === 0" class="empty-filter-row text-center padding-xl">
+      <p class="font-body-md text-on-surface-variant m-0">Nenhum projeto encontrado com os filtros selecionados.</p>
+      <button type="button" class="btn-clear font-label-md margin-top-sm" (click)="searchQuery = ''; setFiltro('todos')">
+        Limpar busca
+      </button>
+    </div>
+
+    <div class="table-footer d-flex align-items-center justify-content-between">
+      <span class="font-label-sm text-on-surface-variant">
+        {{ projetosFiltrados.length }} de {{ projetos.length }} {{ projetos.length === 1 ? 'projeto cadastrado' : 'projetos cadastrados' }}
+      </span>
+    </div>
   </div>
 
-  <div class="w-max-md">
-    <app-card 
-      cardTitle="Módulo em Desenvolvimento" 
-      cardSubtitle="Aguardando Integração">
-      <p class="font-body-md text-on-surface-variant m-0 lh-relaxed">
-        A estrutura de pastas e componentes compartilhados foi criada e testada com sucesso. Os dados reais de projetos serão integrados nas próximas etapas de desenvolvimento, conforme a definição dos endpoints e contratos do backend.
-      </p>
-      
-      <div card-footer>
-        <app-button variant="secondary" [disabled]="true">Carregando...</app-button>
+  <ng-template #emptyStateCRM>
+    <div class="empty-state-card d-flex flex-direction-column align-items-center justify-content-center text-center padding-xl">
+      <div class="empty-icon-art d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">architecture</span>
       </div>
-    </app-card>
-  </div>
+      <h2 class="font-headline-md margin-top-md m-0">Nenhum projeto em andamento</h2>
+      <p class="font-body-md text-on-surface-variant margin-top-sm m-0">
+        Cadastre um novo projeto arquitetônico para acompanhar etapas, tarefas, pranchas e cronograma.
+      </p>
+      <div class="empty-actions margin-top-lg">
+        <app-button variant="primary" (btnClick)="abrirCriarModal()">
+          Criar Primeiro Projeto
+        </app-button>
+      </div>
+    </div>
+  </ng-template>
+
 </div>

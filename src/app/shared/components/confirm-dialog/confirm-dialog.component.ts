@@ -1,10 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../index';
+import { CommonModule } from '@angular/common';
+import { ButtonComponent } from '../button/button.component';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [CORE_IMPORTS, DESIGN_SYSTEM],
+  imports: [CommonModule, ButtonComponent, DialogComponent],
   templateUrl: './confirm-dialog.component.html'
 })
 export class ConfirmDialogComponent {

@@ -1,0 +1,42 @@
+<app-dialog [show]="show" dialogTitle="Nova Etapa do Projeto" size="md" (close)="onClose()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
+    
+    <app-input 
+      id="nomeEtapa" 
+      type="text" 
+      label="Nome da Etapa" 
+      placeholder="Ex: Aprovação na Prefeitura, Detalhamento..." 
+      formControlName="nome"
+      [required]="true"
+      [error]="submitted && f['nome'].errors ? 'O nome da etapa é obrigatório.' : undefined">
+    </app-input>
+
+    <div class="d-flex gap-md">
+      <div class="flex-grow-0" style="width: 140px;">
+        <app-input 
+          id="ordemEtapa" 
+          type="number" 
+          label="Ordem / Sequência" 
+          formControlName="ordem">
+        </app-input>
+      </div>
+
+      <div class="flex-grow-1">
+        <app-input 
+          id="descEtapa" 
+          type="text" 
+          label="Descrição / Entregáveis da Etapa" 
+          placeholder="Ex: Emissão das pranchas legais..." 
+          formControlName="descricao">
+        </app-input>
+      </div>
+    </div>
+
+    <div dialog-footer class="d-flex justify-content-end gap-sm">
+      <app-button variant="secondary" (btnClick)="onClose()">Cancelar</app-button>
+      <app-button type="submit" variant="primary" [disabled]="saving">
+        {{ saving ? 'Adicionando...' : 'Adicionar Etapa' }}
+      </app-button>
+    </div>
+  </form>
+</app-dialog>

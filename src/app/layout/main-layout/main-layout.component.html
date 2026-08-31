@@ -6,14 +6,37 @@
     </div>
 
     <nav class="nav-menu">
-      <a routerLink="/leads" routerLinkActive="active" class="nav-item">
+      <a routerLink="/leads" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
         <span class="material-symbols-outlined nav-icon">person_search</span>
         <span class="nav-label">Leads</span>
+      </a>
+      <a routerLink="/clientes" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">group</span>
+        <span class="nav-label">Clientes</span>
       </a>
       <a routerLink="/projetos" routerLinkActive="active" class="nav-item">
         <span class="material-symbols-outlined nav-icon">folder</span>
         <span class="nav-label">Projetos</span>
       </a>
+
+      <div class="nav-group-section">
+        <button type="button" class="nav-item nav-item-btn w-full" (click)="toggleConfiguracoes()" [class.active-parent]="router.url.includes('/configuracoes')">
+          <span class="material-symbols-outlined nav-icon">settings</span>
+          <span class="nav-label flex-grow-1 text-left">Configurações</span>
+          <span class="material-symbols-outlined nav-arrow" [class.rotated]="configuracoesAberto">expand_more</span>
+        </button>
+
+        <div class="nav-submenu" *ngIf="configuracoesAberto">
+          <a routerLink="/configuracoes/templates-projeto" routerLinkActive="active" class="nav-subitem">
+            <span class="material-symbols-outlined nav-subicon">account_tree</span>
+            <span class="nav-sublabel">Modelos de Projetos</span>
+          </a>
+          <a routerLink="/configuracoes/origens-lead" routerLinkActive="active" class="nav-subitem">
+            <span class="material-symbols-outlined nav-subicon">hub</span>
+            <span class="nav-sublabel">Origens de Leads</span>
+          </a>
+        </div>
+      </div>
     </nav>
 
     <div class="user-profile" *ngIf="authService.currentUser$ | async as user">
@@ -21,10 +44,10 @@
         <span class="user-name">{{ user.nome }}</span>
         <span class="user-email">{{ user.email }}</span>
       </div>
-      <button (click)="onLogout()" class="btn-logout" title="Sair da conta">
+      <app-button variant="ghost" size="sm" (btnClick)="onLogout()" title="Sair da conta">
         <span class="material-symbols-outlined">logout</span>
-        <span class="logout-label">Sair</span>
-      </button>
+        <span class="logout-label font-label-sm">Sair</span>
+      </app-button>
     </div>
   </aside>
 

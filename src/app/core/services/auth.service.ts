@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AutenticacaoService } from '../api/autenticacao.service';
+import { AutenticacaoService } from '../api';
 import { Usuario } from '../../models/usuario.model';
 import { LoginCommand } from '../../commands/autenticacao.commands';
 

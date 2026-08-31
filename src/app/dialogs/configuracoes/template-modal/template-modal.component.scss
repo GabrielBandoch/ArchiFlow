@@ -1,0 +1,235 @@
+.form-section-header {
+  border-bottom: 1px solid var(--af-outline-variant);
+  padding-bottom: 6px;
+  margin-bottom: var(--af-space-xs);
+
+  .section-badge-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--af-on-surface-variant);
+  }
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--af-space-md);
+  align-items: start;
+  width: 100%;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.icon-selector-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--af-on-surface-variant);
+  margin-left: 2px;
+  margin-bottom: var(--af-space-xs);
+}
+
+.icon-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px;
+}
+
+.icon-option-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: var(--af-radius-sm);
+  border: 1px solid var(--af-outline-variant);
+  background-color: var(--af-surface-container-lowest);
+  color: var(--af-on-surface-variant);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  .material-symbols-outlined {
+    font-size: 22px;
+  }
+
+  .icon-name-tag {
+    font-size: 10.5px;
+    font-weight: 500;
+  }
+
+  &:hover {
+    background-color: var(--af-surface-container-low);
+    color: var(--af-on-surface);
+    border-color: var(--af-outline);
+  }
+
+  &.selected {
+    background-color: rgba(118, 85, 56, 0.12);
+    border-color: var(--af-primary);
+    color: var(--af-primary);
+    font-weight: 600;
+  }
+}
+
+.etapas-list {
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.empty-etapas-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border: 1px dashed var(--af-outline-variant);
+  border-radius: var(--af-radius-sm);
+  background-color: var(--af-surface-container-low);
+  text-align: center;
+  color: var(--af-on-surface-variant);
+  font-size: 13px;
+
+  .empty-icon {
+    font-size: 32px;
+    margin-bottom: 6px;
+    opacity: 0.6;
+  }
+}
+
+.etapa-card-item {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-sm);
+  padding: 12px 14px;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--af-outline);
+  }
+
+  .etapa-card-header {
+    border-bottom: 1px solid var(--af-surface-container-low);
+    padding-bottom: 8px;
+
+    .etapa-ordem-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: var(--af-radius-full);
+      background-color: var(--af-primary);
+      color: var(--af-on-primary);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .etapa-title-text {
+      font-size: 13.5px;
+      color: var(--af-on-surface);
+    }
+  }
+}
+
+.btn-action-icon {
+  background: none;
+  border: none;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--af-on-surface-variant);
+  cursor: pointer;
+  border-radius: var(--af-radius-xs);
+  transition: all 0.15s ease;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--af-surface-container-high);
+    color: var(--af-on-surface);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  &.text-error:hover:not(:disabled) {
+    background-color: rgba(186, 26, 26, 0.1);
+    color: var(--af-error);
+  }
+}
+
+.tarefas-box {
+  background-color: var(--af-surface-container-low);
+  padding: 10px 12px;
+  border-radius: var(--af-radius-sm);
+  border: 1px solid var(--af-surface-container-high);
+
+  .tarefas-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--af-on-surface-variant);
+  }
+
+  .tarefas-chips-container {
+    .tarefa-chip-pill {
+      background-color: var(--af-surface-container-lowest);
+      border: 1px solid var(--af-outline-variant);
+      border-radius: var(--af-radius-full);
+      padding: 3px 8px 3px 10px;
+      font-size: 11.5px;
+      color: var(--af-on-surface);
+
+      .btn-remove-chip {
+        background: none;
+        border: none;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        color: var(--af-outline);
+        cursor: pointer;
+
+        .material-symbols-outlined {
+          font-size: 14px;
+        }
+
+        &:hover {
+          color: var(--af-error);
+        }
+      }
+    }
+  }
+
+  .form-tarefa-input {
+    height: 32px;
+    padding: 0 10px;
+    border-radius: var(--af-radius-sm);
+    border: 1px solid var(--af-outline-variant);
+    background-color: var(--af-surface-container-lowest);
+    color: var(--af-on-surface);
+    font-size: 12px;
+    outline: none;
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: var(--af-primary);
+    }
+  }
+}
