@@ -106,6 +106,23 @@
   font-weight: 500;
 }
 
+.alert-info {
+  background-color: var(--af-surface-container);
+  border: 1px solid var(--af-surface-variant);
+  color: var(--af-primary);
+  padding: 12px;
+  border-radius: var(--af-radius-default);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+
+  .icon {
+    font-size: 18px;
+  }
+}
+
 .footer-area {
   border-top: 1px solid rgba(211, 196, 185, 0.3);
   padding-top: var(--af-space-md);

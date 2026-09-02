@@ -23,10 +23,15 @@ export class LoginComponent {
   loading = false;
   submitted = false;
   errorMessage = '';
+  sessionExpired = false;
   returnUrl = '/';
 
   constructor() {
     this.loginForm = LoginForm.create(this.formBuilder);
+
+    if (this.route.snapshot.queryParams['sessionExpired'] === 'true') {
+      this.sessionExpired = true;
+    }
 
     if (this.authService.isAuthenticated) {
       if (this.authService.isCliente) {

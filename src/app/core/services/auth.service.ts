@@ -17,10 +17,16 @@ export class AuthService {
     try {
       const userJson = localStorage.getItem('currentUser');
       if (userJson) {
-        storedUser = JSON.parse(userJson);
+        const parsed = JSON.parse(userJson);
+        if (parsed?.token && !this.isTokenExpired(parsed.token)) {
+          storedUser = parsed;
+        } else {
+          localStorage.removeItem('currentUser');
+        }
       }
     } catch (e) {
       console.error('Erro ao ler usuário do localStorage', e);
+      localStorage.removeItem('currentUser');
     }
     this.currentUserSubject = new BehaviorSubject<Usuario | undefined>(storedUser);
     this.currentUser$ = this.currentUserSubject.asObservable();
@@ -30,9 +36,37 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  public isTokenExpired(token?: string): boolean {
+    if (!token) return true;
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return true;
+      const payloadBase64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const payloadJson = decodeURIComponent(
+        atob(payloadBase64)
+          .split('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const payload = JSON.parse(payloadJson);
+      if (!payload.exp) return false;
+      const nowInSeconds = Math.floor(Date.now() / 1000);
+      return payload.exp <= nowInSeconds;
+    } catch {
+      return true;
+    }
+  }
+
   public get isAuthenticated(): boolean {
     const user = this.currentUserValue;
-    return !!user && !!user.token;
+    if (!user || !user.token) {
+      return false;
+    }
+    if (this.isTokenExpired(user.token)) {
+      this.logout();
+      return false;
+    }
+    return true;
   }
 
   public get token(): string | undefined {

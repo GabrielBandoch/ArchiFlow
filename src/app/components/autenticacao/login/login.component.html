@@ -56,6 +56,11 @@
           </app-input>
         </div>
 
+        <div *ngIf="sessionExpired && !errorMessage" class="alert-info animate-fade-in-up">
+          <span class="material-symbols-outlined icon">info</span>
+          <span>Sua sessão expirou. Por favor, faça login novamente.</span>
+        </div>
+
         <div *ngIf="errorMessage" class="alert-error animate-fade-in-up">
           {{ errorMessage }}
         </div>
