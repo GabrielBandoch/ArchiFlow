@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { staffGuard, portalGuard } from './core/guards/role.guard';
 
 export const appRoutes: Routes = [
   {
@@ -17,8 +17,23 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'portal',
+    canActivate: [portalGuard],
+    loadComponent: () => import('./layout/portal-layout/portal-layout.component').then(m => m.PortalLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/portal/portal-cliente/portal-cliente.component').then(m => m.PortalClienteComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./components/portal/portal-cliente/portal-cliente.component').then(m => m.PortalClienteComponent)
+      }
+    ]
+  },
+  {
     path: 'projetos',
-    canActivate: [authGuard],
+    canActivate: [staffGuard],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -33,7 +48,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'leads',
-    canActivate: [authGuard],
+    canActivate: [staffGuard],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -48,7 +63,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'clientes',
-    canActivate: [authGuard],
+    canActivate: [staffGuard],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -63,7 +78,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'configuracoes',
-    canActivate: [authGuard],
+    canActivate: [staffGuard],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {

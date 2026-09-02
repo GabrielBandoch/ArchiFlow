@@ -29,7 +29,11 @@ export class LoginComponent {
     this.loginForm = LoginForm.create(this.formBuilder);
 
     if (this.authService.isAuthenticated) {
-      this.router.navigate(['/projetos']);
+      if (this.authService.isCliente) {
+        this.router.navigate(['/portal']);
+      } else {
+        this.router.navigate(['/projetos']);
+      }
     }
 
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/projetos';
@@ -52,8 +56,13 @@ export class LoginComponent {
     };
 
     this.authService.login(command).subscribe({
-      next: () => {
-        this.router.navigate([this.returnUrl]);
+      next: (user) => {
+        if (this.authService.isCliente) {
+          const target = user.projetoId ? `/portal/${user.projetoId}` : '/portal';
+          this.router.navigate([target]);
+        } else {
+          this.router.navigate([this.returnUrl]);
+        }
       },
       error: (err: any) => {
         this.errorMessage = err.error?.message || 'E-mail ou senha incorretos.';

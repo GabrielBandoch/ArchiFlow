@@ -39,6 +39,20 @@ export class AuthService {
     return this.currentUserValue?.token;
   }
 
+  public get isCliente(): boolean {
+    const perfil = this.currentUserValue?.perfil;
+    return perfil === 'Cliente' || perfil === 'ClienteFinal';
+  }
+
+  public get isStaff(): boolean {
+    const user = this.currentUserValue;
+    return !!user && !this.isCliente;
+  }
+
+  public get projetoId(): string | null | undefined {
+    return this.currentUserValue?.projetoId;
+  }
+
   login(command: LoginCommand): Observable<Usuario> {
     return this.apiService.login(command).pipe(
       map(user => {
