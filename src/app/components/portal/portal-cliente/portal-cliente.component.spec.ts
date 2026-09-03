@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ProjetoService } from '../../../core/api/projetos/projeto.service';
 import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
+import { ChatService } from '../../../core/services/chat.service';
 import { StatusProjeto, StatusEtapa, TipoProjeto } from '../../../models/projeto.model';
 
 describe('PortalClienteComponent', () => {
@@ -16,6 +17,7 @@ describe('PortalClienteComponent', () => {
   let projetoServiceSpy: jasmine.SpyObj<ProjetoService>;
   let arquivoServiceSpy: jasmine.SpyObj<ArquivoService>;
   let clienteServiceSpy: jasmine.SpyObj<ClienteService>;
+  let chatServiceSpy: jasmine.SpyObj<ChatService>;
   let routerSpy: jasmine.SpyObj<Router>;
 
   const mockProjeto = {
@@ -103,11 +105,25 @@ describe('PortalClienteComponent', () => {
     projetoServiceSpy = jasmine.createSpyObj('ProjetoService', ['obterPorId']);
     arquivoServiceSpy = jasmine.createSpyObj('ArquivoService', ['obterPorProjeto']);
     clienteServiceSpy = jasmine.createSpyObj('ClienteService', ['obterPorId']);
+    chatServiceSpy = jasmine.createSpyObj('ChatService', [
+      'obterHistorico',
+      'iniciarConexao',
+      'enviarMensagem',
+      'desconectar'
+    ], {
+      mensagens$: of([]),
+      conectado$: of(true),
+      mensagens: []
+    });
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     projetoServiceSpy.obterPorId.and.returnValue(of(mockProjeto as any));
     arquivoServiceSpy.obterPorProjeto.and.returnValue(of(mockArquivos as any));
     clienteServiceSpy.obterPorId.and.returnValue(of({ id: 'cli-456', nome: 'Carlos Cliente' } as any));
+    chatServiceSpy.obterHistorico.and.returnValue(of([]));
+    chatServiceSpy.iniciarConexao.and.returnValue(Promise.resolve());
+    chatServiceSpy.enviarMensagem.and.returnValue(Promise.resolve());
+    chatServiceSpy.desconectar.and.returnValue(Promise.resolve());
 
     await TestBed.configureTestingModule({
       imports: [PortalClienteComponent],
@@ -116,6 +132,7 @@ describe('PortalClienteComponent', () => {
         { provide: ProjetoService, useValue: projetoServiceSpy },
         { provide: ArquivoService, useValue: arquivoServiceSpy },
         { provide: ClienteService, useValue: clienteServiceSpy },
+        { provide: ChatService, useValue: chatServiceSpy },
         { provide: Router, useValue: routerSpy },
         {
           provide: ActivatedRoute,
