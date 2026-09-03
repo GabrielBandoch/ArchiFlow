@@ -230,36 +230,42 @@
         </div>
       </section>
 
-      <!-- Architect Contact & Support Card -->
+      <!-- Architect Direct Chat Card -->
       <section class="support-card">
         <div class="support-header">
           <div class="support-avatar">
             <span class="material-symbols-outlined">architecture</span>
           </div>
           <div>
-            <h4>Duna Arquitetura</h4>
+            <h4>Arquiteto Responsável</h4>
             <p>Escritório de Arquitetura & Interiores</p>
           </div>
         </div>
 
         <p class="support-text">
-          Tem alguma dúvida sobre o andamento do projeto ou gostaria de solicitar uma reunião? Fale diretamente com a arquiteta responsável.
+          Converse em tempo real sobre plantas, dúvidas, sugestões e alinhamentos deste projeto.
         </p>
 
         <div class="contact-links">
-          <a href="mailto:contato@dunaarquitetura.com.br" class="contact-btn email">
-            <span class="material-symbols-outlined">mail</span>
-            <span>contato&#64;dunaarquitetura.com.br</span>
-          </a>
-          <a href="https://wa.me/5547999990000" target="_blank" rel="noopener noreferrer" class="contact-btn whatsapp">
-            <span class="material-symbols-outlined">chat</span>
-            <span>(47) 99999-0000 (WhatsApp)</span>
-          </a>
+          <button type="button" class="contact-btn chat-direct" (click)="abrirChat()">
+            <span class="material-symbols-outlined">forum</span>
+            <span>Mensagens com o Arquiteto</span>
+          </button>
         </div>
       </section>
 
     </div>
 
   </div>
+
+  <!-- Real-Time Chat Widget for Client -->
+  <app-chat-widget 
+    *ngIf="projeto" 
+    [projetoId]="projeto.id" 
+    [projetoNome]="projeto.nome" 
+    [interlocutorNome]="'Arquiteto Responsável'"
+    [interlocutorCargo]="'Escritório de Arquitetura'"
+    [floating]="true">
+  </app-chat-widget>
 
 </div>

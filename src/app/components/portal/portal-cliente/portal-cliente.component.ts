@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -7,7 +7,7 @@ import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
 import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TipoProjeto, TarefaEtapa } from '../../../models/projeto.model';
 import { Arquivo } from '../../../models/arquivo.model';
-import { DESIGN_SYSTEM } from '../../../shared';
+import { DESIGN_SYSTEM, ChatWidgetComponent } from '../../../shared';
 
 @Component({
   selector: 'app-portal-cliente',
@@ -30,9 +30,17 @@ export class PortalClienteComponent implements OnInit {
   loading = true;
   filtroArquivo: 'todos' | 'plantas' | 'documentos' | 'imagens' = 'todos';
 
+  @ViewChild(ChatWidgetComponent) chatWidget?: ChatWidgetComponent;
+
   StatusProjeto = StatusProjeto;
   StatusEtapa = StatusEtapa;
   TipoProjeto = TipoProjeto;
+
+  abrirChat(): void {
+    if (this.chatWidget && !this.chatWidget.isOpen) {
+      this.chatWidget.toggleChat();
+    }
+  }
 
   ngOnInit(): void {
     const paramId = this.route.snapshot.paramMap.get('id');
