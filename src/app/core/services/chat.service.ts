@@ -41,7 +41,6 @@ export class ChatService {
   public async iniciarConexao(projetoId: string): Promise<void> {
     this.projetoIdAtual = projetoId;
 
-    // Se já estiver conectado no mesmo projeto, apenas atualiza histórico
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('EntrarNoProjeto', projetoId);
       return;
@@ -65,7 +64,6 @@ export class ChatService {
 
     this.hubConnection.on('ReceiveMessage', (msg: MensagemChat) => {
       const atuais = this.mensagensSubject.value;
-      // Evitar duplicatas caso o envio via REST já tenha adicionado
       if (!atuais.some(m => m.id === msg.id)) {
         this.mensagensSubject.next([...atuais, msg]);
       }
@@ -86,25 +84,22 @@ export class ChatService {
       await this.hubConnection.start();
       this.conectadoSubject.next(true);
       await this.hubConnection.invoke('EntrarNoProjeto', projetoId);
-    } catch (err) {
-      console.warn('Erro ao conectar SignalR, operando em modo fallback REST', err);
+    } catch {
       this.conectadoSubject.next(false);
     }
   }
 
   public async enviarMensagem(projetoId: string, conteudo: string): Promise<void> {
-    if (!conteudo || !conteudo.trim()) return;
+    if (!conteudo || !conteudo.trim() || conteudo.trim().length > 2000) return;
 
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
       try {
         await this.hubConnection.invoke('EnviarMensagem', projetoId, conteudo.trim());
         return;
-      } catch (err) {
-        console.warn('Falha no envio via SignalR, tentando REST', err);
+      } catch {
       }
     }
 
-    // Fallback REST
     const novaMsg = await this.http.post<MensagemChat>(`${environment.apiUrl}/mensagens/projeto/${projetoId}`, {
       projetoId,
       conteudo: conteudo.trim()
@@ -125,8 +120,7 @@ export class ChatService {
           await this.hubConnection.invoke('SairDoProjeto', this.projetoIdAtual);
         }
         await this.hubConnection.stop();
-      } catch (e) {
-        // Ignora erro ao parar
+      } catch {
       } finally {
         this.hubConnection = undefined;
         this.conectadoSubject.next(false);

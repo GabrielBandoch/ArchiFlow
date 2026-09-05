@@ -93,7 +93,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
 
   async enviar(): Promise<void> {
     const texto = this.novoTexto.trim();
-    if (!texto || this.enviando) return;
+    if (!texto || this.enviando || texto.length > 2000) return;
 
     this.enviando = true;
     this.novoTexto = '';
