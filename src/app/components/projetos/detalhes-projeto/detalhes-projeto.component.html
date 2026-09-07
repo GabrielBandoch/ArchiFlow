@@ -412,4 +412,13 @@
 
   </div>
 
+  <app-chat-widget 
+    *ngIf="projeto" 
+    [projetoId]="projeto.id" 
+    [projetoNome]="projeto.nome" 
+    [interlocutorNome]="projeto.clienteNome || 'Cliente'"
+    [interlocutorCargo]="'Cliente do Projeto'"
+    [floating]="true">
+  </app-chat-widget>
+
 </div>

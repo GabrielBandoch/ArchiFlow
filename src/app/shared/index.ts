@@ -8,6 +8,7 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { SelectComponent } from './components/select/select.component';
 import { ClientSearchComponent } from './components/client-search/client-search.component';
+import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
 
 export const CORE_IMPORTS = [
   CommonModule,
@@ -25,5 +26,8 @@ export const DESIGN_SYSTEM = [
   DialogComponent,
   ConfirmDialogComponent,
   SelectComponent,
-  ClientSearchComponent
+  ClientSearchComponent,
+  ChatWidgetComponent
 ] as const;
+
+export * from './components/chat-widget/chat-widget.component';

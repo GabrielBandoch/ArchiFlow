@@ -1,0 +1,92 @@
+<div class="chat-widget-wrapper" [class.floating-mode]="floating" [class.chat-open]="isOpen">
+  <button 
+    *ngIf="floating && !isOpen" 
+    (click)="toggleChat()" 
+    class="chat-floating-btn"
+    [attr.aria-label]="isCliente ? 'Conversar com o Arquiteto' : 'Conversar com o Cliente'"
+    [title]="isCliente ? 'Conversar com o Arquiteto' : 'Conversar com o Cliente'"
+    type="button">
+    <span class="material-symbols-outlined chat-icon" aria-hidden="true">forum</span>
+    <span class="floating-label hidden md:inline">{{ isCliente ? 'Falar com o Arquiteto' : 'Mensagens do Cliente' }}</span>
+    <span *ngIf="naoLidas > 0" class="unread-badge" aria-label="Mensagens não lidas">{{ naoLidas }}</span>
+  </button>
+
+  <div *ngIf="isOpen || !floating" class="chat-window shadow-xl" role="region" aria-label="Janela de Conversa">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="avatar-header" aria-hidden="true">
+          {{ obterIniciais(interlocutorNome || (isCliente ? 'Arquiteto' : 'Cliente')) }}
+        </div>
+        <div class="header-titles">
+          <h3 class="header-title">{{ interlocutorNome || (isCliente ? 'Arquiteto Responsável' : 'Cliente do Projeto') }}</h3>
+          <p class="header-subtitle">
+            <span class="status-dot" [class.online]="conectado" aria-hidden="true"></span>
+            <span>{{ interlocutorCargo || (isCliente ? 'Escritório de Arquitetura' : 'Cliente') }}</span>
+            <span *ngIf="conectado" class="online-text">• Online</span>
+          </p>
+        </div>
+      </div>
+
+      <button *ngIf="floating" (click)="fecharChat()" class="btn-close" type="button" title="Fechar" aria-label="Fechar janela de conversa">
+        <span class="material-symbols-outlined" aria-hidden="true">close</span>
+      </button>
+    </div>
+
+    <div #scrollContainer class="chat-messages-container" role="log" aria-live="polite">
+      <div *ngIf="mensagens.length === 0" class="empty-chat">
+        <div class="empty-icon-circle" aria-hidden="true">
+          <span class="material-symbols-outlined">forum</span>
+        </div>
+        <h4>Conversa Direta do Projeto</h4>
+        <p>{{ isCliente ? 'Tire dúvidas sobre plantas, acabamentos e decisões de projeto diretamente com seu arquiteto.' : 'Converse diretamente com o cliente sobre alinhamentos, entregáveis e aprovações do projeto.' }}</p>
+      </div>
+
+      <div *ngFor="let msg of mensagens" class="message-row" [class.my-message]="isMinhaMensagem(msg)">
+        <div *ngIf="!isMinhaMensagem(msg)" class="message-avatar" [title]="msg.remetenteNome" aria-hidden="true">
+          {{ obterIniciais(msg.remetenteNome) }}
+        </div>
+
+        <div class="message-bubble">
+          <div class="message-meta">
+            <span class="sender-name">{{ isMinhaMensagem(msg) ? 'Você' : msg.remetenteNome }}</span>
+            <span class="sender-role-tag" [class.client-tag]="msg.remetentePerfil === 'Cliente'">
+              {{ msg.remetentePerfil }}
+            </span>
+          </div>
+
+          <div class="message-content">
+            {{ msg.conteudo }}
+          </div>
+
+          <div class="message-time">
+            {{ formatarHora(msg.criadoEm) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form (ngSubmit)="enviar()" class="chat-input-area">
+      <textarea
+        #mensagemInput
+        [(ngModel)]="novoTexto"
+        name="novoTexto"
+        (keydown)="onKeyDown($event)"
+        placeholder="Digite uma mensagem... (Enter para enviar)"
+        rows="1"
+        maxlength="2000"
+        class="chat-textarea"
+        [disabled]="enviando"
+        aria-label="Campo de texto da mensagem"
+      ></textarea>
+
+      <button 
+        type="submit" 
+        class="btn-send"
+        [disabled]="!novoTexto.trim() || enviando"
+        title="Enviar"
+        aria-label="Enviar mensagem">
+        <span class="material-symbols-outlined" aria-hidden="true">send</span>
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,251 @@
+<div *ngIf="loading" class="portal-loading">
+  <div class="spinner"></div>
+  <p>Carregando as informações do seu projeto...</p>
+</div>
+
+<div *ngIf="!loading && !projeto" class="portal-empty-state">
+  <div class="empty-card">
+    <span class="material-symbols-outlined icon">domain_disabled</span>
+    <h2>Nenhum projeto encontrado</h2>
+    <p>Não identificamos um projeto vinculado ao seu usuário no momento. Entre em contato com a equipe da <strong>Duna Arquitetura</strong> para habilitar o seu acesso.</p>
+  </div>
+</div>
+
+<div *ngIf="!loading && projeto" class="portal-dashboard">
+  
+  <section class="project-hero">
+    <div class="hero-main">
+      <div class="badge-group">
+        <span class="status-chip status-{{ projeto.status }}">
+          {{ statusProjetoLabel }}
+        </span>
+        <span class="type-chip">
+          <span class="material-symbols-outlined">home_work</span>
+          {{ tipoProjetoFormatado }}
+        </span>
+      </div>
+
+      <h1 class="project-title">{{ projeto.nome || 'Projeto Arquitetônico' }}</h1>
+      <p class="project-description" *ngIf="projeto.descricao">{{ projeto.descricao }}</p>
+
+      <div class="project-meta-grid">
+        <div class="meta-item">
+          <span class="material-symbols-outlined meta-icon">square_foot</span>
+          <div class="meta-texts">
+            <span class="meta-label">Metragem Total</span>
+            <span class="meta-value">{{ projeto.metragemTotal ? (projeto.metragemTotal + ' m²') : 'Não informada' }}</span>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <span class="material-symbols-outlined meta-icon">calendar_today</span>
+          <div class="meta-texts">
+            <span class="meta-label">Início</span>
+            <span class="meta-value">{{ formatarData(projeto.dataInicio) }}</span>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <span class="material-symbols-outlined meta-icon">event_upcoming</span>
+          <div class="meta-texts">
+            <span class="meta-label">Previsão de Conclusão</span>
+            <span class="meta-value highlight-date">{{ formatarData(projeto.dataPrevistaEntrega) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-progress-card">
+      <div class="progress-header">
+        <span class="progress-title">Progresso Geral</span>
+        <span class="progress-percentage">{{ percentualProgresso }}%</span>
+      </div>
+      
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" [style.width.%]="percentualProgresso"></div>
+      </div>
+
+      <div class="progress-footer">
+        <span class="etapas-counter">
+          <strong>{{ totalConcluidas }}</strong> de <strong>{{ totalEtapas }}</strong> etapas concluídas
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <div class="portal-grid">
+    
+    <div class="main-column">
+      
+      <section class="current-phase-card" *ngIf="etapaAtual">
+        <div class="card-header-accent">
+          <div class="header-badge">
+            <span class="material-symbols-outlined pulse-icon">play_circle</span>
+            <span>Etapa Atual</span>
+          </div>
+          <span class="phase-target" *ngIf="etapaAtual.dataFimPrevista">
+            Entrega estimada: <strong>{{ formatarData(etapaAtual.dataFimPrevista) }}</strong>
+          </span>
+        </div>
+
+        <div class="current-phase-body">
+          <h2 class="current-phase-name">{{ etapaAtual.nome }}</h2>
+          <p class="current-phase-desc" *ngIf="etapaAtual.descricao">{{ etapaAtual.descricao }}</p>
+
+          <div class="deliverables-section" *ngIf="etapaAtual.tarefas && etapaAtual.tarefas.length > 0">
+            <h4 class="deliverables-title">
+              <span class="material-symbols-outlined">checklist</span>
+              Entregáveis desta etapa
+            </h4>
+            <div class="deliverables-list">
+              <div *ngFor="let item of etapaAtual.tarefas" class="deliverable-item" [class.completed]="item.concluida">
+                <span class="material-symbols-outlined status-icon">
+                  {{ item.concluida ? 'check_circle' : 'radio_button_unchecked' }}
+                </span>
+                <span class="item-title">{{ item.titulo }}</span>
+                <span class="item-badge" *ngIf="item.concluida">Concluído</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="timeline-section">
+        <div class="section-heading">
+          <span class="material-symbols-outlined heading-icon">timeline</span>
+          <h3>Cronograma de Etapas do Projeto</h3>
+        </div>
+
+        <div class="timeline-container">
+          <div *ngFor="let etapa of projeto.etapas; let last = last; let i = index" 
+               class="timeline-step" 
+               [class.step-completed]="etapa.status === StatusEtapa.Concluida"
+               [class.step-active]="etapa.status === StatusEtapa.EmAndamento"
+               [class.step-pending]="etapa.status === StatusEtapa.Pendente">
+            
+            <div class="timeline-marker">
+              <div class="marker-circle">
+                <span *ngIf="etapa.status === StatusEtapa.Concluida" class="material-symbols-outlined">check</span>
+                <span *ngIf="etapa.status === StatusEtapa.EmAndamento" class="material-symbols-outlined">autorenew</span>
+                <span *ngIf="etapa.status === StatusEtapa.Pendente">{{ i + 1 }}</span>
+              </div>
+              <div class="marker-line" *ngIf="!last"></div>
+            </div>
+
+            <div class="timeline-content">
+              <div class="content-header">
+                <div class="header-left">
+                  <h4 class="step-title">{{ etapa.nome }}</h4>
+                  <span class="step-badge" [class.badge-completed]="etapa.status === StatusEtapa.Concluida"
+                                          [class.badge-active]="etapa.status === StatusEtapa.EmAndamento"
+                                          [class.badge-pending]="etapa.status === StatusEtapa.Pendente">
+                    {{ etapa.status === StatusEtapa.Concluida ? 'Concluída' : (etapa.status === StatusEtapa.EmAndamento ? 'Em Andamento' : 'Pendente') }}
+                  </span>
+                </div>
+                <div class="step-dates">
+                  <span *ngIf="etapa.status === StatusEtapa.Concluida && etapa.dataConclusao" class="date-concluded">
+                    Concluída em: {{ formatarData(etapa.dataConclusao) }}
+                  </span>
+                  <span *ngIf="etapa.status !== StatusEtapa.Concluida && etapa.dataFimPrevista" class="date-expected">
+                    Previsão: {{ formatarData(etapa.dataFimPrevista) }}
+                  </span>
+                </div>
+              </div>
+
+              <p class="step-desc" *ngIf="etapa.descricao">{{ etapa.descricao }}</p>
+
+              <div class="step-tasks-preview" *ngIf="etapa.tarefas && etapa.tarefas.length > 0">
+                <div class="tasks-header">Entregáveis ({{ etapa.tarefas.length }})</div>
+                <div class="tasks-mini-list">
+                  <div *ngFor="let t of etapa.tarefas" class="mini-task" [class.done]="t.concluida">
+                    <span class="material-symbols-outlined mini-icon">
+                      {{ t.concluida ? 'check_small' : 'circle' }}
+                    </span>
+                    <span>{{ t.titulo }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="sidebar-column">
+      
+      <section class="documents-card">
+        <div class="documents-header">
+          <div class="header-left">
+            <span class="material-symbols-outlined doc-icon">folder_open</span>
+            <h3>Documentos & Plantas</h3>
+          </div>
+          <span class="doc-counter">{{ arquivos.length }}</span>
+        </div>
+
+        <div class="filter-chips">
+          <button type="button" class="chip" [class.active]="filtroArquivo === 'todos'" (click)="setFiltroArquivo('todos')">Todos</button>
+          <button type="button" class="chip" [class.active]="filtroArquivo === 'plantas'" (click)="setFiltroArquivo('plantas')">Plantas</button>
+          <button type="button" class="chip" [class.active]="filtroArquivo === 'documentos'" (click)="setFiltroArquivo('documentos')">Documentos</button>
+          <button type="button" class="chip" [class.active]="filtroArquivo === 'imagens'" (click)="setFiltroArquivo('imagens')">Imagens</button>
+        </div>
+
+        <div class="documents-list" *ngIf="arquivosFiltrados.length > 0">
+          <div *ngFor="let arq of arquivosFiltrados" class="document-item">
+            <div class="doc-icon-wrap">
+              <span class="material-symbols-outlined file-icon">{{ getFileIcon(arq.nome) }}</span>
+            </div>
+            <div class="doc-details">
+              <span class="doc-name" [title]="arq.nome">{{ arq.nome }}</span>
+              <span class="doc-meta">Adicionado em {{ formatarData(arq.criadoEm) }}</span>
+            </div>
+            <button type="button" class="btn-download" (click)="baixarArquivo(arq)" title="Baixar documento">
+              <span class="material-symbols-outlined">download</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-documents" *ngIf="arquivosFiltrados.length === 0">
+          <span class="material-symbols-outlined empty-icon">description</span>
+          <p>Nenhum documento disponível no momento.</p>
+          <small>Seu arquiteto disponibilizará plantas e memoriais conforme o avanço das etapas.</small>
+        </div>
+      </section>
+
+      <section class="support-card">
+        <div class="support-header">
+          <div class="support-avatar">
+            <span class="material-symbols-outlined">architecture</span>
+          </div>
+          <div>
+            <h4>Arquiteto Responsável</h4>
+            <p>Escritório de Arquitetura & Interiores</p>
+          </div>
+        </div>
+
+        <p class="support-text">
+          Converse em tempo real sobre plantas, dúvidas, sugestões e alinhamentos deste projeto.
+        </p>
+
+        <div class="contact-links">
+          <button type="button" class="contact-btn chat-direct" (click)="abrirChat()">
+            <span class="material-symbols-outlined">forum</span>
+            <span>Mensagens com o Arquiteto</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+
+  <app-chat-widget 
+    *ngIf="projeto" 
+    [projetoId]="projeto.id" 
+    [projetoNome]="projeto.nome" 
+    [interlocutorNome]="'Arquiteto Responsável'"
+    [interlocutorCargo]="'Escritório de Arquitetura'"
+    [floating]="true">
+  </app-chat-widget>
+
+</div>

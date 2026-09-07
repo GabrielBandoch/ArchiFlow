@@ -1,0 +1,57 @@
+<div class="portal-layout">
+  <header class="portal-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="logo">
+          <span class="logo-mark">A</span>
+          <span class="logo-text">ArchiFlow</span>
+        </div>
+        <div class="divider-vertical"></div>
+        <div class="portal-badge">
+          <span class="material-symbols-outlined icon">apartment</span>
+          <span class="badge-text">Portal do Cliente</span>
+        </div>
+      </div>
+
+      <div class="partner-badge">
+        <span class="material-symbols-outlined partner-icon">architecture</span>
+        <div class="partner-info">
+          <span class="partner-title">Duna Arquitetura</span>
+          <span class="partner-subtitle">Escritório Responsável</span>
+        </div>
+      </div>
+
+      <div class="user-section">
+        <div class="user-chip">
+          <div class="avatar">{{ userInitials }}</div>
+          <div class="user-details">
+            <span class="user-name">{{ currentUser?.nome || 'Cliente' }}</span>
+            <span class="user-role">Acesso Exclusivo</span>
+          </div>
+        </div>
+
+        <button type="button" class="btn-logout" (click)="onLogout()" title="Sair da conta">
+          <span class="material-symbols-outlined">logout</span>
+          <span class="logout-text">Sair</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="portal-content">
+    <div class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <footer class="portal-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <p>&copy; 2026 ArchiFlow. Plataforma de Gestão de Projetos e Relacionamento.</p>
+      </div>
+      <div class="footer-right">
+        <span>Parceria com <strong>Duna Arquitetura</strong> • Joinville, SC</span>
+      </div>
+    </div>
+  </footer>
+</div>
