@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { PortalClienteComponent } from './portal-cliente.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { ProjetoService } from '../../../core/api/projetos/projeto.service';
 import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
@@ -13,6 +14,7 @@ describe('PortalClienteComponent', () => {
   let fixture: ComponentFixture<PortalClienteComponent>;
 
   let authServiceSpy: jasmine.SpyObj<AuthService>;
+  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
   let projetoServiceSpy: jasmine.SpyObj<ProjetoService>;
   let arquivoServiceSpy: jasmine.SpyObj<ArquivoService>;
   let clienteServiceSpy: jasmine.SpyObj<ClienteService>;
@@ -100,6 +102,7 @@ describe('PortalClienteComponent', () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', [], {
       currentUserValue: { id: 'usr-1', nome: 'Carlos Cliente', email: 'carlos@cliente.com', perfil: 'Cliente', projetoId: 'proj-123' }
     });
+    notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['error', 'success', 'info', 'warning']);
     projetoServiceSpy = jasmine.createSpyObj('ProjetoService', ['obterPorId']);
     arquivoServiceSpy = jasmine.createSpyObj('ArquivoService', ['obterPorProjeto']);
     clienteServiceSpy = jasmine.createSpyObj('ClienteService', ['obterPorId']);
@@ -113,6 +116,7 @@ describe('PortalClienteComponent', () => {
       imports: [PortalClienteComponent],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy },
         { provide: ProjetoService, useValue: projetoServiceSpy },
         { provide: ArquivoService, useValue: arquivoServiceSpy },
         { provide: ClienteService, useValue: clienteServiceSpy },
@@ -201,11 +205,13 @@ describe('PortalClienteComponent', () => {
     projetoServiceSpy.obterPorId.and.returnValue(throwError(() => new Error('Erro API')));
     component.carregarDados();
     expect(component.loading).toBeFalse();
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('Erro ao carregar dados do projeto.');
   });
 
   it('deve lidar com erro ao carregar arquivos', () => {
     arquivoServiceSpy.obterPorProjeto.and.returnValue(throwError(() => new Error('Erro API')));
     component.carregarArquivos();
     expect(component.loading).toBeFalse();
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('Erro ao carregar arquivos do projeto.');
   });
 });

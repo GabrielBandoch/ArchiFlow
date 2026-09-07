@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { ProjetoService } from '../../../core/api/projetos/projeto.service';
 import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
@@ -20,6 +21,7 @@ export class PortalClienteComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
   private projetoService = inject(ProjetoService);
   private arquivoService = inject(ArquivoService);
   private clienteService = inject(ClienteService);
@@ -73,7 +75,7 @@ export class PortalClienteComponent implements OnInit {
         this.carregarArquivos();
       },
       error: (err) => {
-        console.error('Erro ao carregar projeto no portal', err);
+        this.notificationService.error('Erro ao carregar dados do projeto.');
         this.loading = false;
       }
     });
@@ -86,7 +88,7 @@ export class PortalClienteComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erro ao carregar arquivos no portal', err);
+        this.notificationService.error('Erro ao carregar arquivos do projeto.');
         this.loading = false;
       }
     });

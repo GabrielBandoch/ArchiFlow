@@ -1,10 +1,8 @@
-<!-- Loading State -->
 <div *ngIf="loading" class="portal-loading">
   <div class="spinner"></div>
   <p>Carregando as informações do seu projeto...</p>
 </div>
 
-<!-- Empty / No Project State -->
 <div *ngIf="!loading && !projeto" class="portal-empty-state">
   <div class="empty-card">
     <span class="material-symbols-outlined icon">domain_disabled</span>
@@ -13,10 +11,8 @@
   </div>
 </div>
 
-<!-- Main Portal Container -->
 <div *ngIf="!loading && projeto" class="portal-dashboard">
   
-  <!-- Project Hero Banner -->
   <section class="project-hero">
     <div class="hero-main">
       <div class="badge-group">
@@ -59,7 +55,6 @@
       </div>
     </div>
 
-    <!-- Overall Progress Gauge Card -->
     <div class="hero-progress-card">
       <div class="progress-header">
         <span class="progress-title">Progresso Geral</span>
@@ -78,13 +73,10 @@
     </div>
   </section>
 
-  <!-- Two Column Layout: Main Details & Sidebar Hub -->
   <div class="portal-grid">
     
-    <!-- Left Column: Etapa Atual & Cronograma Visual -->
     <div class="main-column">
       
-      <!-- Current Phase Highlight Card (RF18) -->
       <section class="current-phase-card" *ngIf="etapaAtual">
         <div class="card-header-accent">
           <div class="header-badge">
@@ -100,7 +92,6 @@
           <h2 class="current-phase-name">{{ etapaAtual.nome }}</h2>
           <p class="current-phase-desc" *ngIf="etapaAtual.descricao">{{ etapaAtual.descricao }}</p>
 
-          <!-- Deliverables of Current Phase -->
           <div class="deliverables-section" *ngIf="etapaAtual.tarefas && etapaAtual.tarefas.length > 0">
             <h4 class="deliverables-title">
               <span class="material-symbols-outlined">checklist</span>
@@ -119,7 +110,6 @@
         </div>
       </section>
 
-      <!-- Full Visual Timeline / Cronograma (RF19) -->
       <section class="timeline-section">
         <div class="section-heading">
           <span class="material-symbols-outlined heading-icon">timeline</span>
@@ -133,7 +123,6 @@
                [class.step-active]="etapa.status === StatusEtapa.EmAndamento"
                [class.step-pending]="etapa.status === StatusEtapa.Pendente">
             
-            <!-- Timeline Marker -->
             <div class="timeline-marker">
               <div class="marker-circle">
                 <span *ngIf="etapa.status === StatusEtapa.Concluida" class="material-symbols-outlined">check</span>
@@ -143,7 +132,6 @@
               <div class="marker-line" *ngIf="!last"></div>
             </div>
 
-            <!-- Timeline Content -->
             <div class="timeline-content">
               <div class="content-header">
                 <div class="header-left">
@@ -166,7 +154,6 @@
 
               <p class="step-desc" *ngIf="etapa.descricao">{{ etapa.descricao }}</p>
 
-              <!-- Deliverables sub-list -->
               <div class="step-tasks-preview" *ngIf="etapa.tarefas && etapa.tarefas.length > 0">
                 <div class="tasks-header">Entregáveis ({{ etapa.tarefas.length }})</div>
                 <div class="tasks-mini-list">
@@ -185,10 +172,8 @@
 
     </div>
 
-    <!-- Right Column: Document Hub & Architect Studio Card (RF20) -->
     <div class="sidebar-column">
       
-      <!-- Documents & Files Hub (RF20) -->
       <section class="documents-card">
         <div class="documents-header">
           <div class="header-left">
@@ -198,7 +183,6 @@
           <span class="doc-counter">{{ arquivos.length }}</span>
         </div>
 
-        <!-- Filter Chips -->
         <div class="filter-chips">
           <button type="button" class="chip" [class.active]="filtroArquivo === 'todos'" (click)="setFiltroArquivo('todos')">Todos</button>
           <button type="button" class="chip" [class.active]="filtroArquivo === 'plantas'" (click)="setFiltroArquivo('plantas')">Plantas</button>
@@ -206,7 +190,6 @@
           <button type="button" class="chip" [class.active]="filtroArquivo === 'imagens'" (click)="setFiltroArquivo('imagens')">Imagens</button>
         </div>
 
-        <!-- Documents List -->
         <div class="documents-list" *ngIf="arquivosFiltrados.length > 0">
           <div *ngFor="let arq of arquivosFiltrados" class="document-item">
             <div class="doc-icon-wrap">
@@ -222,7 +205,6 @@
           </div>
         </div>
 
-        <!-- Empty Documents State -->
         <div class="empty-documents" *ngIf="arquivosFiltrados.length === 0">
           <span class="material-symbols-outlined empty-icon">description</span>
           <p>Nenhum documento disponível no momento.</p>
@@ -230,7 +212,6 @@
         </div>
       </section>
 
-      <!-- Architect Contact & Support Card -->
       <section class="support-card">
         <div class="support-header">
           <div class="support-avatar">

@@ -98,13 +98,13 @@
         background-color: var(--af-surface-container-highest);
         color: var(--af-on-surface-variant);
 
-        &.status-0 { background-color: #e0f2fe; color: #0369a1; } // Briefing
-        &.status-1 { background-color: #fef3c7; color: #b45309; } // Desenvolvimento
-        &.status-2 { background-color: #f3e8ff; color: #7e22ce; } // Revisao
-        &.status-3 { background-color: #fef9c3; color: #854d0e; } // Aprovacao
-        &.status-4 { background-color: #dbeafe; color: #1d4ed8; } // Execucao
-        &.status-5 { background-color: #dcfce7; color: #15803d; } // Concluido
-        &.status-6 { background-color: #fee2e2; color: #b91c1c; } // Cancelado
+        &.status-0 { background-color: #e0f2fe; color: #0369a1; }
+        &.status-1 { background-color: #fef3c7; color: #b45309; }
+        &.status-2 { background-color: #f3e8ff; color: #7e22ce; }
+        &.status-3 { background-color: #fef9c3; color: #854d0e; }
+        &.status-4 { background-color: #dbeafe; color: #1d4ed8; }
+        &.status-5 { background-color: #dcfce7; color: #15803d; }
+        &.status-6 { background-color: #fee2e2; color: #b91c1c; }
       }
 
       .type-chip {

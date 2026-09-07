@@ -33,6 +33,7 @@
       [attr.maxlength]="maxlength || null"
       [attr.min]="min || null"
       [attr.max]="max || null"
+      [attr.autocomplete]="autocomplete || (type === 'password' ? 'current-password' : (type === 'email' ? 'email' : null))"
       (input)="onInput($event)"
       (change)="type === 'file' ? onFileChange($event) : onInput($event)"
       (keyup.enter)="onKeyUpEnter()"
