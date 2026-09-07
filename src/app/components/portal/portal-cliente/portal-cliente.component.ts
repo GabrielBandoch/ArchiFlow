@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ProjetoService } from '../../../core/api/projetos/projeto.service';
 import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TipoProjeto, TarefaEtapa } from '../../../models/projeto.model';
 import { Arquivo } from '../../../models/arquivo.model';
 import { DESIGN_SYSTEM, ChatWidgetComponent } from '../../../shared';
@@ -23,6 +24,7 @@ export class PortalClienteComponent implements OnInit {
   private projetoService = inject(ProjetoService);
   private arquivoService = inject(ArquivoService);
   private clienteService = inject(ClienteService);
+  private notificationService = inject(NotificationService, { optional: true });
 
   projetoId = '';
   projeto: Projeto | null = null;
@@ -83,6 +85,7 @@ export class PortalClienteComponent implements OnInit {
       error: (err) => {
         console.error('Erro ao carregar projeto no portal', err);
         this.loading = false;
+        this.notificationService?.error('Erro ao carregar dados do projeto.');
       }
     });
   }
@@ -96,6 +99,7 @@ export class PortalClienteComponent implements OnInit {
       error: (err) => {
         console.error('Erro ao carregar arquivos no portal', err);
         this.loading = false;
+        this.notificationService?.error('Erro ao carregar arquivos do projeto.');
       }
     });
   }

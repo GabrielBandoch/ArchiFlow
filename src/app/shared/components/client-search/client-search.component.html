@@ -67,92 +67,11 @@
   </span>
 </div>
 
-<app-dialog [show]="showModal" dialogTitle="Pesquisar & Selecionar Cliente" size="lg" (close)="fecharModal()">
-  <div class="modal-search-content d-flex flex-direction-column gap-md">
-    
-    <div class="modal-search-bar d-flex align-items-center gap-xs">
-      <span class="material-symbols-outlined icon-search-modal">search</span>
-      <input 
-        type="text" 
-        class="modal-search-input" 
-        placeholder="Buscar por nome, e-mail, telefone ou CPF/CNPJ..." 
-        [(ngModel)]="modalSearchText" 
-        (ngModelChange)="filtrarModal()" />
-    </div>
+<app-selecionar-cliente-modal
+  [show]="showModal"
+  [clientes]="clientes"
+  [initialSearchText]="searchText"
+  (close)="fecharModal()"
+  (clientSelected)="selecionarViaModal($event)">
+</app-selecionar-cliente-modal>
 
-    <div class="modal-table-container" *ngIf="modalClientesFiltrados.length > 0">
-      <table class="modal-table">
-        <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>E-mail</th>
-            <th>Telefone</th>
-            <th class="text-right">Ação</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let c of clientesPaginados" (click)="selecionarViaModal(c)" class="table-row-selectable">
-            <td>
-              <div class="d-flex align-items-center gap-sm">
-                <div class="table-avatar">
-                  <img *ngIf="c.fotoUrl" [src]="c.fotoUrl" class="avatar-photo" alt="Avatar" />
-                  <span *ngIf="!c.fotoUrl">{{ c.nome.substring(0, 2).toUpperCase() }}</span>
-                </div>
-                <div class="d-flex flex-direction-column">
-                  <span class="font-weight-semibold font-body-md text-on-surface">{{ c.nome }}</span>
-                  <span class="font-label-sm text-on-surface-variant" *ngIf="c.cpfCnpj">{{ c.cpfCnpj }}</span>
-                </div>
-              </div>
-            </td>
-            <td>
-              <span class="font-body-md text-on-surface">{{ c.email }}</span>
-            </td>
-            <td>
-              <span class="font-body-md text-on-surface-variant">{{ c.telefone || '—' }}</span>
-            </td>
-            <td class="text-right">
-              <app-button variant="secondary" size="sm" (btnClick)="selecionarViaModal(c); $event.stopPropagation()">
-                Selecionar
-              </app-button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div *ngIf="modalClientesFiltrados.length === 0" class="empty-results-box text-center p-lg">
-      <span class="material-symbols-outlined empty-results-icon">person_off</span>
-      <h4 class="font-headline-md margin-top-xs m-0">Nenhum cliente encontrado</h4>
-      <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Verifique os termos da busca.</p>
-    </div>
-
-    <div class="modal-footer-pagination d-flex justify-content-between align-items-center pt-sm" *ngIf="modalClientesFiltrados.length > 0">
-      <span class="font-label-sm text-on-surface-variant">
-        Página {{ paginaAtual }} de {{ totalPaginas }} ({{ modalClientesFiltrados.length }} clientes)
-      </span>
-
-      <div class="d-flex gap-xs">
-        <app-button 
-          variant="secondary"
-          size="sm"
-          [disabled]="paginaAtual <= 1" 
-          (btnClick)="paginaAnterior()">
-          <span class="material-symbols-outlined">chevron_left</span>
-          Anterior
-        </app-button>
-        <app-button 
-          variant="secondary"
-          size="sm"
-          [disabled]="paginaAtual >= totalPaginas" 
-          (btnClick)="proximaPagina()">
-          Próxima
-          <span class="material-symbols-outlined">chevron_right</span>
-        </app-button>
-      </div>
-    </div>
-
-    <div dialog-footer class="d-flex justify-content-end gap-sm margin-top-sm">
-      <app-button variant="secondary" (btnClick)="fecharModal()">Cancelar</app-button>
-    </div>
-  </div>
-</app-dialog>
