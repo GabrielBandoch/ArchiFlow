@@ -8,7 +8,6 @@ describe('AuthService', () => {
   let service: AuthService;
   let apiServiceSpy: jasmine.SpyObj<AutenticacaoService>;
 
-  // Helper to create valid vs expired JWT tokens
   const createMockJwt = (expiresInSeconds: number): string => {
     const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
     const now = Math.floor(Date.now() / 1000);
@@ -40,8 +39,8 @@ describe('AuthService', () => {
   it('deve identificar token expirado corretamente com isTokenExpired', () => {
     service = TestBed.inject(AuthService);
 
-    const expiredToken = createMockJwt(-3600); // 1 hora no passado
-    const validToken = createMockJwt(3600);    // 1 hora no futuro
+    const expiredToken = createMockJwt(-3600);
+    const validToken = createMockJwt(3600);
 
     expect(service.isTokenExpired(expiredToken)).toBeTrue();
     expect(service.isTokenExpired(validToken)).toBeFalse();

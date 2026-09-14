@@ -9,6 +9,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { SelectComponent } from './components/select/select.component';
 import { ClientSearchComponent } from './components/client-search/client-search.component';
 import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 export const CORE_IMPORTS = [
   CommonModule,
@@ -27,7 +28,10 @@ export const DESIGN_SYSTEM = [
   ConfirmDialogComponent,
   SelectComponent,
   ClientSearchComponent,
-  ChatWidgetComponent
+  ChatWidgetComponent,
+  SpinnerComponent
 ] as const;
 
 export * from './components/chat-widget/chat-widget.component';
+export * from './components/spinner/spinner.component';
+

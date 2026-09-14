@@ -9,11 +9,22 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TipoProjeto, TarefaEtapa } from '../../../models/projeto.model';
 import { Arquivo } from '../../../models/arquivo.model';
 import { DESIGN_SYSTEM, ChatWidgetComponent } from '../../../shared';
+import { PortalHeroComponent } from '../portal-hero/portal-hero.component';
+import { PortalTimelineComponent } from '../portal-timeline/portal-timeline.component';
+import { PortalDocumentosComponent } from '../portal-documentos/portal-documentos.component';
+import { PortalSuporteComponent } from '../portal-suporte/portal-suporte.component';
 
 @Component({
   selector: 'app-portal-cliente',
   standalone: true,
-  imports: [CommonModule, DESIGN_SYSTEM],
+  imports: [
+    CommonModule,
+    DESIGN_SYSTEM,
+    PortalHeroComponent,
+    PortalTimelineComponent,
+    PortalDocumentosComponent,
+    PortalSuporteComponent
+  ],
   templateUrl: './portal-cliente.component.html',
   styleUrl: './portal-cliente.component.scss'
 })

@@ -1,0 +1,4 @@
+﻿<div class="af-spinner-container" [class.is-overlay]="overlay" [class.is-fullpage]="fullPage">
+  <div class="af-spinner" [ngClass]="'spinner-' + size"></div>
+  <p *ngIf="message" class="af-spinner-message">{{ message }}</p>
+</div>
