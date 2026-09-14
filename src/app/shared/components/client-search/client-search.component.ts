@@ -2,14 +2,14 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Cliente } from '../../../models/cliente.model';
-import { DialogComponent } from '../dialog/dialog.component';
 import { ButtonComponent } from '../button/button.component';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
+import { SelecionarClienteModalComponent } from '../../../dialogs/clientes/selecionar-cliente-modal/selecionar-cliente-modal.component';
 
 @Component({
   selector: 'app-client-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, SelecionarClienteModalComponent],
   templateUrl: './client-search.component.html',
   styleUrl: './client-search.component.scss',
   providers: [
@@ -40,37 +40,19 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   disabled = false;
   private pendingValue: any = null;
 
-  // Paginação do Modal
-  modalSearchText = '';
-  modalClientesFiltrados: Cliente[] = [];
-  paginaAtual = 1;
-  itensPorPagina = 5;
-
   onChange: (value: any) => void = () => {};
   onTouched: () => void = () => {};
-
-  get totalPaginas(): number {
-    return Math.ceil(this.modalClientesFiltrados.length / this.itensPorPagina) || 1;
-  }
-
-  get clientesPaginados(): Cliente[] {
-    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
-    return this.modalClientesFiltrados.slice(inicio, inicio + this.itensPorPagina);
-  }
 
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {
     if ((!this.clientes || this.clientes.length === 0) && this.clienteService) {
       this.carregarClientesDoServico();
-    } else {
-      this.filtrarModal();
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clientes']) {
-      this.filtrarModal();
       if (this.pendingValue) {
         this.writeValue(this.pendingValue);
       }
@@ -82,7 +64,6 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
     this.clienteService.obterTodos().subscribe({
       next: (data) => {
         this.clientes = data;
-        this.filtrarModal();
         if (this.pendingValue) {
           this.writeValue(this.pendingValue);
         }
@@ -167,11 +148,8 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   }
 
   abrirModal(): void {
-    this.modalSearchText = '';
     if ((!this.clientes || this.clientes.length === 0) && this.clienteService) {
       this.carregarClientesDoServico();
-    } else {
-      this.filtrarModal();
     }
     this.showModal = true;
   }
@@ -180,35 +158,8 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
     this.showModal = false;
   }
 
-  filtrarModal(): void {
-    let result = this.clientes || [];
-    if (this.modalSearchText.trim()) {
-      const q = this.modalSearchText.toLowerCase();
-      result = result.filter(c => 
-        c.nome.toLowerCase().includes(q) || 
-        c.email.toLowerCase().includes(q) || 
-        (c.cpfCnpj && c.cpfCnpj.toLowerCase().includes(q)) ||
-        (c.telefone && c.telefone.toLowerCase().includes(q))
-      );
-    }
-    this.modalClientesFiltrados = result;
-    this.paginaAtual = 1;
-  }
-
   selecionarViaModal(cliente: Cliente): void {
     this.selecionarCliente(cliente);
     this.fecharModal();
-  }
-
-  paginaAnterior(): void {
-    if (this.paginaAtual > 1) {
-      this.paginaAtual--;
-    }
-  }
-
-  proximaPagina(): void {
-    if (this.paginaAtual < this.totalPaginas) {
-      this.paginaAtual++;
-    }
   }
 }

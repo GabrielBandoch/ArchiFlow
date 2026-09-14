@@ -1,0 +1,327 @@
+﻿:host {
+  display: block;
+}
+
+.portal-timeline-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--af-space-xl);
+}
+
+.current-phase-card {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-outline-variant);
+  border-left: 4px solid var(--af-primary);
+  border-radius: var(--af-radius-md);
+  overflow: hidden;
+  box-shadow: var(--af-shadow-sm);
+
+  .card-header-accent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--af-space-md) var(--af-space-lg);
+    background-color: var(--af-surface-container-low);
+    border-bottom: 1px solid var(--af-outline-variant);
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--af-primary);
+
+      .pulse-icon {
+        font-size: 18px;
+        animation: pulse 2s infinite;
+      }
+    }
+
+    .phase-target {
+      font-size: 12.5px;
+      color: var(--af-on-surface-variant);
+      strong { color: var(--af-on-surface); }
+    }
+  }
+
+  .current-phase-body {
+    padding: var(--af-space-lg);
+
+    .current-phase-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--af-on-surface);
+      margin: 0 0 var(--af-space-xs) 0;
+    }
+
+    .current-phase-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--af-on-surface-variant);
+      margin: 0 0 var(--af-space-md) 0;
+    }
+
+    .deliverables-section {
+      background-color: var(--af-surface-container-low);
+      border-radius: var(--af-radius-sm);
+      padding: var(--af-space-md);
+
+      .deliverables-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--af-on-surface);
+        margin: 0 0 var(--af-space-sm) 0;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        span { font-size: 18px; color: var(--af-primary); }
+      }
+
+      .deliverables-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--af-space-xs);
+
+        .deliverable-item {
+          display: flex;
+          align-items: center;
+          gap: var(--af-space-sm);
+          padding: 6px 10px;
+          border-radius: 4px;
+          background-color: var(--af-surface-container-lowest);
+          font-size: 13.5px;
+          color: var(--af-on-surface);
+
+          .status-icon {
+            font-size: 18px;
+            color: var(--af-on-surface-variant);
+          }
+
+          .item-title {
+            flex: 1;
+          }
+
+          .item-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+          }
+
+          &.completed {
+            .status-icon {
+              color: #2e7d32;
+            }
+            .item-title {
+              color: var(--af-on-surface-variant);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.timeline-section {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-md);
+  padding: var(--af-space-xl);
+  box-shadow: var(--af-shadow-sm);
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--af-space-sm);
+    margin-bottom: var(--af-space-xl);
+    padding-bottom: var(--af-space-md);
+    border-bottom: 1px solid var(--af-outline-variant);
+
+    .heading-icon {
+      font-size: 22px;
+      color: var(--af-primary);
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--af-on-surface);
+      margin: 0;
+    }
+  }
+
+  .timeline-container {
+    display: flex;
+    flex-direction: column;
+
+    .timeline-step {
+      display: flex;
+      gap: var(--af-space-md);
+
+      .timeline-marker {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .marker-circle {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          font-weight: 700;
+          background-color: var(--af-surface-container-high);
+          color: var(--af-on-surface-variant);
+          border: 2px solid var(--af-outline-variant);
+          flex-shrink: 0;
+          transition: all 0.2s ease;
+
+          span { font-size: 18px; }
+        }
+
+        .marker-line {
+          width: 2px;
+          flex: 1;
+          background-color: var(--af-outline-variant);
+          margin: 6px 0;
+          min-height: 28px;
+        }
+      }
+
+      .timeline-content {
+        flex: 1;
+        padding-bottom: var(--af-space-xl);
+
+        .content-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--af-space-xs);
+          flex-wrap: wrap;
+          gap: var(--af-space-xs);
+
+          .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--af-space-sm);
+
+            .step-title {
+              font-size: 15px;
+              font-weight: 700;
+              color: var(--af-on-surface);
+              margin: 0;
+            }
+
+            .step-badge {
+              font-size: 10px;
+              font-weight: 700;
+              text-transform: uppercase;
+              padding: 2px 8px;
+              border-radius: 12px;
+
+              &.badge-completed { background: #e8f5e9; color: #2e7d32; }
+              &.badge-active { background: #e3f2fd; color: #1565c0; }
+              &.badge-pending { background: var(--af-surface-container-high); color: var(--af-on-surface-variant); }
+            }
+          }
+
+          .step-dates {
+            font-size: 12px;
+            color: var(--af-on-surface-variant);
+
+            .date-concluded { color: #2e7d32; font-weight: 600; }
+            .date-expected { color: var(--af-primary); font-weight: 600; }
+          }
+        }
+
+        .step-desc {
+          font-size: 13.5px;
+          line-height: 1.5;
+          color: var(--af-on-surface-variant);
+          margin: 0 0 var(--af-space-sm) 0;
+        }
+
+        .step-tasks-preview {
+          background-color: var(--af-surface-container-low);
+          border-radius: var(--af-radius-sm);
+          padding: var(--af-space-sm) var(--af-space-md);
+
+          .tasks-header {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--af-on-surface-variant);
+            margin-bottom: var(--af-space-xs);
+          }
+
+          .tasks-mini-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 6px;
+
+            .mini-task {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              font-size: 12px;
+              color: var(--af-on-surface);
+
+              .mini-icon {
+                font-size: 14px;
+                color: var(--af-on-surface-variant);
+              }
+
+              &.done {
+                color: var(--af-on-surface-variant);
+                text-decoration: line-through;
+
+                .mini-icon {
+                  color: #2e7d32;
+                  text-decoration: none;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      &.step-completed {
+        .timeline-marker .marker-circle {
+          background-color: #2e7d32;
+          border-color: #2e7d32;
+          color: #ffffff;
+        }
+        .timeline-marker .marker-line {
+          background-color: #2e7d32;
+        }
+      }
+
+      &.step-active {
+        .timeline-marker .marker-circle {
+          background-color: var(--af-primary);
+          border-color: var(--af-primary);
+          color: #ffffff;
+          box-shadow: 0 0 0 4px rgba(184, 91, 53, 0.2);
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}

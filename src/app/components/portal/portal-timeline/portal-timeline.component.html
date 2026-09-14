@@ -1,0 +1,96 @@
+﻿<div class="portal-timeline-wrapper">
+  
+  <section class="current-phase-card" *ngIf="etapaAtual">
+    <div class="card-header-accent">
+      <div class="header-badge">
+        <span class="material-symbols-outlined pulse-icon">play_circle</span>
+        <span>Etapa Atual</span>
+      </div>
+      <span class="phase-target" *ngIf="etapaAtual.dataFimPrevista">
+        Entrega estimada: <strong>{{ formatarData(etapaAtual.dataFimPrevista) }}</strong>
+      </span>
+    </div>
+
+    <div class="current-phase-body">
+      <h2 class="current-phase-name">{{ etapaAtual.nome }}</h2>
+      <p class="current-phase-desc" *ngIf="etapaAtual.descricao">{{ etapaAtual.descricao }}</p>
+
+      <div class="deliverables-section" *ngIf="etapaAtual.tarefas && etapaAtual.tarefas.length > 0">
+        <h4 class="deliverables-title">
+          <span class="material-symbols-outlined">checklist</span>
+          Entregáveis desta etapa
+        </h4>
+        <div class="deliverables-list">
+          <div *ngFor="let item of etapaAtual.tarefas" class="deliverable-item" [class.completed]="item.concluida">
+            <span class="material-symbols-outlined status-icon">
+              {{ item.concluida ? 'check_circle' : 'radio_button_unchecked' }}
+            </span>
+            <span class="item-title">{{ item.titulo }}</span>
+            <span class="item-badge" *ngIf="item.concluida">Concluído</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline-section">
+    <div class="section-heading">
+      <span class="material-symbols-outlined heading-icon">timeline</span>
+      <h3>Cronograma de Etapas do Projeto</h3>
+    </div>
+
+    <div class="timeline-container">
+      <div *ngFor="let etapa of etapas; let last = last; let i = index" 
+           class="timeline-step" 
+           [class.step-completed]="etapa.status === StatusEtapa.Concluida"
+           [class.step-active]="etapa.status === StatusEtapa.EmAndamento"
+           [class.step-pending]="etapa.status === StatusEtapa.Pendente">
+        
+        <div class="timeline-marker">
+          <div class="marker-circle">
+            <span *ngIf="etapa.status === StatusEtapa.Concluida" class="material-symbols-outlined">check</span>
+            <span *ngIf="etapa.status === StatusEtapa.EmAndamento" class="material-symbols-outlined">autorenew</span>
+            <span *ngIf="etapa.status === StatusEtapa.Pendente">{{ i + 1 }}</span>
+          </div>
+          <div class="marker-line" *ngIf="!last"></div>
+        </div>
+
+        <div class="timeline-content">
+          <div class="content-header">
+            <div class="header-left">
+              <h4 class="step-title">{{ etapa.nome }}</h4>
+              <span class="step-badge" [class.badge-completed]="etapa.status === StatusEtapa.Concluida"
+                                      [class.badge-active]="etapa.status === StatusEtapa.EmAndamento"
+                                      [class.badge-pending]="etapa.status === StatusEtapa.Pendente">
+                {{ etapa.status === StatusEtapa.Concluida ? 'Concluída' : (etapa.status === StatusEtapa.EmAndamento ? 'Em Andamento' : 'Pendente') }}
+              </span>
+            </div>
+            <div class="step-dates">
+              <span *ngIf="etapa.status === StatusEtapa.Concluida && etapa.dataConclusao" class="date-concluded">
+                Concluída em: {{ formatarData(etapa.dataConclusao) }}
+              </span>
+              <span *ngIf="etapa.status !== StatusEtapa.Concluida && etapa.dataFimPrevista" class="date-expected">
+                Previsão: {{ formatarData(etapa.dataFimPrevista) }}
+              </span>
+            </div>
+          </div>
+
+          <p class="step-desc" *ngIf="etapa.descricao">{{ etapa.descricao }}</p>
+
+          <div class="step-tasks-preview" *ngIf="etapa.tarefas && etapa.tarefas.length > 0">
+            <div class="tasks-header">Entregáveis ({{ etapa.tarefas.length }})</div>
+            <div class="tasks-mini-list">
+              <div *ngFor="let t of etapa.tarefas" class="mini-task" [class.done]="t.concluida">
+                <span class="material-symbols-outlined mini-icon">
+                  {{ t.concluida ? 'check_small' : 'circle' }}
+                </span>
+                <span>{{ t.titulo }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

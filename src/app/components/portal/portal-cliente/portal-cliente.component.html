@@ -1,0 +1,54 @@
+<app-spinner *ngIf="loading" size="lg" message="Carregando as informações do seu projeto..."></app-spinner>
+
+<div *ngIf="!loading && !projeto" class="portal-empty-state">
+  <div class="empty-card">
+    <span class="material-symbols-outlined icon">domain_disabled</span>
+    <h2>Nenhum projeto encontrado</h2>
+    <p>Não identificamos um projeto vinculado ao seu usuário no momento. Entre em contato com a equipe da <strong>Duna Arquitetura</strong> para habilitar o seu acesso.</p>
+  </div>
+</div>
+
+<div *ngIf="!loading && projeto" class="portal-dashboard">
+  
+  <app-portal-hero
+    [projeto]="projeto"
+    [statusLabel]="statusProjetoLabel"
+    [tipoFormatado]="tipoProjetoFormatado"
+    [percentualProgresso]="percentualProgresso"
+    [totalConcluidas]="totalConcluidas"
+    [totalEtapas]="totalEtapas">
+  </app-portal-hero>
+
+  <div class="portal-grid">
+    <div class="main-column">
+      <app-portal-timeline
+        [etapaAtual]="etapaAtual"
+        [etapas]="projeto.etapas || []">
+      </app-portal-timeline>
+    </div>
+
+    <div class="sidebar-column">
+      <app-portal-documentos
+        [arquivos]="arquivos"
+        [filtro]="filtroArquivo"
+        (filtroChange)="setFiltroArquivo($event)"
+        (download)="baixarArquivo($event)">
+      </app-portal-documentos>
+
+      <app-portal-suporte
+        (abrirChat)="abrirChat()">
+      </app-portal-suporte>
+    </div>
+  </div>
+
+  <app-chat-widget 
+    *ngIf="projeto" 
+    [projetoId]="projeto.id" 
+    [projetoNome]="projeto.nome" 
+    [interlocutorNome]="'Arquiteto Responsável'"
+    [interlocutorCargo]="'Escritório de Arquitetura'"
+    [floating]="true">
+  </app-chat-widget>
+
+</div>
+

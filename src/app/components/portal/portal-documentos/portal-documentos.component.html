@@ -1,0 +1,37 @@
+﻿<section class="documents-card">
+  <div class="documents-header">
+    <div class="header-left">
+      <span class="material-symbols-outlined doc-icon">folder_open</span>
+      <h3>Documentos & Plantas</h3>
+    </div>
+    <span class="doc-counter">{{ arquivos.length }}</span>
+  </div>
+
+  <div class="filter-chips">
+    <button type="button" class="chip" [class.active]="filtro === 'todos'" (click)="setFiltro('todos')">Todos</button>
+    <button type="button" class="chip" [class.active]="filtro === 'plantas'" (click)="setFiltro('plantas')">Plantas</button>
+    <button type="button" class="chip" [class.active]="filtro === 'documentos'" (click)="setFiltro('documentos')">Documentos</button>
+    <button type="button" class="chip" [class.active]="filtro === 'imagens'" (click)="setFiltro('imagens')">Imagens</button>
+  </div>
+
+  <div class="documents-list" *ngIf="arquivosFiltrados.length > 0">
+    <div *ngFor="let arq of arquivosFiltrados" class="document-item">
+      <div class="doc-icon-wrap">
+        <span class="material-symbols-outlined file-icon">{{ getFileIcon(arq.nome) }}</span>
+      </div>
+      <div class="doc-details">
+        <span class="doc-name" [title]="arq.nome">{{ arq.nome }}</span>
+        <span class="doc-meta">Adicionado em {{ formatarData(arq.criadoEm) }}</span>
+      </div>
+      <button type="button" class="btn-download" (click)="onDownload(arq)" title="Baixar documento">
+        <span class="material-symbols-outlined">download</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="empty-documents" *ngIf="arquivosFiltrados.length === 0">
+    <span class="material-symbols-outlined empty-icon">description</span>
+    <p>Nenhum documento disponível no momento.</p>
+    <small>Seu arquiteto disponibilizará plantas e memoriais conforme o avanço das etapas.</small>
+  </div>
+</section>

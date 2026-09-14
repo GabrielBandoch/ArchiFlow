@@ -1,0 +1,184 @@
+﻿:host {
+  display: block;
+}
+
+.project-hero {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-md);
+  padding: var(--af-space-xl);
+  margin-bottom: var(--af-space-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--af-space-xl);
+  box-shadow: var(--af-shadow-sm);
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-main {
+    flex: 1;
+
+    .badge-group {
+      display: flex;
+      gap: var(--af-space-sm);
+      margin-bottom: var(--af-space-md);
+      flex-wrap: wrap;
+
+      .status-chip {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background-color: var(--af-surface-container-high);
+        color: var(--af-on-surface);
+
+        &.status-0 { background: #e3f2fd; color: #1565c0; }
+        &.status-1 { background: #fff3e0; color: #e65100; }
+        &.status-2 { background: #f3e5f5; color: #7b1fa2; }
+        &.status-3 { background: #e8f5e9; color: #2e7d32; }
+        &.status-4 { background: #fbe9e7; color: #d84315; }
+        &.status-5 { background: #e0f2f1; color: #00695c; }
+        &.status-6 { background: #ffebee; color: #c62828; }
+      }
+
+      .type-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        background-color: var(--af-surface-container-low);
+        color: var(--af-on-surface-variant);
+        border: 1px solid var(--af-outline-variant);
+
+        span { font-size: 14px; }
+      }
+    }
+
+    .project-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--af-on-surface);
+      margin: 0 0 var(--af-space-xs) 0;
+      letter-spacing: -0.02em;
+    }
+
+    .project-description {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--af-on-surface-variant);
+      margin: 0 0 var(--af-space-lg) 0;
+      max-width: 600px;
+    }
+
+    .project-meta-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--af-space-lg);
+      margin-top: var(--af-space-md);
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: var(--af-space-sm);
+
+        .meta-icon {
+          font-size: 20px;
+          color: var(--af-primary);
+          padding: 8px;
+          border-radius: var(--af-radius-sm);
+          background-color: var(--af-surface-container-low);
+        }
+
+        .meta-texts {
+          display: flex;
+          flex-direction: column;
+
+          .meta-label {
+            font-size: 11px;
+            color: var(--af-on-surface-variant);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 600;
+          }
+
+          .meta-value {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--af-on-surface);
+
+            &.highlight-date {
+              color: var(--af-primary);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .hero-progress-card {
+    background-color: var(--af-surface-container-low);
+    border: 1px solid var(--af-outline-variant);
+    border-radius: var(--af-radius-sm);
+    padding: var(--af-space-md) var(--af-space-lg);
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: var(--af-space-xs);
+
+      .progress-title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--af-on-surface-variant);
+      }
+
+      .progress-percentage {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--af-primary);
+      }
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background-color: var(--af-surface-container-high);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: var(--af-space-xs);
+
+      .progress-bar-fill {
+        height: 100%;
+        background-color: var(--af-primary);
+        border-radius: 4px;
+        transition: width 0.4s ease;
+      }
+    }
+
+    .progress-footer {
+      .etapas-counter {
+        font-size: 12px;
+        color: var(--af-on-surface-variant);
+
+        strong {
+          color: var(--af-on-surface);
+        }
+      }
+    }
+  }
+}

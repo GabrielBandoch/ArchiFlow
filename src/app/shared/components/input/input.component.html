@@ -15,6 +15,7 @@
       [required]="required"
       [rows]="rows"
       [attr.maxlength]="maxlength || null"
+      [attr.autocomplete]="autocomplete || null"
       (input)="onInput($event)"
       (blur)="onBlur()"
       class="form-input form-textarea">
@@ -33,6 +34,7 @@
       [attr.maxlength]="maxlength || null"
       [attr.min]="min || null"
       [attr.max]="max || null"
+      [attr.autocomplete]="autocomplete || null"
       (input)="onInput($event)"
       (change)="type === 'file' ? onFileChange($event) : onInput($event)"
       (keyup.enter)="onKeyUpEnter()"

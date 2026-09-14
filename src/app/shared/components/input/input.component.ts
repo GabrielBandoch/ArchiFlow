@@ -31,6 +31,7 @@ export class InputComponent implements ControlValueAccessor {
   @Input() max?: number | string;
   @Input() rows = 3;
   @Input() customClass = '';
+  @Input() autocomplete?: string;
 
   @Output() enterPress = new EventEmitter<void>();
   @Output() fileSelect = new EventEmitter<Event>();

@@ -37,6 +37,7 @@ export interface EtapaProjeto {
   statusLabel: string;
   ordem: number;
   dataConclusao?: string;
+  dataFimPrevista?: string;
   tarefas?: TarefaEtapa[];
 }
 

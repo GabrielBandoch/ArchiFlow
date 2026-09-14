@@ -1,0 +1,59 @@
+﻿<section class="project-hero" *ngIf="projeto">
+  <div class="hero-main">
+    <div class="badge-group">
+      <span class="status-chip status-{{ projeto.status }}">
+        {{ statusLabel }}
+      </span>
+      <span class="type-chip">
+        <span class="material-symbols-outlined">home_work</span>
+        {{ tipoFormatado }}
+      </span>
+    </div>
+
+    <h1 class="project-title">{{ projeto.nome || 'Projeto Arquitetônico' }}</h1>
+    <p class="project-description" *ngIf="projeto.descricao">{{ projeto.descricao }}</p>
+
+    <div class="project-meta-grid">
+      <div class="meta-item">
+        <span class="material-symbols-outlined meta-icon">square_foot</span>
+        <div class="meta-texts">
+          <span class="meta-label">Metragem Total</span>
+          <span class="meta-value">{{ projeto.metragemTotal ? (projeto.metragemTotal + ' m²') : 'Não informada' }}</span>
+        </div>
+      </div>
+
+      <div class="meta-item">
+        <span class="material-symbols-outlined meta-icon">calendar_today</span>
+        <div class="meta-texts">
+          <span class="meta-label">Início</span>
+          <span class="meta-value">{{ formatarData(projeto.dataInicio) }}</span>
+        </div>
+      </div>
+
+      <div class="meta-item">
+        <span class="material-symbols-outlined meta-icon">event_upcoming</span>
+        <div class="meta-texts">
+          <span class="meta-label">Previsão de Conclusão</span>
+          <span class="meta-value highlight-date">{{ formatarData(projeto.dataPrevistaEntrega) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-progress-card">
+    <div class="progress-header">
+      <span class="progress-title">Progresso Geral</span>
+      <span class="progress-percentage">{{ percentualProgresso }}%</span>
+    </div>
+    
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" [style.width.%]="percentualProgresso"></div>
+    </div>
+
+    <div class="progress-footer">
+      <span class="etapas-counter">
+        <strong>{{ totalConcluidas }}</strong> de <strong>{{ totalEtapas }}</strong> etapas concluídas
+      </span>
+    </div>
+  </div>
+</section>
