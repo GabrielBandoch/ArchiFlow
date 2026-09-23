@@ -1,0 +1,26 @@
+<div class="card etapas-card shadow-sm">
+  <div class="card-header-clean">
+    <span class="material-symbols-outlined section-icon" aria-hidden="true">tune</span>
+    <h2 class="section-title">Etapas Inclusas no Escopo</h2>
+  </div>
+
+  <div class="etapas-list">
+    <div
+      *ngFor="let etapa of etapas; let i = index"
+      class="etapa-item"
+      [class.checked]="etapa.checked"
+      (click)="toggle(i)"
+    >
+      <div class="checkbox-box" aria-hidden="true">
+        <span class="material-symbols-outlined check-icon">{{ etapa.checked ? 'check_box' : 'check_box_outline_blank' }}</span>
+      </div>
+      <div class="etapa-info">
+        <h4 class="etapa-nome">{{ etapa.nome }}</h4>
+        <p class="etapa-desc">{{ etapa.descricao }}</p>
+      </div>
+      <div class="etapa-percent">
+        <span>{{ etapa.percentual }}%</span>
+      </div>
+    </div>
+  </div>
+</div>

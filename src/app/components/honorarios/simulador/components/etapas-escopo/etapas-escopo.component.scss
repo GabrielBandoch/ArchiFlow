@@ -1,0 +1,90 @@
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #f0ece7;
+  padding: 1.75rem;
+}
+
+.card-header-clean {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  .section-icon {
+    font-size: 1.5rem;
+    color: #4a3b32;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+}
+
+.etapas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.etapa-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  .check-icon {
+    font-size: 1.5rem;
+    color: #9ca3af;
+    transition: color 0.2s;
+  }
+
+  .etapa-info {
+    flex: 1;
+
+    .etapa-nome {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #374151;
+      margin: 0;
+    }
+
+    .etapa-desc {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin: 0.2rem 0 0 0;
+    }
+  }
+
+  .etapa-percent {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #6b7280;
+  }
+
+  &:hover {
+    border-color: #c9b9a6;
+    background-color: #faf9f6;
+  }
+
+  &.checked {
+    border-color: #8b7355;
+    background-color: #fdfbf7;
+
+    .check-icon {
+      color: #5a422d;
+    }
+
+    .etapa-percent {
+      color: #5a422d;
+    }
+  }
+}

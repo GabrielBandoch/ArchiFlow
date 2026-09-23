@@ -1,0 +1,74 @@
+<app-dialog [show]="show" dialogTitle="Histórico de Propostas Comerciais" size="lg" (close)="close.emit()">
+  <div class="historico-container d-flex flex-direction-column">
+    <div *ngIf="propostas.length === 0" class="empty-state p-6 text-center d-flex flex-direction-column align-items-center justify-content-center">
+      <span class="material-symbols-outlined empty-icon font-headline-lg text-on-surface-variant">request_quote</span>
+      <p class="empty-text font-body-md text-on-surface-variant margin-top-xs">Nenhuma proposta comercial cadastrada ainda.</p>
+    </div>
+
+    <div class="table-responsive" *ngIf="propostas.length > 0">
+      <table class="table-propostas w-full">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Título / Vínculo</th>
+            <th>Área</th>
+            <th>Valor Final</th>
+            <th>Status</th>
+            <th>Data</th>
+            <th class="text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of propostas">
+            <td class="codigo-col font-mono font-weight-bold">{{ p.codigo }}</td>
+            <td>
+              <div class="prop-titulo-cell font-weight-semibold">{{ p.titulo }}</div>
+              <div class="prop-sub-cell font-label-sm text-on-surface-variant" *ngIf="p.clienteNome || p.leadNome">
+                {{ p.clienteNome ? 'Cliente: ' + p.clienteNome : 'Lead: ' + p.leadNome }}
+              </div>
+            </td>
+            <td>{{ p.metragemQuadrada }}m²</td>
+            <td class="valor-col font-weight-bold">{{ formatarMoeda(p.valorFinalAjustado) }}</td>
+            <td>
+              <span class="status-badge status-{{ p.status }}">
+                {{ p.statusNome }}
+              </span>
+            </td>
+            <td class="data-col font-label-sm">{{ formatarData(p.criadoEm) }}</td>
+            <td class="acoes-col text-right">
+              <div class="d-inline-flex gap-xs">
+                <app-button
+                  *ngIf="p.status === 0"
+                  variant="icon"
+                  size="sm"
+                  (btnClick)="atualizarStatus.emit({ proposta: p, status: 1 })"
+                  title="Marcar como Enviada">
+                  <span class="material-symbols-outlined">send</span>
+                </app-button>
+                <app-button
+                  *ngIf="p.status === 1 || p.status === 0"
+                  variant="icon"
+                  size="sm"
+                  (btnClick)="atualizarStatus.emit({ proposta: p, status: 2 })"
+                  title="Aprovar Proposta">
+                  <span class="material-symbols-outlined text-success">check_circle</span>
+                </app-button>
+                <app-button
+                  variant="icon"
+                  size="sm"
+                  (btnClick)="excluir.emit(p)"
+                  title="Excluir Proposta">
+                  <span class="material-symbols-outlined text-danger">delete</span>
+                </app-button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div dialog-footer class="studio-modal-actions d-flex align-items-center justify-content-end margin-top-md">
+    <app-button variant="secondary" (btnClick)="close.emit()">Fechar</app-button>
+  </div>
+</app-dialog>

@@ -1,0 +1,96 @@
+.tipo-pessoa-pills {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  background-color: var(--af-surface-container-low, #faf8f6);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--af-outline-variant, #ece7e3);
+  box-sizing: border-box;
+
+  .pill-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--af-on-surface-variant, #7c7267);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+
+    span {
+      font-size: 1.125rem;
+    }
+
+    &:hover {
+      color: var(--af-on-surface, #2b2623);
+    }
+
+    &.active {
+      background-color: var(--af-surface, #ffffff);
+      color: var(--af-primary, #8b7355);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(43, 38, 35, 0.08);
+    }
+  }
+
+  @media (max-width: 580px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  box-sizing: border-box;
+
+  .field-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--af-on-surface-variant, #5c534b);
+  }
+
+  .field-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--af-outline-variant, #d6d0ca);
+    background-color: var(--af-surface, #ffffff);
+    color: var(--af-on-surface, #2b2623);
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+    outline: none;
+
+    &:focus {
+      border-color: var(--af-primary, #8b7355);
+      box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.15);
+    }
+
+    &::placeholder {
+      color: var(--af-outline, #a89f91);
+    }
+  }
+
+  textarea.field-input {
+    height: auto;
+    padding: 10px 12px;
+    resize: vertical;
+  }
+}
+
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--af-on-surface-variant, #7c7267);
+  margin-top: 0.25rem;
+}

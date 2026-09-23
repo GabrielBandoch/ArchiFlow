@@ -34,6 +34,7 @@
             label="E-mail corporativo" 
             placeholder="nome@estudio.com.br" 
             icon="mail" 
+            autocomplete="username"
             formControlName="email"
             [error]="submitted && f['email'].errors ? (f['email'].errors['required'] ? 'O e-mail é obrigatório.' : 'Insira um e-mail válido.') : undefined">
           </app-input>
@@ -51,6 +52,7 @@
             label="Senha" 
             placeholder="••••••••" 
             icon="lock" 
+            autocomplete="current-password"
             formControlName="senha"
             [error]="submitted && f['senha'].errors ? 'A senha é obrigatória.' : undefined">
           </app-input>
