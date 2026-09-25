@@ -97,6 +97,17 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'simulador',
+    canActivate: [staffGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/honorarios/simulador/simulador.component').then(m => m.SimuladorComponent)
+      }
+    ]
+  },
+  {
     path: '',
     redirectTo: 'projetos',
     pathMatch: 'full'

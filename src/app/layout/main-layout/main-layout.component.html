@@ -18,6 +18,10 @@
         <span class="material-symbols-outlined nav-icon">folder</span>
         <span class="nav-label">Projetos</span>
       </a>
+      <a routerLink="/simulador" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">calculate</span>
+        <span class="nav-label">Simulador</span>
+      </a>
 
       <div class="nav-group-section">
         <button type="button" class="nav-item nav-item-btn w-full" (click)="toggleConfiguracoes()" [class.active-parent]="router.url.includes('/configuracoes')">

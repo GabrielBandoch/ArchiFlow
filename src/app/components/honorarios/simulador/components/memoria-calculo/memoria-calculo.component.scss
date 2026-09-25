@@ -1,0 +1,92 @@
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #f0ece7;
+  padding: 1.75rem;
+}
+
+.card-header-clean {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  .section-icon {
+    font-size: 1.5rem;
+    color: #4a3b32;
+  }
+
+  .memoria-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+}
+
+.memoria-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.memoria-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+
+  .memoria-label-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4b5563;
+
+    .memoria-icon {
+      font-size: 1.1rem;
+      color: #9ca3af;
+    }
+  }
+
+  .memoria-valor {
+    font-weight: 700;
+    color: #111827;
+
+    &.highlight {
+      color: #8b7355;
+    }
+  }
+
+  &.subtotal-row {
+    border-top: 1px dashed #e5e7eb;
+    padding-top: 0.65rem;
+    margin-top: 0.25rem;
+
+    .memoria-label-group {
+      color: #1f2937;
+    }
+  }
+}
+
+.cau-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background-color: #faf8f5;
+  border: 1px solid #f0ece7;
+
+  .info-icon {
+    font-size: 1.25rem;
+    color: #8b7355;
+    flex-shrink: 0;
+  }
+
+  .info-text {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.35;
+  }
+}

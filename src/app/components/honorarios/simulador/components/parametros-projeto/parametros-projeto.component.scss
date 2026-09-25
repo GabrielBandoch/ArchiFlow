@@ -1,0 +1,143 @@
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #f0ece7;
+  padding: 1.75rem;
+}
+
+.card-header-clean {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  .section-icon {
+    font-size: 1.5rem;
+    color: #4a3b32;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1.25rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  .form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+}
+
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .input-metragem {
+    padding-right: 3rem;
+  }
+
+  .suffix-badge {
+    position: absolute;
+    right: 1rem;
+    color: #9ca3af;
+    font-weight: 600;
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background-color: #fcfbfa;
+  font-size: 0.95rem;
+  color: #111827;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #8b7355;
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.15);
+    background-color: #ffffff;
+  }
+}
+
+.select-custom {
+  cursor: pointer;
+}
+
+.padroes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.padrao-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 0.5rem;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  .padrao-nome {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #374151;
+  }
+
+  .padrao-fator {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 0.2rem;
+  }
+
+  &:hover {
+    border-color: #c9b9a6;
+    background-color: #faf8f5;
+  }
+
+  &.selected {
+    border-color: #2b2118;
+    background-color: #faf6f0;
+    box-shadow: 0 2px 8px rgba(43, 33, 24, 0.1);
+
+    .padrao-nome {
+      color: #2b2118;
+    }
+
+    .padrao-fator {
+      color: #785a3c;
+      font-weight: 600;
+    }
+  }
+}

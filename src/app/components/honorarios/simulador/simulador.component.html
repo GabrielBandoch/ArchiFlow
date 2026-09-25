@@ -1,0 +1,71 @@
+<div class="simulador-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Simulador de Honorários</h1>
+      <p class="page-subtitle">Configure os parâmetros do projeto para gerar uma estimativa precisa.</p>
+    </div>
+    <div class="header-actions">
+      <app-button variant="secondary" (btnClick)="abrirModalHistorico()" title="Histórico de Propostas">
+        <span class="material-symbols-outlined btn-icon">history</span>
+        Histórico
+      </app-button>
+    </div>
+  </div>
+
+  <div class="simulador-layout">
+    <div class="config-column d-flex flex-direction-column gap-md">
+      <app-parametros-projeto
+        [form]="form"
+        [padroesImovel]="padroesImovel"
+        [tiposProjeto]="tiposProjeto"
+        (padraoSelecionado)="selecionarPadrao($event)">
+      </app-parametros-projeto>
+
+      <app-etapas-escopo
+        [etapas]="etapasDisponiveis"
+        (etapaToggled)="toggleEtapa($event)">
+      </app-etapas-escopo>
+    </div>
+
+    <div class="result-column d-flex flex-direction-column gap-md">
+      <app-estimativa-destaque
+        [simulacao]="simulacao"
+        [carregando]="carregando"
+        (salvarPropostaClick)="abrirModalSalvar(false)"
+        (vincularLeadClick)="abrirModalSalvar(true)"
+        (ajusteManualClick)="abrirModalAjusteManual()">
+      </app-estimativa-destaque>
+
+      <app-memoria-calculo
+        [memoria]="simulacao?.memoriaCalculo">
+      </app-memoria-calculo>
+    </div>
+  </div>
+
+  <!-- Modais Especializados -->
+  <app-modal-salvar-proposta
+    [show]="modalSalvarAberto"
+    [form]="propostaForm"
+    [simulacao]="simulacao"
+    [leads]="leads"
+    [clientes]="clientes"
+    [salvando]="salvando"
+    (close)="fecharModalSalvar()"
+    (salvar)="salvarProposta()">
+  </app-modal-salvar-proposta>
+
+  <app-modal-ajuste-manual
+    [show]="modalAjusteManualAberto"
+    [form]="ajusteForm"
+    (close)="fecharModalAjusteManual()"
+    (confirmar)="confirmarAjusteManual()">
+  </app-modal-ajuste-manual>
+
+  <app-modal-historico-propostas
+    [show]="modalHistoricoAberto"
+    [propostas]="propostas"
+    (close)="fecharModalHistorico()"
+    (atualizarStatus)="atualizarStatusProposta($event.proposta, $event.status)"
+    (excluir)="excluirProposta($event)">
+  </app-modal-historico-propostas>
+</div>

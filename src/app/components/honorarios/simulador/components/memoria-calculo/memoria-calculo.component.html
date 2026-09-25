@@ -1,0 +1,65 @@
+<div class="card memoria-card shadow-sm">
+  <div class="card-header-clean">
+    <span class="material-symbols-outlined section-icon" aria-hidden="true">receipt_long</span>
+    <h3 class="memoria-title">Memória de Cálculo (Cost-Plus)</h3>
+  </div>
+
+  <div class="memoria-list" *ngIf="memoria as m">
+    <div class="memoria-row">
+      <div class="memoria-label-group">
+        <span class="material-symbols-outlined memoria-icon" aria-hidden="true">schedule</span>
+        <span>Produção Técnica ({{ m.horasEstimadasTotal }}h x {{ formatarMoeda(m.valorHoraEstimado) }}/h)</span>
+      </div>
+      <span class="memoria-valor">{{ formatarMoeda(m.valorBase) }}</span>
+    </div>
+
+    <div class="memoria-row" *ngIf="m.valorFatorPadrao !== 0">
+      <div class="memoria-label-group">
+        <span class="material-symbols-outlined memoria-icon" aria-hidden="true">star</span>
+        <span>Ajuste de Padrão ({{ m.fatorPadraoDescricao }})</span>
+      </div>
+      <span class="memoria-valor" [class.highlight]="m.valorFatorPadrao !== 0">
+        {{ m.valorFatorPadrao >= 0 ? '+' : '' }}{{ formatarMoeda(m.valorFatorPadrao) }}
+      </span>
+    </div>
+
+    <div class="memoria-row">
+      <div class="memoria-label-group">
+        <span class="material-symbols-outlined memoria-icon" aria-hidden="true">meeting_room</span>
+        <span>Atendimento, Reuniões & Insumos</span>
+      </div>
+      <span class="memoria-valor">{{ formatarMoeda(m.custosDiretos || 1312.92) }}</span>
+    </div>
+
+    <div class="memoria-row">
+      <div class="memoria-label-group">
+        <span class="material-symbols-outlined memoria-icon" aria-hidden="true">domain</span>
+        <span>Rateio de Custo Fixo do Estúdio</span>
+      </div>
+      <span class="memoria-valor">{{ formatarMoeda(m.custoFixoRateado || 347.64) }}</span>
+    </div>
+
+    <div class="memoria-row subtotal-row">
+      <div class="memoria-label-group">
+        <span class="material-symbols-outlined memoria-icon" aria-hidden="true">calculate</span>
+        <span class="font-weight-bold">Custo Operacional Total</span>
+      </div>
+      <span class="memoria-valor font-weight-bold">{{ formatarMoeda(m.custoOperacionalTotal) }}</span>
+    </div>
+
+    <div class="memoria-row">
+      <div class="memoria-label-group">
+        <span class="material-symbols-outlined memoria-icon" aria-hidden="true">account_balance</span>
+        <span>Imposto Simples Nacional ({{ m.percentualImposto || 6 }}%)</span>
+      </div>
+      <span class="memoria-valor highlight">+{{ formatarMoeda(m.valorImposto) }}</span>
+    </div>
+  </div>
+
+  <div class="cau-info-box mt-3">
+    <span class="material-symbols-outlined info-icon" aria-hidden="true">verified</span>
+    <p class="info-text">
+      Metodologia Cost-Plus baseada na formação de preços real da Duna Arquitetura e recomendações do CAU/BR.
+    </p>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="card estimativa-destaque-card shadow-lg">
+  <div class="destaque-header">
+    <span class="destaque-label">ESTIMATIVA TOTAL SUGERIDA</span>
+  </div>
+
+  <div class="destaque-valor">
+    <span class="valor-principal">{{ formatarMoeda(simulacao?.valorTotalSugerido) }}</span>
+  </div>
+
+  <div class="destaque-badges">
+    <div class="badge-pill" title="Valor médio por metro quadrado">
+      <span class="material-symbols-outlined" aria-hidden="true">straighten</span>
+      <span>{{ formatarMoeda(simulacao?.valorMetroQuadrado) }} / m²</span>
+    </div>
+    <div class="badge-pill" title="Estimativa de horas técnicas de dedicação">
+      <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+      <span>~{{ simulacao?.horasEstimadasTotal || 0 }}h estimadas</span>
+    </div>
+  </div>
+
+  <div class="destaque-actions">
+    <button
+      type="button"
+      class="btn btn-salvar-proposta w-full"
+      (click)="salvarPropostaClick.emit()"
+      [disabled]="carregando"
+      aria-label="Salvar como proposta comercial"
+    >
+      <span class="material-symbols-outlined icon-left" aria-hidden="true">save</span>
+      <span>Salvar Proposta</span>
+    </button>
+
+    <div class="actions-subgrid">
+      <button
+        type="button"
+        class="btn btn-dark-sub"
+        (click)="vincularLeadClick.emit()"
+        aria-label="Vincular a um lead ou cliente"
+      >
+        <span class="material-symbols-outlined icon-left" aria-hidden="true">person_add</span>
+        <span>Vincular Lead</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-dark-sub"
+        (click)="ajusteManualClick.emit()"
+        aria-label="Ajustar valor final manualmente"
+      >
+        <span class="material-symbols-outlined icon-left" aria-hidden="true">tune</span>
+        <span>Ajuste Manual</span>
+      </button>
+    </div>
+  </div>
+</div>

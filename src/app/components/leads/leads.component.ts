@@ -73,14 +73,27 @@ export class LeadsComponent implements OnInit {
       const leadId = event.dataTransfer.getData('text/plain');
       if (leadId) {
         const lead = this.leads.find(l => l.id === leadId);
-        if (lead && lead.status === StatusLead.Convertido) {
+        if (!lead) return;
+
+        if (lead.status === StatusLead.Convertido) {
           this.notificationService.warning('Leads convertidos em clientes não podem ser movidos de volta no funil.');
           return;
         }
-        if (lead && lead.status === targetStatus) {
-          return;
-        }
-        if (targetStatus === StatusLead.Perdido) {
+        if (targetStatus === StatusLead.Convertido) {
+          if (!lead.nome || !lead.email || !lead.origemId) {
+            this.notificationService.error('Não é possível converter o lead. É obrigatório que Nome, E-mail e Origem estejam preenchidos.');
+            return;
+          }
+          const ref = this.dialogService.open(ConversaoLeadModalComponent, {
+            data: { lead }
+          });
+          ref.instance.convertedSuccess.subscribe(() => {
+            this.carregarLeads();
+          });
+          ref.instance.close.subscribe(() => {
+            this.carregarLeads();
+          });
+        } else if (targetStatus === StatusLead.Perdido) {
           const ref = this.dialogService.open(MotivoPerdaModalComponent);
           ref.instance.confirm.subscribe((motivoPerda: string) => {
             this.atualizarStatusLead(leadId, targetStatus, motivoPerda);

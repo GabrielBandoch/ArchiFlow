@@ -1,0 +1,97 @@
+<app-dialog [show]="show" dialogTitle="Salvar Proposta Comercial" size="md" (close)="close.emit()">
+  <form [formGroup]="form" (ngSubmit)="salvar.emit()" class="d-flex flex-direction-column gap-md">
+    <div class="field-item">
+      <label class="field-label font-label-sm" for="tituloProposta">Título da Proposta *</label>
+      <input
+        id="tituloProposta"
+        type="text"
+        formControlName="titulo"
+        class="field-input font-body-md"
+        placeholder="Ex: Proposta Residencial Família Silva"
+      />
+    </div>
+
+    <div class="field-item">
+      <label class="field-label font-label-sm">Vincular a:</label>
+      <div class="tipo-pessoa-pills d-flex align-items-center gap-xs">
+        <button 
+          type="button" 
+          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs" 
+          [class.active]="form.value.tipoVinculo === 'nenhum'" 
+          (click)="form.patchValue({ tipoVinculo: 'nenhum', leadId: '', clienteId: '' })">
+          <span class="material-symbols-outlined">draft</span>
+          Avulso
+        </button>
+        <button 
+          type="button" 
+          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs" 
+          [class.active]="form.value.tipoVinculo === 'lead'" 
+          (click)="form.patchValue({ tipoVinculo: 'lead', clienteId: '' })">
+          <span class="material-symbols-outlined">person_search</span>
+          Lead Existente
+        </button>
+        <button 
+          type="button" 
+          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs" 
+          [class.active]="form.value.tipoVinculo === 'cliente'" 
+          (click)="form.patchValue({ tipoVinculo: 'cliente', leadId: '' })">
+          <span class="material-symbols-outlined">group</span>
+          Cliente Existente
+        </button>
+      </div>
+    </div>
+
+    <div class="field-item animate-fade-in" *ngIf="form.value.tipoVinculo === 'lead'">
+      <label class="field-label font-label-sm" for="selectLead">Selecione o Lead</label>
+      <select id="selectLead" formControlName="leadId" class="field-input font-body-md select-custom">
+        <option value="">Selecione um lead...</option>
+        <option *ngFor="let lead of leads" [value]="lead.id">
+          {{ lead.nome }} ({{ lead.email }})
+        </option>
+      </select>
+    </div>
+
+    <div class="field-item animate-fade-in" *ngIf="form.value.tipoVinculo === 'cliente'">
+      <label class="field-label font-label-sm" for="selectCliente">Selecione o Cliente</label>
+      <select id="selectCliente" formControlName="clienteId" class="field-input font-body-md select-custom">
+        <option value="">Selecione um cliente...</option>
+        <option *ngFor="let cli of clientes" [value]="cli.id">
+          {{ cli.nome }} ({{ cli.email }})
+        </option>
+      </select>
+    </div>
+
+    <div class="field-item">
+      <label class="field-label font-label-sm" for="valorFinalInput">Valor Final Negociado (R$) *</label>
+      <input
+        id="valorFinalInput"
+        type="number"
+        formControlName="valorFinalAjustado"
+        class="field-input font-body-md font-weight-bold"
+        min="1"
+        step="0.01"
+      />
+      <span class="form-hint font-label-sm text-on-surface-variant margin-top-xs">
+        Valor sugerido pela simulação: <strong>{{ formatarMoeda(simulacao?.valorTotalSugerido) }}</strong>
+      </span>
+    </div>
+
+    <div class="field-item">
+      <label class="field-label font-label-sm" for="obsProposta">Observações / Condições Comerciais</label>
+      <textarea
+        id="obsProposta"
+        formControlName="observacoes"
+        class="field-input font-body-md"
+        rows="3"
+        placeholder="Ex: 30% de entrada + 3x parceladas na entrega das etapas."
+      ></textarea>
+    </div>
+
+    <div dialog-footer class="studio-modal-actions d-flex align-items-center justify-content-end gap-sm margin-top-md">
+      <app-button variant="secondary" (btnClick)="close.emit()">Cancelar</app-button>
+      <app-button type="submit" variant="primary" [disabled]="form.invalid || salvando">
+        {{ salvando ? 'Salvando...' : 'Salvar Proposta' }}
+      </app-button>
+    </div>
+  </form>
+</app-dialog>
