@@ -1,0 +1,546 @@
+<div class="dashboard-page">
+  <!-- Cabeçalho -->
+  <header class="dashboard-header">
+    <div class="header-titles">
+      <div class="header-tag">
+        <span class="material-symbols-outlined">space_dashboard</span>
+        <span>Visão Geral do Escritório</span>
+      </div>
+      <h1 class="header-main-title">Dashboard</h1>
+      <p class="header-subtitle">
+        Acompanhamento consolidado de projetos, funil de vendas, honorários e métricas em tempo real.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-customizar" (click)="abrirModalPersonalizar()">
+        <span class="material-symbols-outlined">tune</span>
+        <span>Personalizar Painel</span>
+      </button>
+
+      <a routerLink="/simulador" class="btn-action-primary">
+        <span class="material-symbols-outlined">calculate</span>
+        <span>Simulador</span>
+      </a>
+
+      <a routerLink="/projetos" class="btn-action-secondary">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span>Novo Projeto</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="dashboard-loading">
+    <div class="spinner-border"></div>
+    <span>Carregando métricas e indicadores...</span>
+  </div>
+
+  <!-- Dashboard Grid de Widgets -->
+  <div *ngIf="!loading && metricas" class="dashboard-grid">
+    <ng-container *ngFor="let widget of widgetsVisiveis">
+
+      <!-- 1. KPIs RESUMO -->
+      <section *ngIf="widget.id === 'kpi_resumo'" class="widget-section widget-full" id="widget-kpis">
+        <div class="kpis-grid">
+          <!-- KPI 1: Projetos Ativos -->
+          <div class="kpi-card card-hover">
+            <div class="kpi-header">
+              <span class="kpi-title">Projetos Ativos</span>
+              <div class="kpi-icon-container icon-primary">
+                <span class="material-symbols-outlined">folder_open</span>
+              </div>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value">{{ metricas.kpis.totalProjetosAtivos }}</span>
+              <div class="kpi-badge badge-positive">
+                <span class="material-symbols-outlined icon-xs">task_alt</span>
+                <span>{{ metricas.kpis.totalProjetosConcluidos }} concluídos</span>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <a routerLink="/projetos" class="kpi-link">Ver todos os projetos &rarr;</a>
+            </div>
+          </div>
+
+          <!-- KPI 2: Leads no Funil -->
+          <div class="kpi-card card-hover">
+            <div class="kpi-header">
+              <span class="kpi-title">Leads no Funil</span>
+              <div class="kpi-icon-container icon-accent">
+                <span class="material-symbols-outlined">person_search</span>
+              </div>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value">{{ metricas.kpis.totalLeadsAtivos }}</span>
+              <div class="kpi-badge badge-info">
+                <span class="material-symbols-outlined icon-xs">trending_up</span>
+                <span>{{ metricas.kpis.taxaConversaoLeads }}% conversão</span>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <a routerLink="/leads" class="kpi-link">Acompanhar funil &rarr;</a>
+            </div>
+          </div>
+
+          <!-- KPI 3: Clientes Ativos -->
+          <div class="kpi-card card-hover">
+            <div class="kpi-header">
+              <span class="kpi-title">Clientes Ativos</span>
+              <div class="kpi-icon-container icon-tertiary">
+                <span class="material-symbols-outlined">group</span>
+              </div>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value">{{ metricas.kpis.totalClientes }}</span>
+              <div class="kpi-badge badge-neutral">
+                <span class="material-symbols-outlined icon-xs">lock_open</span>
+                <span>Portal habilitado</span>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <a routerLink="/clientes" class="kpi-link">Gerenciar clientes &rarr;</a>
+            </div>
+          </div>
+
+          <!-- KPI 4: Propostas Comerciais -->
+          <div class="kpi-card card-hover">
+            <div class="kpi-header">
+              <span class="kpi-title">Propostas Geradas</span>
+              <div class="kpi-icon-container icon-success">
+                <span class="material-symbols-outlined">request_quote</span>
+              </div>
+            </div>
+            <div class="kpi-body">
+              <span class="kpi-value-currency">
+                {{ formatarMoeda(metricas.kpis.valorTotalPropostas) }}
+              </span>
+              <div class="kpi-badge badge-warning">
+                <span>{{ metricas.kpis.totalPropostas }} propostas emitidas</span>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-subtext">Ticket Médio: {{ formatarMoeda(metricas.kpis.valorMedioProposta) }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. ATALHOS RÁPIDOS -->
+      <section *ngIf="widget.id === 'atalhos_rapidos'" class="widget-section widget-full" id="widget-atalhos">
+        <div class="atalhos-grid">
+          <a routerLink="/simulador" class="atalho-card">
+            <div class="atalho-icon bg-gold">
+              <span class="material-symbols-outlined">calculate</span>
+            </div>
+            <div class="atalho-info">
+              <span class="atalho-title">Simulador de Honorários</span>
+              <span class="atalho-desc">Calcular proposta paramétrica</span>
+            </div>
+            <span class="material-symbols-outlined atalho-arrow">chevron_right</span>
+          </a>
+
+          <a routerLink="/leads" class="atalho-card">
+            <div class="atalho-icon bg-blue">
+              <span class="material-symbols-outlined">person_add</span>
+            </div>
+            <div class="atalho-info">
+              <span class="atalho-title">Novo Lead / Oportunidade</span>
+              <span class="atalho-desc">Cadastrar contato comercial</span>
+            </div>
+            <span class="material-symbols-outlined atalho-arrow">chevron_right</span>
+          </a>
+
+          <a routerLink="/projetos" class="atalho-card">
+            <div class="atalho-icon bg-green">
+              <span class="material-symbols-outlined">create_new_folder</span>
+            </div>
+            <div class="atalho-info">
+              <span class="atalho-title">Criar Novo Projeto</span>
+              <span class="atalho-desc">Iniciar escopo com etapas</span>
+            </div>
+            <span class="material-symbols-outlined atalho-arrow">chevron_right</span>
+          </a>
+
+          <a routerLink="/clientes" class="atalho-card">
+            <div class="atalho-icon bg-purple">
+              <span class="material-symbols-outlined">badge</span>
+            </div>
+            <div class="atalho-info">
+              <span class="atalho-title">Gerenciar Clientes</span>
+              <span class="atalho-desc">Cadastros e acessos ao portal</span>
+            </div>
+            <span class="material-symbols-outlined atalho-arrow">chevron_right</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- 3. GRÁFICO: PROJETOS POR FASE (DONUT) -->
+      <section *ngIf="widget.id === 'grafico_projetos_status'" class="widget-section widget-half" id="widget-projetos-fase">
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-title-group">
+              <span class="material-symbols-outlined widget-icon">pie_chart</span>
+              <h2 class="widget-title">Projetos por Fase</h2>
+            </div>
+            <span class="badge-total">{{ metricas.kpis.totalProjetosAtivos + metricas.kpis.totalProjetosConcluidos }} total</span>
+          </div>
+
+          <div class="donut-chart-container">
+            <!-- SVG Donut Chart -->
+            <div class="donut-svg-wrapper">
+              <svg viewBox="0 0 180 180" class="donut-svg">
+                <circle cx="90" cy="90" r="70" class="donut-bg-circle" />
+                <ng-container *ngFor="let seg of calcularSvgDonutSegments(metricas.projetosPorStatus)">
+                  <path [attr.d]="seg.path" [attr.stroke]="seg.color" class="donut-slice" />
+                </ng-container>
+              </svg>
+              <div class="donut-center-label">
+                <span class="donut-center-number">{{ metricas.kpis.totalProjetosAtivos }}</span>
+                <span class="donut-center-text">Em Andamento</span>
+              </div>
+            </div>
+
+            <!-- Legenda Lateral -->
+            <div class="donut-legend-list">
+              <div *ngFor="let item of metricas.projetosPorStatus" class="donut-legend-item">
+                <span class="legend-bullet" [style.background-color]="getStatusColor(item.status)"></span>
+                <span class="legend-name">{{ item.nomeStatus }}</span>
+                <span class="legend-count font-bold">{{ item.quantidade }}</span>
+                <span class="legend-pct text-muted">({{ item.percentual }}%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. GRÁFICO: PROJETOS POR TIPOLOGIA (BARRAS) -->
+      <section *ngIf="widget.id === 'grafico_projetos_tipo'" class="widget-section widget-half" id="widget-projetos-tipo">
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-title-group">
+              <span class="material-symbols-outlined widget-icon">domain</span>
+              <h2 class="widget-title">Tipologia dos Projetos</h2>
+            </div>
+            <span class="badge-tag">Distribuição</span>
+          </div>
+
+          <div class="tipologias-list">
+            <div *ngFor="let tipo of metricas.projetosPorTipo" class="tipologia-item">
+              <div class="tipologia-header">
+                <div class="tipologia-label">
+                  <span class="material-symbols-outlined tipologia-icon" [style.color]="getTipoColor(tipo.tipo)">
+                    {{ getTipoIcon(tipo.tipo) }}
+                  </span>
+                  <span class="tipologia-name">{{ tipo.nomeTipo }}</span>
+                </div>
+                <div class="tipologia-values">
+                  <span class="font-bold">{{ tipo.quantidade }}</span>
+                  <span class="text-muted">({{ tipo.percentual }}%)</span>
+                </div>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" [style.width.%]="tipo.percentual" [style.background-color]="getTipoColor(tipo.tipo)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. GRÁFICO: FUNIL COMERCIAL DE LEADS -->
+      <section *ngIf="widget.id === 'grafico_funil_leads'" class="widget-section widget-half" id="widget-funil-leads">
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-title-group">
+              <span class="material-symbols-outlined widget-icon">filter_alt</span>
+              <h2 class="widget-title">Funil Comercial de Leads</h2>
+            </div>
+            <a routerLink="/leads" class="link-acao">Ver Kanban &rarr;</a>
+          </div>
+
+          <div class="funnel-container">
+            <div *ngFor="let leadStatus of metricas.leadsPorStatus; let i = index" class="funnel-step">
+              <div class="funnel-info">
+                <span class="funnel-name">{{ leadStatus.nomeStatus }}</span>
+                <span class="funnel-count">{{ leadStatus.quantidade }} leads ({{ leadStatus.percentual }}%)</span>
+              </div>
+              <div class="funnel-bar-wrapper">
+                <div class="funnel-bar-fill" [style.width.%]="leadStatus.percentual > 0 ? leadStatus.percentual : 2" [class]="'step-' + (i + 1)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. GRÁFICO: ORIGEM DOS LEADS -->
+      <section *ngIf="widget.id === 'grafico_origens_lead'" class="widget-section widget-half" id="widget-origens-leads">
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-title-group">
+              <span class="material-symbols-outlined widget-icon">hub</span>
+              <h2 class="widget-title">Origem dos Contatos</h2>
+            </div>
+            <span class="badge-tag">Canais de Aquisição</span>
+          </div>
+
+          <div class="origens-list">
+            <div *ngFor="let origem of metricas.leadsPorOrigem" class="origem-item">
+              <div class="origem-header">
+                <span class="origem-name">{{ origem.origem }}</span>
+                <span class="origem-count font-bold">{{ origem.quantidade }} contatos ({{ origem.percentual }}%)</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill fill-accent" [style.width.%]="origem.percentual"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. GRÁFICO: EVOLUÇÃO MENSAL DE PROPOSTAS -->
+      <section *ngIf="widget.id === 'grafico_propostas_mensal'" class="widget-section widget-full" id="widget-evolucao-propostas">
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-title-group">
+              <span class="material-symbols-outlined widget-icon">monitoring</span>
+              <div>
+                <h2 class="widget-title">Evolução de Propostas Comerciais</h2>
+                <span class="widget-subtitle">Valores acumulados e volume de simulações nos últimos 6 meses</span>
+              </div>
+            </div>
+            <a routerLink="/simulador" class="btn-sm-primary">Nova Proposta</a>
+          </div>
+
+          <div class="timeline-chart-container">
+            <div class="timeline-columns">
+              <div *ngFor="let mes of metricas.propostasMensais" class="timeline-col">
+                <div class="col-bar-container">
+                  <div class="col-bar-fill" [style.height.%]="(mes.valorTotal / calcularMaxValorPropostas(metricas.propostasMensais)) * 100">
+                    <span class="col-bar-tooltip">
+                      {{ formatarMoeda(mes.valorTotal) }} ({{ mes.quantidade }} prop.)
+                    </span>
+                  </div>
+                </div>
+                <div class="col-label">
+                  <span class="col-month">{{ mes.rotuloMes }}</span>
+                  <span class="col-val">{{ mes.valorTotal > 0 ? formatarMoeda(mes.valorTotal) : '-' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. TABELA: PROJETOS RECENTES -->
+      <section *ngIf="widget.id === 'tabela_projetos_recentes'" class="widget-section widget-full" id="widget-projetos-recentes">
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-title-group">
+              <span class="material-symbols-outlined widget-icon">folder_special</span>
+              <div>
+                <h2 class="widget-title">Projetos em Andamento</h2>
+                <span class="widget-subtitle">Acompanhamento das últimas obras e entregas por etapa</span>
+              </div>
+            </div>
+            <a routerLink="/projetos" class="link-acao">Ver todos os projetos &rarr;</a>
+          </div>
+
+          <div *ngIf="metricas.projetosRecentes.length === 0" class="empty-state-box">
+            <span class="material-symbols-outlined">folder_off</span>
+            <p>Nenhum projeto cadastrado no momento.</p>
+            <a routerLink="/projetos" class="btn-action-primary">Criar Primeiro Projeto</a>
+          </div>
+
+          <div *ngIf="metricas.projetosRecentes.length > 0" class="table-responsive">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Projeto</th>
+                  <th>Cliente</th>
+                  <th>Tipologia</th>
+                  <th>Status</th>
+                  <th>Progresso das Etapas</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let proj of metricas.projetosRecentes">
+                  <td>
+                    <div class="proj-title-cell">
+                      <span class="proj-name">{{ proj.nome }}</span>
+                      <span class="proj-m2" *ngIf="proj.metragemTotal">{{ proj.metragemTotal }} m²</span>
+                    </div>
+                  </td>
+                  <td>{{ proj.clienteNome }}</td>
+                  <td>
+                    <span class="badge-tipo">
+                      <span class="material-symbols-outlined icon-inline">{{ getTipoIcon(proj.tipo) }}</span>
+                      {{ proj.tipo }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="status-chip" [style.background-color]="getStatusColor(proj.status) + '1a'" [style.color]="getStatusColor(proj.status)">
+                      {{ proj.status }}
+                    </span>
+                  </td>
+                  <td class="cell-progress">
+                    <div class="progress-info">
+                      <span>{{ proj.etapasConcluidas }}/{{ proj.totalEtapas }} etapas</span>
+                      <span class="font-bold">{{ proj.progressoPercentual }}%</span>
+                    </div>
+                    <div class="progress-bar-track">
+                      <div class="progress-bar-fill fill-primary" [style.width.%]="proj.progressoPercentual"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <a [routerLink]="['/projetos', proj.id]" class="btn-table-action" title="Ver Detalhes">
+                      <span class="material-symbols-outlined">visibility</span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. LISTA: LEADS RECENTES -->
+      <section *ngIf="widget.id === 'lista_leads_recentes'" class="widget-section widget-half" id="widget-leads-recentes">
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-title-group">
+              <span class="material-symbols-outlined widget-icon">contact_mail</span>
+              <h2 class="widget-title">Últimos Leads Registrados</h2>
+            </div>
+            <a routerLink="/leads" class="link-acao">Ver Todos &rarr;</a>
+          </div>
+
+          <div *ngIf="metricas.leadsRecentes.length === 0" class="empty-state-box">
+            <p>Nenhum lead cadastrado ainda.</p>
+          </div>
+
+          <div *ngIf="metricas.leadsRecentes.length > 0" class="recent-list">
+            <div *ngFor="let lead of metricas.leadsRecentes" class="recent-item">
+              <div class="recent-avatar">
+                <span>{{ lead.nome.substring(0, 2).toUpperCase() }}</span>
+              </div>
+              <div class="recent-details">
+                <span class="recent-title">{{ lead.nome }}</span>
+                <span class="recent-sub">{{ lead.email }} &bull; {{ lead.origemNome }}</span>
+              </div>
+              <div class="recent-badge-group">
+                <span class="badge" [class]="getLeadStatusBadgeClass(lead.status)">{{ lead.status }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. LISTA: PROPOSTAS RECENTES -->
+      <section *ngIf="widget.id === 'lista_propostas_recentes'" class="widget-section widget-half" id="widget-propostas-recentes">
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="widget-title-group">
+              <span class="material-symbols-outlined widget-icon">receipt_long</span>
+              <h2 class="widget-title">Propostas Recentes</h2>
+            </div>
+            <a routerLink="/simulador" class="link-acao">Abrir Simulador &rarr;</a>
+          </div>
+
+          <div *ngIf="metricas.propostasRecentes.length === 0" class="empty-state-box">
+            <p>Nenhuma proposta salva ainda.</p>
+          </div>
+
+          <div *ngIf="metricas.propostasRecentes.length > 0" class="recent-list">
+            <div *ngFor="let prop of metricas.propostasRecentes" class="recent-item">
+              <div class="recent-icon-box">
+                <span class="material-symbols-outlined">description</span>
+              </div>
+              <div class="recent-details">
+                <span class="recent-title">{{ prop.titulo }} ({{ prop.codigo }})</span>
+                <span class="recent-sub">{{ prop.clienteOuLeadNome }} &bull; {{ prop.metragemQuadrada }} m²</span>
+              </div>
+              <div class="recent-value-box">
+                <span class="recent-price">{{ formatarMoeda(prop.valorFinal) }}</span>
+                <span class="badge" [class]="getPropostaStatusBadgeClass(prop.status)">{{ prop.status }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </ng-container>
+  </div>
+</div>
+
+<!-- MODAL DE PERSONALIZAÇÃO DO DASHBOARD -->
+<div *ngIf="modalPersonalizarAberto" class="modal-backdrop" (click)="fecharModalPersonalizar()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <div class="modal-title-group">
+        <span class="material-symbols-outlined modal-icon">tune</span>
+        <div>
+          <h2 class="modal-title">Personalizar Dashboard</h2>
+          <p class="modal-subtitle">Organize a ordem dos cards ou oculte seções conforme sua preferência de trabalho.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-close" (click)="fecharModalPersonalizar()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </header>
+
+    <div class="modal-body">
+      <div class="info-alert">
+        <span class="material-symbols-outlined">info</span>
+        <span>Suas preferências de layout são salvas no banco de dados da sua conta e sincronizadas entre dispositivos.</span>
+      </div>
+
+      <div class="widget-reorder-list">
+        <div *ngFor="let w of widgets; let i = index" class="widget-reorder-item" [class.item-disabled]="!w.visivel">
+          <div class="widget-item-left">
+            <span class="material-symbols-outlined drag-handle">drag_indicator</span>
+            <span class="material-symbols-outlined widget-item-icon">{{ w.icone }}</span>
+            <div class="widget-item-text">
+              <span class="widget-item-title">{{ w.titulo }}</span>
+              <span class="widget-item-badge">{{ w.largura === 'full' ? 'Largura Total' : 'Meia Largura' }}</span>
+            </div>
+          </div>
+
+          <div class="widget-item-controls">
+            <!-- Botões de Mover -->
+            <button type="button" class="btn-icon" (click)="moverWidget(i, 'up')" [disabled]="i === 0" title="Subir">
+              <span class="material-symbols-outlined">arrow_upward</span>
+            </button>
+            <button type="button" class="btn-icon" (click)="moverWidget(i, 'down')" [disabled]="i === widgets.length - 1" title="Descer">
+              <span class="material-symbols-outlined">arrow_downward</span>
+            </button>
+
+            <!-- Toggle Visibilidade -->
+            <button type="button" class="btn-toggle" [class.toggle-active]="w.visivel" (click)="toggleVisibilidade(w)">
+              <span class="material-symbols-outlined">{{ w.visivel ? 'visibility' : 'visibility_off' }}</span>
+              <span>{{ w.visivel ? 'Exibido' : 'Oculto' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-footer">
+      <button type="button" class="btn-secondary" (click)="restaurarPadrao()" [disabled]="salvandoPreferencias">
+        <span class="material-symbols-outlined">restart_alt</span>
+        <span>Restaurar Padrão</span>
+      </button>
+
+      <div class="footer-right-actions">
+        <button type="button" class="btn-ghost" (click)="fecharModalPersonalizar()" [disabled]="salvandoPreferencias">
+          Cancelar
+        </button>
+        <button type="button" class="btn-primary" (click)="salvarPreferencias()" [disabled]="salvandoPreferencias">
+          <span *ngIf="salvandoPreferencias" class="spinner-sm"></span>
+          <span class="material-symbols-outlined" *ngIf="!salvandoPreferencias">save</span>
+          <span>Salvar no Perfil</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

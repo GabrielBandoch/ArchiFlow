@@ -97,6 +97,17 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'dashboard',
+    canActivate: [staffGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      }
+    ]
+  },
+  {
     path: 'simulador',
     canActivate: [staffGuard],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
@@ -109,11 +120,11 @@ export const appRoutes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'projetos',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: 'projetos'
+    redirectTo: 'dashboard'
   }
 ];
