@@ -16,6 +16,8 @@ export class EstimativaDestaqueComponent {
   @Output() salvarPropostaClick = new EventEmitter<void>();
   @Output() vincularLeadClick = new EventEmitter<void>();
   @Output() ajusteManualClick = new EventEmitter<void>();
+  @Output() pdfClick = new EventEmitter<void>();
+  @Output() whatsappClick = new EventEmitter<void>();
 
   formatarMoeda(valor?: number): string {
     if (valor === undefined || valor === null) return 'R$ 0,00';

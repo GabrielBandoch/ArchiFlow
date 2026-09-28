@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 
   .section-icon {
     font-size: 1.5rem;
@@ -22,6 +22,69 @@
     color: #1f2937;
     margin: 0;
   }
+}
+
+// CLIENTE VINCULO SECTION
+.cliente-vinculo-section {
+  background-color: #faf8f5;
+  border: 1px solid #ebdcd0;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.badge-vinculo-status {
+  background-color: #e5e7eb;
+  color: #6b7280;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+
+  &.badge-ok {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #15803d;
+  }
+}
+
+.tipo-vinculo-pills {
+  .pill-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid #d3c4b9;
+    background-color: #ffffff;
+    color: #4f453d;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    .icon-sm {
+      font-size: 16px;
+    }
+
+    &:hover {
+      background-color: #f0eded;
+      color: #1b1c1c;
+    }
+
+    &.active {
+      background-color: #765538;
+      border-color: #765538;
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(118, 85, 56, 0.25);
+    }
+  }
+}
+
+.cliente-selecionado-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #d3c4b9;
+  color: #1b1c1c;
 }
 
 .form-row-2 {

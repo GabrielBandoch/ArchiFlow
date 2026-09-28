@@ -1,23 +1,44 @@
-<div class="simulador-page">
-  <div class="page-header">
-    <div class="header-content">
-      <h1 class="page-title">Simulador de Honorários</h1>
-      <p class="page-subtitle">Configure os parâmetros do projeto para gerar uma estimativa precisa.</p>
-    </div>
-    <div class="header-actions">
-      <app-button variant="secondary" (btnClick)="abrirModalHistorico()" title="Histórico de Propostas">
-        <span class="material-symbols-outlined btn-icon">history</span>
-        Histórico
-      </app-button>
+<div class="simulador-page d-flex flex-direction-column gap-xl">
+  <div class="page-header d-flex justify-content-between align-items-start flex-wrap gap-md">
+    <div class="header-content d-flex flex-direction-column gap-xs">
+      <h1 class="page-title font-headline-lg m-0">Simulador de Honorários & Orçamentos</h1>
+      <p class="page-subtitle font-body-md text-on-surface-variant m-0">
+        Precificação estratégica baseada em CUB, complexidade, metragem e escopo contratual.
+      </p>
     </div>
   </div>
 
-  <div class="simulador-layout">
+  <div class="nav-tabs-bar d-flex align-items-center">
+    <div class="tabs-container d-flex gap-xs p-xs">
+      <button 
+        type="button" 
+        class="nav-tab-btn font-label-md" 
+        [class.active]="abaAtiva === 'calculadora'"
+        (click)="setAba('calculadora')">
+        <span class="material-symbols-outlined">calculate</span>
+        Calculadora de Honorários
+      </button>
+      <button 
+        type="button" 
+        class="nav-tab-btn font-label-md" 
+        [class.active]="abaAtiva === 'historico'"
+        (click)="setAba('historico')">
+        <span class="material-symbols-outlined">history_edu</span>
+        Propostas Comerciais Geradas
+        <span class="tab-counter" *ngIf="propostas.length > 0">{{ propostas.length }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ABA 1: CALCULADORA -->
+  <div class="simulador-layout" *ngIf="abaAtiva === 'calculadora'">
     <div class="config-column d-flex flex-direction-column gap-md">
       <app-parametros-projeto
         [form]="form"
         [padroesImovel]="padroesImovel"
         [tiposProjeto]="tiposProjeto"
+        [clientes]="clientes"
+        [leads]="leads"
         (padraoSelecionado)="selecionarPadrao($event)">
       </app-parametros-projeto>
 
@@ -33,12 +54,182 @@
         [carregando]="carregando"
         (salvarPropostaClick)="abrirModalSalvar(false)"
         (vincularLeadClick)="abrirModalSalvar(true)"
-        (ajusteManualClick)="abrirModalAjusteManual()">
+        (ajusteManualClick)="abrirModalAjusteManual()"
+        (pdfClick)="abrirPdfSimulacaoAtual()"
+        (whatsappClick)="compartilharWhatsappSimulacaoAtual()">
       </app-estimativa-destaque>
 
       <app-memoria-calculo
         [memoria]="simulacao?.memoriaCalculo">
       </app-memoria-calculo>
+    </div>
+  </div>
+
+  <!-- ABA 2: HISTÓRICO DE PROPOSTAS -->
+  <div class="historico-tab-content d-flex flex-direction-column gap-md" *ngIf="abaAtiva === 'historico'">
+    <div class="table-container-card d-flex flex-direction-column">
+      <div class="table-toolbar d-flex justify-content-between align-items-center flex-wrap gap-md">
+        <div class="d-flex align-items-center gap-md flex-wrap">
+          <div class="d-flex align-items-center gap-sm">
+            <div class="table-icon-box d-flex align-items-center justify-content-center">
+              <span class="material-symbols-outlined">request_quote</span>
+            </div>
+            <h3 class="table-title font-headline-md m-0">Propostas Comerciais</h3>
+          </div>
+
+          <div class="filter-tabs d-flex p-xs">
+            <button 
+              type="button" 
+              class="filter-tab font-label-md"
+              [class.active]="filtroStatus === 'todos'"
+              (click)="setFiltroStatus('todos')">
+              Todas
+            </button>
+            <button 
+              type="button" 
+              class="filter-tab font-label-md"
+              [class.active]="filtroStatus === 0"
+              (click)="setFiltroStatus(0)">
+              Rascunhos
+            </button>
+            <button 
+              type="button" 
+              class="filter-tab font-label-md"
+              [class.active]="filtroStatus === 1"
+              (click)="setFiltroStatus(1)">
+              Enviadas
+            </button>
+            <button 
+              type="button" 
+              class="filter-tab font-label-md"
+              [class.active]="filtroStatus === 2"
+              (click)="setFiltroStatus(2)">
+              Aprovadas
+            </button>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-sm flex-wrap">
+          <div class="search-box">
+            <span class="material-symbols-outlined search-icon">search</span>
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Buscar código, título ou cliente..." 
+              [(ngModel)]="busca">
+          </div>
+
+          <app-button variant="primary" (btnClick)="setAba('calculadora')">
+            <span class="material-symbols-outlined">add</span>
+            Nova Simulação
+          </app-button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table w-full">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Título / Vínculo</th>
+              <th>Metragem</th>
+              <th>Valor Final</th>
+              <th>Status</th>
+              <th>Data</th>
+              <th class="text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of propostasFiltradas" class="table-row">
+              <td>
+                <span class="prop-code font-mono font-weight-bold text-primary">{{ p.codigo }}</span>
+              </td>
+              <td>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-label-md font-weight-bold text-on-surface">{{ p.titulo }}</span>
+                  <span class="font-body-md text-on-surface-variant text-sm" *ngIf="p.clienteNome || p.leadNome">
+                    {{ p.clienteNome ? 'Cliente: ' + p.clienteNome : 'Lead: ' + p.leadNome }}
+                  </span>
+                </div>
+              </td>
+              <td>
+                <span class="font-body-md text-on-surface">{{ p.metragemQuadrada }} m²</span>
+              </td>
+              <td>
+                <span class="font-label-md font-weight-bold text-on-surface">
+                  {{ formatarMoeda(p.valorFinalAjustado) }}
+                </span>
+              </td>
+              <td>
+                <span 
+                  class="status-badge font-label-sm"
+                  [class.status-rascunho]="p.status === 0"
+                  [class.status-enviada]="p.status === 1"
+                  [class.status-aprovada]="p.status === 2"
+                  [class.status-recusada]="p.status === 3">
+                  {{ p.statusNome }}
+                </span>
+              </td>
+              <td>
+                <span class="font-body-md text-on-surface text-sm">{{ formatarData(p.criadoEm) }}</span>
+              </td>
+              <td class="text-right">
+                <div class="d-flex align-items-center justify-content-end gap-xs">
+                  <button 
+                    type="button" 
+                    class="btn-table-action" 
+                    (click)="abrirPdfPropostaSalva(p)"
+                    title="Visualizar / Imprimir PDF da Proposta">
+                    <span class="material-symbols-outlined text-primary">picture_as_pdf</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn-table-action" 
+                    (click)="compartilharWhatsappPropostaSalva(p)"
+                    title="Compartilhar via WhatsApp">
+                    <span class="material-symbols-outlined text-success">chat</span>
+                  </button>
+                  <button 
+                    *ngIf="p.status === 0"
+                    type="button" 
+                    class="btn-table-action" 
+                    (click)="atualizarStatusProposta(p, 1)"
+                    title="Marcar como Enviada">
+                    <span class="material-symbols-outlined">send</span>
+                  </button>
+                  <button 
+                    *ngIf="p.status === 0 || p.status === 1"
+                    type="button" 
+                    class="btn-table-action btn-action-approve" 
+                    (click)="atualizarStatusProposta(p, 2)"
+                    title="Aprovar Proposta">
+                    <span class="material-symbols-outlined">check_circle</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn-table-action btn-action-delete" 
+                    (click)="excluirProposta(p)"
+                    title="Excluir proposta">
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="propostasFiltradas.length === 0">
+              <td colspan="7" class="empty-table-cell text-center p-2xl">
+                <div class="empty-table-box d-flex flex-direction-column align-items-center justify-content-center gap-xs">
+                  <div class="empty-icon-circle d-flex align-items-center justify-content-center">
+                    <span class="material-symbols-outlined">request_quote</span>
+                  </div>
+                  <span class="font-label-md font-weight-bold text-on-surface mt-xs">Nenhuma proposta comercial encontrada</span>
+                  <span class="font-body-md text-on-surface-variant text-sm">Realize uma simulação e salve sua primeira proposta para acompanhar aqui.</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -61,11 +252,9 @@
     (confirmar)="confirmarAjusteManual()">
   </app-modal-ajuste-manual>
 
-  <app-modal-historico-propostas
-    [show]="modalHistoricoAberto"
-    [propostas]="propostas"
-    (close)="fecharModalHistorico()"
-    (atualizarStatus)="atualizarStatusProposta($event.proposta, $event.status)"
-    (excluir)="excluirProposta($event)">
-  </app-modal-historico-propostas>
+  <app-modal-proposta-pdf
+    [show]="modalPdfAberto"
+    [proposta]="propostaParaPdf"
+    (close)="fecharModalPdf()">
+  </app-modal-proposta-pdf>
 </div>

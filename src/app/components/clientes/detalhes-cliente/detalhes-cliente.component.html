@@ -136,6 +136,50 @@
     <section class="studio-panel d-flex flex-direction-column">
       <div class="panel-header d-flex align-items-center justify-content-between">
         <div class="title-with-pill d-flex align-items-center gap-xs">
+          <h2 class="font-headline-md m-0">Propostas & Orçamentos</h2>
+          <span class="count-pill font-label-sm">{{ propostas.length }}</span>
+        </div>
+        <app-button variant="outline" size="sm" (btnClick)="simularNovaProposta()" title="Calcular nova proposta no simulador">
+          <span class="material-symbols-outlined icon-btn">add</span>
+          Nova Proposta
+        </app-button>
+      </div>
+
+      <div class="panel-content flex-grow-1">
+        <div class="propostas-list d-flex flex-direction-column gap-sm" *ngIf="propostas.length > 0">
+          <div *ngFor="let prop of propostas" class="proposal-card-clean d-flex justify-content-between align-items-center p-sm">
+            <div class="d-flex flex-direction-column gap-xs min-w-0">
+              <div class="d-flex align-items-center gap-xs">
+                <span class="prop-code-badge font-mono font-weight-bold text-primary">{{ prop.codigo }}</span>
+                <span class="prop-title font-body-md font-weight-semibold text-on-surface truncate">{{ prop.titulo }}</span>
+              </div>
+              <span class="font-label-sm text-on-surface-variant">{{ prop.metragemQuadrada }}m² • {{ prop.criadoEm | date:'dd/MM/yyyy' }}</span>
+            </div>
+            
+            <div class="d-flex align-items-end flex-direction-column gap-xs flex-shrink-0">
+              <span class="font-label-md font-weight-bold text-on-surface">{{ prop.valorFinalAjustado | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+              <span 
+                class="status-badge font-label-sm"
+                [class.status-aprovada]="prop.status === 2"
+                [class.status-enviada]="prop.status === 1"
+                [class.status-rascunho]="prop.status === 0"
+                [class.status-recusada]="prop.status === 3">
+                {{ prop.statusNome }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center padding-lg" *ngIf="propostas.length === 0">
+          <span class="material-symbols-outlined empty-icon text-on-surface-variant">request_quote</span>
+          <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Nenhuma proposta comercial gerada para este cliente.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="studio-panel d-flex flex-direction-column">
+      <div class="panel-header d-flex align-items-center justify-content-between">
+        <div class="title-with-pill d-flex align-items-center gap-xs">
           <h2 class="font-headline-md m-0">Histórico de Interações</h2>
           <span class="count-pill font-label-sm">{{ historico.length }}</span>
         </div>

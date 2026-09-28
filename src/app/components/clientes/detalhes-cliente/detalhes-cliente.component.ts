@@ -2,10 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
 import { ClienteService, LeadService, ProjetoService } from '../../../core/api';
+import { HonorarioService } from '../../../core/api/honorarios/honorario.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Cliente } from '../../../models/cliente.model';
 import { Lead, HistoricoContatoLead } from '../../../models/lead.model';
 import { Projeto } from '../../../models/projeto.model';
+import { PropostaHonorario } from '../../../models/honorario.model';
 import { DialogService } from '../../../core/services/dialog.service';
 import { EditarClienteModalComponent } from '../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component';
 
@@ -22,6 +24,7 @@ export class DetalhesClienteComponent implements OnInit {
   private clienteService = inject(ClienteService);
   private leadService = inject(LeadService);
   private projetoService = inject(ProjetoService);
+  private honorarioService = inject(HonorarioService);
   private notificationService = inject(NotificationService);
   private dialogService = inject(DialogService);
 
@@ -29,6 +32,7 @@ export class DetalhesClienteComponent implements OnInit {
   lead?: Lead;
   projetos: Projeto[] = [];
   historico: HistoricoContatoLead[] = [];
+  propostas: PropostaHonorario[] = [];
   loading = true;
 
   ngOnInit(): void {
@@ -53,6 +57,7 @@ export class DetalhesClienteComponent implements OnInit {
       next: (clienteData) => {
         this.cliente = clienteData;
         this.carregarProjetosCliente(id);
+        this.carregarPropostasCliente(id);
 
         if (clienteData.leadId) {
           this.carregarHistoricoLead(clienteData.leadId);
@@ -67,6 +72,25 @@ export class DetalhesClienteComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  carregarPropostasCliente(clienteId: string): void {
+    this.honorarioService.obterPropostasPorCliente(clienteId).subscribe({
+      next: (propostasData) => {
+        this.propostas = propostasData || [];
+      },
+      error: (err) => {
+        console.error('Erro ao carregar propostas do cliente', err);
+      }
+    });
+  }
+
+  simularNovaProposta(): void {
+    if (this.cliente) {
+      this.router.navigate(['/simulador'], {
+        queryParams: { clienteId: this.cliente.id }
+      });
+    }
   }
 
   carregarProjetosCliente(clienteId: string): void {

@@ -74,14 +74,23 @@
               {{ col.status === StatusLeadEnum.Novo ? 'Recebido: ' : 'Modificado: ' }} 
               {{ (lead.atualizadoEm || lead.criadoEm) | date:'dd/MM/yyyy' }}
             </span>
-            <app-button 
-              *ngIf="col.status !== StatusLeadEnum.Convertido && col.status !== StatusLeadEnum.Perdido" 
-              variant="icon"
-              size="sm"
-              (btnClick)="converterParaCliente(lead, $event)" 
-              title="Converter em Cliente">
-              <span class="material-symbols-outlined text-primary">person_add</span>
-            </app-button>
+            <div class="d-flex align-items-center gap-xs">
+              <app-button 
+                variant="icon"
+                size="sm"
+                (btnClick)="simularHonorarios(lead, $event)" 
+                title="Simular Honorários / Nova Proposta">
+                <span class="material-symbols-outlined text-secondary">request_quote</span>
+              </app-button>
+              <app-button 
+                *ngIf="col.status !== StatusLeadEnum.Convertido && col.status !== StatusLeadEnum.Perdido" 
+                variant="icon"
+                size="sm"
+                (btnClick)="converterParaCliente(lead, $event)" 
+                title="Converter em Cliente">
+                <span class="material-symbols-outlined text-primary">person_add</span>
+              </app-button>
+            </div>
           </div>
 
         </div>

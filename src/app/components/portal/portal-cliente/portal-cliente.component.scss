@@ -1,4 +1,4 @@
-﻿@import '../../../../styles/variables';
+@import '../../../../styles/variables';
 
 .portal-empty-state {
   display: flex;
@@ -63,4 +63,49 @@
   display: flex;
   flex-direction: column;
   gap: var(--af-space-lg);
+}
+
+.portal-card {
+  background-color: #ffffff;
+  border-radius: var(--af-radius-lg, 16px);
+  border: 1px solid var(--af-surface-variant, #e2e8f0);
+  box-shadow: var(--af-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+}
+
+.proposta-card {
+  border-top: 3px solid var(--af-primary, #b5603c);
+
+  .badge-status-aprovado {
+    background-color: #dcfce7;
+    color: #166534;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .proposta-meta-box {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .btn-ver-pdf {
+    background-color: #ffffff;
+    border: 1px solid var(--af-primary, #b5603c);
+    color: var(--af-primary, #b5603c);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--af-primary, #b5603c);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(181, 96, 60, 0.25);
+    }
+  }
 }

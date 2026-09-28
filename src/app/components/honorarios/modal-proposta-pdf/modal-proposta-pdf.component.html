@@ -1,0 +1,214 @@
+<div class="modal-backdrop" *ngIf="show">
+  <div class="modal-dialog-pdf d-flex flex-direction-column">
+    
+    <!-- BARRA DE AÇÕES DO MODAL (NÃO IMPRESSA) -->
+    <div class="modal-toolbar d-flex justify-content-between align-items-center p-md flex-wrap gap-sm no-print">
+      <div class="d-flex align-items-center gap-sm">
+        <div class="toolbar-icon-box d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">picture_as_pdf</span>
+        </div>
+        <div>
+          <h3 class="font-headline-sm m-0">Proposta Técnica & Comercial (PDF)</h3>
+          <span class="font-body-xs text-on-surface-variant font-mono">{{ proposta?.codigo || 'PROPOSTA' }}</span>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-xs flex-wrap">
+        <app-button variant="outline" (btnClick)="compartilharWhatsapp()" title="Compartilhar proposta via WhatsApp">
+          <span class="material-symbols-outlined text-success">chat</span>
+          WhatsApp
+        </app-button>
+        <app-button variant="outline" (btnClick)="enviarEmail()" title="Enviar proposta por E-mail">
+          <span class="material-symbols-outlined">mail</span>
+          E-mail
+        </app-button>
+        <app-button variant="primary" (btnClick)="imprimir()" title="Imprimir em folha A4 ou Salvar em PDF">
+          <span class="material-symbols-outlined">print</span>
+          Imprimir / Salvar PDF
+        </app-button>
+        <button type="button" class="btn-close-modal" (click)="fechar()" title="Fechar">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- BANNER DE AVISO QUANDO NÃO CONFIGURADO (NÃO IMPRESSO) -->
+    <div class="unconfigured-warning-banner d-flex align-items-center justify-content-between p-sm no-print" *ngIf="!isConfigurado">
+      <div class="d-flex align-items-center gap-xs font-body-sm text-warning-contrast">
+        <span class="material-symbols-outlined icon-sm">warning</span>
+        <span><strong>Identidade do Escritório Não Configurada:</strong> Preencha os dados do seu escritório para liberar a exportação e personalização oficial.</span>
+      </div>
+      <button type="button" class="btn-config-now font-label-xs" (click)="irParaConfiguracoes()">
+        Configurar Agora
+      </button>
+    </div>
+
+    <!-- ÁREA DO DOCUMENTO A4 -->
+    <div class="modal-document-container p-lg" *ngIf="proposta">
+      <div class="a4-document-sheet" [style.--cor-primaria]="config.corPrimaria || '#765538'">
+        
+        <!-- LINHA DE TOPO ARQUITETÔNICA -->
+        <div class="a4-top-accent-bar" [style.background-color]="config.corPrimaria || '#765538'"></div>
+
+        <!-- CABEÇALHO DA FOLHA TIMBRADA -->
+        <header class="doc-header d-flex justify-content-between align-items-start" *ngIf="config.exibirCabecalho">
+          <div class="doc-brand d-flex flex-direction-column">
+            <img *ngIf="config.logoUrl" [src]="config.logoUrl" alt="Logo" class="doc-logo mb-xs">
+            <h1 class="doc-brand-name m-0" [style.color]="config.corPrimaria">
+              {{ config.nomeEscritorio || 'SEU ESCRITÓRIO DE ARQUITETURA' }}
+            </h1>
+            <span class="doc-brand-slogan" *ngIf="config.slogan">
+              {{ config.slogan }}
+            </span>
+            <span class="doc-brand-reg font-mono" *ngIf="config.registroProfissional">
+              {{ config.registroProfissional }}
+            </span>
+          </div>
+
+          <div class="doc-contacts d-flex flex-direction-column align-items-end text-right">
+            <span class="contact-item" *ngIf="config.telefone"><strong>Tel:</strong> {{ config.telefone }}</span>
+            <span class="contact-item" *ngIf="config.email"><strong>E-mail:</strong> {{ config.email }}</span>
+            <span class="contact-item" *ngIf="config.endereco">{{ config.endereco }}</span>
+            <span class="contact-item text-on-surface-variant font-italic" *ngIf="!config.telefone && !config.email">
+              Contatos pendentes de configuração
+            </span>
+          </div>
+        </header>
+
+        <!-- BANNER DE IDENTIFICAÇÃO DO DOCUMENTO -->
+        <div class="doc-title-banner d-flex justify-content-between align-items-center" 
+             [style.background-color]="config.corPrimaria + '12'" 
+             [style.border-left]="'3px solid ' + config.corPrimaria">
+          <div>
+            <div class="doc-category" [style.color]="config.corPrimaria">PROPOSTA TÉCNICA E COMERCIAL DE HONORÁRIOS</div>
+            <div class="doc-code font-mono">CÓDIGO: {{ proposta.codigo }}</div>
+          </div>
+          <div class="doc-meta text-right">
+            <div><strong>Emissão:</strong> {{ proposta.criadoEm | date:'dd/MM/yyyy' }}</div>
+            <div class="badge-validade">Validade: {{ config.validadeDias }} dias</div>
+          </div>
+        </div>
+
+        <!-- APRESENTAÇÃO EDITORIAL -->
+        <div class="doc-intro-quote" *ngIf="config.textoApresentacao">
+          <p class="m-0">{{ config.textoApresentacao }}</p>
+        </div>
+
+        <!-- RESUMO DO PROJETO & CLIENTE -->
+        <div class="doc-section" *ngIf="config.exibirResumo">
+          <div class="doc-section-header d-flex align-items-center gap-xs">
+            <span class="doc-sec-num" [style.color]="config.corPrimaria">01.</span>
+            <h4 class="m-0" [style.color]="config.corPrimaria">DADOS DO PROJETO & CLIENTE</h4>
+          </div>
+
+          <div class="doc-meta-grid">
+            <div class="meta-cell">
+              <span class="lbl">CLIENTE</span>
+              <strong>{{ proposta.clienteNome || proposta.leadNome || 'Cliente em Negociação' }}</strong>
+            </div>
+            <div class="meta-cell">
+              <span class="lbl">OBJETO / PROJETO</span>
+              <strong>{{ proposta.titulo }}</strong>
+            </div>
+            <div class="meta-cell">
+              <span class="lbl">TIPOLOGIA</span>
+              <span>{{ proposta.tipoProjetoNome || 'Residencial' }}</span>
+            </div>
+            <div class="meta-cell">
+              <span class="lbl">METRAGEM & PADRÃO</span>
+              <strong>{{ proposta.metragemQuadrada }} m²</strong> <span *ngIf="proposta.padraoImovelNome">({{ proposta.padraoImovelNome }})</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUADRO DE ETAPAS E ESCOPO -->
+        <div class="doc-section" *ngIf="config.exibirTabelaEtapas && proposta.etapas && proposta.etapas.length > 0">
+          <div class="doc-section-header d-flex align-items-center gap-xs">
+            <span class="doc-sec-num" [style.color]="config.corPrimaria">02.</span>
+            <h4 class="m-0" [style.color]="config.corPrimaria">ESCOPO DO PROJETO & ETAPAS CONTRATADAS</h4>
+          </div>
+
+          <table class="doc-table w-full">
+            <thead>
+              <tr [style.background-color]="config.corPrimaria + '15'">
+                <th class="text-left col-etapa">Etapa & Entregáveis</th>
+                <th class="text-center col-pct">%</th>
+                <th class="text-right col-valor">Investimento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of proposta.etapas">
+                <td class="col-etapa">
+                  <span class="etapa-nome">{{ e.nome }}</span>
+                  <span class="etapa-desc" *ngIf="e.descricao">{{ e.descricao }}</span>
+                </td>
+                <td class="text-center col-pct font-mono">{{ e.percentual || 0 }}%</td>
+                <td class="text-right col-valor font-weight-bold font-mono">{{ formatarMoeda(e.valor) }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- TOTAL BAR -->
+          <div class="doc-total-bar d-flex justify-content-between align-items-center" 
+               [style.background-color]="config.corPrimaria + '15'" 
+               [style.border]="'1px solid ' + config.corPrimaria + '40'">
+            <div class="d-flex flex-direction-column">
+              <span class="total-lbl text-uppercase">VALOR TOTAL DOS HONORÁRIOS ARQUITETÔNICOS</span>
+              <span class="total-sub">Escopo completo conforme etapas descritas acima</span>
+            </div>
+            <div class="doc-total-amount font-mono font-weight-bold" [style.color]="config.corPrimaria">
+              {{ formatarMoeda(proposta.valorFinalAjustado) }}
+            </div>
+          </div>
+        </div>
+
+        <!-- CONDIÇÕES COMERCIAIS & DADOS BANCÁRIOS -->
+        <div class="doc-section" *ngIf="config.exibirCondicoesPagamento">
+          <div class="doc-section-header d-flex align-items-center gap-xs">
+            <span class="doc-sec-num" [style.color]="config.corPrimaria">03.</span>
+            <h4 class="m-0" [style.color]="config.corPrimaria">CONDIÇÕES COMERCIAIS & DADOS BANCÁRIOS</h4>
+          </div>
+
+          <div class="doc-payment-grid">
+            <div class="payment-terms-box">
+              <span class="sub-lbl">FORMA DE PAGAMENTO:</span>
+              <p class="m-0">{{ config.condicoesPagamentoPadrao }}</p>
+            </div>
+            <div class="payment-bank-box font-mono" *ngIf="config.chavePix || config.dadosBancarios">
+              <div *ngIf="config.chavePix"><strong>CHAVE PIX:</strong> {{ config.chavePix }}</div>
+              <div *ngIf="config.dadosBancarios"><strong>BANCO:</strong> {{ config.dadosBancarios }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TERMOS GERAIS & REVISÕES -->
+        <div class="doc-section" *ngIf="config.exibirTermosGerais">
+          <div class="doc-section-header d-flex align-items-center gap-xs">
+            <span class="doc-sec-num" [style.color]="config.corPrimaria">04.</span>
+            <h4 class="m-0" [style.color]="config.corPrimaria">TERMOS GERAIS & POLÍTICAS DE REVISÃO</h4>
+          </div>
+          <div class="doc-terms-box">
+            <p class="m-0 doc-terms-text whitespace-pre-line">{{ config.termosGerais }}</p>
+          </div>
+        </div>
+
+        <!-- ASSINATURAS E ACEITE -->
+        <div class="doc-section doc-signatures-section" *ngIf="config.exibirAssinaturas">
+          <div class="d-flex justify-content-between gap-xl">
+            <div class="sign-box text-center flex-grow-1">
+              <div class="sign-line"></div>
+              <span class="sign-name d-block">{{ config.nomeEscritorio }}</span>
+              <span class="sign-role">Arquiteto(a) Responsável</span>
+            </div>
+            <div class="sign-box text-center flex-grow-1">
+              <div class="sign-line"></div>
+              <span class="sign-name d-block">{{ proposta.clienteNome || proposta.leadNome || 'Contratante' }}</span>
+              <span class="sign-role">Contratante / De Acordo</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { HonorarioService } from '../../../core/api/honorarios/honorario.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
 import { LeadService } from '../../../core/api/leads/lead.service';
+import { ConfiguracaoPropostaService } from '../../../core/services/configuracao-proposta.service';
 import { Cliente } from '../../../models/cliente.model';
 import { Lead } from '../../../models/lead.model';
 import {
@@ -23,6 +25,7 @@ import { MemoriaCalculoCardComponent } from './components/memoria-calculo/memori
 import { ModalSalvarPropostaComponent } from './components/modal-salvar-proposta/modal-salvar-proposta.component';
 import { ModalAjusteManualComponent } from './components/modal-ajuste-manual/modal-ajuste-manual.component';
 import { ModalHistoricoPropostasComponent } from './components/modal-historico-propostas/modal-historico-propostas.component';
+import { ModalPropostaPdfComponent, PropostaVisualizacaoData } from '../modal-proposta-pdf/modal-proposta-pdf.component';
 
 @Component({
   selector: 'app-simulador',
@@ -38,7 +41,8 @@ import { ModalHistoricoPropostasComponent } from './components/modal-historico-p
     MemoriaCalculoCardComponent,
     ModalSalvarPropostaComponent,
     ModalAjusteManualComponent,
-    ModalHistoricoPropostasComponent
+    ModalHistoricoPropostasComponent,
+    ModalPropostaPdfComponent
   ],
   templateUrl: './simulador.component.html',
   styleUrl: './simulador.component.scss'
@@ -49,7 +53,14 @@ export class SimuladorComponent implements OnInit, OnDestroy {
   private notificationService = inject(NotificationService);
   private clienteService = inject(ClienteService);
   private leadService = inject(LeadService);
+  private configPropostaService = inject(ConfiguracaoPropostaService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private destroy$ = new Subject<void>();
+
+  abaAtiva: 'calculadora' | 'historico' = 'calculadora';
+  filtroStatus: number | 'todos' = 'todos';
+  busca = '';
 
   form!: FormGroup;
   simulacao?: SimulacaoResultado;
@@ -63,9 +74,14 @@ export class SimuladorComponent implements OnInit, OnDestroy {
   modalSalvarAberto = false;
   modalHistoricoAberto = false;
   modalAjusteManualAberto = false;
+  modalPdfAberto = false;
+  propostaParaPdf: PropostaVisualizacaoData | null = null;
 
   propostaForm!: FormGroup;
   ajusteForm!: FormGroup;
+
+  preselectedClienteId?: string;
+  preselectedLeadId?: string;
 
   etapasDisponiveis = [
     { nome: 'Estudo Preliminar & Moodboard', descricao: 'Levantamento, briefing, diagnóstico de necessidades e partido conceitual.', percentual: 20, checked: true },
@@ -89,11 +105,50 @@ export class SimuladorComponent implements OnInit, OnDestroy {
     { valor: 3, nome: 'Interiores' }
   ];
 
+  get propostasFiltradas(): PropostaHonorario[] {
+    return this.propostas.filter(p => {
+      const matchStatus = this.filtroStatus === 'todos' || p.status === this.filtroStatus;
+      const termo = this.busca.toLowerCase().trim();
+      const matchBusca = !termo ||
+        p.codigo?.toLowerCase().includes(termo) ||
+        p.titulo?.toLowerCase().includes(termo) ||
+        p.clienteNome?.toLowerCase().includes(termo) ||
+        p.leadNome?.toLowerCase().includes(termo);
+      return matchStatus && matchBusca;
+    });
+  }
+
   ngOnInit(): void {
     this.iniciarFormularios();
     this.carregarDadosAuxiliares();
     this.configurarObservadoresReativos();
     this.calcularSimulacao();
+    this.carregarPropostas();
+
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      if (params['tab'] === 'historico') {
+        this.abaAtiva = 'historico';
+      }
+      if (params['clienteId']) {
+        this.preselectedClienteId = params['clienteId'];
+        this.form.patchValue({ tipoVinculo: 'cliente', clienteId: params['clienteId'] });
+      }
+      if (params['leadId']) {
+        this.preselectedLeadId = params['leadId'];
+        this.form.patchValue({ tipoVinculo: 'lead', leadId: params['leadId'] });
+      }
+    });
+  }
+
+  setAba(aba: 'calculadora' | 'historico'): void {
+    this.abaAtiva = aba;
+    if (aba === 'historico') {
+      this.carregarPropostas();
+    }
+  }
+
+  setFiltroStatus(status: number | 'todos'): void {
+    this.filtroStatus = status;
   }
 
   ngOnDestroy(): void {
@@ -107,7 +162,13 @@ export class SimuladorComponent implements OnInit, OnDestroy {
       tipoProjeto: [0, Validators.required],
       padraoImovel: [1, Validators.required],
       valorMetroQuadradoBase: [95],
-      valorHoraBase: [42.86]
+      valorHoraBase: [42.86],
+      tipoVinculo: ['nenhum'],
+      clienteId: [''],
+      leadId: [''],
+      clienteNome: [''],
+      clienteTelefone: [''],
+      clienteEmail: ['']
     });
 
     this.propostaForm = this.fb.group({
@@ -199,11 +260,30 @@ export class SimuladorComponent implements OnInit, OnDestroy {
     const valorSugerido = this.simulacao.valorTotalSugerido;
     const tipoNome = this.tiposProjeto.find(t => t.valor === this.form.value.tipoProjeto)?.nome || 'Projeto';
 
+    let tipoVinculo = this.form.value.tipoVinculo || 'nenhum';
+    let clienteId = this.form.value.clienteId || '';
+    let leadId = this.form.value.leadId || '';
+
+    if (this.preselectedLeadId) {
+      tipoVinculo = 'lead';
+      leadId = this.preselectedLeadId;
+    } else if (this.preselectedClienteId) {
+      tipoVinculo = 'cliente';
+      clienteId = this.preselectedClienteId;
+    } else if (comVinculo && tipoVinculo === 'nenhum') {
+      tipoVinculo = 'lead';
+    }
+
+    const clienteInfo = this.extrairDadosClienteVinculado();
+    const titulo = !clienteInfo.isRascunho
+      ? `Proposta ${tipoNome} - ${clienteInfo.nome} (${this.simulacao.metragemQuadrada}m²)`
+      : `Proposta ${tipoNome} - ${this.simulacao.metragemQuadrada}m²`;
+
     this.propostaForm.reset({
-      titulo: `Proposta ${tipoNome} - ${this.simulacao.metragemQuadrada}m²`,
-      tipoVinculo: comVinculo ? 'lead' : 'nenhum',
-      clienteId: '',
-      leadId: '',
+      titulo,
+      tipoVinculo: tipoVinculo === 'avulso' ? 'nenhum' : tipoVinculo,
+      clienteId,
+      leadId,
       valorFinalAjustado: valorSugerido,
       observacoes: ''
     });
@@ -243,6 +323,7 @@ export class SimuladorComponent implements OnInit, OnDestroy {
         this.salvando = false;
         this.modalSalvarAberto = false;
         this.notificationService.success(`Proposta ${proposta.codigo} salva com sucesso!`);
+        this.carregarPropostas();
       },
       error: () => {
         this.salvando = false;
@@ -325,6 +406,210 @@ export class SimuladorComponent implements OnInit, OnDestroy {
         this.notificationService.error('Erro ao excluir proposta.');
       }
     });
+  }
+
+  private extrairDadosClienteVinculado(): { nome: string; email: string; telefone: string; isRascunho: boolean } {
+    const tipo = this.form.get('tipoVinculo')?.value;
+    if (tipo === 'cliente' && this.form.get('clienteId')?.value) {
+      const cli = this.clientes.find(c => c.id === this.form.get('clienteId')?.value);
+      if (cli) {
+        return {
+          nome: cli.nome,
+          email: cli.email || '',
+          telefone: cli.telefone || '',
+          isRascunho: false
+        };
+      }
+    } else if (tipo === 'lead' && this.form.get('leadId')?.value) {
+      const lead = this.leads.find(l => l.id === this.form.get('leadId')?.value);
+      if (lead) {
+        return {
+          nome: lead.nome,
+          email: lead.email || '',
+          telefone: lead.telefone || '',
+          isRascunho: false
+        };
+      }
+    } else if (tipo === 'avulso' && this.form.get('clienteNome')?.value?.trim()) {
+      return {
+        nome: this.form.get('clienteNome')?.value.trim(),
+        email: this.form.get('clienteEmail')?.value?.trim() || '',
+        telefone: this.form.get('clienteTelefone')?.value?.trim() || '',
+        isRascunho: false
+      };
+    }
+    return {
+      nome: 'Cliente em Negociação',
+      email: '',
+      telefone: '',
+      isRascunho: true
+    };
+  }
+
+  // --- PDF & WHATSAPP ACTIONS ---
+  abrirPdfSimulacaoAtual(): void {
+    if (!this.simulacao) return;
+
+    if (!this.configPropostaService.isConfigurado()) {
+      this.notificationService.warning('Antes de gerar propostas e PDFs comerciais, configure os dados oficiais do seu escritório em Configurações > Modelo de Proposta.');
+      this.router.navigate(['/configuracoes/modelo-proposta']);
+      return;
+    }
+
+    const clienteInfo = this.extrairDadosClienteVinculado();
+    if (clienteInfo.isRascunho) {
+      this.notificationService.info('Dica: Gerando proposta como Modelo/Rascunho. Para personalizar com os dados do cliente, selecione um Lead ou Cliente nos parâmetros ao lado.');
+    }
+
+    const tipoNome = this.tiposProjeto.find(t => t.valor === this.form.value.tipoProjeto)?.nome || 'Projeto Arquitetônico';
+    const padraoNome = this.padroesImovel.find(p => p.valor === this.form.value.padraoImovel)?.nome || 'Padrão Médio';
+    const valorTotal = this.simulacao.valorTotalSugerido;
+
+    const etapas = this.etapasDisponiveis
+      .filter(e => e.checked)
+      .map(e => ({
+        nome: e.nome,
+        descricao: e.descricao,
+        percentual: e.percentual,
+        valor: (valorTotal * e.percentual) / 100,
+        prazo: 'A definir'
+      }));
+
+    const tituloProposta = clienteInfo.isRascunho
+      ? `Projeto ${tipoNome} (${this.simulacao.metragemQuadrada} m²)`
+      : `Projeto ${tipoNome} - ${clienteInfo.nome} (${this.simulacao.metragemQuadrada} m²)`;
+
+    this.propostaParaPdf = {
+      codigo: 'SIMULAÇÃO-' + Math.floor(1000 + Math.random() * 9000),
+      titulo: tituloProposta,
+      clienteNome: clienteInfo.nome,
+      clienteEmail: clienteInfo.email || undefined,
+      clienteTelefone: clienteInfo.telefone || undefined,
+      metragemQuadrada: this.simulacao.metragemQuadrada,
+      tipoProjetoNome: tipoNome,
+      padraoImovelNome: padraoNome,
+      valorTotalSugerido: this.simulacao.valorTotalSugerido,
+      valorFinalAjustado: this.simulacao.valorTotalSugerido,
+      criadoEm: new Date().toISOString(),
+      etapas,
+      memoriaCalculo: {
+        horasEstimadasTotal: this.simulacao.horasEstimadasTotal,
+        valorHoraBase: this.simulacao.memoriaCalculo?.valorHoraEstimado,
+        valorM2Base: this.simulacao.memoriaCalculo?.valorMetroQuadradoBase,
+        valorBase: this.simulacao.memoriaCalculo?.valorBase
+      }
+    };
+
+    this.modalPdfAberto = true;
+  }
+
+  compartilharWhatsappSimulacaoAtual(): void {
+    if (!this.simulacao) return;
+
+    if (!this.configPropostaService.isConfigurado()) {
+      this.notificationService.warning('Antes de compartilhar propostas comerciais, configure os dados oficiais do seu escritório em Configurações > Modelo de Proposta.');
+      this.router.navigate(['/configuracoes/modelo-proposta']);
+      return;
+    }
+
+    const clienteInfo = this.extrairDadosClienteVinculado();
+    const tipoNome = this.tiposProjeto.find(t => t.valor === this.form.value.tipoProjeto)?.nome || 'Projeto Arquitetônico';
+    
+    if (clienteInfo.isRascunho || !clienteInfo.telefone) {
+      this.notificationService.warning('Para enviar a proposta via WhatsApp, selecione um Lead ou Cliente com telefone cadastrado nos parâmetros da simulação.');
+      return;
+    }
+
+    const msg = this.configPropostaService.gerarMensagemWhatsapp({
+      clienteNome: clienteInfo.nome,
+      projetoTitulo: `Projeto ${tipoNome}`,
+      metragem: this.simulacao.metragemQuadrada,
+      valorFinal: this.simulacao.valorTotalSugerido
+    });
+
+    const link = this.configPropostaService.gerarLinkWhatsapp(clienteInfo.telefone, msg);
+    window.open(link, '_blank');
+    this.notificationService.success('Link do WhatsApp gerado com sucesso!');
+  }
+
+  abrirPdfPropostaSalva(proposta: PropostaHonorario): void {
+    if (!this.configPropostaService.isConfigurado()) {
+      this.notificationService.warning('Antes de visualizar e exportar propostas em PDF, configure os dados oficiais do seu escritório em Configurações > Modelo de Proposta.');
+      this.router.navigate(['/configuracoes/modelo-proposta']);
+      return;
+    }
+
+    const etapas = (proposta.itensEtapa || []).map((i: any) => ({
+      nome: i.nomeEtapa,
+      descricao: i.descricao,
+      percentual: i.percentual,
+      valor: i.valor,
+      incluso: i.incluso
+    }));
+
+    const clienteRel = this.clientes.find(c => c.id === proposta.clienteId);
+    const leadRel = this.leads.find(l => l.id === proposta.leadId);
+
+    this.propostaParaPdf = {
+      id: proposta.id,
+      codigo: proposta.codigo,
+      titulo: proposta.titulo,
+      clienteNome: proposta.clienteNome || (clienteRel ? clienteRel.nome : (leadRel ? leadRel.nome : undefined)),
+      clienteEmail: clienteRel?.email || leadRel?.email,
+      clienteTelefone: clienteRel?.telefone || leadRel?.telefone,
+      leadNome: proposta.leadNome,
+      metragemQuadrada: proposta.metragemQuadrada,
+      padraoImovelNome: proposta.padraoImovelNome,
+      tipoProjetoNome: proposta.tipoProjetoNome,
+      valorTotalSugerido: proposta.valorTotalSugerido,
+      valorFinalAjustado: proposta.valorFinalAjustado,
+      criadoEm: proposta.criadoEm,
+      statusNome: proposta.statusNome,
+      etapas: etapas.length > 0 ? etapas : [
+        { nome: 'Escopo Geral do Projeto Contratado', percentual: 100, valor: proposta.valorFinalAjustado }
+      ],
+      memoriaCalculo: {
+        horasEstimadasTotal: proposta.horasEstimadasTotal,
+        valorHoraBase: proposta.valorHoraBase,
+        valorM2Base: proposta.valorMetroQuadradoBase,
+        valorBase: proposta.valorBase
+      }
+    };
+
+    this.modalPdfAberto = true;
+  }
+
+  compartilharWhatsappPropostaSalva(proposta: PropostaHonorario): void {
+    if (!this.configPropostaService.isConfigurado()) {
+      this.notificationService.warning('Antes de compartilhar propostas comerciais, configure os dados oficiais do seu escritório em Configurações > Modelo de Proposta.');
+      this.router.navigate(['/configuracoes/modelo-proposta']);
+      return;
+    }
+
+    const clienteRel = this.clientes.find(c => c.id === proposta.clienteId);
+    const leadRel = this.leads.find(l => l.id === proposta.leadId);
+    const tel = clienteRel?.telefone || leadRel?.telefone || '';
+
+    if (!tel) {
+      this.notificationService.warning('Esta proposta não possui um telefone de contato cadastrado para envio automático via WhatsApp.');
+      return;
+    }
+
+    const msg = this.configPropostaService.gerarMensagemWhatsapp({
+      clienteNome: proposta.clienteNome || clienteRel?.nome || leadRel?.nome,
+      projetoTitulo: proposta.titulo,
+      metragem: proposta.metragemQuadrada,
+      valorFinal: proposta.valorFinalAjustado
+    });
+
+    const link = this.configPropostaService.gerarLinkWhatsapp(tel, msg);
+    window.open(link, '_blank');
+    this.notificationService.success('Link do WhatsApp gerado com sucesso!');
+  }
+
+  fecharModalPdf(): void {
+    this.modalPdfAberto = false;
+    this.propostaParaPdf = null;
   }
 
   formatarMoeda(valor?: number): string {

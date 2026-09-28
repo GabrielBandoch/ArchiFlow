@@ -207,3 +207,96 @@ a {
 .w-max-md { max-width: 600px; }
 .w-max-lg { max-width: 800px; }
 .lh-relaxed { line-height: 1.6; }
+
+/* ==========================================================================
+   GLOBAL PRINT STYLES - CLEAN ISOLATED A4 ARCHITECTURAL PROPOSAL
+   ========================================================================== */
+@media print {
+  // 1. Hide all application layout, navigation, sidebars, headers, footers, toolbars, buttons, and app content
+  .sidebar,
+  .footer,
+  .main-section > .footer,
+  .no-print,
+  .modal-toolbar,
+  .page-header,
+  .nav-tabs-bar,
+  .simulador-layout,
+  .historico-tab-content,
+  .config-editor-grid,
+  .chat-widget-container,
+  .af-toast,
+  .af-global-loading,
+  .btn-table-action,
+  .btn-close-modal {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  // 2. ONLY make the PDF document sheet visible and clean
+  .modal-backdrop,
+  .modal-dialog-pdf,
+  .modal-document-container,
+  .a4-document-sheet,
+  .a4-document-sheet * {
+    visibility: visible !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .modal-backdrop {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    background: transparent !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .modal-dialog-pdf {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+    border-radius: 0 !important;
+  }
+
+  .modal-document-container {
+    overflow: visible !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  .a4-document-sheet {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+}

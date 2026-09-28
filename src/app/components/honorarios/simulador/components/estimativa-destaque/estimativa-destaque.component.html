@@ -51,5 +51,27 @@
         <span>Ajuste Manual</span>
       </button>
     </div>
+
+    <div class="actions-subgrid">
+      <button
+        type="button"
+        class="btn btn-dark-sub btn-pdf"
+        (click)="pdfClick.emit()"
+        aria-label="Visualizar ou Imprimir PDF da Proposta"
+      >
+        <span class="material-symbols-outlined icon-left" aria-hidden="true">picture_as_pdf</span>
+        <span>Gerar PDF</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-dark-sub btn-whatsapp"
+        (click)="whatsappClick.emit()"
+        aria-label="Compartilhar via WhatsApp"
+      >
+        <span class="material-symbols-outlined icon-left text-success" aria-hidden="true">chat</span>
+        <span>WhatsApp</span>
+      </button>
+    </div>
   </div>
 </div>
