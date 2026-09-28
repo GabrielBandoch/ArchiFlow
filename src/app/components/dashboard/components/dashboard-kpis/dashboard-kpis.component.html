@@ -1,0 +1,56 @@
+<section class="kpi-grid">
+  <div class="kpi-card d-flex align-items-start gap-md">
+    <div class="kpi-icon-box kpi-blue d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">architecture</span>
+    </div>
+    <div class="d-flex flex-direction-column gap-xs flex-grow-1 min-w-0">
+      <span class="font-label-sm font-weight-medium text-on-surface-variant">Projetos Ativos</span>
+      <div class="d-flex align-items-baseline gap-sm flex-wrap">
+        <span class="kpi-value text-on-surface">{{ kpis.totalProjetosAtivos }}</span>
+        <span class="kpi-pill pill-neutral font-label-sm">{{ kpis.totalProjetosConcluidos }} concluídos</span>
+      </div>
+      <span class="font-label-sm text-outline truncate">Total sob gestão executiva</span>
+    </div>
+  </div>
+
+  <div class="kpi-card d-flex align-items-start gap-md">
+    <div class="kpi-icon-box kpi-amber d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">filter_alt</span>
+    </div>
+    <div class="d-flex flex-direction-column gap-xs flex-grow-1 min-w-0">
+      <span class="font-label-sm font-weight-medium text-on-surface-variant">Taxa de Conversão</span>
+      <div class="d-flex align-items-baseline gap-sm flex-wrap">
+        <span class="kpi-value text-on-surface">{{ kpis.taxaConversaoLeads }}%</span>
+        <span class="kpi-pill pill-amber font-label-sm">{{ kpis.totalLeadsAtivos }} em negociação</span>
+      </div>
+      <span class="font-label-sm text-outline truncate">{{ kpis.totalLeadsConvertidos }} oportunidades ganhas</span>
+    </div>
+  </div>
+
+  <div class="kpi-card d-flex align-items-start gap-md">
+    <div class="kpi-icon-box kpi-purple d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">description</span>
+    </div>
+    <div class="d-flex flex-direction-column gap-xs flex-grow-1 min-w-0">
+      <span class="font-label-sm font-weight-medium text-on-surface-variant">Propostas Emitidas</span>
+      <div class="d-flex align-items-baseline gap-sm flex-wrap">
+        <span class="kpi-value text-on-surface">{{ kpis.totalPropostas }}</span>
+        <span class="kpi-pill pill-purple font-label-sm">Ticket: {{ formatarMoeda(kpis.valorMedioProposta) }}</span>
+      </div>
+      <span class="font-label-sm text-outline truncate">Média de honorários por projeto</span>
+    </div>
+  </div>
+
+  <div class="kpi-card highlight-card d-flex align-items-start gap-md">
+    <div class="kpi-icon-box kpi-green d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">payments</span>
+    </div>
+    <div class="d-flex flex-direction-column gap-xs flex-grow-1 min-w-0">
+      <span class="font-label-sm font-weight-medium text-on-surface-variant">Receita Potencial</span>
+      <div class="d-flex align-items-baseline gap-sm flex-wrap">
+        <span class="kpi-value text-green-highlight">{{ formatarMoeda(kpis.valorTotalPropostas) }}</span>
+      </div>
+      <span class="font-label-sm text-outline truncate">Pipeline total de propostas e contratos</span>
+    </div>
+  </div>
+</section>

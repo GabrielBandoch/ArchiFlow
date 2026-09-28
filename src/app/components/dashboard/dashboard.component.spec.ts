@@ -1,17 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { DashboardComponent, WIDGETS_DEFAULT } from './dashboard.component';
+import { DashboardComponent } from './dashboard.component';
 import { DashboardService } from '../../core/api/dashboard/dashboard.service';
 import { AuthService } from '../../core/services/auth.service';
+import { DialogService } from '../../core/services/dialog.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { DashboardMetricas, PreferenciaDashboard } from '../../models/dashboard.model';
+import { DashboardMetricas, WIDGETS_DEFAULT } from '../../models/dashboard.model';
+import { EventEmitter } from '@angular/core';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
   let dashboardServiceSpy: jasmine.SpyObj<DashboardService>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
+  let dialogServiceSpy: jasmine.SpyObj<DialogService>;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   const mockMetricas: DashboardMetricas = {
@@ -93,6 +96,7 @@ describe('DashboardComponent', () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', [], {
       currentUser$: of({ id: 'u1', nome: 'Gabriel', email: 'gabriel@teste.com', role: 'Arquiteto' })
     });
+    dialogServiceSpy = jasmine.createSpyObj('DialogService', ['open']);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'info']);
 
     dashboardServiceSpy.obterMetricas.and.returnValue(of(mockMetricas));
@@ -106,6 +110,7 @@ describe('DashboardComponent', () => {
       providers: [
         { provide: DashboardService, useValue: dashboardServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
+        { provide: DialogService, useValue: dialogServiceSpy },
         { provide: NotificationService, useValue: notificationServiceSpy }
       ]
     }).compileComponents();
@@ -122,54 +127,50 @@ describe('DashboardComponent', () => {
     expect(dashboardServiceSpy.obterMetricas).toHaveBeenCalled();
   });
 
-  it('should open and close personalization modal', () => {
-    expect(component.modalPersonalizarAberto).toBeFalse();
+  it('should open personalization modal via dialogService', () => {
+    const mockRef: any = {
+      instance: {
+        salvar: new EventEmitter<any>(),
+        restaurar: new EventEmitter<void>(),
+        onClose: jasmine.createSpy('onClose')
+      }
+    };
+    dialogServiceSpy.open.and.returnValue(mockRef);
+
     component.abrirModalPersonalizar();
-    expect(component.modalPersonalizarAberto).toBeTrue();
-    component.fecharModalPersonalizar();
-    expect(component.modalPersonalizarAberto).toBeFalse();
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
   });
 
-  it('should reorder widgets when moverWidget is called', () => {
-    const firstWidgetId = component.widgets[0].id;
-    const secondWidgetId = component.widgets[1].id;
-
-    component.moverWidget(0, 'down');
-
-    expect(component.widgets[0].id).toBe(secondWidgetId);
-    expect(component.widgets[1].id).toBe(firstWidgetId);
+  it('should format currency correctly', () => {
+    expect(component.formatarMoeda(1250.5)).toContain('1.250,50');
+    expect(component.formatarMoedaInteiro(1250.5)).toContain('1.251');
   });
 
-  it('should toggle widget visibility', () => {
-    const widget = component.widgets[0];
-    const initialVisibility = widget.visivel;
-
-    component.toggleVisibilidade(widget);
-    expect(widget.visivel).toBe(!initialVisibility);
+  it('should identify graphic and table widgets accurately', () => {
+    expect(component.isWidgetGrafico('grafico_projetos_status')).toBeTrue();
+    expect(component.isWidgetGrafico('kpi_resumo')).toBeFalse();
+    expect(component.isWidgetTabela('tabela_projetos_recentes')).toBeTrue();
+    expect(component.isWidgetTabela('lista_leads_recentes')).toBeTrue();
+    expect(component.isWidgetTabela('kpi_resumo')).toBeFalse();
   });
 
-  it('should save customized preferences to database', () => {
-    component.salvarPreferencias();
+  it('should open create project and create lead modals via dialogService', () => {
+    const mockProjRef: any = {
+      instance: {
+        projectCreated: new EventEmitter<any>()
+      }
+    };
+    dialogServiceSpy.open.and.returnValue(mockProjRef);
+    component.abrirModalCriarProjeto();
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
 
-    expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalled();
-    expect(notificationServiceSpy.success).toHaveBeenCalledWith(
-      jasmine.stringMatching(/Personalização do painel salva com sucesso/)
-    );
-  });
-
-  it('should restore default layout and save to database', () => {
-    component.restaurarPadrao();
-
-    expect(component.widgets.length).toBe(WIDGETS_DEFAULT.length);
-    expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalled();
-    expect(notificationServiceSpy.success).toHaveBeenCalledWith(
-      jasmine.stringMatching(/Layout padrão restaurado/)
-    );
-  });
-
-  it('should compute SVG donut segments correctly', () => {
-    const segments = component.calcularSvgDonutSegments(mockMetricas.projetosPorStatus);
-    expect(segments.length).toBeGreaterThan(0);
-    expect(segments[0].path).toContain('M');
+    const mockLeadRef: any = {
+      instance: {
+        saved: new EventEmitter<any>()
+      }
+    };
+    dialogServiceSpy.open.and.returnValue(mockLeadRef);
+    component.abrirModalCriarLead();
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
   });
 });

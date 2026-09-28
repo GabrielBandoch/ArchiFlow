@@ -1,0 +1,82 @@
+<div class="modal-backdrop" *ngIf="show" (click)="onClose()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <header class="modal-header d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-sm">
+        <div class="modal-header-icon d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">tune</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <h3 class="modal-title font-headline-md m-0">Personalizar Painel</h3>
+          <span class="modal-subtitle font-label-sm text-on-surface-variant">Organize os widgets e a visibilidade do seu dashboard</span>
+        </div>
+      </div>
+      <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="onClose()" title="Fechar">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </header>
+
+    <div class="modal-body d-flex flex-direction-column gap-md">
+      <div class="info-banner d-flex align-items-center gap-sm">
+        <span class="material-symbols-outlined text-primary">info</span>
+        <p class="font-body-md m-0 text-on-surface-variant">
+          Use as setas para reordenar os blocos e o alternador para exibir ou ocultar cards no seu painel.
+        </p>
+      </div>
+
+      <div class="widget-list d-flex flex-direction-column gap-sm">
+        <div 
+          *ngFor="let item of tempWidgets; let i = index" 
+          class="widget-item d-flex align-items-center justify-content-between"
+          [class.is-hidden]="!item.visivel">
+          
+          <div class="d-flex align-items-center gap-md min-w-0">
+            <div class="widget-icon-box d-flex align-items-center justify-content-center">
+              <span class="material-symbols-outlined">{{ item.icone }}</span>
+            </div>
+            <div class="d-flex flex-direction-column gap-xs min-w-0">
+              <span class="widget-name font-label-md font-weight-bold text-on-surface truncate">{{ item.titulo }}</span>
+              <span class="badge-width">{{ item.largura === 'full' ? 'Largura Total (100%)' : 'Meia Coluna (50%)' }}</span>
+            </div>
+          </div>
+
+          <div class="widget-actions d-flex align-items-center gap-xs flex-shrink-0">
+            <button 
+              type="button" 
+              class="btn-order-action d-flex align-items-center justify-content-center" 
+              (click)="moverWidget(i, 'up')" 
+              [disabled]="i === 0" 
+              title="Mover para cima">
+              <span class="material-symbols-outlined">arrow_upward</span>
+            </button>
+            <button 
+              type="button" 
+              class="btn-order-action d-flex align-items-center justify-content-center" 
+              (click)="moverWidget(i, 'down')" 
+              [disabled]="i === tempWidgets.length - 1" 
+              title="Mover para baixo">
+              <span class="material-symbols-outlined">arrow_downward</span>
+            </button>
+            <label class="switch-toggle" [title]="item.visivel ? 'Ocultar card' : 'Exibir card'">
+              <input type="checkbox" [(ngModel)]="item.visivel">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-footer d-flex justify-content-between align-items-center">
+      <button type="button" class="btn-restore d-flex align-items-center gap-xs font-label-md" (click)="onRestaurarPadrao()">
+        <span class="material-symbols-outlined">restart_alt</span>
+        Restaurar Padrão
+      </button>
+
+      <div class="d-flex align-items-center gap-sm">
+        <app-button variant="outline" (btnClick)="onClose()">Cancelar</app-button>
+        <app-button variant="primary" (btnClick)="onSalvar()" [disabled]="salvando">
+          {{ salvando ? 'Salvando...' : 'Salvar Layout' }}
+        </app-button>
+      </div>
+    </footer>
+  </div>
+</div>
