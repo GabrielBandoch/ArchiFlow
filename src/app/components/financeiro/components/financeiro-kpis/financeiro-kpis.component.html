@@ -1,0 +1,76 @@
+<div class="kpis-grid">
+  <div class="kpi-card d-flex flex-direction-column justify-content-between">
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="kpi-label font-label-md uppercase font-weight-bold">Previsto Total</span>
+      <div class="kpi-icon-box icon-previsto d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">trending_up</span>
+      </div>
+    </div>
+    <div class="kpi-value-box">
+      <span class="kpi-value font-headline-lg font-weight-bold text-on-surface">
+        {{ totalPrevisto | currency:'BRL':'symbol':'1.0-0':'pt-BR' }}
+      </span>
+      <span class="kpi-subtext font-label-sm text-primary" *ngIf="variacaoMensal !== 0">
+        {{ variacaoMensal > 0 ? '+' : '' }}{{ variacaoMensal }}% vs mês anterior
+      </span>
+      <span class="kpi-subtext font-label-sm text-on-surface-variant" *ngIf="variacaoMensal === 0">
+        Volume projetado
+      </span>
+    </div>
+  </div>
+
+  <div class="kpi-card d-flex flex-direction-column justify-content-between">
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="kpi-label font-label-md uppercase font-weight-bold">Recebido</span>
+      <div class="kpi-icon-box icon-recebido d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+      </div>
+    </div>
+    <div class="kpi-value-box">
+      <span class="kpi-value font-headline-lg font-weight-bold val-recebido">
+        {{ totalRecebido | currency:'BRL':'symbol':'1.0-0':'pt-BR' }}
+      </span>
+      <span class="kpi-subtext font-label-sm text-on-surface-variant">
+        Faturamento liquidado
+      </span>
+    </div>
+  </div>
+
+  <div class="kpi-card d-flex flex-direction-column justify-content-between">
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="kpi-label font-label-md uppercase font-weight-bold">Pendente</span>
+      <div class="kpi-icon-box icon-pendente d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">schedule</span>
+      </div>
+    </div>
+    <div class="kpi-value-box">
+      <span class="kpi-value font-headline-lg font-weight-bold val-pendente">
+        {{ totalPendente | currency:'BRL':'symbol':'1.0-0':'pt-BR' }}
+      </span>
+      <span class="kpi-subtext font-label-sm text-on-surface-variant">
+        Aguardando vencimento
+      </span>
+    </div>
+  </div>
+
+  <div class="kpi-card d-flex flex-direction-column justify-content-between" [class.has-overdue]="totalAtrasado > 0">
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="kpi-label font-label-md uppercase font-weight-bold">Em Atraso</span>
+      <div class="kpi-icon-box icon-atrasado d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">warning</span>
+      </div>
+    </div>
+    <div class="kpi-value-box">
+      <span class="kpi-value font-headline-lg font-weight-bold val-atrasado">
+        {{ totalAtrasado | currency:'BRL':'symbol':'1.0-0':'pt-BR' }}
+      </span>
+      <span class="kpi-subtext font-label-sm val-atrasado font-weight-bold" *ngIf="totalAtrasado > 0">
+        Requer atenção imediata
+      </span>
+      <span class="kpi-subtext font-label-sm text-on-surface-variant" *ngIf="totalAtrasado === 0">
+        Nenhum atraso registrado
+      </span>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,172 @@
+<div class="table-container-card d-flex flex-direction-column">
+  <div class="table-toolbar d-flex justify-content-between align-items-center flex-wrap gap-md">
+    <div class="d-flex align-items-center gap-md flex-wrap">
+      <div class="d-flex align-items-center gap-sm">
+        <div class="table-icon-box d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">table_view</span>
+        </div>
+        <h3 class="table-title font-headline-md m-0">Tabela de Parcelas & Honorários</h3>
+      </div>
+
+      <div class="filter-tabs d-flex p-xs">
+        <button 
+          type="button" 
+          class="filter-tab font-label-md"
+          [class.active]="filtroStatus === 'todos'"
+          (click)="setFiltro('todos')">
+          Todas
+        </button>
+        <button 
+          type="button" 
+          class="filter-tab font-label-md"
+          [class.active]="filtroStatus === 'Pendente'"
+          (click)="setFiltro('Pendente')">
+          Pendentes
+        </button>
+        <button 
+          type="button" 
+          class="filter-tab font-label-md"
+          [class.active]="filtroStatus === 'Pago'"
+          (click)="setFiltro('Pago')">
+          Pagas
+        </button>
+        <button 
+          type="button" 
+          class="filter-tab font-label-md"
+          [class.active]="filtroStatus === 'Atrasado'"
+          (click)="setFiltro('Atrasado')">
+          Atrasadas
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-sm flex-wrap">
+      <div class="search-box">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Buscar projeto ou descrição..." 
+          [(ngModel)]="busca">
+      </div>
+
+      <app-button variant="primary" (btnClick)="onNovaParcela()">
+        <span class="material-symbols-outlined">add</span>
+        Nova Receita
+      </app-button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table w-full">
+      <thead>
+        <tr>
+          <th>Projeto</th>
+          <th>Parcela</th>
+          <th>Vencimento</th>
+          <th>Valor</th>
+          <th>Status</th>
+          <th>Pagamento</th>
+          <th class="text-right">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of parcelasPaginadas" class="table-row">
+          <td>
+            <div class="d-flex flex-direction-column">
+              <span class="font-label-md font-weight-bold text-on-surface">{{ p.projetoNome }}</span>
+              <span class="font-body-md text-on-surface-variant text-sm">{{ p.descricao }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="badge-parcela font-label-sm">
+              {{ p.numeroParcela }}/{{ p.totalParcelas }}
+            </span>
+          </td>
+          <td>
+            <span class="font-body-md text-on-surface">{{ p.dataVencimento | date:'dd/MM/yyyy' }}</span>
+          </td>
+          <td>
+            <span class="font-label-md font-weight-bold text-on-surface">
+              {{ p.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+            </span>
+          </td>
+          <td>
+            <span 
+              class="status-badge font-label-sm"
+              [class.status-pago]="p.status === 'Pago'"
+              [class.status-pendente]="p.status === 'Pendente'"
+              [class.status-atrasado]="p.status === 'Atrasado'">
+              {{ p.statusNome || p.status }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex flex-direction-column" *ngIf="p.status === 'Pago'">
+              <span class="font-body-md text-sm text-on-surface">{{ p.dataPagamento | date:'dd/MM/yyyy' }}</span>
+              <span class="font-label-sm text-on-surface-variant" *ngIf="p.formaPagamentoNome || p.formaPagamento">
+                {{ p.formaPagamentoNome || p.formaPagamento }}
+              </span>
+            </div>
+            <span class="font-body-md text-on-surface-variant text-sm" *ngIf="p.status !== 'Pago'">-</span>
+          </td>
+          <td class="text-right">
+            <div class="d-flex align-items-center justify-content-end gap-xs">
+              <button 
+                *ngIf="p.status !== 'Pago'"
+                type="button" 
+                class="btn-table-action btn-action-pay" 
+                (click)="onDarBaixa(p)"
+                title="Dar baixa no pagamento">
+                <span class="material-symbols-outlined">payments</span>
+              </button>
+              <button 
+                type="button" 
+                class="btn-table-action btn-action-delete" 
+                (click)="onExcluir(p.id)"
+                title="Excluir parcela">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="parcelasFiltradas.length === 0">
+          <td colspan="7" class="empty-table-cell text-center p-2xl">
+            <div class="empty-table-box d-flex flex-direction-column align-items-center justify-content-center gap-xs">
+              <div class="empty-icon-circle d-flex align-items-center justify-content-center">
+                <span class="material-symbols-outlined">receipt_long</span>
+              </div>
+              <span class="font-label-md font-weight-bold text-on-surface mt-xs">Nenhuma parcela encontrada</span>
+              <span class="font-body-md text-on-surface-variant text-sm">Não há honorários correspondentes aos filtros selecionados.</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-footer d-flex justify-content-between align-items-center" *ngIf="parcelasFiltradas.length > 0">
+    <span class="font-body-md text-sm text-on-surface-variant">
+      Mostrando {{ (paginaAtual - 1) * itensPorPagina + 1 }} a {{ Math.min(paginaAtual * itensPorPagina, parcelasFiltradas.length) }} de {{ parcelasFiltradas.length }} parcelas
+    </span>
+
+    <div class="d-flex align-items-center gap-xs">
+      <button 
+        type="button" 
+        class="btn-page" 
+        [disabled]="paginaAtual === 1"
+        (click)="mudarPagina(-1)">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <span class="font-label-sm px-sm">{{ paginaAtual }} / {{ totalPaginas }}</span>
+      <button 
+        type="button" 
+        class="btn-page" 
+        [disabled]="paginaAtual === totalPaginas"
+        (click)="mudarPagina(1)">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+</div>
+

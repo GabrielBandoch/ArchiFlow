@@ -1,0 +1,166 @@
+<div class="modal-backdrop" *ngIf="show" (click)="onClose()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <header class="modal-header d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-sm">
+        <div class="modal-header-icon d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">request_quote</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <h3 class="modal-title font-headline-md m-0">Nova Receita / Parcela</h3>
+          <span class="modal-subtitle font-label-sm text-on-surface-variant">Cadastrar honorário avulso ou gerar contrato parcelado</span>
+        </div>
+      </div>
+      <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="onClose()" title="Fechar">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </header>
+
+    <div class="modal-body d-flex flex-direction-column gap-md">
+      <div class="mode-selector-pill d-flex p-xs">
+        <button
+          type="button"
+          class="btn-mode flex-1"
+          [class.active]="modo === 'avulsa'"
+          (click)="setModo('avulsa')">
+          <span class="material-symbols-outlined">receipt</span>
+          Parcela Avulsa
+        </button>
+        <button
+          type="button"
+          class="btn-mode flex-1"
+          [class.active]="modo === 'contrato'"
+          (click)="setModo('contrato')">
+          <span class="material-symbols-outlined">account_tree</span>
+          Gerar Contrato Parcelado
+        </button>
+      </div>
+
+      <div *ngIf="modo === 'avulsa'" [formGroup]="formAvulsa" class="d-flex flex-direction-column gap-md">
+        <app-select
+          label="Projeto Vinculado"
+          formControlName="projetoId"
+          [options]="projetoOptions"
+          [required]="true">
+        </app-select>
+
+        <app-input
+          label="Descrição da Parcela"
+          placeholder="Ex: Parcela 1/3 - Estudo Preliminar"
+          formControlName="descricao"
+          [required]="true">
+        </app-input>
+
+        <div class="grid-form">
+          <app-input
+            label="Valor (R$)"
+            type="number"
+            placeholder="0.00"
+            formControlName="valor"
+            [required]="true">
+          </app-input>
+
+          <app-input
+            label="Data de Vencimento"
+            type="date"
+            formControlName="dataVencimento"
+            [required]="true">
+          </app-input>
+        </div>
+
+        <div class="grid-form">
+          <app-input
+            label="Número da Parcela"
+            type="number"
+            formControlName="numeroParcela"
+            [required]="true">
+          </app-input>
+
+          <app-input
+            label="Total de Parcelas"
+            type="number"
+            formControlName="totalParcelas"
+            [required]="true">
+          </app-input>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label font-label-md text-on-surface mb-xs">Observações</label>
+          <textarea
+            class="form-control"
+            rows="2"
+            placeholder="Detalhes adicionais..."
+            formControlName="observacoes">
+          </textarea>
+        </div>
+      </div>
+
+      <div *ngIf="modo === 'contrato'" [formGroup]="formContrato" class="d-flex flex-direction-column gap-md">
+        <app-select
+          label="Projeto Vinculado"
+          formControlName="projetoId"
+          [options]="projetoOptions"
+          [required]="true">
+        </app-select>
+
+        <div class="grid-form">
+          <app-input
+            label="Valor Total do Contrato (R$)"
+            type="number"
+            placeholder="0.00"
+            formControlName="valorTotal"
+            [required]="true">
+          </app-input>
+
+          <app-input
+            label="Quantidade de Parcelas"
+            type="number"
+            placeholder="3"
+            formControlName="numeroParcelas"
+            [required]="true">
+          </app-input>
+        </div>
+
+        <div class="grid-form">
+          <app-input
+            label="Data do 1º Vencimento"
+            type="date"
+            formControlName="dataPrimeiroVencimento"
+            [required]="true">
+          </app-input>
+
+          <app-input
+            label="Intervalo entre Parcelas (Dias)"
+            type="number"
+            placeholder="30"
+            formControlName="intervaloDias"
+            [required]="true">
+          </app-input>
+        </div>
+
+        <app-input
+          label="Condições de Pagamento"
+          placeholder="Ex: Entrada 30% + 2x boleto 30/60 dias"
+          formControlName="condicoesPagamento">
+        </app-input>
+
+        <div class="form-group">
+          <label class="form-label font-label-md text-on-surface mb-xs">Observações do Contrato</label>
+          <textarea
+            class="form-control"
+            rows="2"
+            placeholder="Anotações sobre a negociação..."
+            formControlName="observacoes">
+          </textarea>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-footer d-flex justify-content-end align-items-center gap-sm">
+      <app-button variant="outline" (btnClick)="onClose()" [disabled]="saving">Cancelar</app-button>
+      <app-button variant="primary" (btnClick)="onSubmit()" [disabled]="saving">
+        <span class="material-symbols-outlined" *ngIf="!saving">save</span>
+        {{ saving ? 'Salvando...' : (modo === 'avulsa' ? 'Salvar Parcela' : 'Gerar Parcelamento') }}
+      </app-button>
+    </footer>
+  </div>
+</div>

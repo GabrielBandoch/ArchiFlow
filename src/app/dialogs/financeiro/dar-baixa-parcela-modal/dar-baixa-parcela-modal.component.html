@@ -1,0 +1,100 @@
+<div class="modal-backdrop" *ngIf="show && parcela" (click)="onClose()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <header class="modal-header d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-sm">
+        <div class="modal-header-icon d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">payments</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <h3 class="modal-title font-headline-md m-0">Confirmar Recebimento</h3>
+          <span class="modal-subtitle font-label-sm text-on-surface-variant">Dar baixa no pagamento da parcela</span>
+        </div>
+      </div>
+      <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="onClose()" title="Fechar">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </header>
+
+    <div class="modal-body d-flex flex-direction-column gap-md">
+      <div class="parcela-summary-box d-flex justify-content-between align-items-center p-md">
+        <div class="d-flex flex-direction-column gap-xs">
+          <span class="font-label-md font-weight-bold text-on-surface">{{ parcela.projetoNome }}</span>
+          <span class="font-body-md text-on-surface-variant">{{ parcela.descricao }}</span>
+        </div>
+        <div class="d-flex flex-direction-column align-items-end gap-xs">
+          <span class="font-label-sm text-on-surface-variant uppercase">Valor da Parcela</span>
+          <span class="font-headline-md font-weight-bold text-primary">{{ parcela.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+        </div>
+      </div>
+
+      <form [formGroup]="form" class="d-flex flex-direction-column gap-md">
+        <div class="grid-form">
+          <app-input
+            label="Data do Pagamento"
+            type="date"
+            formControlName="dataPagamento"
+            [required]="true">
+          </app-input>
+
+          <app-select
+            label="Forma de Pagamento"
+            formControlName="formaPagamento"
+            [options]="formaPagamentoOptions"
+            [required]="true">
+          </app-select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label font-label-md text-on-surface mb-xs">Comprovante de Pagamento (Anexo)</label>
+          <input 
+            type="file" 
+            #fileInput 
+            (change)="onFileSelected($event)" 
+            accept="image/*,application/pdf" 
+            class="d-none" />
+
+          <div *ngIf="!arquivoSelecionado" class="upload-dropzone d-flex flex-direction-column align-items-center justify-content-center p-md gap-xs" (click)="fileInput.click()">
+            <span class="material-symbols-outlined upload-cloud-icon">cloud_upload</span>
+            <span class="font-label-md font-weight-bold text-primary">Clique para anexar comprovante</span>
+            <span class="font-label-sm text-on-surface-variant">Suporta fotos, imagens (PNG, JPG) ou documentos (PDF) até 20MB</span>
+          </div>
+
+          <div *ngIf="arquivoSelecionado" class="file-preview-card d-flex align-items-center justify-content-between p-sm">
+            <div class="d-flex align-items-center gap-sm min-w-0">
+              <div class="file-icon-box d-flex align-items-center justify-content-center">
+                <span class="material-symbols-outlined">{{ getFileIcon(arquivoSelecionado.name) }}</span>
+              </div>
+              <div class="d-flex flex-direction-column min-w-0">
+                <span class="font-label-md font-weight-bold text-on-surface truncate">{{ arquivoSelecionado.name }}</span>
+                <span class="font-label-sm text-on-surface-variant">{{ formatarTamanho(arquivoSelecionado.size) }}</span>
+              </div>
+            </div>
+
+            <button type="button" class="btn-remove-file d-flex align-items-center justify-content-center" (click)="removerArquivo(fileInput)" title="Remover arquivo">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label font-label-md text-on-surface mb-xs">Observações / Detalhes</label>
+          <textarea
+            class="form-control"
+            rows="3"
+            placeholder="Anotações internas sobre esta transação..."
+            formControlName="observacoes">
+          </textarea>
+        </div>
+      </form>
+    </div>
+
+    <footer class="modal-footer d-flex justify-content-end align-items-center gap-sm">
+      <app-button variant="outline" (btnClick)="onClose()" [disabled]="saving">Cancelar</app-button>
+      <app-button variant="primary" (btnClick)="onSubmit()" [disabled]="saving">
+        <span class="material-symbols-outlined" *ngIf="!saving">check_circle</span>
+        {{ saving ? (uploadingFile ? 'Enviando arquivo...' : 'Registrando...') : 'Confirmar Pagamento' }}
+      </app-button>
+    </footer>
+  </div>
+</div>
+
