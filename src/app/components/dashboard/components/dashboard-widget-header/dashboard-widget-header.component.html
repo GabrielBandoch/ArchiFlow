@@ -1,0 +1,15 @@
+<div class="card-header d-flex align-items-center justify-content-between">
+  <div class="d-flex align-items-center gap-sm">
+    <div class="card-icon-box d-flex align-items-center justify-content-center" [ngClass]="'icon-' + iconVariant">
+      <span class="material-symbols-outlined">{{ icon }}</span>
+    </div>
+    <div class="d-flex flex-direction-column">
+      <h3 class="card-title font-headline-md m-0">{{ title }}</h3>
+      <span *ngIf="subtitle" class="card-subtitle font-label-sm text-outline">{{ subtitle }}</span>
+    </div>
+  </div>
+  <a *ngIf="actionLink && actionText" [routerLink]="actionLink" class="card-action-link d-inline-flex align-items-center gap-xs font-label-md">
+    <span>{{ actionText }}</span>
+    <span class="material-symbols-outlined">arrow_forward</span>
+  </a>
+</div>

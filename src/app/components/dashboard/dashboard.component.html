@@ -39,28 +39,46 @@
     <ng-container *ngFor="let widget of widgetsOrdenados">
       
       <div *ngIf="widget.id === 'kpi_resumo' && widget.visivel" class="widget-wrapper col-full">
-        <app-dashboard-kpis [kpis]="metricas.kpis" [formatarMoeda]="formatarMoeda"></app-dashboard-kpis>
+        <app-dashboard-kpis [kpis]="metricas.kpis"></app-dashboard-kpis>
       </div>
 
       <div *ngIf="widget.id === 'atalhos_rapidos' && widget.visivel" class="widget-wrapper col-full">
         <app-dashboard-acoes-rapidas (novoProjeto)="abrirModalCriarProjeto()" (novoLead)="abrirModalCriarLead()"></app-dashboard-acoes-rapidas>
       </div>
 
-      <div *ngIf="isWidgetGrafico(widget.id) && widget.visivel" class="widget-wrapper" [ngClass]="widget.largura === 'full' ? 'col-full' : 'col-half'">
-        <app-dashboard-graficos
-          [widgetId]="widget.id"
-          [metricas]="metricas"
-          [formatarMoeda]="formatarMoeda"
-          [formatarMoedaInteiro]="formatarMoedaInteiro">
-        </app-dashboard-graficos>
+      <div *ngIf="widget.id === 'grafico_projetos_status' && widget.visivel" class="widget-wrapper col-half">
+        <app-projetos-status-chart
+          [dados]="metricas.projetosPorStatus"
+          [totalProjetos]="metricas.kpis.totalProjetosAtivos + metricas.kpis.totalProjetosConcluidos">
+        </app-projetos-status-chart>
       </div>
 
-      <div *ngIf="isWidgetTabela(widget.id) && widget.visivel" class="widget-wrapper" [ngClass]="widget.largura === 'full' ? 'col-full' : 'col-half'">
-        <app-dashboard-tabelas
-          [widgetId]="widget.id"
-          [metricas]="metricas"
-          [formatarMoeda]="formatarMoeda">
-        </app-dashboard-tabelas>
+      <div *ngIf="widget.id === 'grafico_projetos_tipo' && widget.visivel" class="widget-wrapper col-half">
+        <app-projetos-tipo-chart [dados]="metricas.projetosPorTipo"></app-projetos-tipo-chart>
+      </div>
+
+      <div *ngIf="widget.id === 'grafico_funil_leads' && widget.visivel" class="widget-wrapper col-half">
+        <app-leads-funil-chart [dados]="metricas.leadsPorStatus"></app-leads-funil-chart>
+      </div>
+
+      <div *ngIf="widget.id === 'grafico_origens_lead' && widget.visivel" class="widget-wrapper col-half">
+        <app-leads-origem-chart [dados]="metricas.leadsPorOrigem"></app-leads-origem-chart>
+      </div>
+
+      <div *ngIf="widget.id === 'grafico_propostas_mensal' && widget.visivel" class="widget-wrapper col-full">
+        <app-propostas-mensais-chart [dados]="metricas.propostasMensais" [pipelineTotal]="metricas.kpis.valorTotalPropostas"></app-propostas-mensais-chart>
+      </div>
+
+      <div *ngIf="widget.id === 'tabela_projetos_recentes' && widget.visivel" class="widget-wrapper col-full">
+        <app-projetos-recentes [projetos]="metricas.projetosRecentes"></app-projetos-recentes>
+      </div>
+
+      <div *ngIf="widget.id === 'lista_leads_recentes' && widget.visivel" class="widget-wrapper col-half">
+        <app-leads-recentes [leads]="metricas.leadsRecentes"></app-leads-recentes>
+      </div>
+
+      <div *ngIf="widget.id === 'lista_propostas_recentes' && widget.visivel" class="widget-wrapper col-half">
+        <app-propostas-recentes [propostas]="metricas.propostasRecentes"></app-propostas-recentes>
       </div>
 
     </ng-container>

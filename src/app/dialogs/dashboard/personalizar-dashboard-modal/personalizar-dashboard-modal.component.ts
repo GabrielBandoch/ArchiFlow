@@ -36,7 +36,6 @@ export class PersonalizarDashboardModalComponent {
   }
 
   onRestaurarPadrao(): void {
-    this.tempWidgets = WIDGETS_DEFAULT.map(w => ({ ...w }));
     this.restaurar.emit();
   }
 

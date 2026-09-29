@@ -1,0 +1,46 @@
+.chart-card {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-md);
+  padding: 20px 24px;
+  box-shadow: var(--af-shadow-sm);
+  height: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--af-shadow-md);
+  }
+}
+
+.funnel-container {
+  min-height: 200px;
+}
+
+.step-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--af-surface-container);
+  color: var(--af-on-surface-variant);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.funnel-bar-track {
+  width: 100%;
+  height: 8px;
+  background-color: var(--af-surface-container);
+  border-radius: var(--af-radius-full);
+  overflow: hidden;
+}
+
+.funnel-bar-fill {
+  height: 100%;
+  border-radius: var(--af-radius-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 4px;
+}
