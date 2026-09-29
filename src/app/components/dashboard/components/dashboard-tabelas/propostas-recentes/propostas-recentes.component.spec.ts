@@ -49,4 +49,12 @@ describe('PropostasRecentesComponent', () => {
     expect(emptyEl).toBeTruthy();
     expect(emptyEl.textContent).toContain('Nenhuma proposta recente');
   });
+
+  it('should return correct badge class for each StatusProposta', () => {
+    expect(component.obterBadgeStatus('Aprovada')).toBe('status-green');
+    expect(component.obterBadgeStatus('Enviada')).toBe('status-blue');
+    expect(component.obterBadgeStatus('Rascunho')).toBe('status-neutral');
+    expect(component.obterBadgeStatus('Recusada')).toBe('status-red');
+    expect(component.obterBadgeStatus('Desconhecido')).toBe('status-neutral');
+  });
 });
