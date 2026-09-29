@@ -1,0 +1,45 @@
+<div class="chart-card d-flex flex-direction-column">
+  <app-dashboard-widget-header
+    title="Projetos por Fase"
+    subtitle="Distribuição do fluxo de trabalho"
+    icon="pie_chart"
+    iconVariant="blue"
+    actionText="Ver Projetos"
+    actionLink="/projetos">
+  </app-dashboard-widget-header>
+
+  <div class="donut-chart-container d-flex align-items-center gap-xl flex-grow-1">
+    <div class="donut-svg-wrapper d-flex align-items-center justify-content-center flex-shrink-0">
+      <svg viewBox="0 0 200 200" class="donut-svg">
+        <circle cx="100" cy="100" r="70" class="donut-bg" />
+        <circle
+          *ngFor="let item of dados; let i = index"
+          cx="100"
+          cy="100"
+          r="70"
+          class="donut-segment"
+          [style.stroke]="obterCor(item.status)"
+          [style.stroke-dasharray]="obterDashArray(item.percentual)"
+          [style.stroke-dashoffset]="obterDashOffset(i)"
+        />
+      </svg>
+      <div class="donut-center-info d-flex flex-direction-column align-items-center justify-content-center">
+        <span class="donut-total font-weight-bold text-on-surface">{{ totalExibido }}</span>
+        <span class="donut-label font-label-sm text-outline">Projetos</span>
+      </div>
+    </div>
+
+    <div class="donut-legend-grid d-flex flex-direction-column gap-xs flex-grow-1">
+      <div *ngFor="let item of dados" class="legend-row d-flex align-items-center justify-content-between p-xs">
+        <div class="d-flex align-items-center gap-xs min-w-0">
+          <span class="legend-dot" [style.background-color]="obterCor(item.status)"></span>
+          <span class="legend-name font-label-md text-on-surface truncate">{{ item.nomeStatus }}</span>
+        </div>
+        <div class="d-flex align-items-center gap-xs flex-shrink-0">
+          <span class="font-label-md font-weight-bold text-on-surface">{{ item.quantidade }}</span>
+          <span class="legend-pill font-label-sm text-outline">({{ item.percentual }}%)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

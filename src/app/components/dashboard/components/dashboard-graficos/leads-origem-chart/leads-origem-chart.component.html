@@ -1,0 +1,23 @@
+<div class="chart-card d-flex flex-direction-column">
+  <app-dashboard-widget-header
+    title="Canais de Aquisição"
+    subtitle="Origem dos contatos e captação"
+    icon="hub"
+    iconVariant="purple"
+    actionText="Ver CRM"
+    actionLink="/leads">
+  </app-dashboard-widget-header>
+
+  <div class="sources-grid">
+    <div *ngFor="let origem of dados; let i = index" class="source-card d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-sm min-w-0">
+        <div class="source-icon-indicator" [style.background-color]="obterCor(i)"></div>
+        <div class="d-flex flex-direction-column min-w-0">
+          <span class="font-label-md font-weight-bold text-on-surface truncate">{{ origem.origem }}</span>
+          <span class="font-label-sm text-outline">{{ origem.quantidade }} leads cadastrados</span>
+        </div>
+      </div>
+      <span class="source-percent font-label-md font-weight-bold">{{ origem.percentual }}%</span>
+    </div>
+  </div>
+</div>

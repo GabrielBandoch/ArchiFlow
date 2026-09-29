@@ -1,0 +1,52 @@
+.card-header {
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--af-surface-container);
+}
+
+.card-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--af-radius-sm);
+  flex-shrink: 0;
+
+  span {
+    font-size: 22px;
+  }
+
+  &.icon-blue { background-color: rgba(37, 99, 235, 0.12); color: #2563eb; }
+  &.icon-terracotta { background-color: rgba(118, 85, 56, 0.12); color: var(--af-primary); }
+  &.icon-amber { background-color: rgba(217, 119, 6, 0.12); color: #d97706; }
+  &.icon-purple { background-color: rgba(147, 51, 234, 0.12); color: #9333ea; }
+  &.icon-green { background-color: rgba(16, 185, 129, 0.12); color: #059669; }
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--af-on-surface);
+}
+
+.card-subtitle {
+  font-size: 11.5px;
+}
+
+.card-action-link {
+  color: var(--af-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  span:last-child {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    color: var(--af-primary-hover);
+
+    span:last-child {
+      transform: translateX(3px);
+    }
+  }
+}

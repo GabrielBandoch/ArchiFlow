@@ -1,0 +1,34 @@
+<div class="chart-card full-width d-flex flex-direction-column">
+  <div class="header-with-badge d-flex align-items-center justify-content-between">
+    <app-dashboard-widget-header
+      class="flex-grow-1"
+      title="Evolução Mensal de Propostas de Honorários"
+      subtitle="Histórico e volume de negociações dos últimos 6 meses"
+      icon="query_stats"
+      iconVariant="green"
+      actionText="Simulador"
+      actionLink="/simulador">
+    </app-dashboard-widget-header>
+    <div class="card-pipeline-badge flex-shrink-0">
+      <span class="badge-kpi font-label-md font-weight-bold">Pipeline: {{ formatarMoeda(pipelineTotal) }}</span>
+    </div>
+  </div>
+
+  <div class="timeline-chart-container">
+    <div class="timeline-bars-wrapper d-flex align-items-end justify-content-around">
+      <div *ngFor="let mes of dados" class="timeline-column d-flex flex-direction-column align-items-center flex-grow-1">
+        <div class="column-bar-area d-flex align-items-end justify-content-center">
+          <div class="column-tooltip font-label-sm">
+            <strong>{{ mes.rotuloMes }}</strong>: {{ formatarMoeda(mes.valorTotal) }} ({{ mes.quantidade }} emitidas)
+          </div>
+          <div
+            class="column-bar"
+            [style.height.%]="obterAlturaPercentual(mes.valorTotal)"
+          ></div>
+        </div>
+        <span class="column-label font-label-md font-weight-bold text-on-surface">{{ mes.rotuloMes }}</span>
+        <span class="column-subval font-label-sm text-outline">{{ formatarMoedaInteiro(mes.valorTotal) }}</span>
+      </div>
+    </div>
+  </div>
+</div>

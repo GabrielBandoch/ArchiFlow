@@ -1,0 +1,29 @@
+<div class="chart-card d-flex flex-direction-column">
+  <app-dashboard-widget-header
+    title="Tipologias de Projetos"
+    subtitle="Volume por segmento arquitetônico"
+    icon="bar_chart"
+    iconVariant="terracotta"
+    actionText="Ver Projetos"
+    actionLink="/projetos">
+  </app-dashboard-widget-header>
+
+  <div class="bars-container d-flex flex-direction-column justify-content-center gap-md flex-grow-1">
+    <div *ngFor="let item of dados" class="bar-row d-flex flex-direction-column gap-xs">
+      <div class="bar-header d-flex align-items-center justify-content-between">
+        <span class="font-label-md font-weight-medium text-on-surface">{{ item.nomeTipo }}</span>
+        <div class="d-flex align-items-center gap-xs">
+          <span class="font-label-md font-weight-bold text-on-surface">{{ item.quantidade }}</span>
+          <span class="font-label-sm text-outline">({{ item.percentual }}%)</span>
+        </div>
+      </div>
+      <div class="bar-track">
+        <div 
+          class="bar-fill" 
+          [style.width.%]="item.percentual"
+          [style.background-color]="obterCor(item.tipo)">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

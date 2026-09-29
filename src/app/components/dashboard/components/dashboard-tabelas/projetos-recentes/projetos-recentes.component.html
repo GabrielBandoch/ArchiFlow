@@ -1,0 +1,63 @@
+<div class="table-card full-width d-flex flex-direction-column">
+  <app-dashboard-widget-header
+    title="Projetos em Andamento Recentes"
+    subtitle="Acompanhamento executivo e progresso das etapas"
+    icon="folder_open"
+    iconVariant="terracotta"
+    actionText="Ver Todos os Projetos"
+    actionLink="/projetos">
+  </app-dashboard-widget-header>
+
+  <div *ngIf="projetos.length === 0" class="empty-state d-flex flex-direction-column align-items-center justify-content-center p-xl">
+    <div class="empty-icon-circle d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">folder_off</span>
+    </div>
+    <p class="empty-title font-label-md font-weight-bold m-0 margin-top-sm">Nenhum projeto em andamento</p>
+    <span class="font-label-sm text-outline margin-top-xs">Crie um novo projeto para acompanhar o fluxo executivo aqui.</span>
+  </div>
+
+  <div *ngIf="projetos.length > 0" class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="font-label-sm">Projeto</th>
+          <th class="font-label-sm">Cliente</th>
+          <th class="font-label-sm">Fase / Status</th>
+          <th class="font-label-sm">Progresso</th>
+          <th class="font-label-sm text-right">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let proj of projetos">
+          <td>
+            <div class="d-flex flex-direction-column gap-2xs">
+              <span class="font-label-md font-weight-bold text-on-surface">{{ proj.nome }}</span>
+              <span class="font-label-sm text-outline">{{ proj.tipo }} • {{ proj.metragemTotal || 0 }} m²</span>
+            </div>
+          </td>
+          <td>
+            <span class="font-label-md text-on-surface">{{ proj.clienteNome || 'Cliente não vinculado' }}</span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="obterBadgeStatus(proj.status)">
+              {{ proj.status }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex flex-direction-column gap-2xs progress-col">
+              <div class="progress-track">
+                <div class="progress-bar" [style.width.%]="proj.progressoPercentual"></div>
+              </div>
+              <span class="font-label-sm text-outline">{{ proj.progressoPercentual }}% ({{ proj.etapasConcluidas }}/{{ proj.totalEtapas }} etapas)</span>
+            </div>
+          </td>
+          <td class="text-right">
+            <a [routerLink]="['/projetos', proj.id]" class="btn-table-action" title="Abrir detalhes do projeto">
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

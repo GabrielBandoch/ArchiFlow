@@ -1,0 +1,35 @@
+<div class="table-card d-flex flex-direction-column">
+  <app-dashboard-widget-header
+    title="Leads Recentes"
+    subtitle="Oportunidades comerciais em prospecção"
+    icon="person_search"
+    iconVariant="amber"
+    actionText="Ver CRM"
+    actionLink="/leads">
+  </app-dashboard-widget-header>
+
+  <div *ngIf="leads.length === 0" class="empty-state d-flex flex-direction-column align-items-center justify-content-center p-xl">
+    <div class="empty-icon-circle d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">person_off</span>
+    </div>
+    <p class="empty-title font-label-md font-weight-bold m-0 margin-top-sm">Nenhum lead recente</p>
+    <span class="font-label-sm text-outline margin-top-xs">Cadastre novos contatos no módulo de Leads.</span>
+  </div>
+
+  <div *ngIf="leads.length > 0" class="compact-list d-flex flex-direction-column gap-sm">
+    <div *ngFor="let lead of leads" class="compact-item d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-sm min-w-0">
+        <div class="item-avatar d-flex align-items-center justify-content-center font-label-md font-weight-bold">
+          <span>{{ lead.nome.charAt(0).toUpperCase() }}</span>
+        </div>
+        <div class="d-flex flex-direction-column min-w-0">
+          <span class="font-label-md font-weight-bold text-on-surface truncate">{{ lead.nome }}</span>
+          <span class="font-label-sm text-outline truncate">{{ lead.email }} • {{ lead.origemNome || 'Direto' }}</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center flex-shrink-0">
+        <span class="tag-status font-label-sm">{{ lead.status }}</span>
+      </div>
+    </div>
+  </div>
+</div>

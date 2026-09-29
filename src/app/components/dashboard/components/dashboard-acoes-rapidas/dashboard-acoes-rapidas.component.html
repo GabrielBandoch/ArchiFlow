@@ -1,0 +1,33 @@
+<section class="quick-actions-bar d-flex align-items-center justify-content-between flex-wrap gap-md">
+  <div class="d-flex align-items-center gap-sm">
+    <div class="actions-badge d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">bolt</span>
+    </div>
+    <div class="d-flex flex-direction-column">
+      <span class="font-label-md font-weight-bold text-on-surface">Ações Rápidas</span>
+      <span class="font-label-sm text-on-surface-variant">Atalhos para operações frequentes</span>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-sm flex-wrap">
+    <button type="button" class="btn-quick d-inline-flex align-items-center gap-xs font-label-md" (click)="novoProjeto.emit()">
+      <span class="material-symbols-outlined icon-blue">add_circle</span>
+      <span>Novo Projeto</span>
+    </button>
+
+    <button type="button" class="btn-quick d-inline-flex align-items-center gap-xs font-label-md" (click)="novoLead.emit()">
+      <span class="material-symbols-outlined icon-amber">person_add</span>
+      <span>Novo Lead</span>
+    </button>
+
+    <a routerLink="/simulador" class="btn-quick d-inline-flex align-items-center gap-xs font-label-md">
+      <span class="material-symbols-outlined icon-purple">calculate</span>
+      <span>Simular Honorários</span>
+    </a>
+
+    <a routerLink="/clientes" class="btn-quick d-inline-flex align-items-center gap-xs font-label-md">
+      <span class="material-symbols-outlined icon-green">group</span>
+      <span>Ver Clientes</span>
+    </a>
+  </div>
+</section>

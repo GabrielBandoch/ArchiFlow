@@ -1,0 +1,115 @@
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--af-space-md);
+  width: 100%;
+}
+
+.kpi-card {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--af-shadow-sm);
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(118, 85, 56, 0.4);
+    box-shadow: var(--af-shadow-md);
+    transform: translateY(-2px);
+  }
+
+  &.highlight-card {
+    background: linear-gradient(135deg, var(--af-surface-container-lowest) 0%, rgba(16, 185, 129, 0.05) 100%);
+    border-color: rgba(16, 185, 129, 0.4);
+  }
+}
+
+.kpi-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--af-radius-md);
+  flex-shrink: 0;
+
+  span {
+    font-size: 24px;
+  }
+
+  &.kpi-blue {
+    background-color: rgba(37, 99, 235, 0.12);
+    color: #2563eb;
+  }
+
+  &.kpi-amber {
+    background-color: rgba(217, 119, 6, 0.12);
+    color: #d97706;
+  }
+
+  &.kpi-purple {
+    background-color: rgba(147, 51, 234, 0.12);
+    color: #9333ea;
+  }
+
+  &.kpi-green {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #059669;
+  }
+}
+
+.kpi-value {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.text-green-highlight {
+  color: #059669;
+}
+
+.text-outline {
+  color: var(--af-outline);
+}
+
+.kpi-pill {
+  padding: 2px 8px;
+  border-radius: var(--af-radius-full);
+  font-weight: 600;
+
+  &.pill-neutral {
+    background-color: var(--af-surface-container);
+    color: var(--af-on-surface-variant);
+  }
+
+  &.pill-amber {
+    background-color: rgba(217, 119, 6, 0.12);
+    color: #b45309;
+  }
+
+  &.pill-purple {
+    background-color: rgba(147, 51, 234, 0.12);
+    color: #7e22ce;
+  }
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+@media (max-width: 1200px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

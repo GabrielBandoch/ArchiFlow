@@ -1,0 +1,32 @@
+<div class="chart-card d-flex flex-direction-column">
+  <app-dashboard-widget-header
+    title="Funil Comercial de Leads"
+    subtitle="Pipeline de conversão de oportunidades"
+    icon="filter_alt"
+    iconVariant="amber"
+    actionText="Ver CRM"
+    actionLink="/leads">
+  </app-dashboard-widget-header>
+
+  <div class="funnel-container d-flex flex-direction-column justify-content-around flex-grow-1 gap-xs">
+    <div *ngFor="let etapa of dados; let idx = index" class="funnel-step d-flex flex-direction-column gap-xs">
+      <div class="d-flex align-items-center justify-content-between font-label-md">
+        <div class="d-flex align-items-center gap-xs">
+          <span class="step-num font-label-sm">{{ idx + 1 }}</span>
+          <span class="font-weight-medium text-on-surface">{{ etapa.nomeStatus }}</span>
+        </div>
+        <div class="d-flex align-items-center gap-xs">
+          <span class="font-weight-bold text-on-surface">{{ etapa.quantidade }} leads</span>
+          <span class="font-label-sm text-outline">({{ etapa.percentual }}%)</span>
+        </div>
+      </div>
+      <div class="funnel-bar-track">
+        <div
+          class="funnel-bar-fill"
+          [style.width.%]="etapa.percentual > 0 ? etapa.percentual : 1.5"
+          [style.background-color]="obterCor(etapa.status)"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
