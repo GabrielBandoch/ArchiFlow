@@ -26,12 +26,29 @@ describe('DashboardKpisComponent', () => {
     fixture = TestBed.createComponent(DashboardKpisComponent);
     component = fixture.componentInstance;
     component.kpis = mockKpis;
-    component.formatarMoeda = (val: number) => `R$ ${val.toLocaleString('pt-BR')}`;
     fixture.detectChanges();
   });
 
-  it('should create kpi component', () => {
+  it('should create kpi component and render values', () => {
     expect(component).toBeTruthy();
     expect(component.kpis.totalProjetosAtivos).toBe(5);
+
+    const values = fixture.nativeElement.querySelectorAll('.kpi-value');
+    expect(values.length).toBe(4);
+    expect(values[0].textContent.trim()).toBe('5');
+    expect(values[1].textContent.trim()).toBe('65%');
+  });
+
+  it('should render semantically correct "leads ativos" label instead of "em negociação"', () => {
+    const pill = fixture.nativeElement.querySelector('.pill-amber');
+    expect(pill).toBeTruthy();
+    expect(pill.textContent).toContain('12 leads ativos');
+    expect(pill.textContent).not.toContain('em negociação');
+  });
+
+  it('should render formatted currency values using dashboard.utils', () => {
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('150.000,00');
+    expect(text).toContain('7.500,00');
   });
 });

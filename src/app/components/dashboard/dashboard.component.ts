@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ComponentRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../shared';
@@ -9,8 +9,14 @@ import { NotificationService } from '../../core/services/notification.service';
 import { DashboardMetricas, DashboardWidgetConfig, WIDGETS_DEFAULT } from '../../models/dashboard.model';
 import { DashboardKpisComponent } from './components/dashboard-kpis/dashboard-kpis.component';
 import { DashboardAcoesRapidasComponent } from './components/dashboard-acoes-rapidas/dashboard-acoes-rapidas.component';
-import { DashboardGraficosComponent } from './components/dashboard-graficos/dashboard-graficos.component';
-import { DashboardTabelasComponent } from './components/dashboard-tabelas/dashboard-tabelas.component';
+import { ProjetosStatusChartComponent } from './components/dashboard-graficos/projetos-status-chart/projetos-status-chart.component';
+import { ProjetosTipoChartComponent } from './components/dashboard-graficos/projetos-tipo-chart/projetos-tipo-chart.component';
+import { LeadsFunilChartComponent } from './components/dashboard-graficos/leads-funil-chart/leads-funil-chart.component';
+import { LeadsOrigemChartComponent } from './components/dashboard-graficos/leads-origem-chart/leads-origem-chart.component';
+import { PropostasMensaisChartComponent } from './components/dashboard-graficos/propostas-mensais-chart/propostas-mensais-chart.component';
+import { ProjetosRecentesComponent } from './components/dashboard-tabelas/projetos-recentes/projetos-recentes.component';
+import { LeadsRecentesComponent } from './components/dashboard-tabelas/leads-recentes/leads-recentes.component';
+import { PropostasRecentesComponent } from './components/dashboard-tabelas/propostas-recentes/propostas-recentes.component';
 import { PersonalizarDashboardModalComponent } from '../../dialogs/dashboard/personalizar-dashboard-modal/personalizar-dashboard-modal.component';
 import { CriarProjetoModalComponent } from '../../dialogs/projetos/criar-projeto-modal/criar-projeto-modal.component';
 import { NovoLeadModalComponent } from '../../dialogs/leads/novo-lead-modal/novo-lead-modal.component';
@@ -25,8 +31,14 @@ import { NovoLeadModalComponent } from '../../dialogs/leads/novo-lead-modal/novo
     DESIGN_SYSTEM,
     DashboardKpisComponent,
     DashboardAcoesRapidasComponent,
-    DashboardGraficosComponent,
-    DashboardTabelasComponent
+    ProjetosStatusChartComponent,
+    ProjetosTipoChartComponent,
+    LeadsFunilChartComponent,
+    LeadsOrigemChartComponent,
+    PropostasMensaisChartComponent,
+    ProjetosRecentesComponent,
+    LeadsRecentesComponent,
+    PropostasRecentesComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -59,9 +71,8 @@ export class DashboardComponent implements OnInit {
         this.metricas = dados;
         this.carregarPreferencias();
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
-        console.error('Erro ao carregar métricas do dashboard', err);
         this.notificationService.error('Não foi possível carregar as métricas do dashboard.');
       }
     });
@@ -77,13 +88,14 @@ export class DashboardComponent implements OnInit {
             if (Array.isArray(configuracoesSalvas) && configuracoesSalvas.length > 0) {
               this.mesclarPreferencias(configuracoesSalvas);
             }
-          } catch (e) {
-            console.warn('Erro ao processar JSON de preferências do dashboard', e);
+          } catch {
+            this.widgets = [...WIDGETS_DEFAULT];
           }
         }
       },
       error: () => {
         this.loading = false;
+        this.widgets = [...WIDGETS_DEFAULT];
       }
     });
   }
@@ -103,26 +115,8 @@ export class DashboardComponent implements OnInit {
     }).sort((a, b) => a.ordem - b.ordem);
   }
 
-  isWidgetGrafico(id: string): boolean {
-    return id.startsWith('grafico_');
-  }
-
-  isWidgetTabela(id: string): boolean {
-    return id.startsWith('tabela_') || id.startsWith('lista_');
-  }
-
-  formatarMoeda(valor: number): string {
-    const v = valor || 0;
-    return `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  }
-
-  formatarMoedaInteiro(valor: number): string {
-    const v = valor || 0;
-    return `R$ ${Math.round(v).toLocaleString('pt-BR')}`;
-  }
-
   abrirModalPersonalizar(): void {
-    const ref = this.dialogService.open(PersonalizarDashboardModalComponent, {
+    const ref: ComponentRef<PersonalizarDashboardModalComponent> = this.dialogService.open(PersonalizarDashboardModalComponent, {
       data: {
         show: true,
         widgets: this.widgets,
@@ -139,7 +133,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  private salvarPreferencias(novosWidgets: DashboardWidgetConfig[], modalRef: any): void {
+  private salvarPreferencias(novosWidgets: DashboardWidgetConfig[], modalRef: ComponentRef<PersonalizarDashboardModalComponent>): void {
     this.salvandoPreferencias = true;
     modalRef.instance.salvando = true;
 
@@ -152,16 +146,15 @@ export class DashboardComponent implements OnInit {
         this.notificationService.success('Layout do painel personalizado com sucesso!');
         modalRef.instance.onClose();
       },
-      error: (err) => {
+      error: () => {
         this.salvandoPreferencias = false;
         modalRef.instance.salvando = false;
-        console.error('Erro ao salvar preferências no banco', err);
         this.notificationService.error('Erro ao salvar preferências do painel.');
       }
     });
   }
 
-  private restaurarPadrao(modalRef: any): void {
+  private restaurarPadrao(modalRef: ComponentRef<PersonalizarDashboardModalComponent>): void {
     this.salvandoPreferencias = true;
     modalRef.instance.salvando = true;
 
@@ -173,6 +166,7 @@ export class DashboardComponent implements OnInit {
         this.salvandoPreferencias = false;
         modalRef.instance.salvando = false;
         this.widgets = [...padrao];
+        modalRef.instance.tempWidgets = padrao.map(w => ({ ...w }));
         this.notificationService.success('Layout padrão restaurado com sucesso!');
         modalRef.instance.onClose();
       },

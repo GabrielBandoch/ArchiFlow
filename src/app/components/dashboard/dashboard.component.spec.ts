@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
+import { of, throwError } from 'rxjs';
+import { provideRouter } from '@angular/router';
+import { EventEmitter } from '@angular/core';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardService } from '../../core/api/dashboard/dashboard.service';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { DashboardMetricas, WIDGETS_DEFAULT } from '../../models/dashboard.model';
-import { EventEmitter } from '@angular/core';
+import { DashboardMetricas, DashboardWidgetConfig, WIDGETS_DEFAULT } from '../../models/dashboard.model';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -106,8 +106,9 @@ describe('DashboardComponent', () => {
     );
 
     await TestBed.configureTestingModule({
-      imports: [DashboardComponent, RouterTestingModule],
+      imports: [DashboardComponent],
       providers: [
+        provideRouter([]),
         { provide: DashboardService, useValue: dashboardServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
         { provide: DialogService, useValue: dialogServiceSpy },
@@ -127,50 +128,189 @@ describe('DashboardComponent', () => {
     expect(dashboardServiceSpy.obterMetricas).toHaveBeenCalled();
   });
 
-  it('should open personalization modal via dialogService', () => {
+  it('should handle error when metricas request fails', () => {
+    dashboardServiceSpy.obterMetricas.and.returnValue(throwError(() => new Error('Network error')));
+    component.carregarDados();
+
+    expect(component.loading).toBeFalse();
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('Não foi possível carregar as métricas do dashboard.');
+  });
+
+  it('should order widgets correctly according to ordem property', () => {
+    component.widgets = [
+      { id: 'b', titulo: 'B', icone: 'icon-b', largura: 'half', visivel: true, ordem: 2 },
+      { id: 'a', titulo: 'A', icone: 'icon-a', largura: 'full', visivel: true, ordem: 1 },
+      { id: 'c', titulo: 'C', icone: 'icon-c', largura: 'half', visivel: true, ordem: 3 }
+    ];
+
+    const ordenados = component.widgetsOrdenados;
+    expect(ordenados[0].id).toBe('a');
+    expect(ordenados[1].id).toBe('b');
+    expect(ordenados[2].id).toBe('c');
+  });
+
+  it('should merge saved preferences when preferences request succeeds with valid json', () => {
+    const savedConfig: DashboardWidgetConfig[] = [
+      { id: 'atalhos_rapidos', titulo: 'Atalhos', icone: 'bolt', largura: 'full', visivel: false, ordem: 1 }
+    ];
+    dashboardServiceSpy.obterPreferencias.and.returnValue(of({
+      usuarioId: 'u1',
+      layoutJson: JSON.stringify(savedConfig),
+      atualizadoEm: '2026-09-22T00:00:00Z'
+    }));
+
+    component.carregarDados();
+
+    const atalhos = component.widgets.find(w => w.id === 'atalhos_rapidos');
+    expect(atalhos?.visivel).toBeFalse();
+  });
+
+  it('should fallback to default widgets when layoutJson is malformed', () => {
+    dashboardServiceSpy.obterPreferencias.and.returnValue(of({
+      usuarioId: 'u1',
+      layoutJson: 'invalid-json-string',
+      atualizadoEm: '2026-09-22T00:00:00Z'
+    }));
+
+    component.carregarDados();
+
+    expect(component.widgets.length).toBe(WIDGETS_DEFAULT.length);
+    expect(component.loading).toBeFalse();
+  });
+
+  it('should fallback to default widgets when preferences request fails', () => {
+    dashboardServiceSpy.obterPreferencias.and.returnValue(throwError(() => new Error('Failed to load prefs')));
+
+    component.carregarDados();
+
+    expect(component.widgets.length).toBe(WIDGETS_DEFAULT.length);
+    expect(component.loading).toBeFalse();
+  });
+
+  it('should open personalization modal and handle salvar event successfully', () => {
+    const salvarEmitter = new EventEmitter<DashboardWidgetConfig[]>();
+    const restaurarEmitter = new EventEmitter<void>();
+    const onCloseSpy = jasmine.createSpy('onClose');
+
     const mockRef: any = {
       instance: {
-        salvar: new EventEmitter<any>(),
-        restaurar: new EventEmitter<void>(),
-        onClose: jasmine.createSpy('onClose')
+        salvar: salvarEmitter,
+        restaurar: restaurarEmitter,
+        onClose: onCloseSpy,
+        salvando: false
       }
     };
     dialogServiceSpy.open.and.returnValue(mockRef);
 
     component.abrirModalPersonalizar();
     expect(dialogServiceSpy.open).toHaveBeenCalled();
+
+    const novosWidgets = [...WIDGETS_DEFAULT].reverse();
+    salvarEmitter.emit(novosWidgets);
+
+    expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalledWith(JSON.stringify(novosWidgets));
+    expect(notificationServiceSpy.success).toHaveBeenCalledWith('Layout do painel personalizado com sucesso!');
+    expect(onCloseSpy).toHaveBeenCalled();
+    expect(component.salvandoPreferencias).toBeFalse();
   });
 
-  it('should format currency correctly', () => {
-    expect(component.formatarMoeda(1250.5)).toContain('1.250,50');
-    expect(component.formatarMoedaInteiro(1250.5)).toContain('1.251');
+  it('should handle error when salvarPreferencias fails', () => {
+    const salvarEmitter = new EventEmitter<DashboardWidgetConfig[]>();
+    const mockRef: any = {
+      instance: {
+        salvar: salvarEmitter,
+        restaurar: new EventEmitter<void>(),
+        onClose: jasmine.createSpy('onClose'),
+        salvando: false
+      }
+    };
+    dialogServiceSpy.open.and.returnValue(mockRef);
+    dashboardServiceSpy.salvarPreferencias.and.returnValue(throwError(() => new Error('Save error')));
+
+    component.abrirModalPersonalizar();
+    salvarEmitter.emit(WIDGETS_DEFAULT);
+
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('Erro ao salvar preferências do painel.');
+    expect(component.salvandoPreferencias).toBeFalse();
+    expect(mockRef.instance.salvando).toBeFalse();
   });
 
-  it('should identify graphic and table widgets accurately', () => {
-    expect(component.isWidgetGrafico('grafico_projetos_status')).toBeTrue();
-    expect(component.isWidgetGrafico('kpi_resumo')).toBeFalse();
-    expect(component.isWidgetTabela('tabela_projetos_recentes')).toBeTrue();
-    expect(component.isWidgetTabela('lista_leads_recentes')).toBeTrue();
-    expect(component.isWidgetTabela('kpi_resumo')).toBeFalse();
+  it('should handle restaurarPadrao event successfully in modal', () => {
+    const restaurarEmitter = new EventEmitter<void>();
+    const onCloseSpy = jasmine.createSpy('onClose');
+    const mockRef: any = {
+      instance: {
+        salvar: new EventEmitter<any>(),
+        restaurar: restaurarEmitter,
+        onClose: onCloseSpy,
+        salvando: false,
+        tempWidgets: []
+      }
+    };
+    dialogServiceSpy.open.and.returnValue(mockRef);
+
+    component.abrirModalPersonalizar();
+    restaurarEmitter.emit();
+
+    expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalled();
+    expect(mockRef.instance.tempWidgets.length).toBe(WIDGETS_DEFAULT.length);
+    expect(notificationServiceSpy.success).toHaveBeenCalledWith('Layout padrão restaurado com sucesso!');
+    expect(onCloseSpy).toHaveBeenCalled();
   });
 
-  it('should open create project and create lead modals via dialogService', () => {
+  it('should handle error when restaurarPadrao fails in modal', () => {
+    const restaurarEmitter = new EventEmitter<void>();
+    const mockRef: any = {
+      instance: {
+        salvar: new EventEmitter<any>(),
+        restaurar: restaurarEmitter,
+        onClose: jasmine.createSpy('onClose'),
+        salvando: false,
+        tempWidgets: []
+      }
+    };
+    dialogServiceSpy.open.and.returnValue(mockRef);
+    dashboardServiceSpy.salvarPreferencias.and.returnValue(throwError(() => new Error('Restore error')));
+
+    component.abrirModalPersonalizar();
+    restaurarEmitter.emit();
+
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('Erro ao restaurar layout padrão.');
+    expect(component.salvandoPreferencias).toBeFalse();
+    expect(mockRef.instance.salvando).toBeFalse();
+  });
+
+  it('should open create project modal and reload data on creation', () => {
+    const projectCreatedEmitter = new EventEmitter<any>();
     const mockProjRef: any = {
       instance: {
-        projectCreated: new EventEmitter<any>()
+        projectCreated: projectCreatedEmitter
       }
     };
     dialogServiceSpy.open.and.returnValue(mockProjRef);
+    spyOn(component, 'carregarDados');
+
     component.abrirModalCriarProjeto();
     expect(dialogServiceSpy.open).toHaveBeenCalled();
 
+    projectCreatedEmitter.emit({ id: 'new-p' });
+    expect(component.carregarDados).toHaveBeenCalled();
+  });
+
+  it('should open create lead modal and reload data on save', () => {
+    const savedEmitter = new EventEmitter<any>();
     const mockLeadRef: any = {
       instance: {
-        saved: new EventEmitter<any>()
+        saved: savedEmitter
       }
     };
     dialogServiceSpy.open.and.returnValue(mockLeadRef);
+    spyOn(component, 'carregarDados');
+
     component.abrirModalCriarLead();
     expect(dialogServiceSpy.open).toHaveBeenCalled();
+
+    savedEmitter.emit({ id: 'new-l' });
+    expect(component.carregarDados).toHaveBeenCalled();
   });
 });

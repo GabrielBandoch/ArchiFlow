@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardKpis } from '../../../../models/dashboard.model';
+import { formatarMoeda } from '../../dashboard.utils';
 
 @Component({
   selector: 'app-dashboard-kpis',
@@ -11,5 +12,6 @@ import { DashboardKpis } from '../../../../models/dashboard.model';
 })
 export class DashboardKpisComponent {
   @Input({ required: true }) kpis!: DashboardKpis;
-  @Input({ required: true }) formatarMoeda!: (v: number) => string;
+
+  formatarMoeda = formatarMoeda;
 }
