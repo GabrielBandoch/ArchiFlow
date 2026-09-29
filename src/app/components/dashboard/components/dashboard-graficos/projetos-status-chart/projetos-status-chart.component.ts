@@ -13,9 +13,16 @@ import { DASHBOARD_COLORS } from '../../../dashboard-colors';
 })
 export class ProjetosStatusChartComponent {
   @Input() dados: ProjetosPorStatus[] = [];
-  @Input() totalProjetos = 0;
+  @Input() totalProjetos?: number;
 
   private readonly circ = 439.82;
+
+  get totalExibido(): number {
+    if (this.totalProjetos !== undefined && this.totalProjetos !== null) {
+      return this.totalProjetos;
+    }
+    return this.dados?.reduce((acc, item) => acc + (item.quantidade || 0), 0) ?? 0;
+  }
 
   obterCor(status: string): string {
     return DASHBOARD_COLORS.fasesProjeto[status] || DASHBOARD_COLORS.defaultColor;

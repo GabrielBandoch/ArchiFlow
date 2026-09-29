@@ -47,10 +47,7 @@
       </div>
 
       <div *ngIf="widget.id === 'grafico_projetos_status' && widget.visivel" class="widget-wrapper col-half">
-        <app-projetos-status-chart
-          [dados]="metricas.projetosPorStatus"
-          [totalProjetos]="metricas.kpis.totalProjetosAtivos + metricas.kpis.totalProjetosConcluidos">
-        </app-projetos-status-chart>
+        <app-projetos-status-chart [dados]="metricas.projetosPorStatus"></app-projetos-status-chart>
       </div>
 
       <div *ngIf="widget.id === 'grafico_projetos_tipo' && widget.visivel" class="widget-wrapper col-half">
