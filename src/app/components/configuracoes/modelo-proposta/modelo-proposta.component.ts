@@ -23,8 +23,8 @@ export class ModeloPropostaComponent implements OnInit {
     codigo: 'PROP-2026-084',
     titulo: 'Projeto Residencial Villa Bella',
     clienteNome: 'Dr. Roberto & Mariana Silveira',
-    clienteEmail: 'roberto.silveira@email.com',
-    clienteTelefone: '47999466073',
+    clienteEmail: 'cliente@exemplo.com',
+    clienteTelefone: '11987654321',
     metragemQuadrada: 285.50,
     padraoImovelNome: 'Alto Padrão',
     tipoProjetoNome: 'Residencial Completo',
@@ -73,7 +73,7 @@ export class ModeloPropostaComponent implements OnInit {
       telefone: [config.telefone, [Validators.required]],
       endereco: [config.endereco],
       logoUrl: [config.logoUrl || ''],
-      corPrimaria: [config.corPrimaria || '#b5603c', [Validators.required]],
+      corPrimaria: [config.corPrimaria || '#765538', [Validators.required]],
 
       exibirCabecalho: [config.exibirCabecalho],
       exibirResumo: [config.exibirResumo],
@@ -165,6 +165,24 @@ export class ModeloPropostaComponent implements OnInit {
 
   public formatarMoeda(valor?: number): string {
     return this.configService.formatarMoeda(valor || 0);
+  }
+
+  public readonly paletasPredefinidas = [
+    { nome: 'Terracota', cor: '#765538' },
+    { nome: 'Grafite', cor: '#2d3238' },
+    { nome: 'Azul Petróleo', cor: '#1e3a47' },
+    { nome: 'Ocre Nobre', cor: '#946638' },
+    { nome: 'Verde Oliva', cor: '#37473a' },
+    { nome: 'Bordô', cor: '#582b2b' }
+  ];
+
+  public selecionarCor(cor: string): void {
+    this.form.patchValue({ corPrimaria: cor });
+  }
+
+  public inserirTagWhatsapp(tag: string): void {
+    const atual = this.form.get('templateMensagemWhatsapp')?.value || '';
+    this.form.patchValue({ templateMensagemWhatsapp: atual + ' ' + tag });
   }
 
   public get previewWhatsappMsg(): string {

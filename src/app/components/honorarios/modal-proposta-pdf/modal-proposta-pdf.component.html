@@ -33,13 +33,16 @@
     </div>
 
     <!-- BANNER DE AVISO QUANDO NÃO CONFIGURADO (NÃO IMPRESSO) -->
-    <div class="unconfigured-warning-banner d-flex align-items-center justify-content-between p-sm no-print" *ngIf="!isConfigurado">
-      <div class="d-flex align-items-center gap-xs font-body-sm text-warning-contrast">
-        <span class="material-symbols-outlined icon-sm">warning</span>
-        <span><strong>Identidade do Escritório Não Configurada:</strong> Preencha os dados do seu escritório para liberar a exportação e personalização oficial.</span>
+    <div class="unconfigured-warning-banner d-flex align-items-center justify-content-between no-print" *ngIf="!isConfigurado">
+      <div class="d-flex align-items-center gap-sm font-body-sm banner-text-wrap">
+        <span class="warning-badge-icon">
+          <span class="material-symbols-outlined icon-sm">storefront</span>
+        </span>
+        <span><strong>Personalize seu Escritório:</strong> Configure seu logotipo, CAU/CREA e cores oficiais para orçamentos 100% com a sua identidade visual.</span>
       </div>
-      <button type="button" class="btn-config-now font-label-xs" (click)="irParaConfiguracoes()">
-        Configurar Agora
+      <button type="button" class="btn-config-now font-label-xs d-flex align-items-center gap-xxs" (click)="irParaConfiguracoes()">
+        <span class="material-symbols-outlined icon-xs">tune</span>
+        Personalizar Agora
       </button>
     </div>
 
@@ -51,26 +54,42 @@
         <div class="a4-top-accent-bar" [style.background-color]="config.corPrimaria || '#765538'"></div>
 
         <!-- CABEÇALHO DA FOLHA TIMBRADA -->
-        <header class="doc-header d-flex justify-content-between align-items-start" *ngIf="config.exibirCabecalho">
-          <div class="doc-brand d-flex flex-direction-column">
-            <img *ngIf="config.logoUrl" [src]="config.logoUrl" alt="Logo" class="doc-logo mb-xs">
-            <h1 class="doc-brand-name m-0" [style.color]="config.corPrimaria">
-              {{ config.nomeEscritorio || 'SEU ESCRITÓRIO DE ARQUITETURA' }}
-            </h1>
-            <span class="doc-brand-slogan" *ngIf="config.slogan">
-              {{ config.slogan }}
-            </span>
-            <span class="doc-brand-reg font-mono" *ngIf="config.registroProfissional">
-              {{ config.registroProfissional }}
-            </span>
+        <header class="doc-header d-flex justify-content-between align-items-center" *ngIf="config.exibirCabecalho">
+          <div class="doc-brand d-flex align-items-center gap-md">
+            <div *ngIf="config.logoUrl; else defaultMonogramTpl" class="doc-logo-wrapper">
+              <img [src]="config.logoUrl" alt="Logo" class="doc-logo">
+            </div>
+            <ng-template #defaultMonogramTpl>
+              <div class="doc-monogram-box d-flex align-items-center justify-content-center" [style.border-color]="config.corPrimaria || '#765538'" [style.color]="config.corPrimaria || '#765538'">
+                <span class="material-symbols-outlined">architecture</span>
+              </div>
+            </ng-template>
+
+            <div class="d-flex flex-direction-column">
+              <h1 class="doc-brand-name m-0" [style.color]="config.corPrimaria || '#765538'">
+                {{ config.nomeEscritorio || 'SEU ESCRITÓRIO DE ARQUITETURA' }}
+              </h1>
+              <span class="doc-brand-slogan" *ngIf="config.slogan">
+                {{ config.slogan }}
+              </span>
+              <span class="doc-brand-reg font-mono" *ngIf="config.registroProfissional">
+                {{ config.registroProfissional }}
+              </span>
+            </div>
           </div>
 
           <div class="doc-contacts d-flex flex-direction-column align-items-end text-right">
-            <span class="contact-item" *ngIf="config.telefone"><strong>Tel:</strong> {{ config.telefone }}</span>
-            <span class="contact-item" *ngIf="config.email"><strong>E-mail:</strong> {{ config.email }}</span>
-            <span class="contact-item" *ngIf="config.endereco">{{ config.endereco }}</span>
+            <span class="contact-item" *ngIf="config.telefone">
+              <strong>Tel:</strong> {{ config.telefone }}
+            </span>
+            <span class="contact-item" *ngIf="config.email">
+              <strong>E-mail:</strong> {{ config.email }}
+            </span>
+            <span class="contact-item" *ngIf="config.endereco">
+              {{ config.endereco }}
+            </span>
             <span class="contact-item text-on-surface-variant font-italic" *ngIf="!config.telefone && !config.email">
-              Contatos pendentes de configuração
+              Identidade do escritório em configuração
             </span>
           </div>
         </header>
@@ -79,18 +98,20 @@
         <div class="doc-title-banner d-flex justify-content-between align-items-center" 
              [style.background-color]="config.corPrimaria + '12'" 
              [style.border-left]="'3px solid ' + config.corPrimaria">
-          <div>
+          <div class="d-flex flex-direction-column gap-xxs">
             <div class="doc-category" [style.color]="config.corPrimaria">PROPOSTA TÉCNICA E COMERCIAL DE HONORÁRIOS</div>
             <div class="doc-code font-mono">CÓDIGO: {{ proposta.codigo }}</div>
           </div>
-          <div class="doc-meta text-right">
-            <div><strong>Emissão:</strong> {{ proposta.criadoEm | date:'dd/MM/yyyy' }}</div>
-            <div class="badge-validade">Validade: {{ config.validadeDias }} dias</div>
+          <div class="doc-meta text-right d-flex flex-direction-column align-items-end gap-xxs">
+            <div class="doc-emission-date"><strong>Emissão:</strong> {{ proposta.criadoEm | date:'dd/MM/yyyy' }}</div>
+            <div class="badge-validade" [style.color]="config.corPrimaria" [style.background-color]="config.corPrimaria + '18'">
+              Validade: {{ config.validadeDias }} dias
+            </div>
           </div>
         </div>
 
         <!-- APRESENTAÇÃO EDITORIAL -->
-        <div class="doc-intro-quote" *ngIf="config.textoApresentacao">
+        <div class="doc-intro-quote" *ngIf="config.textoApresentacao" [style.border-left-color]="config.corPrimaria">
           <p class="m-0">{{ config.textoApresentacao }}</p>
         </div>
 
@@ -103,7 +124,7 @@
 
           <div class="doc-meta-grid">
             <div class="meta-cell">
-              <span class="lbl">CLIENTE</span>
+              <span class="lbl">CLIENTE / CONTRATANTE</span>
               <strong>{{ proposta.clienteNome || proposta.leadNome || 'Cliente em Negociação' }}</strong>
             </div>
             <div class="meta-cell">
@@ -111,7 +132,7 @@
               <strong>{{ proposta.titulo }}</strong>
             </div>
             <div class="meta-cell">
-              <span class="lbl">TIPOLOGIA</span>
+              <span class="lbl">TIPOLOGIA DO PROJETO</span>
               <span>{{ proposta.tipoProjetoNome || 'Residencial' }}</span>
             </div>
             <div class="meta-cell">
@@ -130,7 +151,7 @@
 
           <table class="doc-table w-full">
             <thead>
-              <tr [style.background-color]="config.corPrimaria + '15'">
+              <tr [style.background-color]="config.corPrimaria + '14'">
                 <th class="text-left col-etapa">Etapa & Entregáveis</th>
                 <th class="text-center col-pct">%</th>
                 <th class="text-right col-valor">Investimento</th>
@@ -139,10 +160,13 @@
             <tbody>
               <tr *ngFor="let e of proposta.etapas">
                 <td class="col-etapa">
-                  <span class="etapa-nome">{{ e.nome }}</span>
+                  <div class="d-flex align-items-center gap-xs flex-wrap">
+                    <span class="etapa-nome">{{ e.nome }}</span>
+                    <span class="badge-prazo font-mono" *ngIf="e.prazo">{{ e.prazo }}</span>
+                  </div>
                   <span class="etapa-desc" *ngIf="e.descricao">{{ e.descricao }}</span>
                 </td>
-                <td class="text-center col-pct font-mono">{{ e.percentual || 0 }}%</td>
+                <td class="text-center col-pct font-mono font-weight-bold">{{ e.percentual || 0 }}%</td>
                 <td class="text-right col-valor font-weight-bold font-mono">{{ formatarMoeda(e.valor) }}</td>
               </tr>
             </tbody>
@@ -150,8 +174,8 @@
 
           <!-- TOTAL BAR -->
           <div class="doc-total-bar d-flex justify-content-between align-items-center" 
-               [style.background-color]="config.corPrimaria + '15'" 
-               [style.border]="'1px solid ' + config.corPrimaria + '40'">
+               [style.background-color]="config.corPrimaria + '12'" 
+               [style.border]="'1px solid ' + config.corPrimaria + '35'">
             <div class="d-flex flex-direction-column">
               <span class="total-lbl text-uppercase">VALOR TOTAL DOS HONORÁRIOS ARQUITETÔNICOS</span>
               <span class="total-sub">Escopo completo conforme etapas descritas acima</span>
@@ -174,10 +198,15 @@
               <span class="sub-lbl">FORMA DE PAGAMENTO:</span>
               <p class="m-0">{{ config.condicoesPagamentoPadrao }}</p>
             </div>
-            <div class="payment-bank-box font-mono" *ngIf="config.chavePix || config.dadosBancarios">
+            <div class="payment-bank-box font-mono" *ngIf="config.chavePix || config.dadosBancarios; else bankPlaceholderTpl">
               <div *ngIf="config.chavePix"><strong>CHAVE PIX:</strong> {{ config.chavePix }}</div>
               <div *ngIf="config.dadosBancarios"><strong>BANCO:</strong> {{ config.dadosBancarios }}</div>
             </div>
+            <ng-template #bankPlaceholderTpl>
+              <div class="payment-bank-box font-mono text-on-surface-variant font-italic">
+                Dados bancários e chave PIX sob consulta ou informados no contrato final.
+              </div>
+            </ng-template>
           </div>
         </div>
 
@@ -197,7 +226,7 @@
           <div class="d-flex justify-content-between gap-xl">
             <div class="sign-box text-center flex-grow-1">
               <div class="sign-line"></div>
-              <span class="sign-name d-block">{{ config.nomeEscritorio }}</span>
+              <span class="sign-name d-block">{{ config.nomeEscritorio || 'Arquiteto Responsável' }}</span>
               <span class="sign-role">Arquiteto(a) Responsável</span>
             </div>
             <div class="sign-box text-center flex-grow-1">
@@ -207,6 +236,18 @@
             </div>
           </div>
         </div>
+
+        <!-- RODAPÉ INSTITUCIONAL DISCRETO -->
+        <footer class="doc-footer d-flex justify-content-between align-items-center">
+          <div class="doc-footer-brand d-flex align-items-center gap-xxs">
+            <span class="font-mono text-xs">ArchiFlow</span>
+            <span class="bullet-sep">•</span>
+            <span>Sistema Integrado de Gestão & Precificação Arquitetônica</span>
+          </div>
+          <div class="doc-footer-meta font-mono text-xs">
+            Documento de Proposta de Honorários
+          </div>
+        </footer>
 
       </div>
     </div>

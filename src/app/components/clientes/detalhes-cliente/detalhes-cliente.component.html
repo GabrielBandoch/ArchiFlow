@@ -1,51 +1,75 @@
-<div class="dossier-page d-flex flex-direction-column gap-lg" *ngIf="cliente && !loading">
+<div class="dossier-page" *ngIf="cliente && !loading">
   
-  <nav class="dossier-nav">
-    <button type="button" class="nav-back-btn d-inline-flex align-items-center gap-xs font-label-md" (click)="voltar()">
-      <span class="material-symbols-outlined">west</span>
+  <!-- NAVEGAÇÃO SUPERIOR -->
+  <nav class="dossier-nav d-flex justify-content-between align-items-center">
+    <button type="button" class="nav-back-btn font-label-md" (click)="voltar()">
+      <span class="material-symbols-outlined">arrow_back</span>
       <span>Voltar para Clientes</span>
     </button>
+    <div class="dossier-badge-wrap d-flex align-items-center gap-xs">
+      <span class="dossier-code-chip font-mono">CADASTRO #{{ cliente.id.substring(0, 8) }}</span>
+    </div>
   </nav>
 
-  <section class="profile-unified-card d-flex flex-direction-column gap-md">
-    <div class="profile-top-row d-flex align-items-center justify-content-between flex-wrap gap-md">
-      <div class="profile-identity d-flex align-items-center gap-md">
-        <div class="profile-avatar-wrap position-relative" (click)="fileInput.click()" title="Clique para alterar foto de perfil">
+  <!-- CARD PRINCIPAL DO CLIENTE (HERO CARD DE ALTO PADRÃO) -->
+  <section class="profile-unified-card">
+    
+    <!-- Linha Superior: Avatar, Nome, Status e Ações -->
+    <div class="profile-top-row d-flex justify-content-between align-items-center flex-wrap gap-md">
+      <div class="profile-identity d-flex align-items-center gap-lg">
+        
+        <!-- Avatar com Foto ou Monograma Terracota -->
+        <div class="profile-avatar-wrap" (click)="fileInput.click()" title="Clique para alterar foto de perfil">
           <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-photo" [alt]="cliente.nome" />
-          <div *ngIf="!cliente.fotoUrl" class="profile-avatar d-flex align-items-center justify-content-center font-headline-md font-weight-bold">
+          <div *ngIf="!cliente.fotoUrl" class="profile-avatar">
             {{ cliente.nome.substring(0, 2).toUpperCase() }}
           </div>
-          <div class="avatar-overlay position-absolute d-flex align-items-center justify-content-center">
+          <div class="avatar-overlay">
             <span class="material-symbols-outlined">photo_camera</span>
           </div>
           <input type="file" #fileInput (change)="onAvatarSelected($event)" accept="image/*" class="d-none" />
         </div>
         
+        <!-- Identificação e Badges -->
         <div class="profile-titles d-flex flex-direction-column gap-xs">
-          <div class="name-badge-row d-flex align-items-center gap-sm">
-            <h1 class="client-fullname font-headline-lg m-0">{{ cliente.nome }}</h1>
-            <span class="portal-badge font-label-sm" [class.active]="cliente.ativo">
+          <div class="name-badge-row d-flex align-items-center gap-sm flex-wrap">
+            <h1 class="client-fullname m-0">{{ cliente.nome }}</h1>
+            <span class="portal-badge" [class.active]="cliente.ativo">
+              <span class="status-dot"></span>
               {{ cliente.ativo ? 'Portal Liberado' : 'Portal Suspenso' }}
             </span>
           </div>
-          <div class="avatar-actions-sub d-flex align-items-center gap-sm font-label-sm text-on-surface-variant">
-            <span class="client-since">Cliente do escritório desde 2026</span>
-            <button *ngIf="cliente.fotoUrl" type="button" class="btn-remove-photo font-label-sm" (click)="removerFoto()">
+          <div class="avatar-actions-sub d-flex align-items-center gap-md font-label-sm text-on-surface-variant flex-wrap">
+            <span class="d-inline-flex align-items-center gap-xxs">
+              <span class="material-symbols-outlined icon-xs text-primary">calendar_month</span>
+              Cliente do escritório desde 2026
+            </span>
+            <span class="d-inline-flex align-items-center gap-xxs" *ngIf="lead?.origem">
+              <span class="material-symbols-outlined icon-xs text-primary">campaign</span>
+              Origem: {{ lead?.origem }}
+            </span>
+            <button *ngIf="cliente.fotoUrl" type="button" class="btn-remove-photo" (click)="removerFoto()">
               Remover foto
             </button>
           </div>
         </div>
       </div>
 
-      <div class="profile-actions d-flex align-items-center gap-sm">
-        <app-button variant="secondary" (btnClick)="abrirModalEdicao()">
-          <span class="material-symbols-outlined icon-btn">edit</span>
+      <!-- Ações do Perfil -->
+      <div class="profile-actions d-flex align-items-center gap-sm flex-wrap">
+        <app-button variant="outline" (btnClick)="abrirWhatsApp()" *ngIf="cliente.telefone" title="Iniciar conversa no WhatsApp">
+          <span class="material-symbols-outlined text-success">chat</span>
+          WhatsApp
+        </app-button>
+        <app-button variant="secondary" (btnClick)="abrirModalEdicao()" title="Editar dados cadastrais">
+          <span class="material-symbols-outlined">edit</span>
           Editar Ficha
         </app-button>
         <app-button 
           [variant]="cliente.ativo ? 'secondary' : 'primary'" 
-          (btnClick)="toggleAcessoPortal()">
-          <span class="material-symbols-outlined icon-btn">
+          (btnClick)="toggleAcessoPortal()"
+          [title]="cliente.ativo ? 'Suspender acesso ao portal' : 'Liberar acesso ao portal'">
+          <span class="material-symbols-outlined">
             {{ cliente.ativo ? 'lock' : 'lock_open' }}
           </span>
           {{ cliente.ativo ? 'Suspender Portal' : 'Liberar Portal' }}
@@ -53,71 +77,161 @@
       </div>
     </div>
 
+    <!-- FITA DE INDICADORES ARQUITETÔNICOS (STATS RIBBON) -->
+    <div class="client-stats-ribbon">
+      <div class="stat-card-pill">
+        <div class="stat-icon-box stat-icon-projects">
+          <span class="material-symbols-outlined">apartment</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="stat-lbl font-label-xs">PROJETOS VINCULADOS</span>
+          <span class="stat-val font-headline-sm">{{ projetos.length }} {{ projetos.length === 1 ? 'Projeto' : 'Projetos' }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card-pill">
+        <div class="stat-icon-box stat-icon-area">
+          <span class="material-symbols-outlined">straighten</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="stat-lbl font-label-xs">METRAGEM TOTAL</span>
+          <span class="stat-val font-headline-sm">{{ totalMetragem > 0 ? (totalMetragem + ' m²') : 'Sob Consulta' }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card-pill">
+        <div class="stat-icon-box stat-icon-finance">
+          <span class="material-symbols-outlined">payments</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="stat-lbl font-label-xs">VOLUME EM PROPOSTAS</span>
+          <span class="stat-val font-headline-sm font-mono text-primary">{{ totalInvestidoPropostas | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card-pill">
+        <div class="stat-icon-box stat-icon-proposals">
+          <span class="material-symbols-outlined">assignment</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="stat-lbl font-label-xs">ORÇAMENTOS EMITIDOS</span>
+          <span class="stat-val font-headline-sm">{{ propostas.length }} {{ propostas.length === 1 ? 'Emitido' : 'Emitidos' }} ({{ propostasAprovadasCount }} ok)</span>
+        </div>
+      </div>
+    </div>
+
     <div class="profile-divider"></div>
 
+    <!-- Grid de Detalhes de Contato e Endereço -->
     <div class="profile-details-grid">
-      <div class="detail-block d-flex flex-direction-column gap-xs">
-        <span class="detail-label font-label-sm text-on-surface-variant font-weight-semibold">E-mail Principal</span>
-        <a class="detail-value link d-inline-flex align-items-center gap-xs font-body-md" [href]="'mailto:' + cliente.email">
-          <span class="material-symbols-outlined icon">mail</span>
-          <span>{{ cliente.email }}</span>
-        </a>
+      
+      <!-- Bloco E-mail -->
+      <div class="detail-card-item">
+        <div class="detail-icon-circle">
+          <span class="material-symbols-outlined">mail</span>
+        </div>
+        <div class="detail-content-wrap">
+          <span class="detail-label">E-MAIL PRINCIPAL</span>
+          <div class="d-flex align-items-center gap-xs">
+            <a class="detail-value link truncate" [href]="'mailto:' + cliente.email" [title]="cliente.email">
+              {{ cliente.email }}
+            </a>
+            <button type="button" class="btn-copy-chip" (click)="copiarTexto(cliente.email, 'E-mail')" title="Copiar e-mail">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="detail-block d-flex flex-direction-column gap-xs">
-        <span class="detail-label font-label-sm text-on-surface-variant font-weight-semibold">Telefone / WhatsApp</span>
-        <div class="detail-value" *ngIf="cliente.telefone">
-          <a class="link whatsapp d-inline-flex align-items-center gap-xs font-body-md" (click)="abrirWhatsApp()" title="Conversar no WhatsApp">
-            <span class="material-symbols-outlined icon">chat</span>
-            <span>{{ cliente.telefone }}</span>
-          </a>
+      <!-- Bloco Telefone / WhatsApp -->
+      <div class="detail-card-item">
+        <div class="detail-icon-circle whatsapp-circle">
+          <span class="material-symbols-outlined">chat</span>
         </div>
-        <span class="detail-value text-muted font-body-md text-on-surface-variant" *ngIf="!cliente.telefone">Não informado</span>
+        <div class="detail-content-wrap">
+          <span class="detail-label">TELEFONE / WHATSAPP</span>
+          <div class="d-flex align-items-center gap-xs" *ngIf="cliente.telefone; else noPhoneTpl">
+            <a class="detail-value link whatsapp font-weight-bold" (click)="abrirWhatsApp()" title="Conversar no WhatsApp">
+              {{ cliente.telefone }}
+            </a>
+            <button type="button" class="btn-copy-chip" (click)="copiarTexto(cliente.telefone, 'Telefone')" title="Copiar telefone">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </div>
+          <ng-template #noPhoneTpl>
+            <span class="detail-value text-muted font-body-sm">Não informado</span>
+          </ng-template>
+        </div>
       </div>
 
-      <div class="detail-block d-flex flex-direction-column gap-xs">
-        <span class="detail-label font-label-sm text-on-surface-variant font-weight-semibold">Documento (CPF / CNPJ)</span>
-        <div class="detail-value-wrap d-flex align-items-center gap-xs" *ngIf="cliente.cpfCnpj">
-          <span class="detail-value font-medium font-body-md text-on-surface">{{ cliente.cpfCnpj }}</span>
-          <button type="button" class="btn-copy-mini d-inline-flex align-items-center justify-content-center" (click)="copiarTexto(cliente.cpfCnpj, 'Documento')" title="Copiar documento">
-            <span class="material-symbols-outlined">content_copy</span>
-          </button>
+      <!-- Bloco Documento -->
+      <div class="detail-card-item">
+        <div class="detail-icon-circle">
+          <span class="material-symbols-outlined">badge</span>
         </div>
-        <span class="detail-value text-muted font-body-md text-on-surface-variant" *ngIf="!cliente.cpfCnpj">Não informado</span>
+        <div class="detail-content-wrap">
+          <span class="detail-label">DOCUMENTO (CPF / CNPJ)</span>
+          <div class="d-flex align-items-center gap-xs" *ngIf="cliente.cpfCnpj; else noDocTpl">
+            <span class="detail-value font-mono font-weight-bold">{{ cliente.cpfCnpj }}</span>
+            <button type="button" class="btn-copy-chip" (click)="copiarTexto(cliente.cpfCnpj, 'Documento')" title="Copiar documento">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </div>
+          <ng-template #noDocTpl>
+            <span class="detail-value text-muted font-body-sm">Não informado</span>
+          </ng-template>
+        </div>
       </div>
 
-      <div class="detail-block span-all d-flex flex-direction-column gap-xs">
-        <span class="detail-label font-label-sm text-on-surface-variant font-weight-semibold">Endereço do Imóvel / Obra</span>
-        <div class="detail-value-wrap d-flex align-items-center gap-xs" *ngIf="cliente.endereco">
-          <span class="material-symbols-outlined icon-loc">location_on</span>
-          <span class="detail-value address-text font-body-md text-on-surface">{{ cliente.endereco }}</span>
-          <button type="button" class="btn-copy-mini d-inline-flex align-items-center justify-content-center" (click)="copiarTexto(cliente.endereco, 'Endereço')" title="Copiar endereço">
-            <span class="material-symbols-outlined">content_copy</span>
-          </button>
+      <!-- Bloco Endereço -->
+      <div class="detail-card-item span-all">
+        <div class="detail-icon-circle location-circle">
+          <span class="material-symbols-outlined">location_on</span>
         </div>
-        <span class="detail-value text-muted font-body-md text-on-surface-variant" *ngIf="!cliente.endereco">Endereço não cadastrado</span>
+        <div class="detail-content-wrap">
+          <span class="detail-label">ENDEREÇO DO IMÓVEL / LOCAL DA OBRA</span>
+          <div class="d-flex align-items-center gap-xs" *ngIf="cliente.endereco; else noAddressTpl">
+            <span class="detail-value address-text">{{ cliente.endereco }}</span>
+            <button type="button" class="btn-copy-chip" (click)="copiarTexto(cliente.endereco, 'Endereço')" title="Copiar endereço completo">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </div>
+          <ng-template #noAddressTpl>
+            <span class="detail-value text-muted font-body-sm">Endereço ainda não cadastrado na ficha</span>
+          </ng-template>
+        </div>
       </div>
+
     </div>
   </section>
 
+  <!-- GRID DOS TRÊS PAINÉIS DE PROJETOS, PROPOSTAS E HISTÓRICO -->
   <div class="bottom-dual-grid">
-    <section class="studio-panel d-flex flex-direction-column">
+    
+    <!-- PAINEL 1: PROJETOS VINCULADOS -->
+    <section class="studio-panel">
       <div class="panel-header d-flex align-items-center justify-content-between">
         <div class="title-with-pill d-flex align-items-center gap-xs">
-          <h2 class="font-headline-md m-0">Projetos Vinculados</h2>
-          <span class="count-pill font-label-sm">{{ projetos.length }}</span>
+          <span class="material-symbols-outlined panel-header-icon">apartment</span>
+          <h2 class="panel-heading font-headline-sm m-0">Projetos Vinculados</h2>
+          <span class="count-pill font-label-xs">{{ projetos.length }}</span>
         </div>
       </div>
 
-      <div class="panel-content flex-grow-1">
-        <div class="projects-list d-flex flex-direction-column gap-sm" *ngIf="projetos.length > 0">
-          <div *ngFor="let proj of projetos" class="project-card-clean d-flex flex-direction-column gap-xs clickable-project" (click)="abrirProjeto(proj.id)" title="Clique para abrir o projeto">
-            <div class="proj-top d-flex justify-content-between align-items-center">
-              <div>
-                <h4 class="proj-name font-body-md font-weight-bold m-0">{{ proj.nome }}</h4>
-                <span class="proj-status font-label-sm text-on-surface-variant">{{ proj.statusLabel || 'Em Andamento' }}</span>
+      <div class="panel-content">
+        <div class="projects-list d-flex flex-direction-column gap-sm" *ngIf="projetos.length > 0; else emptyProjectsTpl">
+          <div *ngFor="let proj of projetos" class="project-card-clean clickable-project" (click)="abrirProjeto(proj.id)" title="Clique para abrir detalhes do projeto">
+            <div class="d-flex justify-content-between align-items-start mb-xs">
+              <div class="d-flex align-items-center gap-sm">
+                <div class="proj-icon-box">
+                  <span class="material-symbols-outlined">home_work</span>
+                </div>
+                <div>
+                  <h4 class="proj-name m-0">{{ proj.nome }}</h4>
+                  <span class="proj-status-chip font-label-xs">{{ proj.statusLabel || 'Em Andamento' }}</span>
+                </div>
               </div>
-              <span class="proj-percent font-label-md font-weight-bold text-primary">{{ proj.progressoPercentual || 0 }}%</span>
+              <span class="proj-percent font-mono font-weight-bold">{{ proj.progressoPercentual || 0 }}%</span>
             </div>
             
             <div class="proj-progress-bg w-full">
@@ -126,40 +240,53 @@
           </div>
         </div>
 
-        <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center padding-lg" *ngIf="projetos.length === 0">
-          <span class="material-symbols-outlined empty-icon text-on-surface-variant">folder_open</span>
-          <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Nenhum projeto vinculado a este cliente no momento.</p>
-        </div>
+        <ng-template #emptyProjectsTpl>
+          <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center p-xl">
+            <div class="empty-icon-circle mb-sm">
+              <span class="material-symbols-outlined">folder_open</span>
+            </div>
+            <h4 class="font-body-md font-weight-bold m-0 text-on-surface">Nenhum projeto vinculado</h4>
+            <p class="font-body-xs text-on-surface-variant mt-xxs m-0">Cadastre projetos vinculando este cliente para acompanhar o progresso executivo.</p>
+          </div>
+        </ng-template>
       </div>
     </section>
 
-    <section class="studio-panel d-flex flex-direction-column">
+    <!-- PAINEL 2: PROPOSTAS & ORÇAMENTOS -->
+    <section class="studio-panel">
       <div class="panel-header d-flex align-items-center justify-content-between">
         <div class="title-with-pill d-flex align-items-center gap-xs">
-          <h2 class="font-headline-md m-0">Propostas & Orçamentos</h2>
-          <span class="count-pill font-label-sm">{{ propostas.length }}</span>
+          <span class="material-symbols-outlined panel-header-icon">description</span>
+          <h2 class="panel-heading font-headline-sm m-0">Propostas & Orçamentos</h2>
+          <span class="count-pill font-label-xs">{{ propostas.length }}</span>
         </div>
         <app-button variant="outline" size="sm" (btnClick)="simularNovaProposta()" title="Calcular nova proposta no simulador">
-          <span class="material-symbols-outlined icon-btn">add</span>
+          <span class="material-symbols-outlined">add</span>
           Nova Proposta
         </app-button>
       </div>
 
-      <div class="panel-content flex-grow-1">
-        <div class="propostas-list d-flex flex-direction-column gap-sm" *ngIf="propostas.length > 0">
-          <div *ngFor="let prop of propostas" class="proposal-card-clean d-flex justify-content-between align-items-center p-sm">
+      <div class="panel-content">
+        <div class="propostas-list d-flex flex-direction-column gap-sm" *ngIf="propostas.length > 0; else emptyProposalsTpl">
+          <div *ngFor="let prop of propostas" class="proposal-card-clean d-flex justify-content-between align-items-center p-md">
             <div class="d-flex flex-direction-column gap-xs min-w-0">
-              <div class="d-flex align-items-center gap-xs">
-                <span class="prop-code-badge font-mono font-weight-bold text-primary">{{ prop.codigo }}</span>
-                <span class="prop-title font-body-md font-weight-semibold text-on-surface truncate">{{ prop.titulo }}</span>
+              <div class="d-flex align-items-center gap-xs flex-wrap">
+                <span class="prop-code-badge font-mono">{{ prop.codigo }}</span>
+                <span class="prop-title font-body-md font-weight-bold text-on-surface truncate">{{ prop.titulo }}</span>
               </div>
-              <span class="font-label-sm text-on-surface-variant">{{ prop.metragemQuadrada }}m² • {{ prop.criadoEm | date:'dd/MM/yyyy' }}</span>
+              <span class="font-body-xs text-on-surface-variant d-inline-flex align-items-center gap-xxs">
+                <span class="material-symbols-outlined icon-xxs">straighten</span>
+                {{ prop.metragemQuadrada }} m²
+                <span class="bullet-sep">•</span>
+                <span class="material-symbols-outlined icon-xxs">event</span>
+                {{ prop.criadoEm | date:'dd/MM/yyyy' }}
+              </span>
             </div>
             
-            <div class="d-flex align-items-end flex-direction-column gap-xs flex-shrink-0">
-              <span class="font-label-md font-weight-bold text-on-surface">{{ prop.valorFinalAjustado | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+            <div class="d-flex align-items-end flex-direction-column gap-xxs flex-shrink-0">
+              <span class="prop-amount font-mono font-weight-bold">{{ prop.valorFinalAjustado | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
               <span 
-                class="status-badge font-label-sm"
+                class="status-badge font-label-xs"
                 [class.status-aprovada]="prop.status === 2"
                 [class.status-enviada]="prop.status === 1"
                 [class.status-rascunho]="prop.status === 0"
@@ -170,49 +297,68 @@
           </div>
         </div>
 
-        <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center padding-lg" *ngIf="propostas.length === 0">
-          <span class="material-symbols-outlined empty-icon text-on-surface-variant">request_quote</span>
-          <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Nenhuma proposta comercial gerada para este cliente.</p>
-        </div>
+        <ng-template #emptyProposalsTpl>
+          <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center p-xl">
+            <div class="empty-icon-circle mb-sm">
+              <span class="material-symbols-outlined">request_quote</span>
+            </div>
+            <h4 class="font-body-md font-weight-bold m-0 text-on-surface">Nenhuma proposta gerada</h4>
+            <p class="font-body-xs text-on-surface-variant mt-xxs mb-md">Gere propostas de honorários com precificação inteligente e emissão de PDF.</p>
+            <app-button variant="primary" size="sm" (btnClick)="simularNovaProposta()">
+              <span class="material-symbols-outlined">calculate</span>
+              Calcular Orçamento
+            </app-button>
+          </div>
+        </ng-template>
       </div>
     </section>
 
-    <section class="studio-panel d-flex flex-direction-column">
+    <!-- PAINEL 3: HISTÓRICO DE INTERAÇÕES -->
+    <section class="studio-panel">
       <div class="panel-header d-flex align-items-center justify-content-between">
         <div class="title-with-pill d-flex align-items-center gap-xs">
-          <h2 class="font-headline-md m-0">Histórico de Interações</h2>
-          <span class="count-pill font-label-sm">{{ historico.length }}</span>
+          <span class="material-symbols-outlined panel-header-icon">forum</span>
+          <h2 class="panel-heading font-headline-sm m-0">Histórico de Interações</h2>
+          <span class="count-pill font-label-xs">{{ historico.length }}</span>
         </div>
       </div>
 
-      <div class="panel-content flex-grow-1">
-        <div class="timeline-list d-flex flex-direction-column gap-md" *ngIf="historico.length > 0">
+      <div class="panel-content">
+        <div class="timeline-list d-flex flex-direction-column gap-md" *ngIf="historico.length > 0; else emptyTimelineTpl">
           <div *ngFor="let item of historico" class="timeline-item-clean d-flex gap-sm">
             <div class="timeline-bullet-col d-flex flex-direction-column align-items-center">
               <div class="bullet-dot"></div>
+              <div class="bullet-line flex-grow-1"></div>
             </div>
             
-            <div class="timeline-bubble d-flex flex-direction-column gap-xs flex-grow-1">
+            <div class="timeline-bubble d-flex flex-direction-column gap-xs flex-grow-1 p-sm">
               <div class="bubble-header d-flex justify-content-between align-items-center">
-                <span class="channel-tag font-label-sm font-weight-bold text-primary">{{ item.canal }}</span>
-                <span class="timestamp font-label-sm text-on-surface-variant">{{ item.dataContato | date:"dd/MM/yyyy 'às' HH:mm" }}</span>
+                <span class="channel-tag font-label-xs font-weight-bold">{{ item.canal }}</span>
+                <span class="timestamp font-label-xs text-on-surface-variant">{{ item.dataContato | date:"dd/MM/yyyy 'às' HH:mm" }}</span>
               </div>
-              <p class="bubble-text font-body-md text-on-surface m-0">{{ item.resumo }}</p>
+              <p class="bubble-text font-body-sm text-on-surface m-0">{{ item.resumo }}</p>
             </div>
           </div>
         </div>
 
-        <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center padding-lg" *ngIf="historico.length === 0">
-          <span class="material-symbols-outlined empty-icon text-on-surface-variant">chat_bubble_outline</span>
-          <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Nenhuma anotação ou contato registrado ainda.</p>
-        </div>
+        <ng-template #emptyTimelineTpl>
+          <div class="panel-empty d-flex flex-direction-column align-items-center justify-content-center text-center p-xl">
+            <div class="empty-icon-circle mb-sm">
+              <span class="material-symbols-outlined">chat_bubble_outline</span>
+            </div>
+            <h4 class="font-body-md font-weight-bold m-0 text-on-surface">Nenhum contato registrado</h4>
+            <p class="font-body-xs text-on-surface-variant mt-xxs m-0">Interações e anotações deste cliente registradas no CRM ou Portal aparecerão aqui.</p>
+          </div>
+        </ng-template>
       </div>
     </section>
+
   </div>
 
 </div>
 
-<div *ngIf="loading" class="dossier-loading d-flex flex-direction-column align-items-center justify-content-center padding-xl">
-  <div class="studio-spinner"></div>
-  <p class="font-body-md text-on-surface-variant margin-top-sm m-0">Carregando ficha do cliente...</p>
+<!-- ESTADO DE CARREGAMENTO -->
+<div *ngIf="loading" class="dossier-loading d-flex flex-direction-column align-items-center justify-content-center p-xl">
+  <div class="studio-spinner mb-sm"></div>
+  <p class="font-body-md font-weight-semibold text-on-surface m-0">Carregando ficha e histórico do cliente...</p>
 </div>

@@ -9,13 +9,15 @@ import { environment } from '../../../environments/environment';
 })
 export class ConfiguracaoPropostaService {
   private http = inject(HttpClient);
-  private readonly STORAGE_KEY = 'archiflow_config_proposta_v1';
+  private readonly STORAGE_KEY = 'archiflow_config_proposta_v2';
+  private readonly LEGACY_STORAGE_KEY = 'archiflow_config_proposta_v1';
   private readonly apiUrl = `${environment.apiUrl}/propostas/configuracao`;
 
   private configSubject: BehaviorSubject<ConfiguracaoProposta>;
   public configuracao$: Observable<ConfiguracaoProposta>;
 
   constructor() {
+    this.limparLegadoSeNecessario();
     const salvo = this.carregarDoStorage();
     this.configSubject = new BehaviorSubject<ConfiguracaoProposta>(salvo);
     this.configuracao$ = this.configSubject.asObservable();
@@ -25,11 +27,25 @@ export class ConfiguracaoPropostaService {
     });
   }
 
+  private limparLegadoSeNecessario(): void {
+    try {
+      localStorage.removeItem(this.LEGACY_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+  }
+
   public carregarDoServidor(): Observable<ConfiguracaoProposta | null> {
     return this.http.get<ConfiguracaoProposta>(this.apiUrl).pipe(
       tap((res) => {
         if (res && (res.configurado || (res.nomeEscritorio && res.nomeEscritorio.trim() !== ''))) {
-          this.salvarLocal({ ...res, configurado: true });
+          // Sanitiza se porventura houver dados residuais mockados de Duna
+          if (this.contemDadosDuna(res)) {
+            const limpo = this.sanitizarConfiguracao(res);
+            this.salvarLocal(limpo);
+          } else {
+            this.salvarLocal({ ...res, configurado: true });
+          }
         }
       }),
       catchError(() => of(null))
@@ -137,12 +153,45 @@ export class ConfiguracaoPropostaService {
     try {
       const item = localStorage.getItem(this.STORAGE_KEY);
       if (item) {
-        const parsed = JSON.parse(item);
+        const parsed: ConfiguracaoProposta = JSON.parse(item);
+        if (this.contemDadosDuna(parsed)) {
+          return this.sanitizarConfiguracao(parsed);
+        }
         return { ...CONFIGURACAO_PROPOSTA_PADRAO, ...parsed };
       }
     } catch {
       // Fallback para o padrão
     }
     return { ...CONFIGURACAO_PROPOSTA_PADRAO };
+  }
+
+  private contemDadosDuna(cfg: Partial<ConfiguracaoProposta>): boolean {
+    const haystack = `${cfg.nomeEscritorio || ''} ${cfg.email || ''} ${cfg.dadosBancarios || ''} ${cfg.endereco || ''}`.toLowerCase();
+    return haystack.includes('duna') || haystack.includes('a238491') || haystack.includes('45.892.102');
+  }
+
+  private sanitizarConfiguracao(cfg: ConfiguracaoProposta): ConfiguracaoProposta {
+    return {
+      ...CONFIGURACAO_PROPOSTA_PADRAO,
+      ...cfg,
+      nomeEscritorio: this.limparSeDuna(cfg.nomeEscritorio),
+      email: this.limparSeDuna(cfg.email),
+      telefone: this.limparSeDuna(cfg.telefone),
+      endereco: this.limparSeDuna(cfg.endereco),
+      registroProfissional: this.limparSeDuna(cfg.registroProfissional),
+      chavePix: this.limparSeDuna(cfg.chavePix),
+      dadosBancarios: this.limparSeDuna(cfg.dadosBancarios),
+      logoUrl: cfg.logoUrl && cfg.logoUrl.toLowerCase().includes('duna') ? '' : cfg.logoUrl,
+      configurado: false
+    };
+  }
+
+  private limparSeDuna(valor?: string): string {
+    if (!valor) return '';
+    const v = valor.toLowerCase();
+    if (v.includes('duna') || v.includes('a238491') || v.includes('45.892.102')) {
+      return '';
+    }
+    return valor;
   }
 }

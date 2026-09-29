@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { HonorarioService } from '../../../core/api/honorarios/honorario.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
 import { LeadService } from '../../../core/api/leads/lead.service';
 import { ConfiguracaoPropostaService } from '../../../core/services/configuracao-proposta.service';
@@ -18,6 +19,7 @@ import {
 } from '../../../models/honorario.model';
 
 import { DESIGN_SYSTEM } from '../../../shared';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ParametrosProjetoComponent } from './components/parametros-projeto/parametros-projeto.component';
 import { EtapasEscopoComponent } from './components/etapas-escopo/etapas-escopo.component';
 import { EstimativaDestaqueComponent } from './components/estimativa-destaque/estimativa-destaque.component';
@@ -51,6 +53,7 @@ export class SimuladorComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private honorarioService = inject(HonorarioService);
   private notificationService = inject(NotificationService);
+  private dialogService = inject(DialogService);
   private clienteService = inject(ClienteService);
   private leadService = inject(LeadService);
   private configPropostaService = inject(ConfiguracaoPropostaService);
@@ -395,16 +398,23 @@ export class SimuladorComponent implements OnInit, OnDestroy {
   }
 
   excluirProposta(proposta: PropostaHonorario): void {
-    if (!confirm(`Deseja realmente excluir a proposta ${proposta.codigo}?`)) return;
-
-    this.honorarioService.excluirProposta(proposta.id).subscribe({
-      next: () => {
-        this.propostas = this.propostas.filter(p => p.id !== proposta.id);
-        this.notificationService.success(`Proposta ${proposta.codigo} excluída.`);
-      },
-      error: () => {
-        this.notificationService.error('Erro ao excluir proposta.');
+    const ref = this.dialogService.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Excluir Proposta',
+        message: `Tem certeza de que deseja excluir a proposta ${proposta.codigo}? Esta ação não pode ser desfeita.`
       }
+    });
+
+    ref.instance.confirm.subscribe(() => {
+      this.honorarioService.excluirProposta(proposta.id).subscribe({
+        next: () => {
+          this.propostas = this.propostas.filter(p => p.id !== proposta.id);
+          this.notificationService.success(`Proposta ${proposta.codigo} excluída com sucesso.`);
+        },
+        error: () => {
+          this.notificationService.error('Erro ao excluir proposta.');
+        }
+      });
     });
   }
 

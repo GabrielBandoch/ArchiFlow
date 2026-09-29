@@ -1,12 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { EventEmitter } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { SimuladorComponent } from './simulador.component';
 import { HonorarioService } from '../../../core/api/honorarios/honorario.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
 import { LeadService } from '../../../core/api/leads/lead.service';
 import { ConfiguracaoPropostaService } from '../../../core/services/configuracao-proposta.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { SimulacaoResultado, PropostaHonorario } from '../../../models/honorario.model';
 import { CONFIGURACAO_PROPOSTA_PADRAO } from '../../../core/models/configuracao-proposta.model';
 
@@ -15,6 +17,7 @@ describe('SimuladorComponent', () => {
   let fixture: ComponentFixture<SimuladorComponent>;
   let mockHonorarioService: jasmine.SpyObj<HonorarioService>;
   let mockNotificationService: jasmine.SpyObj<NotificationService>;
+  let mockDialogService: jasmine.SpyObj<DialogService>;
   let mockClienteService: jasmine.SpyObj<ClienteService>;
   let mockLeadService: jasmine.SpyObj<LeadService>;
   let mockConfigService: jasmine.SpyObj<ConfiguracaoPropostaService>;
@@ -72,6 +75,7 @@ describe('SimuladorComponent', () => {
       'gerarLinkWhatsapp',
       'formatarMoeda'
     ]);
+    mockDialogService = jasmine.createSpyObj('DialogService', ['open']);
 
     mockHonorarioService.simular.and.returnValue(of(mockSimulacao));
     mockClienteService.obterTodos.and.returnValue(of([]));
@@ -89,6 +93,7 @@ describe('SimuladorComponent', () => {
         provideRouter([]),
         { provide: HonorarioService, useValue: mockHonorarioService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: DialogService, useValue: mockDialogService },
         { provide: ClienteService, useValue: mockClienteService },
         { provide: LeadService, useValue: mockLeadService },
         { provide: ConfiguracaoPropostaService, useValue: mockConfigService }
@@ -288,5 +293,56 @@ describe('SimuladorComponent', () => {
 
     component.compartilharWhatsappSimulacaoAtual();
     expect(mockConfigService.gerarLinkWhatsapp).toHaveBeenCalledWith('47988881111', jasmine.any(String));
+  });
+
+  it('should open confirm dialog and delete proposal when confirmed', () => {
+    const confirmEmitter = new EventEmitter<void>();
+    mockDialogService.open.and.returnValue({
+      instance: { confirm: confirmEmitter }
+    } as any);
+    mockHonorarioService.excluirProposta.and.returnValue(of(undefined as any));
+
+    const prop = { id: 'p1', codigo: 'PROP-001' } as PropostaHonorario;
+    component.propostas = [prop];
+
+    component.excluirProposta(prop);
+    expect(mockDialogService.open).toHaveBeenCalled();
+
+    confirmEmitter.emit();
+    expect(mockHonorarioService.excluirProposta).toHaveBeenCalledWith('p1');
+    expect(component.propostas.length).toBe(0);
+    expect(mockNotificationService.success).toHaveBeenCalledWith(jasmine.stringMatching(/PROP-001/));
+  });
+
+  it('should not delete proposal when confirm dialog is not confirmed', () => {
+    const confirmEmitter = new EventEmitter<void>();
+    mockDialogService.open.and.returnValue({
+      instance: { confirm: confirmEmitter }
+    } as any);
+
+    const prop = { id: 'p1', codigo: 'PROP-001' } as PropostaHonorario;
+    component.propostas = [prop];
+
+    component.excluirProposta(prop);
+    expect(mockDialogService.open).toHaveBeenCalled();
+    expect(mockHonorarioService.excluirProposta).not.toHaveBeenCalled();
+    expect(component.propostas.length).toBe(1);
+  });
+
+  it('should handle error when deleting proposal fails', () => {
+    const confirmEmitter = new EventEmitter<void>();
+    mockDialogService.open.and.returnValue({
+      instance: { confirm: confirmEmitter }
+    } as any);
+    mockHonorarioService.excluirProposta.and.returnValue(throwError(() => new Error('Delete error')));
+
+    const prop = { id: 'p1', codigo: 'PROP-001' } as PropostaHonorario;
+    component.propostas = [prop];
+
+    component.excluirProposta(prop);
+    confirmEmitter.emit();
+
+    expect(mockHonorarioService.excluirProposta).toHaveBeenCalledWith('p1');
+    expect(mockNotificationService.error).toHaveBeenCalledWith('Erro ao excluir proposta.');
   });
 });

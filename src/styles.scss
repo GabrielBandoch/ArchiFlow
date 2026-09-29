@@ -212,6 +212,12 @@ a {
    GLOBAL PRINT STYLES - CLEAN ISOLATED A4 ARCHITECTURAL PROPOSAL
    ========================================================================== */
 @media print {
+  // Suppress browser injected header (date/title) and footer (URL/pages)
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm 8mm 10mm !important;
+  }
+
   // 1. Hide all application layout, navigation, sidebars, headers, footers, toolbars, buttons, and app content
   .sidebar,
   .footer,
@@ -227,7 +233,8 @@ a {
   .af-toast,
   .af-global-loading,
   .btn-table-action,
-  .btn-close-modal {
+  .btn-close-modal,
+  .unconfigured-warning-banner {
     display: none !important;
   }
 
@@ -249,18 +256,25 @@ a {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .modal-backdrop {
-    position: static !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     width: 100% !important;
     height: auto !important;
-    background: transparent !important;
+    background: #ffffff !important;
+    margin: 0 !important;
     padding: 0 !important;
     backdrop-filter: none !important;
     overflow: visible !important;
     display: block !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   .modal-dialog-pdf {
@@ -270,9 +284,11 @@ a {
     max-height: none !important;
     border: none !important;
     box-shadow: none !important;
-    background: transparent !important;
+    background: #ffffff !important;
     overflow: visible !important;
     border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .modal-document-container {
@@ -281,6 +297,7 @@ a {
     padding: 0 !important;
     margin: 0 !important;
     display: block !important;
+    background: #ffffff !important;
   }
 
   .a4-document-sheet {
@@ -288,15 +305,13 @@ a {
     width: 100% !important;
     max-width: 100% !important;
     min-height: auto !important;
-    padding: 0 !important;
+    box-sizing: border-box !important;
+    padding: 2mm 0 2mm 0 !important; // Compact, perfectly balanced padding
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
     background: #ffffff !important;
-  }
-
-  @page {
-    size: A4 portrait;
-    margin: 12mm 15mm;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 }

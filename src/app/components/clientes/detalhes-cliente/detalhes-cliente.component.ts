@@ -35,6 +35,20 @@ export class DetalhesClienteComponent implements OnInit {
   propostas: PropostaHonorario[] = [];
   loading = true;
 
+  get totalInvestidoPropostas(): number {
+    return this.propostas.reduce((acc, p) => acc + (p.valorFinalAjustado || 0), 0);
+  }
+
+  get totalMetragem(): number {
+    const metragemProj = this.projetos.reduce((acc, p) => acc + (p.metragemTotal || 0), 0);
+    if (metragemProj > 0) return metragemProj;
+    return this.propostas.reduce((acc, p) => acc + (p.metragemQuadrada || 0), 0);
+  }
+
+  get propostasAprovadasCount(): number {
+    return this.propostas.filter(p => p.status === 2).length;
+  }
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {

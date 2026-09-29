@@ -1,361 +1,549 @@
-<div class="modelo-proposta-page d-flex flex-direction-column gap-xl">
-  <!-- Cabeçalho da Página -->
-  <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-md">
-    <div class="header-content d-flex flex-direction-column gap-xs">
-      <div class="d-flex align-items-center gap-xs breadcrumb-label font-label-sm text-primary">
-        <span>Configurações</span>
+<div class="modelo-proposta-page">
+  
+  <!-- CABEÇALHO DA PÁGINA (DESIGN SYSTEM ARCHIFLOW) -->
+  <div class="page-header">
+    <div class="header-info-wrap">
+      <div class="breadcrumb-label">
+        <span>CONFIGURAÇÕES</span>
         <span class="material-symbols-outlined icon-sm">chevron_right</span>
-        <span>Modelo de Proposta (PDF)</span>
+        <span>MODELO DE PROPOSTA</span>
       </div>
-      <h1 class="page-title font-headline-lg m-0">Personalização da Proposta & PDF</h1>
-      <p class="page-subtitle font-body-md text-on-surface-variant m-0">
-        Personalize a identidade visual do seu escritório, seções do documento e textos de orçamentos para exportação em alta resolução.
+      <h1 class="page-title">Personalização da Proposta & PDF</h1>
+      <p class="page-subtitle">
+        Configure a identidade visual do seu escritório, seções do orçamento e regras de faturamento para emissão de propostas arquitetônicas de alto padrão.
       </p>
     </div>
 
-    <div class="header-actions d-flex align-items-center gap-sm flex-wrap">
-      <app-button variant="outline" (btnClick)="restaurarPadrao()">
+    <div class="header-actions">
+      <app-button variant="outline" (btnClick)="restaurarPadrao()" title="Restaurar textos e configurações padrão do sistema">
         <span class="material-symbols-outlined">restart_alt</span>
         Restaurar Padrão
       </app-button>
-      <app-button variant="secondary" (btnClick)="testarImpressao()">
+      <app-button variant="secondary" (btnClick)="testarImpressao()" title="Visualizar documento em tela cheia e simular impressão A4">
         <span class="material-symbols-outlined">visibility</span>
         Visualizar / Testar PDF
       </app-button>
-      <app-button variant="primary" (btnClick)="salvar()">
+      <app-button variant="primary" (btnClick)="salvar()" title="Salvar todas as configurações do escritório">
         <span class="material-symbols-outlined">save</span>
         Salvar Alterações
       </app-button>
     </div>
   </div>
 
+  <!-- BARRA DE ABAS ESTILO ARCHIFLOW -->
+  <div class="nav-tabs-bar">
+    <div class="tabs-container">
+      <button 
+        type="button" 
+        class="nav-tab-btn" 
+        [class.active]="abaAtiva === 'identidade'"
+        (click)="setAba('identidade')">
+        <span class="material-symbols-outlined">storefront</span>
+        Identidade Visual & Contatos
+      </button>
+
+      <button 
+        type="button" 
+        class="nav-tab-btn" 
+        [class.active]="abaAtiva === 'secoes'"
+        (click)="setAba('secoes')">
+        <span class="material-symbols-outlined">layers</span>
+        Estrutura & Seções
+      </button>
+
+      <button 
+        type="button" 
+        class="nav-tab-btn" 
+        [class.active]="abaAtiva === 'textos'"
+        (click)="setAba('textos')">
+        <span class="material-symbols-outlined">gavel</span>
+        Cláusulas & Condições
+      </button>
+
+      <button 
+        type="button" 
+        class="nav-tab-btn" 
+        [class.active]="abaAtiva === 'whatsapp'"
+        (click)="setAba('whatsapp')">
+        <span class="material-symbols-outlined">chat</span>
+        Mensagem WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <!-- GRID PRINCIPAL: FORMULÁRIO (ESQUERDA) + PREVIEW A4 (DIREITA) -->
   <div class="config-editor-grid">
-    <!-- COLUNA DA ESQUERDA: FORMULÁRIO DE CONFIGURAÇÕES -->
-    <div class="editor-column d-flex flex-direction-column gap-md">
-      <!-- Barra de Abas do Editor -->
-      <div class="editor-tabs-bar d-flex gap-xs p-xs">
-        <button 
-          type="button" 
-          class="editor-tab font-label-md"
-          [class.active]="abaAtiva === 'identidade'"
-          (click)="setAba('identidade')">
-          <span class="material-symbols-outlined">badge</span>
-          Identidade
-        </button>
-        <button 
-          type="button" 
-          class="editor-tab font-label-md"
-          [class.active]="abaAtiva === 'secoes'"
-          (click)="setAba('secoes')">
-          <span class="material-symbols-outlined">toggle_on</span>
-          Seções Visíveis
-        </button>
-        <button 
-          type="button" 
-          class="editor-tab font-label-md"
-          [class.active]="abaAtiva === 'textos'"
-          (click)="setAba('textos')">
-          <span class="material-symbols-outlined">description</span>
-          Textos & Cláusulas
-        </button>
-        <button 
-          type="button" 
-          class="editor-tab font-label-md"
-          [class.active]="abaAtiva === 'whatsapp'"
-          (click)="setAba('whatsapp')">
-          <span class="material-symbols-outlined">chat</span>
-          WhatsApp
-        </button>
-      </div>
+    
+    <!-- COLUNA DA ESQUERDA: FORMULÁRIO -->
+    <div class="editor-column">
+      <form [formGroup]="form" class="editor-card">
 
-      <!-- Formulário -->
-      <form [formGroup]="form" class="editor-card d-flex flex-direction-column gap-lg p-lg">
-        <!-- ABA 1: IDENTIDADE DO ESCRITÓRIO -->
-        <div class="tab-pane d-flex flex-direction-column gap-md" *ngIf="abaAtiva === 'identidade'">
-          <div class="pane-header">
-            <h3 class="pane-title font-headline-md m-0">Dados do Escritório</h3>
-            <p class="pane-desc font-body-sm text-on-surface-variant m-0">
-              Esses dados compõem o cabeçalho oficial e a folha timbrada da proposta.
+        <!-- ABA 1: IDENTIDADE VISUAL & CONTATOS -->
+        <div class="tab-pane" *ngIf="abaAtiva === 'identidade'">
+          
+          <!-- Seção: Dados Institucionais -->
+          <div class="form-section-block">
+            <div class="section-title-row d-flex align-items-center gap-xs mb-sm">
+              <span class="material-symbols-outlined section-icon">badge</span>
+              <h3 class="section-heading font-headline-sm m-0">Marca & Registro Profissional</h3>
+            </div>
+            <p class="section-subheading font-body-xs text-on-surface-variant mb-md">
+              Esses dados compõem o cabeçalho timbrado oficial impresso no topo de todas as páginas da proposta.
             </p>
-          </div>
 
-          <div class="form-grid">
-            <div class="form-group col-span-2">
-              <label class="form-label">Nome do Escritório / Razão Social *</label>
-              <input type="text" class="af-input" formControlName="nomeEscritorio" placeholder="Ex: Studio Alpha Arquitetura">
-            </div>
+            <div class="form-grid">
+              <div class="form-group col-span-2">
+                <label class="form-label">Nome do Escritório / Razão Social *</label>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined input-icon">business</span>
+                  <input type="text" class="af-input" formControlName="nomeEscritorio" placeholder="Ex: Studio Arquitetura & Interiores">
+                </div>
+              </div>
 
-            <div class="form-group col-span-2">
-              <label class="form-label">Slogan ou Subtítulo</label>
-              <input type="text" class="af-input" formControlName="slogan" placeholder="Ex: Arquitetura contemporânea com identidade e sofisticação">
-            </div>
+              <div class="form-group col-span-2">
+                <label class="form-label">Slogan ou Subtítulo Conceitual</label>
+                <input type="text" class="af-input" formControlName="slogan" placeholder="Ex: Arquitetura contemporânea, projetos executivos e interiores exclusivos">
+              </div>
 
-            <div class="form-group">
-              <label class="form-label">Registro Profissional (CAU / CREA / CNPJ)</label>
-              <input type="text" class="af-input" formControlName="registroProfissional" placeholder="Ex: CAU/BR A238491 • CNPJ 00.000.000/0001-00">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">E-mail de Contato *</label>
-              <input type="email" class="af-input" formControlName="email" placeholder="contato@escritorio.com.br">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Telefone / WhatsApp *</label>
-              <input type="text" class="af-input" formControlName="telefone" placeholder="(47) 99946-6073">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Cor Primária do Documento</label>
-              <div class="color-picker-wrapper d-flex align-items-center gap-sm">
-                <input type="color" class="color-picker-input" formControlName="corPrimaria">
-                <input type="text" class="af-input font-mono" formControlName="corPrimaria" placeholder="#765538">
+              <div class="form-group col-span-2">
+                <label class="form-label">Registro Profissional & Fiscal (CAU / CREA / CNPJ)</label>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined input-icon">verified</span>
+                  <input type="text" class="af-input" formControlName="registroProfissional" placeholder="Ex: CAU/BR A000000-0 • CNPJ 00.000.000/0001-00">
+                </div>
               </div>
             </div>
+          </div>
 
-            <div class="form-group col-span-2">
-              <label class="form-label">Endereço Comercial</label>
-              <input type="text" class="af-input" formControlName="endereco" placeholder="Av. Brasil, 1500 - Sala 802, Centro - Balneário Camboriú/SC">
+          <hr class="form-divider">
+
+          <!-- Seção: Paleta Cromática -->
+          <div class="form-section-block">
+            <div class="section-title-row d-flex align-items-center gap-xs mb-sm">
+              <span class="material-symbols-outlined section-icon">palette</span>
+              <h3 class="section-heading font-headline-sm m-0">Paleta Cromática do Documento</h3>
+            </div>
+            <p class="section-subheading font-body-xs text-on-surface-variant mb-sm">
+              Selecione uma paleta arquitetônica de referência ou personalize com o código hexadecimal exato da sua marca.
+            </p>
+
+            <div class="palette-selector-card p-md d-flex flex-direction-column gap-sm">
+              <div class="swatches-grid d-flex flex-wrap gap-xs">
+                <button 
+                  type="button" 
+                  class="palette-swatch-btn d-flex align-items-center gap-xs"
+                  *ngFor="let paleta of paletasPredefinidas"
+                  [class.active]="form.get('corPrimaria')?.value?.toLowerCase() === paleta.cor.toLowerCase()"
+                  (click)="selecionarCor(paleta.cor)">
+                  <span class="swatch-circle" [style.background-color]="paleta.cor"></span>
+                  <span class="swatch-name font-label-xs">{{ paleta.nome }}</span>
+                  <span class="material-symbols-outlined swatch-check" *ngIf="form.get('corPrimaria')?.value?.toLowerCase() === paleta.cor.toLowerCase()">check</span>
+                </button>
+              </div>
+
+              <div class="custom-color-row d-flex align-items-center gap-md pt-xs">
+                <label class="font-label-xs text-on-surface-variant font-weight-bold">Cor Personalizada:</label>
+                <div class="color-picker-box d-flex align-items-center gap-xs">
+                  <input type="color" class="color-native-input" formControlName="corPrimaria">
+                  <input type="text" class="af-input font-mono color-hex-input" formControlName="corPrimaria" placeholder="#765538">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="form-divider">
+
+          <!-- Seção: Contatos & Localização -->
+          <div class="form-section-block">
+            <div class="section-title-row d-flex align-items-center gap-xs mb-sm">
+              <span class="material-symbols-outlined section-icon">contact_phone</span>
+              <h3 class="section-heading font-headline-sm m-0">Contatos Oficiais & Endereço</h3>
             </div>
 
-            <div class="form-group col-span-2">
-              <label class="form-label">Logotipo Oficial do Escritório (PNG, SVG ou JPG)</label>
-              <div class="logo-upload-container">
-                <input #fileInput type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" (change)="onFileSelected($event)" style="display: none">
-                
-                <div class="logo-preview-card d-flex align-items-center justify-content-between p-md" *ngIf="form.get('logoUrl')?.value; else noLogoTpl">
-                  <div class="d-flex align-items-center gap-md">
-                    <div class="logo-thumb-wrapper d-flex align-items-center justify-content-center">
-                      <img [src]="form.get('logoUrl')?.value" alt="Logo preview" class="logo-thumb-img">
-                    </div>
-                    <div class="d-flex flex-direction-column">
-                      <div class="d-flex align-items-center gap-xs">
-                        <span class="font-label-md font-weight-bold text-on-surface">Logotipo Carregado</span>
-                        <span class="badge-logo-ok font-label-xs">Ativo</span>
-                      </div>
-                      <span class="font-body-xs text-on-surface-variant mt-xxs">Aplicado automaticamente no cabeçalho timbrado do PDF</span>
-                    </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">E-mail Comercial *</label>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined input-icon">mail</span>
+                  <input type="email" class="af-input" formControlName="email" placeholder="contato@seuescritorio.com.br">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Telefone / WhatsApp Comercial *</label>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined input-icon">call</span>
+                  <input type="text" class="af-input" formControlName="telefone" placeholder="(11) 98765-4321">
+                </div>
+              </div>
+
+              <div class="form-group col-span-2">
+                <label class="form-label">Endereço Comercial / Sede</label>
+                <div class="input-with-icon">
+                  <span class="material-symbols-outlined input-icon">location_on</span>
+                  <input type="text" class="af-input" formControlName="endereco" placeholder="Ex: Av. Paulista, 1000 - Sala 802, Bela Vista - São Paulo/SP">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="form-divider">
+
+          <!-- Seção: Logotipo Oficial -->
+          <div class="form-section-block">
+            <div class="section-title-row d-flex align-items-center gap-xs mb-sm">
+              <span class="material-symbols-outlined section-icon">image</span>
+              <h3 class="section-heading font-headline-sm m-0">Logotipo Oficial do Escritório</h3>
+            </div>
+            <p class="section-subheading font-body-xs text-on-surface-variant mb-sm">
+              Recomendamos o envio de imagem com fundo transparente em PNG ou SVG de alta resolução.
+            </p>
+
+            <div class="logo-upload-container">
+              <input #fileInput type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" (change)="onFileSelected($event)" style="display: none">
+              
+              <div class="logo-active-card d-flex align-items-center justify-content-between p-md" *ngIf="form.get('logoUrl')?.value; else noLogoTpl">
+                <div class="d-flex align-items-center gap-md">
+                  <div class="logo-thumb-box d-flex align-items-center justify-content-center">
+                    <img [src]="form.get('logoUrl')?.value" alt="Logo preview" class="logo-thumb-img">
                   </div>
-                  <div class="d-flex align-items-center gap-xs">
-                    <button type="button" class="btn-logo-action" (click)="fileInput.click()" title="Substituir arquivo">
-                      <span class="material-symbols-outlined icon-sm">sync</span>
-                      Substituir
-                    </button>
-                    <button type="button" class="btn-logo-action btn-logo-remove" (click)="removerLogotipo()" title="Remover logotipo">
-                      <span class="material-symbols-outlined icon-sm">delete</span>
-                      Remover
-                    </button>
+                  <div class="d-flex flex-direction-column">
+                    <div class="d-flex align-items-center gap-xs">
+                      <span class="font-label-md font-weight-bold">Logotipo Ativo</span>
+                      <span class="badge-status-ok font-label-xs">Vetorizado / HD</span>
+                    </div>
+                    <span class="font-body-xs text-on-surface-variant mt-xxs">Aplicado automaticamente no topo da folha timbrada</span>
                   </div>
                 </div>
-
-                <ng-template #noLogoTpl>
-                  <div class="logo-dropzone d-flex flex-direction-column align-items-center justify-content-center p-lg" (click)="fileInput.click()">
-                    <div class="upload-icon-circle d-flex align-items-center justify-content-center mb-xs">
-                      <span class="material-symbols-outlined">cloud_upload</span>
-                    </div>
-                    <span class="font-label-md font-weight-bold text-on-surface">Clique para selecionar o arquivo do seu logotipo</span>
-                    <span class="font-body-xs text-on-surface-variant mt-xxs">Formatos recomendados: PNG transparente ou SVG vetorial (máx. 2MB)</span>
-                    <button type="button" class="btn-select-file font-label-sm mt-sm">
-                      <span class="material-symbols-outlined icon-sm">attach_file</span>
-                      Procurar Arquivo no Computador
-                    </button>
-                  </div>
-                </ng-template>
+                <div class="d-flex align-items-center gap-xs">
+                  <button type="button" class="btn-subtle-action" (click)="fileInput.click()">
+                    <span class="material-symbols-outlined icon-sm">sync</span>
+                    Substituir
+                  </button>
+                  <button type="button" class="btn-subtle-action btn-danger-action" (click)="removerLogotipo()">
+                    <span class="material-symbols-outlined icon-sm">delete</span>
+                    Remover
+                  </button>
+                </div>
               </div>
+
+              <ng-template #noLogoTpl>
+                <div class="logo-dropzone-luxury d-flex flex-direction-column align-items-center justify-content-center p-lg" (click)="fileInput.click()">
+                  <div class="dropzone-icon-circle d-flex align-items-center justify-content-center mb-sm">
+                    <span class="material-symbols-outlined">cloud_upload</span>
+                  </div>
+                  <span class="font-label-md font-weight-bold text-on-surface">Clique para carregar o logotipo da sua marca</span>
+                  <span class="font-body-xs text-on-surface-variant mt-xxs">Formatos aceitos: PNG transparente, SVG vetorial ou JPG (máx. 2MB)</span>
+                  <button type="button" class="btn-browse-file font-label-sm mt-md">
+                    <span class="material-symbols-outlined icon-sm">add_photo_alternate</span>
+                    Procurar no Computador
+                  </button>
+                </div>
+              </ng-template>
             </div>
           </div>
+
         </div>
 
-        <!-- ABA 2: SEÇÕES VISÍVEIS -->
-        <div class="tab-pane d-flex flex-direction-column gap-md" *ngIf="abaAtiva === 'secoes'">
+        <!-- ABA 2: ESTRUTURA & SEÇÕES DO DOCUMENTO -->
+        <div class="tab-pane" *ngIf="abaAtiva === 'secoes'">
           <div class="pane-header">
-            <h3 class="pane-title font-headline-md m-0">Seções e Elementos do PDF</h3>
+            <h3 class="pane-title font-headline-md m-0">Módulos & Seções Ativas no PDF</h3>
             <p class="pane-desc font-body-sm text-on-surface-variant m-0">
-              Escolha exatamente quais módulos e informações devem ser impressos no documento.
+              Personalize a estrutura da proposta ativando ou ocultando seções conforme o perfil de contratação do seu escritório.
             </p>
           </div>
 
-          <div class="switches-list d-flex flex-direction-column gap-sm">
-            <label class="switch-item d-flex align-items-center justify-content-between p-md">
-              <div class="switch-info d-flex flex-direction-column">
-                <span class="font-label-md font-weight-bold">Cabeçalho Institucional & Logotipo</span>
-                <span class="font-body-xs text-on-surface-variant">Exibe o topo com marca do escritório, registro CAU e contatos</span>
+          <div class="feature-toggles-list">
+            
+            <!-- Toggle 1 -->
+            <div class="toggle-card">
+              <div class="d-flex align-items-center gap-md">
+                <div class="toggle-icon-box">
+                  <span class="material-symbols-outlined">badge</span>
+                </div>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-label-md font-weight-bold">Cabeçalho Institucional & Logotipo</span>
+                  <span class="font-body-xs text-on-surface-variant">Exibe o topo timbrado com marca do escritório, CAU/CREA, CNPJ e contatos</span>
+                </div>
               </div>
-              <input type="checkbox" class="af-checkbox" formControlName="exibirCabecalho">
-            </label>
+              <label class="ios-switch">
+                <input type="checkbox" formControlName="exibirCabecalho">
+                <span class="slider"></span>
+              </label>
+            </div>
 
-            <label class="switch-item d-flex align-items-center justify-content-between p-md">
-              <div class="switch-info d-flex flex-direction-column">
-                <span class="font-label-md font-weight-bold">Resumo do Projeto & Dados do Cliente</span>
-                <span class="font-body-xs text-on-surface-variant">Objeto, cliente, tipologia, metragem e padrão de acabamento</span>
+            <!-- Toggle 2 -->
+            <div class="toggle-card">
+              <div class="d-flex align-items-center gap-md">
+                <div class="toggle-icon-box">
+                  <span class="material-symbols-outlined">folder_shared</span>
+                </div>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-label-md font-weight-bold">Ficha Técnica do Projeto & Cliente</span>
+                  <span class="font-body-xs text-on-surface-variant">Cartões com cliente contratante, título do projeto, tipologia e metragem quadrada</span>
+                </div>
               </div>
-              <input type="checkbox" class="af-checkbox" formControlName="exibirResumo">
-            </label>
+              <label class="ios-switch">
+                <input type="checkbox" formControlName="exibirResumo">
+                <span class="slider"></span>
+              </label>
+            </div>
 
-            <label class="switch-item d-flex align-items-center justify-content-between p-md">
-              <div class="switch-info d-flex flex-direction-column">
-                <span class="font-label-md font-weight-bold">Tabela Detalhada de Etapas do Escopo</span>
-                <span class="font-body-xs text-on-surface-variant">Quadro com etapas contratadas, descritivo, percentual e valor</span>
+            <!-- Toggle 3 -->
+            <div class="toggle-card">
+              <div class="d-flex align-items-center gap-md">
+                <div class="toggle-icon-box">
+                  <span class="material-symbols-outlined">table_rows</span>
+                </div>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-label-md font-weight-bold">Quadro de Escopo & Etapas Contratadas</span>
+                  <span class="font-body-xs text-on-surface-variant">Tabela executiva detalhando entregáveis, prazos em dias úteis, % e investimento por fase</span>
+                </div>
               </div>
-              <input type="checkbox" class="af-checkbox" formControlName="exibirTabelaEtapas">
-            </label>
+              <label class="ios-switch">
+                <input type="checkbox" formControlName="exibirTabelaEtapas">
+                <span class="slider"></span>
+              </label>
+            </div>
 
-            <label class="switch-item d-flex align-items-center justify-content-between p-md">
-              <div class="switch-info d-flex flex-direction-column">
-                <span class="font-label-md font-weight-bold">Condições Comerciais & Dados Bancários / PIX</span>
-                <span class="font-body-xs text-on-surface-variant">Instruções de parcelamento, prazos, chave PIX e conta para transferência</span>
+            <!-- Toggle 4 -->
+            <div class="toggle-card">
+              <div class="d-flex align-items-center gap-md">
+                <div class="toggle-icon-box">
+                  <span class="material-symbols-outlined">payments</span>
+                </div>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-label-md font-weight-bold">Condições Comerciais & Faturamento</span>
+                  <span class="font-body-xs text-on-surface-variant">Condições de entrada e parcelamento, chave PIX e dados bancários para depósito</span>
+                </div>
               </div>
-              <input type="checkbox" class="af-checkbox" formControlName="exibirCondicoesPagamento">
-            </label>
+              <label class="ios-switch">
+                <input type="checkbox" formControlName="exibirCondicoesPagamento">
+                <span class="slider"></span>
+              </label>
+            </div>
 
-            <label class="switch-item d-flex align-items-center justify-content-between p-md">
-              <div class="switch-info d-flex flex-direction-column">
-                <span class="font-label-md font-weight-bold">Termos Gerais & Cláusulas de Revisão</span>
-                <span class="font-body-xs text-on-surface-variant">Regras de revisões de projeto, entregáveis e responsabilidades técnicas</span>
+            <!-- Toggle 5 -->
+            <div class="toggle-card">
+              <div class="d-flex align-items-center gap-md">
+                <div class="toggle-icon-box">
+                  <span class="material-symbols-outlined">policy</span>
+                </div>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-label-md font-weight-bold">Termos Gerais & Políticas de Revisão</span>
+                  <span class="font-body-xs text-on-surface-variant">Cláusulas contratuais normativas, limites de revisões e responsabilidades técnicas</span>
+                </div>
               </div>
-              <input type="checkbox" class="af-checkbox" formControlName="exibirTermosGerais">
-            </label>
+              <label class="ios-switch">
+                <input type="checkbox" formControlName="exibirTermosGerais">
+                <span class="slider"></span>
+              </label>
+            </div>
 
-            <label class="switch-item d-flex align-items-center justify-content-between p-md">
-              <div class="switch-info d-flex flex-direction-column">
-                <span class="font-label-md font-weight-bold">Campos de Assinatura & Aceite</span>
-                <span class="font-body-xs text-on-surface-variant">Linhas de assinatura para o Arquiteto Responsável e o Contratante</span>
+            <!-- Toggle 6 -->
+            <div class="toggle-card">
+              <div class="d-flex align-items-center gap-md">
+                <div class="toggle-icon-box">
+                  <span class="material-symbols-outlined">draw</span>
+                </div>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-label-md font-weight-bold">Termo de Aceite & Assinaturas Formais</span>
+                  <span class="font-body-xs text-on-surface-variant">Linhas para assinatura bilateral do Arquiteto Responsável e do Contratante</span>
+                </div>
               </div>
-              <input type="checkbox" class="af-checkbox" formControlName="exibirAssinaturas">
-            </label>
+              <label class="ios-switch">
+                <input type="checkbox" formControlName="exibirAssinaturas">
+                <span class="slider"></span>
+              </label>
+            </div>
+
           </div>
         </div>
 
-        <!-- ABA 3: TEXTOS E CLÁUSULAS -->
-        <div class="tab-pane d-flex flex-direction-column gap-md" *ngIf="abaAtiva === 'textos'">
+        <!-- ABA 3: CLÁUSULAS & CONDIÇÕES -->
+        <div class="tab-pane" *ngIf="abaAtiva === 'textos'">
           <div class="pane-header">
-            <h3 class="pane-title font-headline-md m-0">Textos Padrão do Contrato</h3>
+            <h3 class="pane-title font-headline-md m-0">Textos Padrão & Cláusulas Comerciais</h3>
             <p class="pane-desc font-body-sm text-on-surface-variant m-0">
-              Personalize a apresentação e as cláusulas comerciais que serão impressas no documento.
+              Personalize o tom institucional da apresentação, prazos de validade e termos jurídicos aplicados nas propostas.
             </p>
           </div>
 
           <div class="form-grid">
             <div class="form-group col-span-2">
-              <label class="form-label">Texto de Introdução / Apresentação *</label>
+              <label class="form-label">
+                <span>Carta de Apresentação / Introdução Institucional *</span>
+                <span class="font-body-xs text-on-surface-variant">Texto editorial de abertura</span>
+              </label>
               <textarea rows="3" class="af-textarea" formControlName="textoApresentacao"></textarea>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Prazo de Validade da Proposta (Dias) *</label>
-              <input type="number" class="af-input" formControlName="validadeDias" min="1">
+              <label class="form-label">Validade da Proposta (Dias) *</label>
+              <div class="input-with-icon">
+                <span class="material-symbols-outlined input-icon">schedule</span>
+                <input type="number" class="af-input" formControlName="validadeDias" min="1">
+              </div>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Chave PIX Oficial</label>
-              <input type="text" class="af-input" formControlName="chavePix" placeholder="Chave CNPJ, E-mail ou Telefone">
+              <label class="form-label">Chave PIX Oficial do Escritório</label>
+              <div class="input-with-icon">
+                <span class="material-symbols-outlined input-icon">qr_code</span>
+                <input type="text" class="af-input" formControlName="chavePix" placeholder="Ex: CNPJ, e-mail ou celular do escritório">
+              </div>
             </div>
 
             <div class="form-group col-span-2">
-              <label class="form-label">Condições Padrão de Pagamento *</label>
+              <label class="form-label">Condições Padrão de Pagamento & Parcelamento *</label>
               <textarea rows="2" class="af-textarea" formControlName="condicoesPagamentoPadrao"></textarea>
             </div>
 
             <div class="form-group col-span-2">
-              <label class="form-label">Dados Bancários Completos</label>
-              <input type="text" class="af-input" formControlName="dadosBancarios" placeholder="Banco, Agência, Conta Corrente, Titular">
+              <label class="form-label">Dados Bancários Completos (Conta Corrente / Faturamento)</label>
+              <input type="text" class="af-input" formControlName="dadosBancarios" placeholder="Ex: Banco Itaú (341) | Ag: 0000 | C/C: 00000-0 | Razão Social LTDA">
             </div>
 
             <div class="form-group col-span-2">
-              <label class="form-label">Termos Gerais & Cláusulas Contratuais *</label>
+              <label class="form-label">
+                <span>Termos Gerais, Revisões & Cláusulas Técnicas *</span>
+                <span class="badge-legal-clause font-label-xs">Normas Contratuais</span>
+              </label>
               <textarea rows="5" class="af-textarea font-mono" formControlName="termosGerais"></textarea>
             </div>
           </div>
         </div>
 
         <!-- ABA 4: MENSAGEM DO WHATSAPP -->
-        <div class="tab-pane d-flex flex-direction-column gap-md" *ngIf="abaAtiva === 'whatsapp'">
+        <div class="tab-pane" *ngIf="abaAtiva === 'whatsapp'">
           <div class="pane-header">
-            <h3 class="pane-title font-headline-md m-0">Integração WhatsApp</h3>
+            <h3 class="pane-title font-headline-md m-0">Integração Comercial via WhatsApp</h3>
             <p class="pane-desc font-body-sm text-on-surface-variant m-0">
-              Personalize a mensagem automática enviada com 1 clique para o Lead/Cliente via WhatsApp.
+              Personalize o texto gerado automaticamente com 1 clique para envio direto ao cliente através do WhatsApp.
             </p>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Template da Mensagem *</label>
-            <textarea rows="6" class="af-textarea" formControlName="templateMensagemWhatsapp"></textarea>
-            <div class="tags-helper d-flex flex-wrap gap-xs mt-xs">
-              <span class="badge-tag font-mono text-xs">&#123;cliente&#125;</span>
-              <span class="badge-tag font-mono text-xs">&#123;projeto&#125;</span>
-              <span class="badge-tag font-mono text-xs">&#123;metragem&#125;</span>
-              <span class="badge-tag font-mono text-xs">&#123;valor&#125;</span>
-              <span class="badge-tag font-mono text-xs">&#123;validade&#125;</span>
-              <span class="badge-tag font-mono text-xs">&#123;escritorio&#125;</span>
+            <label class="form-label">Template da Mensagem com Variáveis Dinâmicas *</label>
+            <textarea rows="6" class="af-textarea font-mono" formControlName="templateMensagemWhatsapp"></textarea>
+            
+            <div class="tags-helper-bar">
+              <span class="font-label-xs text-on-surface-variant font-weight-bold">Inserir Tag:</span>
+              <button type="button" class="btn-tag font-mono" (click)="inserirTagWhatsapp('{cliente}')">&#123;cliente&#125;</button>
+              <button type="button" class="btn-tag font-mono" (click)="inserirTagWhatsapp('{projeto}')">&#123;projeto&#125;</button>
+              <button type="button" class="btn-tag font-mono" (click)="inserirTagWhatsapp('{metragem}')">&#123;metragem&#125;</button>
+              <button type="button" class="btn-tag font-mono" (click)="inserirTagWhatsapp('{valor}')">&#123;valor&#125;</button>
+              <button type="button" class="btn-tag font-mono" (click)="inserirTagWhatsapp('{validade}')">&#123;validade&#125;</button>
+              <button type="button" class="btn-tag font-mono" (click)="inserirTagWhatsapp('{escritorio}')">&#123;escritorio&#125;</button>
             </div>
           </div>
 
-          <div class="whatsapp-preview-box p-md mt-sm">
-            <div class="d-flex align-items-center gap-xs font-label-sm font-weight-bold text-success mb-xs">
-              <span class="material-symbols-outlined icon-sm">chat</span>
-              Exemplo de visualização no WhatsApp do cliente:
+          <div class="whatsapp-simulator-box">
+            <div class="whatsapp-phone-header">
+              <span class="material-symbols-outlined text-white">chat</span>
+              <div class="d-flex flex-direction-column">
+                <span class="font-label-sm font-weight-bold text-white">{{ previewData.clienteNome }}</span>
+                <span class="font-body-xs text-white-50">Online</span>
+              </div>
             </div>
-            <div class="whatsapp-bubble font-body-sm">
-              <p class="m-0 whitespace-pre-line">{{ previewWhatsappMsg }}</p>
+            
+            <div class="whatsapp-chat-area">
+              <div class="whatsapp-bubble font-body-sm">
+                <p class="m-0 whitespace-pre-line">{{ previewWhatsappMsg }}</p>
+                <div class="whatsapp-bubble-time">
+                  <span>10:30</span>
+                  <span class="material-symbols-outlined double-check">done_all</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
       </form>
     </div>
 
-    <!-- COLUNA DA DIREITA: PRÉ-VISUALIZAÇÃO A4 (LIVE PREVIEW) -->
-    <div class="preview-column d-flex flex-direction-column gap-sm">
-      <div class="preview-header-bar d-flex justify-content-between align-items-center p-sm">
+    <!-- COLUNA DA DIREITA: PRÉ-VISUALIZAÇÃO A4 ARQUITETÔNICA (DESK CANVAS) -->
+    <div class="preview-column">
+      <div class="preview-header-bar">
         <div class="d-flex align-items-center gap-xs font-label-sm font-weight-bold text-on-surface">
           <span class="material-symbols-outlined icon-sm text-primary">visibility</span>
           Pré-visualização Editorial em Tempo Real
         </div>
-        <span class="badge-a4 font-label-xs">Folha A4 Timbrada</span>
+        <div class="d-flex align-items-center gap-xs">
+          <span class="badge-a4 font-label-xs font-mono">A4 • 210 × 297 mm</span>
+          <button type="button" class="btn-fullscreen-preview" (click)="testarImpressao()" title="Abrir em Tela Cheia">
+            <span class="material-symbols-outlined icon-sm">open_in_full</span>
+          </button>
+        </div>
       </div>
 
-      <!-- FOLHA A4 TIMBRADA COMPACTA EDITORIAL -->
+      <!-- MESA ARQUITETÔNICA COM FOLHA A4 TIMBRADA -->
       <div class="a4-preview-canvas">
         <div class="a4-sheet" [style.--cor-primaria]="configAtual.corPrimaria || '#765538'">
           
           <!-- LINHA DE TOPO ARQUITETÔNICA -->
-          <div class="a4-top-accent-bar" [style.background-color]="configAtual.corPrimaria"></div>
+          <div class="a4-top-accent-bar" [style.background-color]="configAtual.corPrimaria || '#765538'"></div>
 
-          <!-- CABEÇALHO DA MARCA -->
-          <header class="a4-header d-flex justify-content-between align-items-start" *ngIf="configAtual.exibirCabecalho">
-            <div class="a4-brand d-flex flex-direction-column">
-              <img *ngIf="configAtual.logoUrl" [src]="configAtual.logoUrl" alt="Logo" class="a4-logo mb-xs">
-              <h2 class="a4-brand-name m-0" [style.color]="configAtual.corPrimaria">
-                {{ configAtual.nomeEscritorio }}
-              </h2>
-              <span class="a4-brand-slogan" *ngIf="configAtual.slogan">
-                {{ configAtual.slogan }}
-              </span>
-              <span class="a4-brand-reg font-mono" *ngIf="configAtual.registroProfissional">
-                {{ configAtual.registroProfissional }}
-              </span>
+          <!-- CABEÇALHO DA FOLHA TIMBRADA -->
+          <header class="a4-header d-flex justify-content-between align-items-center" *ngIf="configAtual.exibirCabecalho">
+            <div class="a4-brand d-flex align-items-center gap-md">
+              <div *ngIf="configAtual.logoUrl; else previewMonogramTpl" class="a4-logo-wrapper">
+                <img [src]="configAtual.logoUrl" alt="Logo" class="a4-logo">
+              </div>
+              <ng-template #previewMonogramTpl>
+                <div class="a4-monogram-box d-flex align-items-center justify-content-center" [style.border-color]="configAtual.corPrimaria || '#765538'" [style.color]="configAtual.corPrimaria || '#765538'">
+                  <span class="material-symbols-outlined">architecture</span>
+                </div>
+              </ng-template>
+
+              <div class="d-flex flex-direction-column">
+                <h2 class="a4-brand-name m-0" [style.color]="configAtual.corPrimaria || '#765538'">
+                  {{ configAtual.nomeEscritorio || 'SEU ESCRITÓRIO DE ARQUITETURA' }}
+                </h2>
+                <span class="a4-brand-slogan" *ngIf="configAtual.slogan">
+                  {{ configAtual.slogan }}
+                </span>
+                <span class="a4-brand-reg font-mono" *ngIf="configAtual.registroProfissional">
+                  {{ configAtual.registroProfissional }}
+                </span>
+              </div>
             </div>
 
             <div class="a4-contacts d-flex flex-direction-column align-items-end text-right">
-              <span class="contact-item"><strong>Tel:</strong> {{ configAtual.telefone }}</span>
-              <span class="contact-item"><strong>E-mail:</strong> {{ configAtual.email }}</span>
-              <span class="contact-item" *ngIf="configAtual.endereco">{{ configAtual.endereco }}</span>
+              <span class="contact-item" *ngIf="configAtual.telefone">
+                <strong>Tel:</strong> {{ configAtual.telefone }}
+              </span>
+              <span class="contact-item" *ngIf="configAtual.email">
+                <strong>E-mail:</strong> {{ configAtual.email }}
+              </span>
+              <span class="contact-item" *ngIf="configAtual.endereco">
+                {{ configAtual.endereco }}
+              </span>
+              <span class="contact-item text-on-surface-variant font-italic" *ngIf="!configAtual.telefone && !configAtual.email">
+                Identidade em configuração
+              </span>
             </div>
           </header>
 
           <!-- BANNER DO TÍTULO DA PROPOSTA -->
-          <div class="a4-title-banner d-flex justify-content-between align-items-center" [style.background-color]="configAtual.corPrimaria + '12'" [style.border-left]="'3px solid ' + configAtual.corPrimaria">
-            <div>
+          <div class="a4-title-banner d-flex justify-content-between align-items-center" 
+               [style.background-color]="configAtual.corPrimaria + '12'" 
+               [style.border-left]="'3px solid ' + configAtual.corPrimaria">
+            <div class="d-flex flex-direction-column gap-xxs">
               <div class="a4-doc-category" [style.color]="configAtual.corPrimaria">PROPOSTA TÉCNICA E COMERCIAL DE HONORÁRIOS</div>
               <div class="a4-doc-code font-mono">CÓDIGO: {{ previewData.codigo }}</div>
             </div>
-            <div class="a4-doc-meta text-right">
-              <div><strong>Emissão:</strong> {{ previewData.criadoEm | date:'dd/MM/yyyy' }}</div>
-              <div class="badge-validade">Validade: {{ configAtual.validadeDias }} dias</div>
+            <div class="a4-doc-meta text-right d-flex flex-direction-column align-items-end gap-xxs">
+              <div class="a4-emission-date"><strong>Emissão:</strong> {{ previewData.criadoEm | date:'dd/MM/yyyy' }}</div>
+              <div class="badge-validade" [style.color]="configAtual.corPrimaria" [style.background-color]="configAtual.corPrimaria + '18'">
+                Validade: {{ configAtual.validadeDias }} dias
+              </div>
             </div>
           </div>
 
           <!-- APRESENTAÇÃO EDITORIAL -->
-          <div class="a4-intro-quote" *ngIf="configAtual.textoApresentacao">
+          <div class="a4-intro-quote" *ngIf="configAtual.textoApresentacao" [style.border-left-color]="configAtual.corPrimaria">
             <p class="m-0">{{ configAtual.textoApresentacao }}</p>
           </div>
 
@@ -368,7 +556,7 @@
             
             <div class="a4-meta-grid">
               <div class="meta-cell">
-                <span class="lbl">CLIENTE</span>
+                <span class="lbl">CLIENTE / CONTRATANTE</span>
                 <strong>{{ previewData.clienteNome }}</strong>
               </div>
               <div class="meta-cell">
@@ -376,7 +564,7 @@
                 <strong>{{ previewData.titulo }}</strong>
               </div>
               <div class="meta-cell">
-                <span class="lbl">TIPOLOGIA</span>
+                <span class="lbl">TIPOLOGIA DO PROJETO</span>
                 <span>{{ previewData.tipoProjetoNome }}</span>
               </div>
               <div class="meta-cell">
@@ -395,7 +583,7 @@
 
             <table class="a4-table w-full">
               <thead>
-                <tr [style.background-color]="configAtual.corPrimaria + '15'">
+                <tr [style.background-color]="configAtual.corPrimaria + '14'">
                   <th class="text-left col-etapa">Etapa & Entregáveis</th>
                   <th class="text-center col-pct">%</th>
                   <th class="text-right col-valor">Investimento</th>
@@ -404,17 +592,22 @@
               <tbody>
                 <tr *ngFor="let e of previewData.etapas">
                   <td class="col-etapa">
-                    <span class="etapa-nome">{{ e.nome }}</span>
+                    <div class="d-flex align-items-center gap-xs flex-wrap">
+                      <span class="etapa-nome">{{ e.nome }}</span>
+                      <span class="badge-prazo font-mono" *ngIf="e.prazo">{{ e.prazo }}</span>
+                    </div>
                     <span class="etapa-desc" *ngIf="e.descricao">{{ e.descricao }}</span>
                   </td>
-                  <td class="text-center col-pct font-mono">{{ e.percentual }}%</td>
+                  <td class="text-center col-pct font-mono font-weight-bold">{{ e.percentual }}%</td>
                   <td class="text-right col-valor font-weight-bold font-mono">{{ formatarMoeda(e.valor) }}</td>
                 </tr>
               </tbody>
             </table>
 
             <!-- TOTAL BAR -->
-            <div class="a4-total-bar d-flex justify-content-between align-items-center" [style.background-color]="configAtual.corPrimaria + '15'" [style.border]="'1px solid ' + configAtual.corPrimaria + '40'">
+            <div class="a4-total-bar d-flex justify-content-between align-items-center" 
+                 [style.background-color]="configAtual.corPrimaria + '12'" 
+                 [style.border]="'1px solid ' + configAtual.corPrimaria + '35'">
               <div class="d-flex flex-direction-column">
                 <span class="total-lbl text-uppercase">VALOR TOTAL DOS HONORÁRIOS ARQUITETÔNICOS</span>
                 <span class="total-sub">Escopo completo conforme etapas descritas acima</span>
@@ -437,10 +630,15 @@
                 <span class="sub-lbl">FORMA DE PAGAMENTO:</span>
                 <p class="m-0">{{ configAtual.condicoesPagamentoPadrao }}</p>
               </div>
-              <div class="payment-bank-box font-mono" *ngIf="configAtual.chavePix || configAtual.dadosBancarios">
+              <div class="payment-bank-box font-mono" *ngIf="configAtual.chavePix || configAtual.dadosBancarios; else previewBankTpl">
                 <div *ngIf="configAtual.chavePix"><strong>CHAVE PIX:</strong> {{ configAtual.chavePix }}</div>
                 <div *ngIf="configAtual.dadosBancarios"><strong>BANCO:</strong> {{ configAtual.dadosBancarios }}</div>
               </div>
+              <ng-template #previewBankTpl>
+                <div class="payment-bank-box font-mono text-on-surface-variant font-italic">
+                  Dados bancários e chave PIX configuráveis na aba Cláusulas & Condições.
+                </div>
+              </ng-template>
             </div>
           </div>
 
@@ -460,7 +658,7 @@
             <div class="d-flex justify-content-between gap-xl">
               <div class="sign-box text-center flex-grow-1">
                 <div class="sign-line"></div>
-                <span class="sign-name d-block">{{ configAtual.nomeEscritorio }}</span>
+                <span class="sign-name d-block">{{ configAtual.nomeEscritorio || 'Arquiteto Responsável' }}</span>
                 <span class="sign-role">Arquiteto(a) Responsável</span>
               </div>
               <div class="sign-box text-center flex-grow-1">
@@ -470,6 +668,18 @@
               </div>
             </div>
           </div>
+
+          <!-- RODAPÉ INSTITUCIONAL DISCRETO -->
+          <footer class="a4-footer d-flex justify-content-between align-items-center">
+            <div class="a4-footer-brand d-flex align-items-center gap-xxs">
+              <span class="font-mono text-xs">ArchiFlow</span>
+              <span class="bullet-sep">•</span>
+              <span>Sistema Integrado de Gestão & Precificação Arquitetônica</span>
+            </div>
+            <div class="a4-footer-meta font-mono text-xs">
+              Documento de Proposta de Honorários
+            </div>
+          </footer>
 
         </div>
       </div>
