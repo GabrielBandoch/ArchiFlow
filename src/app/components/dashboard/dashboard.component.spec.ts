@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { EventEmitter } from '@angular/core';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardService } from '../../core/api/dashboard/dashboard.service';
@@ -106,8 +106,9 @@ describe('DashboardComponent', () => {
     );
 
     await TestBed.configureTestingModule({
-      imports: [DashboardComponent, RouterTestingModule],
+      imports: [DashboardComponent],
       providers: [
+        provideRouter([]),
         { provide: DashboardService, useValue: dashboardServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
         { provide: DialogService, useValue: dialogServiceSpy },

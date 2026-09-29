@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { DashboardAcoesRapidasComponent } from './dashboard-acoes-rapidas.component';
 
 describe('DashboardAcoesRapidasComponent', () => {
@@ -8,7 +8,8 @@ describe('DashboardAcoesRapidasComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardAcoesRapidasComponent, RouterTestingModule]
+      imports: [DashboardAcoesRapidasComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardAcoesRapidasComponent);
@@ -40,14 +41,15 @@ describe('DashboardAcoesRapidasComponent', () => {
     expect(component.novoLead.emit).toHaveBeenCalledTimes(1);
   });
 
-  it('should render navigation links to simulador and clientes', () => {
+  it('should render navigation links to simulador and clientes with correct destination hrefs', () => {
     const links = fixture.nativeElement.querySelectorAll('a.btn-quick');
-    const hrefs = Array.from(links).map((l: any) => l.getAttribute('href') || l.getAttribute('ng-reflect-router-link'));
-    
     const simuladorLink = Array.from(links).find((l: any) => l.textContent.includes('Simular Honorários')) as HTMLAnchorElement;
     const clientesLink = Array.from(links).find((l: any) => l.textContent.includes('Ver Clientes')) as HTMLAnchorElement;
 
     expect(simuladorLink).toBeTruthy();
+    expect(simuladorLink.getAttribute('href')).toBe('/simulador');
+
     expect(clientesLink).toBeTruthy();
+    expect(clientesLink.getAttribute('href')).toBe('/clientes');
   });
 });
