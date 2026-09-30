@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../shared';
 import { FinanceiroService } from '../../core/api/financeiro/financeiro.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -66,34 +67,24 @@ export class FinanceiroComponent implements OnInit {
   carregarDados(): void {
     this.loading = true;
 
-    this.financeiroService.obterPainel().subscribe({
-      next: (dadosPainel) => {
-        this.painel = dadosPainel;
-        this.alertas = dadosPainel.alertas || [];
-        this.receitasPorMes = dadosPainel.receitasPorMes || [];
-        this.carregarListasCompletas();
+    forkJoin({
+      painel: this.financeiroService.obterPainel(),
+      parcelas: this.financeiroService.obterParcelas(),
+      despesas: this.financeiroService.obterDespesas()
+    }).subscribe({
+      next: ({ painel, parcelas, despesas }) => {
+        this.painel = painel;
+        this.alertas = painel?.alertas || [];
+        this.receitasPorMes = painel?.receitasPorMes || [];
+        this.parcelas = parcelas || [];
+        this.despesas = despesas || [];
+        this.loading = false;
       },
       error: (err) => {
         this.loading = false;
-        console.error('Erro ao carregar painel financeiro', err);
-        this.notificationService.error('Erro ao carregar dados consolidados do financeiro.');
+        console.error('Erro ao carregar dados financeiros', err);
+        this.notificationService.error('Erro ao carregar dados financeiros.');
       }
-    });
-  }
-
-  private carregarListasCompletas(): void {
-    this.financeiroService.obterParcelas().subscribe({
-      next: (parcelas) => {
-        this.parcelas = parcelas;
-        this.financeiroService.obterDespesas().subscribe({
-          next: (despesas) => {
-            this.despesas = despesas;
-            this.loading = false;
-          },
-          error: () => this.loading = false
-        });
-      },
-      error: () => this.loading = false
     });
   }
 

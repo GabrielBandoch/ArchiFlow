@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { FinanceiroComponent } from './financeiro.component';
 import { FinanceiroService } from '../../core/api/financeiro/financeiro.service';
 import { ProjetoService } from '../../core/api/projetos/projeto.service';
@@ -120,5 +120,14 @@ describe('FinanceiroComponent', () => {
     component.abrirModalBaixa(mockParcelas[0]);
     expect(component.showBaixaModal).toBeTrue();
     expect(component.selectedParcelaParaBaixa).toEqual(mockParcelas[0]);
+  });
+
+  it('deve desativar loading e exibir erro caso o carregamento inicial falhe', () => {
+    financeiroServiceSpy.obterPainel.and.returnValue(throwError(() => new Error('Falha no servidor')));
+
+    component.carregarDados();
+
+    expect(component.loading).toBeFalse();
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('Erro ao carregar dados financeiros.');
   });
 });

@@ -174,6 +174,12 @@ export class CriarDespesaModalComponent implements OnInit {
       },
       error: (err) => {
         this.saving = false;
+        if (comprovanteUrl && this.arquivoSelecionado) {
+          this.financeiroService.excluirComprovante(comprovanteUrl).subscribe({
+            next: () => {},
+            error: () => {}
+          });
+        }
         const msg = err.error?.mensagem || err.error?.message || 'Erro ao registrar despesa.';
         this.notificationService.error(msg);
       }
