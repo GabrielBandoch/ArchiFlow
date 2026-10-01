@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
+import { BehaviorSubject, Observable, tap, catchError, of, finalize, shareReplay } from 'rxjs';
 import { ConfiguracaoProposta, CONFIGURACAO_PROPOSTA_PADRAO } from '../models/configuracao-proposta.model';
 import { environment } from '../../../environments/environment';
 
@@ -15,6 +15,7 @@ export class ConfiguracaoPropostaService {
 
   private configSubject: BehaviorSubject<ConfiguracaoProposta>;
   public configuracao$: Observable<ConfiguracaoProposta>;
+  private carregamentoInFlight$: Observable<ConfiguracaoProposta | null> | null = null;
 
   constructor() {
     this.limparLegadoSeNecessario();
@@ -35,8 +36,12 @@ export class ConfiguracaoPropostaService {
     }
   }
 
-  public carregarDoServidor(): Observable<ConfiguracaoProposta | null> {
-    return this.http.get<ConfiguracaoProposta>(this.apiUrl).pipe(
+  public carregarDoServidor(forceRefresh = false): Observable<ConfiguracaoProposta | null> {
+    if (this.carregamentoInFlight$ && !forceRefresh) {
+      return this.carregamentoInFlight$;
+    }
+
+    this.carregamentoInFlight$ = this.http.get<ConfiguracaoProposta>(this.apiUrl).pipe(
       tap((res) => {
         if (res && (res.configurado || (res.nomeEscritorio && res.nomeEscritorio.trim() !== ''))) {
           // Sanitiza se porventura houver dados residuais mockados de Duna
@@ -48,8 +53,14 @@ export class ConfiguracaoPropostaService {
           }
         }
       }),
-      catchError(() => of(null))
+      catchError(() => of(null)),
+      finalize(() => {
+        this.carregamentoInFlight$ = null;
+      }),
+      shareReplay(1)
     );
+
+    return this.carregamentoInFlight$;
   }
 
   public getConfiguracao(): ConfiguracaoProposta {
@@ -75,17 +86,10 @@ export class ConfiguracaoPropostaService {
       configurado: true
     };
 
-    this.salvarLocal(configParaSalvar);
-
     return this.http.put<ConfiguracaoProposta>(this.apiUrl, configParaSalvar).pipe(
       tap((res) => {
-        if (res) {
-          this.salvarLocal({ ...res, configurado: true });
-        }
-      }),
-      catchError((err) => {
-        // Retorna sucesso local mesmo se backend estiver temporariamente offline
-        return of(configParaSalvar);
+        const persistido = res ? { ...res, configurado: true } : configParaSalvar;
+        this.salvarLocal(persistido);
       })
     );
   }

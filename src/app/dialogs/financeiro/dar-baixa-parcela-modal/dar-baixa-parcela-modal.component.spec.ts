@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { DarBaixaParcelaModalComponent } from './dar-baixa-parcela-modal.component';
 import { FinanceiroService } from '../../../core/api/financeiro/financeiro.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -31,7 +31,7 @@ describe('DarBaixaParcelaModalComponent', () => {
   };
 
   beforeEach(async () => {
-    financeiroServiceSpy = jasmine.createSpyObj('FinanceiroService', ['darBaixaParcela', 'uploadComprovante']);
+    financeiroServiceSpy = jasmine.createSpyObj('FinanceiroService', ['darBaixaParcela', 'uploadComprovante', 'excluirComprovante']);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'warning', 'error']);
 
     financeiroServiceSpy.darBaixaParcela.and.returnValue(of({
@@ -42,6 +42,7 @@ describe('DarBaixaParcelaModalComponent', () => {
       url: 'https://s3.amazonaws.com/comprovante.pdf',
       nome: 'comprovante.pdf'
     }));
+    financeiroServiceSpy.excluirComprovante.and.returnValue(of(undefined));
 
     await TestBed.configureTestingModule({
       imports: [DarBaixaParcelaModalComponent],
@@ -92,6 +93,20 @@ describe('DarBaixaParcelaModalComponent', () => {
 
     component.removerArquivo();
     expect(component.arquivoSelecionado).toBeNull();
+  });
+
+  it('deve chamar excluirComprovante caso a confirmação de pagamento falhe após o upload', () => {
+    financeiroServiceSpy.darBaixaParcela.and.returnValue(throwError(() => ({ error: { message: 'Erro ao registrar baixa' } })));
+
+    const file = new File(['dummy'], 'comprovante.pdf', { type: 'application/pdf' });
+    component.arquivoSelecionado = file;
+
+    component.onSubmit();
+
+    expect(financeiroServiceSpy.uploadComprovante).toHaveBeenCalledWith(file);
+    expect(financeiroServiceSpy.darBaixaParcela).toHaveBeenCalled();
+    expect(financeiroServiceSpy.excluirComprovante).toHaveBeenCalledWith('https://s3.amazonaws.com/comprovante.pdf');
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('Erro ao registrar baixa');
   });
 });
 

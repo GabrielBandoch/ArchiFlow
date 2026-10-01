@@ -187,5 +187,14 @@ export class FinanceiroService {
     formData.append('file', file);
     return this.http.post<{ url: string; nome: string }>(url, formData);
   }
+
+  excluirComprovante(fileUrl: string): Observable<void> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('financeiro')
+      .segment('comprovante')
+      .queryParam('url', fileUrl)
+      .build();
+    return this.http.delete<void>(url);
+  }
 }
 

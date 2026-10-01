@@ -147,6 +147,12 @@ export class DarBaixaParcelaModalComponent implements OnInit {
       },
       error: (err) => {
         this.saving = false;
+        if (comprovanteUrl && this.arquivoSelecionado) {
+          this.financeiroService.excluirComprovante(comprovanteUrl).subscribe({
+            next: () => {},
+            error: () => {}
+          });
+        }
         const msg = err.error?.mensagem || err.error?.message || 'Erro ao confirmar pagamento da parcela.';
         this.notificationService.error(msg);
       }

@@ -93,4 +93,53 @@ describe('ConfiguracaoPropostaService', () => {
     const linkSemTel = service.gerarLinkWhatsapp('', 'Teste');
     expect(linkSemTel).toContain('api.whatsapp.com/send?text=Teste');
   });
+
+  it('não deve salvar no localStorage nem atualizar estado se o backend falhar ao salvar', () => {
+    const estadoOriginal = service.getConfiguracao();
+    const configInvalida = {
+      ...CONFIGURACAO_PROPOSTA_PADRAO,
+      nomeEscritorio: 'Tentativa Que Falhou'
+    };
+
+    let erroRecebido: any = null;
+    service.salvarConfiguracao(configInvalida).subscribe({
+      next: () => fail('Deveria ter falhado'),
+      error: (err) => {
+        erroRecebido = err;
+      }
+    });
+
+    const req = httpMock.expectOne((r) => r.url.includes('/propostas/configuracao') && r.method === 'PUT');
+    req.flush({ message: 'Erro interno' }, { status: 500, statusText: 'Internal Server Error' });
+
+    expect(erroRecebido).toBeTruthy();
+    expect(service.getConfiguracao().nomeEscritorio).toBe(estadoOriginal.nomeEscritorio);
+    const storageItem = localStorage.getItem('archiflow_config_proposta_v2');
+    if (storageItem) {
+      const parsed = JSON.parse(storageItem);
+      expect(parsed.nomeEscritorio).not.toBe('Tentativa Que Falhou');
+    }
+  });
+
+  it('deve compartilhar a mesma requisição HTTP quando carregarDoServidor for chamado em paralelo', () => {
+    let res1: any = null;
+    let res2: any = null;
+
+    service.carregarDoServidor().subscribe((r) => (res1 = r));
+    service.carregarDoServidor().subscribe((r) => (res2 = r));
+
+    // Apenas UMA requisição deve ser emitida
+    const reqs = httpMock.match((r) => r.url.includes('/propostas/configuracao') && r.method === 'GET');
+    expect(reqs.length).toBe(1);
+
+    const mockResponse = {
+      ...CONFIGURACAO_PROPOSTA_PADRAO,
+      nomeEscritorio: 'Escritório Dedup Teste',
+      configurado: true
+    };
+    reqs[0].flush(mockResponse);
+
+    expect(res1?.nomeEscritorio).toBe('Escritório Dedup Teste');
+    expect(res2?.nomeEscritorio).toBe('Escritório Dedup Teste');
+  });
 });
