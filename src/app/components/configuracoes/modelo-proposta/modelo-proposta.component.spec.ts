@@ -108,10 +108,10 @@ describe('ModeloPropostaComponent', () => {
 
   it('deve restaurar configurações para os valores de fábrica quando confirmado', () => {
     spyOn(window, 'confirm').and.returnValue(true);
-    configService.resetarPadroes.and.returnValue({
+    configService.resetarPadroes.and.returnValue(of({
       ...mockConfig,
       nomeEscritorio: 'Studio Exemplo Arquitetura'
-    });
+    }));
 
     component.restaurarPadrao();
 

@@ -1,17 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of, finalize, shareReplay } from 'rxjs';
 import { ConfiguracaoProposta, CONFIGURACAO_PROPOSTA_PADRAO } from '../models/configuracao-proposta.model';
-import { environment } from '../../../environments/environment';
+import { ConfiguracaoPropostaApiService } from '../api/propostas/configuracao-proposta-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfiguracaoPropostaService {
-  private http = inject(HttpClient);
+  private apiService = inject(ConfiguracaoPropostaApiService);
   private readonly STORAGE_KEY = 'archiflow_config_proposta_v2';
   private readonly LEGACY_STORAGE_KEY = 'archiflow_config_proposta_v1';
-  private readonly apiUrl = `${environment.apiUrl}/propostas/configuracao`;
 
   private configSubject: BehaviorSubject<ConfiguracaoProposta>;
   public configuracao$: Observable<ConfiguracaoProposta>;
@@ -41,16 +39,10 @@ export class ConfiguracaoPropostaService {
       return this.carregamentoInFlight$;
     }
 
-    this.carregamentoInFlight$ = this.http.get<ConfiguracaoProposta>(this.apiUrl).pipe(
+    this.carregamentoInFlight$ = this.apiService.obterConfiguracao().pipe(
       tap((res) => {
         if (res && (res.configurado || (res.nomeEscritorio && res.nomeEscritorio.trim() !== ''))) {
-          // Sanitiza se porventura houver dados residuais mockados de Duna
-          if (this.contemDadosDuna(res)) {
-            const limpo = this.sanitizarConfiguracao(res);
-            this.salvarLocal(limpo);
-          } else {
-            this.salvarLocal({ ...res, configurado: true });
-          }
+          this.salvarLocal({ ...res, configurado: true });
         }
       }),
       catchError(() => of(null)),
@@ -86,7 +78,7 @@ export class ConfiguracaoPropostaService {
       configurado: true
     };
 
-    return this.http.put<ConfiguracaoProposta>(this.apiUrl, configParaSalvar).pipe(
+    return this.apiService.salvarConfiguracao(configParaSalvar).pipe(
       tap((res) => {
         const persistido = res ? { ...res, configurado: true } : configParaSalvar;
         this.salvarLocal(persistido);
@@ -103,14 +95,18 @@ export class ConfiguracaoPropostaService {
     this.configSubject.next({ ...config });
   }
 
-  public resetarPadroes(): ConfiguracaoProposta {
-    const padrao = { ...CONFIGURACAO_PROPOSTA_PADRAO };
-    this.salvarLocal(padrao);
-    this.http.put<ConfiguracaoProposta>(this.apiUrl, padrao).subscribe({
-      next: () => {},
-      error: () => {}
-    });
-    return padrao;
+  public resetarPadroes(): Observable<ConfiguracaoProposta> {
+    const padrao: ConfiguracaoProposta = {
+      ...CONFIGURACAO_PROPOSTA_PADRAO,
+      configurado: true
+    };
+
+    return this.apiService.salvarConfiguracao(padrao).pipe(
+      tap((res) => {
+        const persistido = res ? { ...res, configurado: true } : padrao;
+        this.salvarLocal(persistido);
+      })
+    );
   }
 
   public formatarMoeda(valor: number): string {
@@ -158,44 +154,11 @@ export class ConfiguracaoPropostaService {
       const item = localStorage.getItem(this.STORAGE_KEY);
       if (item) {
         const parsed: ConfiguracaoProposta = JSON.parse(item);
-        if (this.contemDadosDuna(parsed)) {
-          return this.sanitizarConfiguracao(parsed);
-        }
         return { ...CONFIGURACAO_PROPOSTA_PADRAO, ...parsed };
       }
     } catch {
       // Fallback para o padrão
     }
     return { ...CONFIGURACAO_PROPOSTA_PADRAO };
-  }
-
-  private contemDadosDuna(cfg: Partial<ConfiguracaoProposta>): boolean {
-    const haystack = `${cfg.nomeEscritorio || ''} ${cfg.email || ''} ${cfg.dadosBancarios || ''} ${cfg.endereco || ''}`.toLowerCase();
-    return haystack.includes('duna') || haystack.includes('a238491') || haystack.includes('45.892.102');
-  }
-
-  private sanitizarConfiguracao(cfg: ConfiguracaoProposta): ConfiguracaoProposta {
-    return {
-      ...CONFIGURACAO_PROPOSTA_PADRAO,
-      ...cfg,
-      nomeEscritorio: this.limparSeDuna(cfg.nomeEscritorio),
-      email: this.limparSeDuna(cfg.email),
-      telefone: this.limparSeDuna(cfg.telefone),
-      endereco: this.limparSeDuna(cfg.endereco),
-      registroProfissional: this.limparSeDuna(cfg.registroProfissional),
-      chavePix: this.limparSeDuna(cfg.chavePix),
-      dadosBancarios: this.limparSeDuna(cfg.dadosBancarios),
-      logoUrl: cfg.logoUrl && cfg.logoUrl.toLowerCase().includes('duna') ? '' : cfg.logoUrl,
-      configurado: false
-    };
-  }
-
-  private limparSeDuna(valor?: string): string {
-    if (!valor) return '';
-    const v = valor.toLowerCase();
-    if (v.includes('duna') || v.includes('a238491') || v.includes('45.892.102')) {
-      return '';
-    }
-    return valor;
   }
 }
