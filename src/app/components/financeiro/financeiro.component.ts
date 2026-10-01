@@ -59,6 +59,7 @@ export class FinanceiroComponent implements OnInit {
 
   showNovaParcelaModal = false;
   showNovaDespesaModal = false;
+  anoSelecionado = new Date().getFullYear();
 
   ngOnInit(): void {
     this.carregarDados();
@@ -68,7 +69,7 @@ export class FinanceiroComponent implements OnInit {
     this.loading = true;
 
     forkJoin({
-      painel: this.financeiroService.obterPainel(),
+      painel: this.financeiroService.obterPainel(this.anoSelecionado),
       parcelas: this.financeiroService.obterParcelas(),
       despesas: this.financeiroService.obterDespesas()
     }).subscribe({
@@ -84,6 +85,25 @@ export class FinanceiroComponent implements OnInit {
         this.loading = false;
         console.error('Erro ao carregar dados financeiros', err);
         this.notificationService.error('Erro ao carregar dados financeiros.');
+      }
+    });
+  }
+
+  onAnoChange(ano: number): void {
+    this.anoSelecionado = ano;
+    this.carregarPainel(ano);
+  }
+
+  carregarPainel(ano?: number): void {
+    this.financeiroService.obterPainel(ano).subscribe({
+      next: (painel) => {
+        this.painel = painel;
+        this.alertas = painel?.alertas || [];
+        this.receitasPorMes = painel?.receitasPorMes || [];
+      },
+      error: (err) => {
+        console.error('Erro ao atualizar dados do painel financeiro', err);
+        this.notificationService.error('Erro ao atualizar dados do gráfico financeiro.');
       }
     });
   }

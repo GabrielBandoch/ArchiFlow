@@ -130,4 +130,11 @@ describe('FinanceiroComponent', () => {
     expect(component.loading).toBeFalse();
     expect(notificationServiceSpy.error).toHaveBeenCalledWith('Erro ao carregar dados financeiros.');
   });
+
+  it('deve atualizar anoSelecionado e recarregar painel ao chamar onAnoChange', () => {
+    component.onAnoChange(2025);
+
+    expect(component.anoSelecionado).toBe(2025);
+    expect(financeiroServiceSpy.obterPainel).toHaveBeenCalledWith(2025);
+  });
 });

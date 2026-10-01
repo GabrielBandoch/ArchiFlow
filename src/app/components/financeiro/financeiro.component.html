@@ -64,7 +64,11 @@
 
     <div class="bento-layout">
       <div class="bento-chart-area">
-        <app-financeiro-grafico [receitasPorMes]="receitasPorMes"></app-financeiro-grafico>
+        <app-financeiro-grafico 
+          [receitasPorMes]="receitasPorMes"
+          [selectedYear]="anoSelecionado"
+          (anoChange)="onAnoChange($event)">
+        </app-financeiro-grafico>
       </div>
       <div class="bento-alerts-area">
         <app-financeiro-alertas 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../../shared';
 import { ReceitaMes } from '../../../../models/financeiro.model';
@@ -12,7 +12,8 @@ import { ReceitaMes } from '../../../../models/financeiro.model';
 })
 export class FinanceiroGraficoComponent {
   @Input() receitasPorMes: ReceitaMes[] = [];
-  selectedYear = new Date().getFullYear();
+  @Input() selectedYear = new Date().getFullYear();
+  @Output() anoChange = new EventEmitter<number>();
   anoOptions = [2026, 2025, 2024];
 
   get maxValor(): number {
@@ -47,6 +48,7 @@ export class FinanceiroGraficoComponent {
 
   selectAno(ano: number): void {
     this.selectedYear = ano;
+    this.anoChange.emit(ano);
   }
 }
 

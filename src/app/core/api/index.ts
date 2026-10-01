@@ -6,4 +6,5 @@ export * from './projetos/projeto.service';
 export * from './projetos/arquivo.service';
 export * from './honorarios/honorario.service';
 export * from './financeiro/financeiro.service';
+export * from './usuarios/usuario.service';
 export * from './propostas/configuracao-proposta-api.service';
