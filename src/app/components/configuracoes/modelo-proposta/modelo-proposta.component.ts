@@ -145,9 +145,15 @@ export class ModeloPropostaComponent implements OnInit {
 
   public restaurarPadrao(): void {
     if (confirm('Deseja restaurar todas as configurações e textos para o padrão original do ArchiFlow?')) {
-      const padrao = this.configService.resetarPadroes();
-      this.form.patchValue(padrao);
-      this.notificationService.info('Configurações restauradas com sucesso.');
+      this.configService.resetarPadroes().subscribe({
+        next: (padrao) => {
+          this.form.patchValue(padrao);
+          this.notificationService.info('Configurações restauradas com sucesso.');
+        },
+        error: () => {
+          this.notificationService.error('Erro ao restaurar configurações padrão.');
+        }
+      });
     }
   }
 
