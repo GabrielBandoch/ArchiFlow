@@ -20,10 +20,9 @@ export class PropostasRecentesComponent {
   obterBadgeStatus(status: string): string {
     const mapa: Record<string, string> = {
       'aprovada': 'status-green',
-      'aceita': 'status-green',
       'enviada': 'status-blue',
       'rascunho': 'status-neutral',
-      'rejeitada': 'status-red'
+      'recusada': 'status-red'
     };
     const key = status?.toLowerCase().replace(/[^a-z]/g, '') || '';
     return mapa[key] || 'status-neutral';

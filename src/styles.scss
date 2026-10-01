@@ -207,3 +207,111 @@ a {
 .w-max-md { max-width: 600px; }
 .w-max-lg { max-width: 800px; }
 .lh-relaxed { line-height: 1.6; }
+
+/* ==========================================================================
+   GLOBAL PRINT STYLES - CLEAN ISOLATED A4 ARCHITECTURAL PROPOSAL
+   ========================================================================== */
+@media print {
+  // Suppress browser injected header (date/title) and footer (URL/pages)
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm 8mm 10mm !important;
+  }
+
+  // 1. Hide all application layout, navigation, sidebars, headers, footers, toolbars, buttons, and app content
+  .sidebar,
+  .footer,
+  .main-section > .footer,
+  .no-print,
+  .modal-toolbar,
+  .page-header,
+  .nav-tabs-bar,
+  .simulador-layout,
+  .historico-tab-content,
+  .config-editor-grid,
+  .chat-widget-container,
+  .af-toast,
+  .af-global-loading,
+  .btn-table-action,
+  .btn-close-modal,
+  .unconfigured-warning-banner {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  // 2. ONLY make the PDF document sheet visible and clean
+  .modal-backdrop,
+  .modal-dialog-pdf,
+  .modal-document-container,
+  .a4-document-sheet,
+  .a4-document-sheet * {
+    visibility: visible !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .modal-backdrop {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+    display: block !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .modal-dialog-pdf {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .modal-document-container {
+    overflow: visible !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    background: #ffffff !important;
+  }
+
+  .a4-document-sheet {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    box-sizing: border-box !important;
+    padding: 2mm 0 2mm 0 !important; // Compact, perfectly balanced padding
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+}

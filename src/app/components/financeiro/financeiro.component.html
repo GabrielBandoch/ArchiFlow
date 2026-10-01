@@ -1,0 +1,112 @@
+<div class="financeiro-page d-flex flex-direction-column gap-xl">
+  <div class="page-header d-flex justify-content-between align-items-start flex-wrap gap-md">
+    <div class="d-flex flex-direction-column gap-xs">
+      <h1 class="page-title font-headline-lg m-0">Visão Financeira & Fluxo de Caixa</h1>
+      <p class="page-subtitle font-body-md text-on-surface-variant m-0">
+        Gestão integrada de honorários contratuais, parcelas a vencer, faturamento e despesas operacionais.
+      </p>
+    </div>
+
+    <div class="header-actions d-flex align-items-center gap-sm flex-wrap">
+      <app-button variant="outline" (btnClick)="carregarDados()" [disabled]="loading">
+        <span class="material-symbols-outlined">refresh</span>
+        Atualizar
+      </app-button>
+
+      <app-button variant="secondary" (btnClick)="abrirModalNovaDespesa()">
+        <span class="material-symbols-outlined">trending_down</span>
+        Nova Despesa
+      </app-button>
+
+      <app-button variant="primary" (btnClick)="abrirModalNovaParcela()">
+        <span class="material-symbols-outlined">add</span>
+        Nova Receita / Parcela
+      </app-button>
+    </div>
+  </div>
+
+  <div class="nav-tabs-bar d-flex align-items-center">
+    <div class="tabs-container d-flex gap-xs p-xs">
+      <button 
+        type="button" 
+        class="nav-tab-btn font-label-md" 
+        [class.active]="abaAtiva === 'geral'"
+        (click)="setAba('geral')">
+        <span class="material-symbols-outlined">account_balance</span>
+        Visão Consolidada & Parcelas
+      </button>
+      <button 
+        type="button" 
+        class="nav-tab-btn font-label-md" 
+        [class.active]="abaAtiva === 'despesas'"
+        (click)="setAba('despesas')">
+        <span class="material-symbols-outlined">receipt_long</span>
+        Saídas & Despesas de Projetos
+        <span class="tab-counter" *ngIf="despesas.length > 0">{{ despesas.length }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-state d-flex justify-content-center align-items-center p-2xl" *ngIf="loading">
+    <app-spinner size="lg"></app-spinner>
+  </div>
+
+  <div class="tab-content d-flex flex-direction-column gap-xl" *ngIf="!loading && abaAtiva === 'geral'">
+    <app-financeiro-kpis
+      [totalPrevisto]="painel?.totalPrevisto || 0"
+      [totalRecebido]="painel?.totalRecebido || 0"
+      [totalPendente]="painel?.totalPendente || 0"
+      [totalAtrasado]="painel?.totalAtrasado || 0"
+      [totalDespesas]="painel?.totalDespesas || 0"
+      [saldoLiquido]="painel?.saldoLiquido || 0"
+      [variacaoMensal]="painel?.variacaoPercentualMesAnterior || 0">
+    </app-financeiro-kpis>
+
+    <div class="bento-layout">
+      <div class="bento-chart-area">
+        <app-financeiro-grafico [receitasPorMes]="receitasPorMes"></app-financeiro-grafico>
+      </div>
+      <div class="bento-alerts-area">
+        <app-financeiro-alertas 
+          [alertas]="alertas" 
+          (darBaixa)="abrirModalBaixaPorId($event)">
+        </app-financeiro-alertas>
+      </div>
+    </div>
+
+    <app-financeiro-tabela-parcelas
+      [parcelas]="parcelas"
+      (darBaixa)="abrirModalBaixa($event)"
+      (excluir)="excluirParcela($event)"
+      (novaParcela)="abrirModalNovaParcela()">
+    </app-financeiro-tabela-parcelas>
+  </div>
+
+  <div class="tab-content d-flex flex-direction-column gap-xl" *ngIf="!loading && abaAtiva === 'despesas'">
+    <app-financeiro-tabela-despesas
+      [despesas]="despesas"
+      (excluir)="excluirDespesa($event)"
+      (novaDespesa)="abrirModalNovaDespesa()">
+    </app-financeiro-tabela-despesas>
+  </div>
+
+  <app-dar-baixa-parcela-modal
+    [show]="showBaixaModal"
+    [parcela]="selectedParcelaParaBaixa"
+    (close)="showBaixaModal = false"
+    (baixada)="onParcelaBaixada()">
+  </app-dar-baixa-parcela-modal>
+
+  <app-criar-parcela-modal
+    [show]="showNovaParcelaModal"
+    (close)="showNovaParcelaModal = false"
+    (salvo)="onDadosAtualizados()">
+  </app-criar-parcela-modal>
+
+  <app-criar-despesa-modal
+    [show]="showNovaDespesaModal"
+    (close)="showNovaDespesaModal = false"
+    (salva)="onDadosAtualizados()">
+  </app-criar-despesa-modal>
+</div>
+

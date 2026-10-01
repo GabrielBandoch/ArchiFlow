@@ -1,0 +1,233 @@
+.table-container-card {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-md);
+  box-shadow: var(--af-shadow-sm);
+  overflow: hidden;
+}
+
+.table-toolbar {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--af-outline-variant);
+}
+
+.table-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--af-radius-md);
+  background-color: var(--af-surface-container-high);
+  color: var(--af-primary);
+  flex-shrink: 0;
+
+  span {
+    font-size: 20px;
+  }
+}
+
+.table-title {
+  color: var(--af-on-surface);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.filter-tabs {
+  background-color: var(--af-surface-container-low);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-sm);
+  gap: 2px;
+
+  .filter-tab {
+    border: none;
+    background: transparent;
+    padding: 6px 14px;
+    border-radius: var(--af-radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--af-on-surface-variant);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--af-on-surface);
+    }
+
+    &.active {
+      background-color: var(--af-primary);
+      color: #ffffff;
+      box-shadow: var(--af-shadow-sm);
+    }
+  }
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    font-size: 18px;
+    color: var(--af-secondary);
+  }
+
+  .search-input {
+    padding: 8px 12px 8px 34px;
+    border-radius: var(--af-radius-sm);
+    border: 1px solid var(--af-outline-variant);
+    font-size: 13px;
+    background-color: var(--af-surface-container-lowest);
+    color: var(--af-on-surface);
+    width: 220px;
+    transition: all 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--af-primary);
+      width: 260px;
+    }
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.data-table {
+  border-collapse: collapse;
+  text-align: left;
+
+  th {
+    padding: 12px 18px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--af-on-surface-variant);
+    background-color: var(--af-surface-container-low);
+    border-bottom: 1px solid var(--af-outline-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--af-outline-variant);
+    vertical-align: middle;
+  }
+
+  .table-row {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: var(--af-surface-container-low);
+    }
+  }
+}
+
+.badge-parcela {
+  background-color: var(--af-surface-container-high);
+  color: var(--af-on-surface);
+  padding: 3px 8px;
+  border-radius: var(--af-radius-full);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--af-radius-full);
+  font-weight: 600;
+  font-size: 11.5px;
+
+  &.status-pago {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.status-pendente {
+    background-color: #fff3e0;
+    color: #e65100;
+  }
+
+  &.status-atrasado {
+    background-color: #ffdad6;
+    color: #93000a;
+  }
+}
+
+.btn-table-action {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--af-radius-sm);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &.btn-action-pay {
+    color: #2e7d32;
+    &:hover {
+      background-color: #e8f5e9;
+    }
+  }
+
+  &.btn-action-delete {
+    color: var(--af-secondary);
+    &:hover {
+      background-color: rgba(186, 26, 26, 0.1);
+      color: var(--af-error, #ba1a1a);
+    }
+  }
+}
+
+.table-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--af-outline-variant);
+  background-color: var(--af-surface-container-lowest);
+}
+
+.btn-page {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--af-radius-sm);
+  border: 1px solid var(--af-outline-variant);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--af-on-surface);
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: var(--af-surface-container);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.empty-table-box {
+  .empty-icon-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--af-radius-full);
+    background-color: var(--af-surface-container-low);
+    color: var(--af-primary);
+
+    span {
+      font-size: 28px;
+    }
+  }
+}
+

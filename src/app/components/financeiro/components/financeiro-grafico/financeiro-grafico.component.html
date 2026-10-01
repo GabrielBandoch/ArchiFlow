@@ -1,0 +1,102 @@
+<div class="chart-card d-flex flex-direction-column">
+  <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-sm">
+    <div class="d-flex align-items-center gap-sm">
+      <div class="chart-icon-box d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">analytics</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <h3 class="chart-title font-headline-md m-0">Receitas & Despesas por Mês</h3>
+        <span class="chart-subtitle font-label-sm text-outline">Comparativo de faturamento liquidado vs despesas operacionais</span>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-md flex-wrap">
+      <div class="legend-group d-flex align-items-center gap-md">
+        <div class="legend-item d-flex align-items-center gap-xs">
+          <span class="legend-dot recebido"></span>
+          <span class="font-label-sm text-on-surface-variant">Recebido</span>
+        </div>
+        <div class="legend-item d-flex align-items-center gap-xs">
+          <span class="legend-dot previsto"></span>
+          <span class="font-label-sm text-on-surface-variant">Previsto</span>
+        </div>
+        <div class="legend-item d-flex align-items-center gap-xs">
+          <span class="legend-dot despesa"></span>
+          <span class="font-label-sm text-on-surface-variant">Despesas</span>
+        </div>
+      </div>
+
+      <div class="year-pills d-flex p-xs">
+        <button 
+          *ngFor="let ano of anoOptions" 
+          type="button" 
+          class="btn-year font-label-sm"
+          [class.active]="selectedYear === ano"
+          (click)="selectAno(ano)">
+          {{ ano }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="svg-chart-container flex-grow-1">
+    <svg viewBox="0 0 700 240" class="chart-svg" preserveAspectRatio="none">
+      <line x1="55" y1="35" x2="685" y2="35" class="grid-line" />
+      <line x1="55" y1="90" x2="685" y2="90" class="grid-line" />
+      <line x1="55" y1="145" x2="685" y2="145" class="grid-line" />
+      <line x1="55" y1="205" x2="685" y2="205" class="grid-baseline" />
+
+      <text x="50" y="38" text-anchor="end" class="axis-scale-text">
+        {{ maxValor | currency:'BRL':'symbol':'1.0-0':'pt-BR' }}
+      </text>
+      <text x="50" y="93" text-anchor="end" class="axis-scale-text">
+        {{ (maxValor * 0.66) | currency:'BRL':'symbol':'1.0-0':'pt-BR' }}
+      </text>
+      <text x="50" y="148" text-anchor="end" class="axis-scale-text">
+        {{ (maxValor * 0.33) | currency:'BRL':'symbol':'1.0-0':'pt-BR' }}
+      </text>
+      <text x="50" y="208" text-anchor="end" class="axis-scale-text">R$ 0</text>
+
+      <g *ngFor="let item of receitasPorMes; let i = index">
+        <rect
+          [attr.x]="getBarX(i, 'recebido')"
+          [attr.y]="getBarY(item.valorRecebido)"
+          [attr.width]="8"
+          [attr.height]="getBarHeight(item.valorRecebido)"
+          rx="3"
+          class="svg-bar bar-recebido">
+          <title>{{ item.mes }}: Recebido {{ item.valorRecebido | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</title>
+        </rect>
+
+        <rect
+          [attr.x]="getBarX(i, 'previsto')"
+          [attr.y]="getBarY(item.valorPrevisto)"
+          [attr.width]="8"
+          [attr.height]="getBarHeight(item.valorPrevisto)"
+          rx="3"
+          class="svg-bar bar-previsto">
+          <title>{{ item.mes }}: Previsto {{ item.valorPrevisto | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</title>
+        </rect>
+
+        <rect
+          [attr.x]="getBarX(i, 'despesa')"
+          [attr.y]="getBarY(item.valorDespesas)"
+          [attr.width]="8"
+          [attr.height]="getBarHeight(item.valorDespesas)"
+          rx="3"
+          class="svg-bar bar-despesa">
+          <title>{{ item.mes }}: Despesas {{ item.valorDespesas | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</title>
+        </rect>
+
+        <text
+          [attr.x]="getMonthX(i)"
+          y="226"
+          text-anchor="middle"
+          class="svg-month-label">
+          {{ item.mes }}
+        </text>
+      </g>
+    </svg>
+  </div>
+</div>
+

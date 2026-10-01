@@ -1,0 +1,120 @@
+.financeiro-page {
+  padding: 32px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100%;
+
+  @media (max-width: 768px) {
+    padding: 20px 16px;
+  }
+}
+
+.page-header {
+  padding-bottom: var(--af-space-md);
+  border-bottom: 1px solid var(--af-outline-variant);
+}
+
+.page-title {
+  color: var(--af-on-surface);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+.nav-tabs-bar {
+  .tabs-container {
+    background-color: var(--af-surface-container-low);
+    border: 1px solid var(--af-outline-variant);
+    border-radius: var(--af-radius-md);
+    width: fit-content;
+  }
+
+  .nav-tab-btn {
+    border: none;
+    background: transparent;
+    padding: 8px 18px;
+    border-radius: var(--af-radius-sm);
+    font-weight: 600;
+    color: var(--af-on-surface-variant);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+
+    .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    &:hover {
+      background-color: var(--af-surface-container);
+      color: var(--af-on-surface);
+    }
+
+    &.active {
+      background-color: var(--af-primary);
+      color: #ffffff;
+      box-shadow: var(--af-shadow-sm);
+
+      .material-symbols-outlined {
+        color: #ffffff;
+      }
+
+      .tab-counter {
+        background-color: rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+      }
+    }
+  }
+
+  .tab-counter {
+    background-color: var(--af-surface-container-high);
+    color: var(--af-on-surface);
+    padding: 2px 7px;
+    border-radius: var(--af-radius-full);
+    font-size: 11px;
+    font-weight: 700;
+  }
+}
+
+.bento-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--af-space-md);
+  align-items: stretch;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bento-chart-area {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+
+  app-financeiro-grafico {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+  }
+}
+
+.bento-alerts-area {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+
+  app-financeiro-alertas {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+  }
+}
+

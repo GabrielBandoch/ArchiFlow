@@ -1,0 +1,56 @@
+<div class="alerts-card d-flex flex-direction-column">
+  <div class="card-header d-flex justify-content-between align-items-center mb-md">
+    <div class="d-flex align-items-center gap-sm">
+      <div class="alerts-icon-box d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">notifications_active</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <h3 class="alerts-title font-headline-md m-0">Alertas Financeiros</h3>
+        <span class="alerts-subtitle font-label-sm text-outline">Vencimentos próximos e pendências</span>
+      </div>
+    </div>
+    <span class="badge-alert-count font-label-sm" *ngIf="alertas.length > 0">
+      {{ alertas.length }} {{ alertas.length === 1 ? 'alerta' : 'alertas' }}
+    </span>
+  </div>
+
+  <div class="alerts-list d-flex flex-direction-column gap-sm flex-grow-1" *ngIf="alertas.length > 0">
+    <div 
+      *ngFor="let item of alertas" 
+      class="alert-item d-flex align-items-center justify-content-between p-md"
+      [class.is-overdue]="item.emAtraso">
+      <div class="d-flex align-items-center gap-md min-w-0">
+        <div class="alert-icon-circle d-flex align-items-center justify-content-center" [class.is-danger]="item.emAtraso">
+          <span class="material-symbols-outlined">
+            {{ item.emAtraso ? 'priority_high' : 'event' }}
+          </span>
+        </div>
+        <div class="d-flex flex-direction-column gap-xs min-w-0">
+          <span class="alert-title font-label-md font-weight-bold text-on-surface truncate">{{ item.titulo }}</span>
+          <span class="alert-sub font-body-md" [class.text-danger]="item.emAtraso">{{ item.subtitulo }}</span>
+          <span class="alert-val font-label-sm font-weight-bold" [class.text-danger]="item.emAtraso">
+            {{ item.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+          </span>
+        </div>
+      </div>
+
+      <button 
+        type="button" 
+        class="btn-quick-pay d-flex align-items-center gap-xs font-label-sm"
+        (click)="onDarBaixa(item.parcelaId)"
+        title="Dar baixa nesta parcela">
+        <span class="material-symbols-outlined">check</span>
+        Baixar
+      </button>
+    </div>
+  </div>
+
+  <div class="empty-alerts d-flex flex-direction-column align-items-center justify-content-center p-xl gap-sm flex-grow-1" *ngIf="alertas.length === 0">
+    <div class="empty-icon-circle d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined text-success">verified</span>
+    </div>
+    <span class="font-label-md font-weight-bold text-on-surface">Tudo em dia!</span>
+    <span class="font-body-md text-on-surface-variant text-center max-w-240">Nenhuma parcela em atraso ou vencendo nos próximos 7 dias.</span>
+  </div>
+</div>
+

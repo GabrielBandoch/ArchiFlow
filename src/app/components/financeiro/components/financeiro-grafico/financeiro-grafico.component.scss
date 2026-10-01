@@ -1,0 +1,134 @@
+.chart-card {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-md);
+  padding: 20px 22px;
+  box-shadow: var(--af-shadow-sm);
+  min-height: 380px;
+}
+
+.chart-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--af-radius-md);
+  background-color: var(--af-surface-container-high);
+  color: var(--af-primary);
+  flex-shrink: 0;
+
+  span {
+    font-size: 22px;
+  }
+}
+
+.chart-title {
+  color: var(--af-on-surface);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  &.recebido {
+    background-color: #2e7d32;
+  }
+
+  &.previsto {
+    background-color: var(--af-primary);
+  }
+
+  &.despesa {
+    background-color: var(--af-error, #ba1a1a);
+  }
+}
+
+.year-pills {
+  background-color: var(--af-surface-container-low);
+  border: 1px solid var(--af-outline-variant);
+  border-radius: var(--af-radius-sm);
+  gap: 2px;
+}
+
+.btn-year {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  border-radius: var(--af-radius-sm);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--af-on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    color: var(--af-on-surface);
+  }
+
+  &.active {
+    background-color: var(--af-primary);
+    color: #ffffff;
+    box-shadow: var(--af-shadow-sm);
+  }
+}
+
+.svg-chart-container {
+  width: 100%;
+  height: 240px;
+  margin-top: 16px;
+  position: relative;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.grid-line {
+  stroke: var(--af-outline-variant);
+  stroke-dasharray: 4 4;
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.grid-baseline {
+  stroke: var(--af-outline-variant);
+  stroke-width: 1.5;
+}
+
+.axis-scale-text {
+  font-size: 10px;
+  font-family: inherit;
+  fill: var(--af-secondary);
+}
+
+.svg-month-label {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  fill: var(--af-on-surface-variant);
+}
+
+.svg-bar {
+  transition: opacity 0.2s, transform 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &.bar-recebido {
+    fill: #2e7d32;
+  }
+
+  &.bar-previsto {
+    fill: var(--af-primary);
+  }
+
+  &.bar-despesa {
+    fill: var(--af-error, #ba1a1a);
+  }
+}
+

@@ -1,30 +1,38 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 import { PortalLayoutComponent } from './portal-layout.component';
 import { AuthService } from '../../core/services/auth.service';
+import { ConfiguracaoPropostaService } from '../../core/services/configuracao-proposta.service';
 
 describe('PortalLayoutComponent', () => {
   let component: PortalLayoutComponent;
   let fixture: ComponentFixture<PortalLayoutComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
+  let configServiceSpy: jasmine.SpyObj<ConfiguracaoPropostaService>;
 
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['logout'], {
       currentUserValue: {
         id: 'usr-1',
         nome: 'Marina Sievert',
-        email: 'marina@duna.com',
+        email: 'marina@cliente.com',
         perfil: 'Cliente'
       }
     });
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    configServiceSpy = jasmine.createSpyObj('ConfiguracaoPropostaService', ['getConfiguracao'], {
+      configuracao$: of({ nomeEscritorio: 'Studio Modelo' } as any)
+    });
+    configServiceSpy.getConfiguracao.and.returnValue({ nomeEscritorio: 'Studio Modelo' } as any);
 
     await TestBed.configureTestingModule({
       imports: [PortalLayoutComponent],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy }
+        { provide: Router, useValue: routerSpy },
+        { provide: ConfiguracaoPropostaService, useValue: configServiceSpy }
       ]
     }).compileComponents();
 

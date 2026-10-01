@@ -91,6 +91,10 @@ export const appRoutes: Routes = [
         loadComponent: () => import('./components/configuracoes/templates-projeto/templates-projeto.component').then(m => m.TemplatesProjetoComponent)
       },
       {
+        path: 'modelo-proposta',
+        loadComponent: () => import('./components/configuracoes/modelo-proposta/modelo-proposta.component').then(m => m.ModeloPropostaComponent)
+      },
+      {
         path: 'origens-lead',
         loadComponent: () => import('./components/leads/origens-lead/origens-lead.component').then(m => m.OrigensLeadComponent)
       }
@@ -104,6 +108,17 @@ export const appRoutes: Routes = [
       {
         path: '',
         loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      }
+    ]
+  },
+  {
+    path: 'financeiro',
+    canActivate: [staffGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/financeiro/financeiro.component').then(m => m.FinanceiroComponent)
       }
     ]
   },

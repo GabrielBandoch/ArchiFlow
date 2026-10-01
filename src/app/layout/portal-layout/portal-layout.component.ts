@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { ConfiguracaoPropostaService } from '../../core/services/configuracao-proposta.service';
 import { DESIGN_SYSTEM } from '../../shared';
 
 @Component({
@@ -13,7 +14,12 @@ import { DESIGN_SYSTEM } from '../../shared';
 })
 export class PortalLayoutComponent {
   authService = inject(AuthService);
+  configService = inject(ConfiguracaoPropostaService);
   router = inject(Router);
+
+  get nomeEscritorio(): string {
+    return this.configService.getConfiguracao()?.nomeEscritorio || 'Escritório de Arquitetura';
+  }
 
   get currentUser() {
     return this.authService.currentUserValue;
