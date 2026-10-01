@@ -1,0 +1,261 @@
+<div class="equipe-page d-flex flex-direction-column gap-lg">
+  
+  <!-- Header da Página -->
+  <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-md">
+    <div class="header-titles d-flex flex-direction-column gap-xs">
+      <h1 class="page-title font-headline-md m-0">Gestão de Equipe e Colaboradores</h1>
+      <p class="page-subtitle font-body-md text-on-surface-variant m-0">
+        Gerencie os arquitetos sócios, colaboradores, estagiários e equipe de apoio do seu escritório.
+      </p>
+    </div>
+
+    <div class="header-actions" *ngIf="podeGerenciar()">
+      <app-button variant="primary" (btnClick)="abrirModalConvidar()">
+        <span class="material-symbols-outlined icon-btn-inline">person_add</span>
+        Convidar Membro
+      </app-button>
+    </div>
+  </div>
+
+  <!-- Métricas Rápidas -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-primary-soft text-primary">
+        <span class="material-symbols-outlined">groups</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Total da Equipe</span>
+        <span class="metric-value font-headline-sm">{{ totalMembros }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-success-soft text-success">
+        <span class="material-symbols-outlined">check_circle</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Membros Ativos</span>
+        <span class="metric-value font-headline-sm">{{ totalAtivos }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-info-soft text-info">
+        <span class="material-symbols-outlined">architecture</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Arquitetos</span>
+        <span class="metric-value font-headline-sm">{{ totalArquitetos }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-warning-soft text-warning">
+        <span class="material-symbols-outlined">badge</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Apoio & Estagiários</span>
+        <span class="metric-value font-headline-sm">{{ totalApoio }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Filtros e Busca -->
+  <div class="filters-bar d-flex justify-content-between align-items-center flex-wrap gap-sm">
+    <div class="search-input-wrap flex-grow-1">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input 
+        type="text" 
+        class="search-input" 
+        [(ngModel)]="termoBusca" 
+        placeholder="Buscar por nome, e-mail ou cargo..." 
+      />
+    </div>
+
+    <div class="filters-group d-flex gap-xs flex-wrap align-items-center">
+      <div class="filter-select-wrap">
+        <app-select
+          placeholder="Todos os Papéis"
+          [options]="filtroRoleOptions"
+          [(ngModel)]="filtroRole">
+        </app-select>
+      </div>
+
+      <div class="filter-select-wrap">
+        <app-select
+          placeholder="Todos os Status"
+          [options]="filtroStatusOptions"
+          [(ngModel)]="filtroStatus">
+        </app-select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado de Carregamento -->
+  <div class="loading-box d-flex justify-content-center align-items-center" *ngIf="loading">
+    <span class="material-symbols-outlined spinner-icon">progress_activity</span>
+    <span class="margin-left-xs font-body-md">Carregando membros da equipe...</span>
+  </div>
+
+  <!-- Lista de Membros -->
+  <div class="members-grid" *ngIf="!loading && membrosFiltrados.length > 0">
+    <div *ngFor="let membro of membrosFiltrados" class="member-card d-flex flex-direction-column justify-content-between" [class.inactive]="!membro.ativo">
+      
+      <div class="member-card-body d-flex flex-direction-column gap-sm">
+        <div class="member-header-row d-flex align-items-start justify-content-between gap-sm">
+          <div class="member-identity d-flex align-items-center gap-sm">
+            <div class="avatar-circle">
+              {{ obterIniciais(membro.nome) }}
+            </div>
+            <div class="member-title-block d-flex flex-direction-column">
+              <div class="d-flex align-items-center gap-xs">
+                <h3 class="member-name font-weight-bold m-0" [title]="membro.nome">{{ membro.nome }}</h3>
+                <span class="you-badge font-label-xs" *ngIf="isCurrentUser(membro)">Você</span>
+              </div>
+              <span class="member-email font-body-sm text-on-surface-variant">{{ membro.email }}</span>
+            </div>
+          </div>
+
+          <span class="status-pill font-label-xs" [class.active-pill]="membro.ativo" [class.inactive-pill]="!membro.ativo">
+            {{ membro.ativo ? 'Ativo' : 'Inativo' }}
+          </span>
+        </div>
+
+        <div class="member-details-meta d-flex flex-wrap gap-xs align-items-center margin-top-xs">
+          <span class="role-badge font-label-xs" [ngClass]="obterBadgeRoleClass(membro.role)">
+            {{ obterLabelRole(membro.role) }}
+          </span>
+
+          <span class="cargo-tag font-label-xs" *ngIf="membro.cargo">
+            <span class="material-symbols-outlined font-size-14">badge</span>
+            {{ membro.cargo }}
+          </span>
+
+          <span class="phone-tag font-label-xs" *ngIf="membro.telefone">
+            <span class="material-symbols-outlined font-size-14">phone</span>
+            {{ membro.telefone }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Rodapé de Ações do Cartão -->
+      <div class="member-card-footer d-flex justify-content-between align-items-center margin-top-md pt-sm border-top" *ngIf="podeGerenciar()">
+        <div class="status-toggle-wrap">
+          <button 
+            type="button" 
+            class="action-text-btn font-label-xs" 
+            [class.text-error]="membro.ativo" 
+            [class.text-success]="!membro.ativo"
+            [disabled]="isCurrentUser(membro) && membro.ativo"
+            (click)="alternarStatus(membro)"
+            [title]="membro.ativo ? 'Desativar acesso do colaborador' : 'Reativar acesso'">
+            <span class="material-symbols-outlined font-size-16">
+              {{ membro.ativo ? 'person_off' : 'person_check' }}
+            </span>
+            {{ membro.ativo ? 'Inativar' : 'Reativar' }}
+          </button>
+        </div>
+
+        <div class="actions-group d-flex gap-xxs align-items-center">
+          <button 
+            type="button" 
+            class="icon-action-btn" 
+            (click)="abrirModalRedefinir(membro)" 
+            title="Redefinir Senha de Acesso">
+            <span class="material-symbols-outlined">lock_reset</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="icon-action-btn" 
+            (click)="abrirModalEditar(membro)" 
+            title="Editar Colaborador">
+            <span class="material-symbols-outlined">edit</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="icon-action-btn text-error" 
+            [disabled]="isCurrentUser(membro)"
+            (click)="abrirModalExcluir(membro)" 
+            title="Excluir Colaborador">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Estado Vazio -->
+  <div class="empty-state-box d-flex flex-direction-column align-items-center justify-content-center" *ngIf="!loading && membrosFiltrados.length === 0">
+    <span class="material-symbols-outlined empty-state-icon">group_off</span>
+    <h3 class="font-headline-sm margin-top-xs">Nenhum membro encontrado</h3>
+    <p class="text-on-surface-variant font-body-md" *ngIf="termoBusca || filtroRole !== 'todos' || filtroStatus !== 'todos'">
+      Tente ajustar os filtros ou a busca para encontrar os colaboradores.
+    </p>
+    <p class="text-on-surface-variant font-body-md" *ngIf="!termoBusca && filtroRole === 'todos' && filtroStatus === 'todos'">
+      Comece convidando os primeiros colaboradores da sua equipe.
+    </p>
+    <app-button variant="primary" (btnClick)="abrirModalConvidar()" class="margin-top-sm" *ngIf="podeGerenciar()">
+      <span class="material-symbols-outlined icon-btn-inline">person_add</span>
+      Convidar Primeiro Membro
+    </app-button>
+  </div>
+
+</div>
+
+<!-- Modal de Convidar / Editar Membro -->
+<app-membro-equipe-modal
+  *ngIf="modalAberto"
+  [show]="modalAberto"
+  [membroParaEdicao]="membroSelecionado"
+  (close)="fecharModal()"
+  (saved)="onMembroSalvo($event)">
+</app-membro-equipe-modal>
+
+<!-- Modal de Redefinir Senha -->
+<app-dialog
+  [show]="modalRedefinirAberto"
+  dialogTitle="Redefinir Senha de Acesso"
+  size="sm"
+  (close)="fecharModalRedefinir()">
+  <div class="d-flex flex-direction-column gap-sm" *ngIf="membroRedefinir">
+    <p class="font-body-sm m-0">
+      Deseja redefinir o acesso do colaborador <strong>{{ membroRedefinir.nome }}</strong>?
+    </p>
+    
+    <div class="field-item margin-top-xs">
+      <label class="form-label font-label-sm">Nova Senha Manual (Opcional)</label>
+      <input 
+        type="password" 
+        class="search-input w-full" 
+        [(ngModel)]="novaSenhaManual" 
+        placeholder="Deixe vazio para gerar automaticamente" 
+      />
+      <span class="font-label-xs text-on-surface-variant margin-top-xxs">
+        Se deixado em branco, geraremos uma senha aleatória segura e enviaremos para <strong>{{ membroRedefinir.email }}</strong>.
+      </span>
+    </div>
+
+    <div class="dialog-actions d-flex justify-content-end gap-xs margin-top-md">
+      <app-button variant="ghost" (btnClick)="fecharModalRedefinir()" [disabled]="salvandoSenha">
+        Cancelar
+      </app-button>
+      <app-button variant="primary" (btnClick)="confirmarRedefinirSenha()" [disabled]="salvandoSenha">
+        <span class="material-symbols-outlined icon-btn-inline" *ngIf="!salvandoSenha">lock_reset</span>
+        <span class="material-symbols-outlined icon-btn-inline spinner-icon" *ngIf="salvandoSenha">progress_activity</span>
+        {{ salvandoSenha ? 'Redefinindo...' : 'Confirmar e Enviar' }}
+      </app-button>
+    </div>
+  </div>
+</app-dialog>
+
+<!-- Modal de Exclusão -->
+<app-confirm-dialog
+  *ngIf="modalExcluirAberto"
+  title="Remover Colaborador da Equipe"
+  [message]="'Tem certeza que deseja remover ' + (membroExcluir?.nome || 'este colaborador') + ' da equipe? Esta ação não pode ser desfeita.'"
+  (confirm)="confirmarExcluir()"
+  (close)="fecharModalExcluir()">
+</app-confirm-dialog>

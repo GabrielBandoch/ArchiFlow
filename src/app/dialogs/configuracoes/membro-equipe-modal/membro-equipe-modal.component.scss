@@ -1,0 +1,56 @@
+.form-section-header {
+  border-bottom: 1px solid var(--color-outline-variant, #e0e0e0);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  .section-badge-title {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary, #6200ee);
+  }
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  margin-bottom: 0.375rem;
+  color: var(--color-on-surface, #1c1b1f);
+  font-weight: 500;
+}
+
+
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+.membro-form {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-actions {
+  margin-top: auto !important;
+  padding-top: 1rem;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

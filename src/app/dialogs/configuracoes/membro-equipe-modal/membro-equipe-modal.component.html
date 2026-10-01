@@ -1,0 +1,104 @@
+<app-dialog 
+  [show]="show" 
+  [dialogTitle]="isEditing ? 'Editar Membro da Equipe' : 'Convidar Novo Membro da Equipe'" 
+  size="md" 
+  [overflowVisible]="true"
+  (close)="onClose()">
+  
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md membro-form">
+    
+    <div class="form-section-header">
+      <span class="section-badge-title">Dados do Colaborador</span>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-input 
+          id="membroNome"
+          type="text" 
+          label="Nome Completo" 
+          placeholder="Ex: Carlos Eduardo Silva" 
+          formControlName="nome"
+          [required]="true"
+          [error]="submitted && f['nome'].errors ? 'Nome completo é obrigatório (mínimo 2 caracteres).' : undefined">
+        </app-input>
+      </div>
+
+      <div class="field-item">
+        <app-input 
+          id="membroEmail"
+          type="email" 
+          label="E-mail Profissional" 
+          placeholder="colaborador@estudio.com" 
+          formControlName="email"
+          [required]="true"
+          [error]="submitted && f['email'].errors ? 'E-mail válido é obrigatório.' : undefined">
+        </app-input>
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-select 
+          id="membroRole"
+          label="Função / Perfil de Acesso"
+          [options]="rolesOptions"
+          formControlName="role"
+          [required]="true"
+          [error]="submitted && f['role'].errors ? 'Selecione uma função de acesso.' : undefined">
+        </app-select>
+      </div>
+
+      <div class="field-item">
+        <app-input 
+          id="membroCargo"
+          type="text" 
+          label="Cargo / Especialidade" 
+          placeholder="Ex: Arquiteto de Interiores, Projetista BIM" 
+          formControlName="cargo">
+        </app-input>
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-input 
+          id="membroTelefone"
+          type="text" 
+          label="Telefone / WhatsApp" 
+          placeholder="(11) 98888-7777" 
+          formControlName="telefone">
+        </app-input>
+      </div>
+
+      <div class="field-item" *ngIf="!isEditing">
+        <app-input 
+          id="membroSenha"
+          type="password" 
+          label="Senha Temporária (Opcional)" 
+          placeholder="Deixe vazio para gerar automaticamente" 
+          formControlName="senhaTemporaria">
+        </app-input>
+        <span class="font-label-xs text-on-surface-variant margin-top-xxs d-block">
+          Se não informada, uma senha segura será gerada e enviada por e-mail.
+        </span>
+      </div>
+    </div>
+
+    <div class="dialog-actions d-flex justify-content-end align-items-center gap-xs margin-top-md">
+      <app-button variant="ghost" type="button" (btnClick)="onClose()" [disabled]="saving">
+        Cancelar
+      </app-button>
+      <app-button variant="primary" type="submit" [disabled]="saving">
+        <span class="material-symbols-outlined icon-btn-inline" *ngIf="!saving">
+          {{ isEditing ? 'check' : 'person_add' }}
+        </span>
+        <span class="material-symbols-outlined icon-btn-inline spinner-icon" *ngIf="saving">
+          progress_activity
+        </span>
+        {{ saving ? 'Salvando...' : (isEditing ? 'Atualizar Membro' : 'Enviar Convite') }}
+      </app-button>
+    </div>
+
+  </form>
+</app-dialog>

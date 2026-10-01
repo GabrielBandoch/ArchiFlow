@@ -97,6 +97,10 @@ export const appRoutes: Routes = [
       {
         path: 'origens-lead',
         loadComponent: () => import('./components/leads/origens-lead/origens-lead.component').then(m => m.OrigensLeadComponent)
+      },
+      {
+        path: 'equipe',
+        loadComponent: () => import('./components/configuracoes/gestao-equipe/gestao-equipe.component').then(m => m.GestaoEquipeComponent)
       }
     ]
   },
