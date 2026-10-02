@@ -1,0 +1,211 @@
+<app-dialog
+  [show]="show"
+  dialogTitle="Configuração da Agenda Corporativa (Google Calendar)"
+  size="md"
+  (close)="onClose()">
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
+
+    <div class="modal-intro">
+      <div class="intro-icon-box">
+        <span class="material-symbols-outlined text-primary">event_available</span>
+      </div>
+      <div class="intro-text">
+        <h4 class="font-headline-sm m-0">Integração Direta com Google Agenda</h4>
+        <p class="font-body-xs text-on-surface-variant m-0">
+          Escolha como deseja integrar o estúdio ao Google Agenda para sincronização automática de compromissos.
+        </p>
+      </div>
+    </div>
+
+    <!-- Seletor de Método de Integração (Abas) -->
+    <div class="tabs-header d-flex gap-xs">
+      <button
+        type="button"
+        class="tab-pill-btn"
+        [class.active]="abaAtiva === 'oauth'"
+        (click)="abaAtiva = 'oauth'">
+        <span class="material-symbols-outlined icon-xs">account_circle</span>
+        Login com Google (OAuth)
+      </button>
+      <button
+        type="button"
+        class="tab-pill-btn"
+        [class.active]="abaAtiva === 'json'"
+        (click)="abaAtiva = 'json'">
+        <span class="material-symbols-outlined icon-xs">key</span>
+        Chave JSON (Conta de Serviço)
+      </button>
+    </div>
+
+    <!-- ABA 1: OAUTH 2.0 (LOGIN COM GOOGLE) -->
+    <div *ngIf="abaAtiva === 'oauth'" class="d-flex flex-direction-column gap-md">
+
+      <!-- Quando já está conectado -->
+      <div *ngIf="possuiOAuthConectado" class="oauth-connected-card p-md rounded-default">
+        <div class="d-flex justify-content-between align-items-center mb-xs">
+          <div class="d-flex align-items-center gap-xs">
+            <span class="material-symbols-outlined text-success icon-md">check_circle</span>
+            <div>
+              <div class="font-label-sm font-weight-bold text-success">Google Calendar Conectado</div>
+              <div class="font-body-xs text-on-surface-variant">{{ googleOAuthEmail || 'Conta Google Vinculada' }}</div>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn-disconnect font-label-xs"
+            (click)="desconectarOAuth()"
+            [disabled]="desconectandoGoogle">
+            {{ desconectandoGoogle ? 'Desconectando...' : 'Desconectar' }}
+          </button>
+        </div>
+        <p class="font-body-xs text-on-surface-variant m-0">
+          Novos compromissos cadastrados no ArchiFlow serão inseridos automaticamente na agenda desta conta.
+        </p>
+      </div>
+
+      <!-- Quando NÃO está conectado -->
+      <div *ngIf="!possuiOAuthConectado" class="oauth-connect-box p-md rounded-default d-flex flex-direction-column align-items-center text-center gap-sm">
+        <span class="material-symbols-outlined icon-lg text-primary">calendar_month</span>
+        <h5 class="font-title-sm m-0">Conectar com sua Conta Google</h5>
+        <p class="font-body-xs text-on-surface-variant m-0">
+          Permita que o ArchiFlow crie e atualize eventos no seu Google Calendar com 1 clique, sem precisar gerar chaves manuais.
+        </p>
+
+        <button
+          type="button"
+          class="btn-google-sign-in d-flex align-items-center justify-content-center gap-xs"
+          (click)="iniciarLoginGoogle()"
+          [disabled]="conectandoGoogle">
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <span class="font-label-sm font-weight-bold">
+            {{ conectandoGoogle ? 'Abrindo autorização...' : 'Conectar com o Google' }}
+          </span>
+        </button>
+
+        <div class="code-exchange-box w-full p-xs text-left">
+          <label class="font-label-xs font-weight-medium text-on-surface-variant d-block mb-xxs">
+            Código de autorização retornado (se aplicável):
+          </label>
+          <div class="d-flex gap-xs">
+            <input
+              type="text"
+              class="search-input w-full font-body-xs"
+              placeholder="Cole o código do Google aqui..."
+              [(ngModel)]="codigoOAuthManual"
+              [ngModelOptions]="{standalone: true}"
+            />
+            <button
+              type="button"
+              class="btn-confirm-code font-label-xs"
+              (click)="confirmarCodigoOAuth()"
+              [disabled]="conectandoGoogle || !codigoOAuthManual.trim()">
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ABA 2: CHAVE JSON (CONTA DE SERVIÇO) -->
+    <div *ngIf="abaAtiva === 'json'" class="d-flex flex-direction-column gap-md">
+
+      <!-- ID ou E-mail da Agenda do Google -->
+      <div class="field-item">
+        <app-input
+          id="googleCalendarId"
+          type="text"
+          label="ID da Agenda do Google (Calendar ID) *"
+          placeholder="Ex: primary, contato@estudio.com.br ou id@group.calendar.google.com"
+          formControlName="googleCalendarId"
+          [required]="true">
+        </app-input>
+        <span class="font-label-xs text-on-surface-variant margin-top-xxs">
+          Identificador ou e-mail da agenda corporativa oficial no Google Calendar.
+        </span>
+      </div>
+
+      <!-- Chave de Serviço do Google Cloud (Sem OAuth) -->
+      <div class="field-item">
+        <div class="d-flex justify-content-between align-items-center mb-xxs">
+          <label for="chaveGoogleServiceAccountJson" class="font-label-sm font-weight-medium text-on-surface m-0">
+            Chave da Conta de Serviço Google Cloud (JSON)
+          </label>
+          <span *ngIf="possuiChaveServiceAccount" class="badge-status-key font-label-xs">
+            <span class="material-symbols-outlined icon-xs text-success">check_circle</span>
+            Chave Configurada
+          </span>
+        </div>
+        <textarea
+          id="chaveGoogleServiceAccountJson"
+          class="service-account-textarea font-code-xs"
+          rows="3"
+          formControlName="chaveGoogleServiceAccountJson"
+          placeholder='{ "type": "service_account", "project_id": "...", "private_key": "..." }'>
+        </textarea>
+        <span class="font-label-xs text-on-surface-variant margin-top-xxs">
+          {{ possuiChaveServiceAccount ? 'Uma chave já está salva. Cole um novo JSON apenas se desejar substituí-la.' : 'Cole o JSON da chave da Conta de Serviço gerada no Google Cloud Console.' }}
+        </span>
+      </div>
+
+      <!-- Passo a Passo Compacto -->
+      <div class="instructions-box p-sm rounded-sm">
+        <span class="font-label-xs font-weight-bold d-flex align-items-center gap-xxs mb-xxs text-primary">
+          <span class="material-symbols-outlined icon-xs">info</span>
+          Como integrar sem login/OAuth (Passo a passo):
+        </span>
+        <ol class="font-body-xs text-on-surface-variant m-0 pl-md d-flex flex-direction-column gap-xxs">
+          <li>Crie uma Conta de Serviço no <strong>Google Cloud Console</strong> e ative a <strong>Google Calendar API</strong>.</li>
+          <li>Gere uma chave privada no formato <strong>JSON</strong> e cole o conteúdo no campo acima.</li>
+          <li>No Google Agenda da empresa, vá em <em>Configurações da Agenda &gt; Compartilhar com pessoas específicas</em> e adicione o e-mail da Conta de Serviço (<code>...&#64;...iam.gserviceaccount.com</code>) com permissão <strong>"Fazer alterações em eventos"</strong>.</li>
+        </ol>
+      </div>
+
+    </div>
+
+    <!-- Link Compartilhado e Visualização Externa -->
+    <div class="link-embed-card p-sm rounded-sm" *ngIf="linkEmbed">
+      <div class="d-flex justify-content-between align-items-center mb-xs">
+        <span class="font-label-sm font-weight-bold d-flex align-items-center gap-xxs">
+          <span class="material-symbols-outlined icon-sm text-primary">link</span>
+          Link de Visualização Web Oficial
+        </span>
+        <div class="d-flex gap-xs">
+          <button type="button" class="btn-link-action font-label-xs" (click)="copiarLinkEmbed()">
+            <span class="material-symbols-outlined icon-xs">{{ copiado ? 'done' : 'content_copy' }}</span>
+            {{ copiado ? 'Copiado!' : 'Copiar' }}
+          </button>
+          <button type="button" class="btn-link-action font-label-xs" (click)="abrirGoogleAgendaWeb()">
+            <span class="material-symbols-outlined icon-xs">open_in_new</span>
+            Abrir
+          </button>
+        </div>
+      </div>
+      <input
+        type="text"
+        class="search-input w-full font-body-xs"
+        [value]="linkEmbed"
+        readonly
+      />
+    </div>
+
+  </form>
+
+  <div dialog-footer class="d-flex justify-content-end align-items-center gap-xs w-full">
+    <app-button variant="ghost" type="button" (btnClick)="onClose()" [disabled]="salvando">
+      Cancelar
+    </app-button>
+    <app-button variant="primary" type="button" (btnClick)="onSubmit()" [disabled]="salvando || form.invalid">
+      <span class="material-symbols-outlined icon-btn-inline" *ngIf="!salvando">save</span>
+      <span class="material-symbols-outlined icon-btn-inline spinner-icon" *ngIf="salvando">progress_activity</span>
+      {{ salvando ? 'Salvando...' : 'Salvar Configuração' }}
+    </app-button>
+  </div>
+
+</app-dialog>

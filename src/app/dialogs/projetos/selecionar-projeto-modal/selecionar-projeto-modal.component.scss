@@ -86,19 +86,24 @@
   border-radius: 6px;
   background-color: var(--af-surface-container-high);
   color: var(--af-primary);
-  font-size: 11px;
-  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  overflow: hidden;
 
-  .avatar-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .icon-proj {
+    font-size: 18px;
   }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: var(--af-surface-container-high);
+  color: var(--af-on-surface-variant);
 }
 
 .empty-results-box {

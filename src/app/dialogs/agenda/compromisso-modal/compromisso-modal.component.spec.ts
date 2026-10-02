@@ -3,6 +3,8 @@ import { CompromissoModalComponent } from './compromisso-modal.component';
 import { AgendaService } from '../../../core/api/agenda/agenda.service';
 import { ProjetoService } from '../../../core/api/projetos/projeto.service';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
+import { LeadService } from '../../../core/api/leads/lead.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { of, throwError } from 'rxjs';
 import { Compromisso, TiposCompromisso } from '../../../models/agenda.model';
 
@@ -12,6 +14,8 @@ describe('CompromissoModalComponent', () => {
   let agendaServiceSpy: jasmine.SpyObj<AgendaService>;
   let projetoServiceSpy: jasmine.SpyObj<ProjetoService>;
   let clienteServiceSpy: jasmine.SpyObj<ClienteService>;
+  let leadServiceSpy: jasmine.SpyObj<LeadService>;
+  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   const mockCompromisso: Compromisso = {
     id: 'comp-1',
@@ -31,16 +35,21 @@ describe('CompromissoModalComponent', () => {
     agendaServiceSpy = jasmine.createSpyObj('AgendaService', ['criar', 'atualizar']);
     projetoServiceSpy = jasmine.createSpyObj('ProjetoService', ['obterTodos']);
     clienteServiceSpy = jasmine.createSpyObj('ClienteService', ['obterTodos']);
+    leadServiceSpy = jasmine.createSpyObj('LeadService', ['obterTodos']);
+    notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'warning', 'info']);
 
     projetoServiceSpy.obterTodos.and.returnValue(of([{ id: 'proj-1', nome: 'Residência Vista Verde' } as any]));
     clienteServiceSpy.obterTodos.and.returnValue(of([{ id: 'cli-1', nome: 'Roberto Carlos' } as any]));
+    leadServiceSpy.obterTodos.and.returnValue(of([{ id: 'lead-1', nome: 'Mariana Silva' } as any]));
 
     await TestBed.configureTestingModule({
       imports: [CompromissoModalComponent],
       providers: [
         { provide: AgendaService, useValue: agendaServiceSpy },
         { provide: ProjetoService, useValue: projetoServiceSpy },
-        { provide: ClienteService, useValue: clienteServiceSpy }
+        { provide: ClienteService, useValue: clienteServiceSpy },
+        { provide: LeadService, useValue: leadServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy }
       ]
     }).compileComponents();
 

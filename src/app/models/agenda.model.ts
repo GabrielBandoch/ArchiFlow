@@ -26,6 +26,8 @@ export interface Compromisso {
   nomeProjeto?: string;
   clienteId?: string;
   nomeCliente?: string;
+  leadId?: string;
+  nomeLead?: string;
   titulo: string;
   descricao?: string;
   tipo: TipoCompromisso;
@@ -49,6 +51,7 @@ export interface CriarCompromissoCommand {
   local?: string;
   projetoId?: string;
   clienteId?: string;
+  leadId?: string;
   usuarioId?: string;
   gerarGoogleMeet?: boolean;
 }
@@ -64,6 +67,7 @@ export interface AtualizarCompromissoCommand {
   linkGoogleMeet?: string;
   projetoId?: string;
   clienteId?: string;
+  leadId?: string;
   usuarioId?: string;
 }
 
@@ -72,16 +76,26 @@ export interface AlterarStatusCompromissoCommand {
 }
 
 export interface ConfiguracaoAgendaEmpresa {
-  emailAgendaEmpresa: string;
+  emailAgendaEmpresa?: string;
   googleCalendarId?: string;
+  chaveGoogleServiceAccountJson?: string;
+  possuiChaveServiceAccount?: boolean;
+  googleOAuthEmail?: string;
+  possuiOAuthConectado?: boolean;
+  googleClientId?: string;
+  tipoIntegracao?: string; // 'OAuth' | 'ServiceAccount' | 'Nenhum'
   nomeAgenda: string;
   sincronizacaoAutomaticaAtiva: boolean;
   linkEmbedGoogleCalendar?: string;
 }
 
 export interface SalvarConfiguracaoAgendaCommand {
-  emailAgendaEmpresa: string;
+  emailAgendaEmpresa?: string;
   googleCalendarId?: string;
+  chaveGoogleServiceAccountJson?: string;
+  googleClientId?: string;
+  googleClientSecret?: string;
+  tipoIntegracao?: string;
   nomeAgenda: string;
   sincronizacaoAutomaticaAtiva: boolean;
 }

@@ -8,6 +8,8 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { SelectComponent } from './components/select/select.component';
 import { ClientSearchComponent } from './components/client-search/client-search.component';
+import { ProjectSearchComponent } from './components/project-search/project-search.component';
+import { LeadSearchComponent } from './components/lead-search/lead-search.component';
 import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 
@@ -28,10 +30,15 @@ export const DESIGN_SYSTEM = [
   ConfirmDialogComponent,
   SelectComponent,
   ClientSearchComponent,
+  ProjectSearchComponent,
+  LeadSearchComponent,
   ChatWidgetComponent,
   SpinnerComponent
 ] as const;
 
 export * from './components/chat-widget/chat-widget.component';
 export * from './components/spinner/spinner.component';
+export * from './components/client-search/client-search.component';
+export * from './components/project-search/project-search.component';
+export * from './components/lead-search/lead-search.component';
 

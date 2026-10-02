@@ -10,6 +10,10 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+
+  .dialog-overlay {
+    z-index: 1200;
+  }
 }
 
 .dialog-container {
@@ -43,6 +47,7 @@
     padding: var(--af-space-lg);
     border-bottom: 1px solid var(--af-outline-variant);
     background-color: var(--af-surface-container-low);
+    flex-shrink: 0;
 
     .dialog-title {
       margin: 0;
@@ -87,6 +92,7 @@
     padding: var(--af-space-lg);
     border-top: 1px solid var(--af-outline-variant);
     background-color: var(--af-surface-container-low);
+    flex-shrink: 0;
 
     /* Hide footer container if it has no content projected */
     &:empty {
