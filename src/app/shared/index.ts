@@ -12,6 +12,9 @@ import { ProjectSearchComponent } from './components/project-search/project-sear
 import { LeadSearchComponent } from './components/lead-search/lead-search.component';
 import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { BadgeComponent } from './components/badge/badge.component';
+import { EmptyStateComponent } from './components/empty-state/empty-state.component';
+import { SearchInputComponent } from './components/search-input/search-input.component';
 
 export const CORE_IMPORTS = [
   CommonModule,
@@ -33,7 +36,10 @@ export const DESIGN_SYSTEM = [
   ProjectSearchComponent,
   LeadSearchComponent,
   ChatWidgetComponent,
-  SpinnerComponent
+  SpinnerComponent,
+  BadgeComponent,
+  EmptyStateComponent,
+  SearchInputComponent
 ] as const;
 
 export * from './components/chat-widget/chat-widget.component';
@@ -41,4 +47,7 @@ export * from './components/spinner/spinner.component';
 export * from './components/client-search/client-search.component';
 export * from './components/project-search/project-search.component';
 export * from './components/lead-search/lead-search.component';
+export * from './components/badge/badge.component';
+export * from './components/empty-state/empty-state.component';
+export * from './components/search-input/search-input.component';
 

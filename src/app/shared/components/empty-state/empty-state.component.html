@@ -1,0 +1,16 @@
+<div class="af-empty-state d-flex flex-direction-column align-items-center justify-content-center text-center p-xl">
+  <div class="af-empty-state-icon-wrapper d-flex align-items-center justify-content-center margin-bottom-md">
+    <span class="material-symbols-outlined af-empty-state-icon">{{ icon }}</span>
+  </div>
+  <h3 class="af-empty-state-title font-headline-sm m-0">{{ title }}</h3>
+  <p class="af-empty-state-desc font-body-md text-on-surface-variant margin-top-xs margin-bottom-lg" *ngIf="description">
+    {{ description }}
+  </p>
+  <div class="af-empty-state-actions d-flex align-items-center gap-sm" *ngIf="actionText">
+    <app-button variant="primary" (btnClick)="onActionClick()">
+      <span class="material-symbols-outlined icon-btn-inline" *ngIf="actionIcon">{{ actionIcon }}</span>
+      {{ actionText }}
+    </app-button>
+  </div>
+  <ng-content></ng-content>
+</div>

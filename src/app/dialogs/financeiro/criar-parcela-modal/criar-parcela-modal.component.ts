@@ -8,6 +8,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Projeto } from '../../../models/projeto.model';
 import { SelectOption } from '../../../shared/components/select/select.component';
 import { CriarContratoCommand, CriarParcelaCommand } from '../../../commands/financeiro.commands';
+import { FinanceiroForm } from '../../../components/financeiro/financeiro.form';
 
 @Component({
   selector: 'app-criar-parcela-modal',
@@ -42,27 +43,8 @@ export class CriarParcelaModalComponent implements OnInit {
   saving = false;
 
   ngOnInit(): void {
-    const hoje = new Date().toISOString().substring(0, 10);
-
-    this.formAvulsa = this.fb.group({
-      projetoId: [this.preselectedProjectId || '', [Validators.required]],
-      descricao: ['', [Validators.required]],
-      valor: [null, [Validators.required, Validators.min(0.01)]],
-      dataVencimento: [hoje, [Validators.required]],
-      numeroParcela: [1, [Validators.required, Validators.min(1)]],
-      totalParcelas: [1, [Validators.required, Validators.min(1)]],
-      observacoes: ['']
-    });
-
-    this.formContrato = this.fb.group({
-      projetoId: [this.preselectedProjectId || '', [Validators.required]],
-      valorTotal: [null, [Validators.required, Validators.min(0.01)]],
-      numeroParcelas: [3, [Validators.required, Validators.min(1), Validators.max(48)]],
-      dataPrimeiroVencimento: [hoje, [Validators.required]],
-      intervaloDias: [30, [Validators.required, Validators.min(1)]],
-      condicoesPagamento: ['Entrada + parcelas mensais'],
-      observacoes: ['']
-    });
+    this.formAvulsa = FinanceiroForm.createParcelaAvulsa(this.fb, this.preselectedProjectId || '');
+    this.formContrato = FinanceiroForm.createParcelaContrato(this.fb, this.preselectedProjectId || '');
 
     this.carregarProjetos();
   }

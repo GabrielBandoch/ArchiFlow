@@ -9,6 +9,7 @@ import { CategoriaDespesa, DespesaProjeto } from '../../../models/financeiro.mod
 import { Projeto } from '../../../models/projeto.model';
 import { SelectOption } from '../../../shared/components/select/select.component';
 import { CriarDespesaCommand } from '../../../commands/financeiro.commands';
+import { FinanceiroForm } from '../../../components/financeiro/financeiro.form';
 
 @Component({
   selector: 'app-criar-despesa-modal',
@@ -52,18 +53,7 @@ export class CriarDespesaModalComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    const hoje = new Date().toISOString().substring(0, 10);
-
-    this.form = this.fb.group({
-      projetoId: [this.preselectedProjectId || '', [Validators.required]],
-      descricao: ['', [Validators.required]],
-      valor: [null, [Validators.required, Validators.min(0.01)]],
-      dataDespesa: [hoje, [Validators.required]],
-      categoria: [CategoriaDespesa.PlotagemImpressao, [Validators.required]],
-      observacoes: [''],
-      comprovanteUrl: ['']
-    });
-
+    this.form = FinanceiroForm.createDespesa(this.fb, this.preselectedProjectId || '');
     this.carregarProjetos();
   }
 

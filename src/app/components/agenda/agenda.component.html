@@ -252,15 +252,15 @@
 
           <div class="event-card-details d-flex flex-direction-column gap-xs">
             <div class="d-flex align-items-center gap-xs flex-wrap">
-              <span class="event-type-badge font-label-xs" [ngClass]="obterBadgeClasseTipo(comp.tipo)">
+              <app-badge [variant]="obterBadgeVarianteTipo(comp.tipo)">
                 {{ obterNomeTipo(comp.tipo) }}
-              </span>
+              </app-badge>
               <h3 class="event-card-title font-headline-sm m-0" [class.text-decoration-line-through]="comp.status === 'Concluido'">
                 {{ comp.titulo }}
               </h3>
-              <span class="status-badge font-label-xs" [class.badge-concluido]="comp.status === 'Concluido'" [class.badge-cancelado]="comp.status === 'Cancelado'">
+              <app-badge [variant]="obterBadgeVarianteStatus(comp.status)" [pill]="true">
                 {{ comp.status }}
-              </span>
+              </app-badge>
             </div>
 
             <div class="event-meta-info d-flex align-items-center gap-md flex-wrap font-body-sm text-on-surface-variant">
@@ -351,19 +351,14 @@
   </div>
 
   <!-- Estado Vazio -->
-  <div class="empty-state-box d-flex flex-direction-column align-items-center justify-content-center" *ngIf="!carregando && compromissosFiltrados.length === 0">
-    <span class="material-symbols-outlined empty-state-icon">event_busy</span>
-    <h3 class="font-headline-sm margin-top-xs">Nenhum compromisso encontrado</h3>
-    <p class="text-on-surface-variant font-body-md" *ngIf="termoBusca || filtroTipo !== 'todos' || filtroStatus !== 'todos'">
-      Tente ajustar os filtros ou a busca para localizar os compromissos.
-    </p>
-    <p class="text-on-surface-variant font-body-md" *ngIf="!termoBusca && filtroTipo === 'todos' && filtroStatus === 'todos'">
-      Você não possui compromissos agendados para este mês.
-    </p>
-    <app-button variant="primary" (btnClick)="abrirModalNovo()" class="margin-top-sm">
-      <span class="material-symbols-outlined icon-btn-inline">add</span>
-      Agendar Primeiro Compromisso
-    </app-button>
-  </div>
+  <app-empty-state
+    *ngIf="!carregando && compromissosFiltrados.length === 0"
+    icon="event_busy"
+    title="Nenhum compromisso encontrado"
+    [description]="(termoBusca || filtroTipo !== 'todos' || filtroStatus !== 'todos') ? 'Tente ajustar os filtros ou a busca para localizar os compromissos.' : 'Você não possui compromissos agendados para este mês.'"
+    actionLabel="Agendar Primeiro Compromisso"
+    actionIcon="add"
+    (actionClick)="abrirModalNovo()">
+  </app-empty-state>
 
 </div>

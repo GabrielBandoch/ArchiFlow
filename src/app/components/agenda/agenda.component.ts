@@ -7,6 +7,8 @@ import { CompromissoModalComponent } from '../../dialogs/agenda/compromisso-moda
 import { ConfigurarAgendaModalComponent } from '../../dialogs/agenda/configurar-agenda-modal/configurar-agenda-modal.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
+import { BadgeComponent } from '../../shared/components/badge/badge.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ConfiguracaoAgendaEmpresa } from '../../models/agenda.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -28,7 +30,9 @@ export interface DiaCalendario {
     CommonModule,
     FormsModule,
     ButtonComponent,
-    SelectComponent
+    SelectComponent,
+    BadgeComponent,
+    EmptyStateComponent
   ],
   templateUrl: './agenda.component.html',
   styleUrls: ['./agenda.component.scss']
@@ -393,5 +397,26 @@ export class AgendaComponent implements OnInit {
   formatarDataCompleta(dataIso: string): string {
     const d = new Date(dataIso);
     return d.toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  obterBadgeVarianteTipo(tipo: TipoCompromisso): 'primary' | 'info' | 'warning' | 'neutral' {
+    switch (tipo) {
+      case TiposCompromisso.ReuniaoCliente:
+      case TiposCompromisso.ApresentacaoProjeto:
+        return 'primary';
+      case TiposCompromisso.VisitaObra:
+        return 'warning';
+      case TiposCompromisso.MedicaoTecnica:
+      case TiposCompromisso.EntregaEtapa:
+        return 'info';
+      default:
+        return 'neutral';
+    }
+  }
+
+  obterBadgeVarianteStatus(status: StatusCompromissoType | string): 'success' | 'danger' | 'neutral' {
+    if (status === 'Concluido') return 'success';
+    if (status === 'Cancelado') return 'danger';
+    return 'neutral';
   }
 }
