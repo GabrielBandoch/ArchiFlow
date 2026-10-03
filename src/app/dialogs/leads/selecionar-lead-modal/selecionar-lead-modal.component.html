@@ -1,0 +1,94 @@
+<app-dialog [show]="show" dialogTitle="Pesquisar & Selecionar Lead" size="lg" (close)="onClose()">
+  <div class="modal-search-content d-flex flex-direction-column gap-md">
+    
+    <div class="modal-search-bar d-flex align-items-center gap-xs">
+      <span class="material-symbols-outlined icon-search-modal">search</span>
+      <input 
+        type="text" 
+        class="modal-search-input" 
+        placeholder="Buscar por nome, e-mail, telefone..." 
+        [(ngModel)]="modalSearchText" 
+        (ngModelChange)="filtrarModal()" />
+    </div>
+
+    <div class="modal-table-container" *ngIf="modalLeadsFiltrados.length > 0">
+      <table class="modal-table">
+        <thead>
+          <tr>
+            <th>Lead</th>
+            <th>E-mail</th>
+            <th>Telefone</th>
+            <th>Status</th>
+            <th class="text-right">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let l of leadsPaginados" (click)="selecionarViaModal(l)" class="table-row-selectable">
+            <td>
+              <div class="d-flex align-items-center gap-sm">
+                <div class="table-avatar">
+                  <span>{{ l.nome.substring(0, 2).toUpperCase() }}</span>
+                </div>
+                <div class="d-flex flex-direction-column">
+                  <span class="font-weight-semibold font-body-md text-on-surface">{{ l.nome }}</span>
+                  <span class="font-label-sm text-on-surface-variant" *ngIf="l.origem">{{ l.origem }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="font-body-md text-on-surface">{{ l.email || '—' }}</span>
+            </td>
+            <td>
+              <span class="font-body-md text-on-surface-variant">{{ l.telefone || '—' }}</span>
+            </td>
+            <td>
+              <span class="status-badge">{{ l.statusLabel || l.status || 'Novo' }}</span>
+            </td>
+            <td class="text-right">
+              <app-button variant="secondary" size="sm" (btnClick)="selecionarViaModal(l); $event.stopPropagation()">
+                Selecionar
+              </app-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="modalLeadsFiltrados.length === 0" class="empty-results-box d-flex flex-direction-column align-items-center justify-content-center text-center">
+      <div class="empty-results-icon-wrap">
+        <span class="material-symbols-outlined empty-results-icon">person_search</span>
+      </div>
+      <h4 class="empty-results-title">Nenhum lead encontrado</h4>
+      <p class="empty-results-text">Verifique os termos da busca ou limpe o campo para ver todos os leads cadastrados.</p>
+    </div>
+
+    <div class="modal-footer-pagination d-flex justify-content-between align-items-center pt-sm" *ngIf="modalLeadsFiltrados.length > 0">
+      <span class="font-label-sm text-on-surface-variant">
+        Página {{ paginaAtual }} de {{ totalPaginas }} ({{ modalLeadsFiltrados.length }} leads)
+      </span>
+
+      <div class="d-flex gap-xs">
+        <app-button 
+          variant="secondary"
+          size="sm"
+          [disabled]="paginaAtual <= 1" 
+          (btnClick)="paginaAnterior()">
+          <span class="material-symbols-outlined">chevron_left</span>
+          Anterior
+        </app-button>
+        <app-button 
+          variant="secondary"
+          size="sm"
+          [disabled]="paginaAtual >= totalPaginas" 
+          (btnClick)="proximaPagina()">
+          Próxima
+          <span class="material-symbols-outlined">chevron_right</span>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <div dialog-footer class="d-flex justify-content-end gap-sm">
+    <app-button variant="secondary" (btnClick)="onClose()">Cancelar</app-button>
+  </div>
+</app-dialog>

@@ -1,0 +1,262 @@
+.compromisso-form {
+  padding-top: var(--af-spacing-xs);
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--af-space-md, 16px);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Bloco de Data & Horários
+.datetime-card {
+  background: var(--af-surface-container-low, #f6f3f2);
+  border: 1px solid var(--af-outline-variant, #d3c4b9);
+  border-radius: var(--af-radius-default, 8px);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.badge-duracao {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--af-primary, #765538);
+  background-color: rgba(118, 85, 56, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+}
+
+// Grids
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--af-space-md, 16px);
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--af-space-md, 16px);
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  color: var(--af-on-surface, #1b1c1c);
+  font-weight: 500;
+}
+
+.pauta-textarea {
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 0.875rem;
+  border-radius: var(--af-radius-default, 8px);
+  border: 1px solid var(--af-outline-variant, #d3c4b9);
+  background-color: var(--af-surface-container-lowest, #ffffff);
+  color: var(--af-on-surface, #1b1c1c);
+  padding: 0.6rem 0.75rem;
+  line-height: 1.4;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--af-primary, #765538);
+    box-shadow: 0 0 0 3px rgba(118, 85, 56, 0.12);
+  }
+}
+
+// Card do Google Meet com estética integrada
+.google-section-card {
+  background: var(--af-surface-container-low, #f6f3f2);
+  border: 1px solid var(--af-outline-variant, #d3c4b9);
+  border-radius: var(--af-radius-default, 8px);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.meet-icon-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--af-primary, #765538);
+  color: var(--af-on-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .material-symbols-outlined {
+    font-size: 1.25rem;
+  }
+}
+
+.btn-meet-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--af-primary-container, #916d4e);
+  color: #fff;
+  border: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--af-primary, #765538);
+    transform: translateY(-1px);
+    box-shadow: var(--af-shadow-sm);
+  }
+}
+
+// Toggle Moderno Switch
+.meet-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  user-select: none;
+}
+
+.meet-toggle-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  &:checked + .toggle-slider {
+    background-color: var(--af-primary, #765538);
+
+    &::before {
+      transform: translateX(18px);
+    }
+  }
+
+  &:focus-visible + .toggle-slider {
+    box-shadow: 0 0 0 2px rgba(118, 85, 56, 0.25);
+  }
+}
+
+.toggle-slider {
+  width: 38px;
+  height: 20px;
+  background-color: var(--af-outline-variant, #d3c4b9);
+  border-radius: 20px;
+  position: relative;
+  transition: background-color 0.25s;
+  display: inline-block;
+  flex-shrink: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #fff;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--af-spacing-xs);
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Seletor de Tipo de Vínculo (Opção 1)
+.vinculo-tabs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.vinculo-tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--af-radius-md, 8px);
+  border: 1.5px solid var(--af-outline-variant, #d3c4b9);
+  background-color: var(--af-surface-container-lowest, #fff);
+  color: var(--af-on-surface-variant, #52443c);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+
+  .tab-icon {
+    font-size: 1.1rem;
+    color: var(--af-outline, #85746b);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .tab-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    border-color: var(--af-primary, #765538);
+    background-color: var(--af-surface-container-low, #f7f3f1);
+    color: var(--af-on-surface, #201a17);
+
+    .tab-icon {
+      color: var(--af-primary, #765538);
+      transform: scale(1.08);
+    }
+  }
+
+  &.active {
+    border-color: var(--af-primary, #765538);
+    background-color: var(--af-primary-container, #ffdcc3);
+    color: var(--af-on-primary-container, #2b1700);
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(118, 85, 56, 0.15);
+
+    .tab-icon {
+      color: var(--af-primary, #765538);
+    }
+  }
+}

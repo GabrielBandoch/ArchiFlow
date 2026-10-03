@@ -110,21 +110,21 @@
             <div class="member-title-block d-flex flex-direction-column">
               <div class="d-flex align-items-center gap-xs">
                 <h3 class="member-name font-weight-bold m-0" [title]="membro.nome">{{ membro.nome }}</h3>
-                <span class="you-badge font-label-xs" *ngIf="isCurrentUser(membro)">Você</span>
+                <app-badge variant="primary" size="sm" *ngIf="isCurrentUser(membro)">Você</app-badge>
               </div>
               <span class="member-email font-body-sm text-on-surface-variant">{{ membro.email }}</span>
             </div>
           </div>
 
-          <span class="status-pill font-label-xs" [class.active-pill]="membro.ativo" [class.inactive-pill]="!membro.ativo">
+          <app-badge [variant]="membro.ativo ? 'success' : 'neutral'" [pill]="true">
             {{ membro.ativo ? 'Ativo' : 'Inativo' }}
-          </span>
+          </app-badge>
         </div>
 
         <div class="member-details-meta d-flex flex-wrap gap-xs align-items-center margin-top-xs">
-          <span class="role-badge font-label-xs" [ngClass]="obterBadgeRoleClass(membro.role)">
+          <app-badge [variant]="obterRoleBadgeVariant(membro.role)">
             {{ obterLabelRole(membro.role) }}
-          </span>
+          </app-badge>
 
           <span class="cargo-tag font-label-xs" *ngIf="membro.cargo">
             <span class="material-symbols-outlined font-size-14">badge</span>
@@ -188,20 +188,15 @@
   </div>
 
   <!-- Estado Vazio -->
-  <div class="empty-state-box d-flex flex-direction-column align-items-center justify-content-center" *ngIf="!loading && membrosFiltrados.length === 0">
-    <span class="material-symbols-outlined empty-state-icon">group_off</span>
-    <h3 class="font-headline-sm margin-top-xs">Nenhum membro encontrado</h3>
-    <p class="text-on-surface-variant font-body-md" *ngIf="termoBusca || filtroRole !== 'todos' || filtroStatus !== 'todos'">
-      Tente ajustar os filtros ou a busca para encontrar os colaboradores.
-    </p>
-    <p class="text-on-surface-variant font-body-md" *ngIf="!termoBusca && filtroRole === 'todos' && filtroStatus === 'todos'">
-      Comece convidando os primeiros colaboradores da sua equipe.
-    </p>
-    <app-button variant="primary" (btnClick)="abrirModalConvidar()" class="margin-top-sm" *ngIf="podeGerenciar()">
-      <span class="material-symbols-outlined icon-btn-inline">person_add</span>
-      Convidar Primeiro Membro
-    </app-button>
-  </div>
+  <app-empty-state
+    *ngIf="!loading && membrosFiltrados.length === 0"
+    icon="group_off"
+    title="Nenhum membro encontrado"
+    [description]="(termoBusca || filtroRole !== 'todos' || filtroStatus !== 'todos') ? 'Tente ajustar os filtros ou a busca para encontrar os colaboradores.' : 'Comece convidando os primeiros colaboradores da sua equipe.'"
+    [actionLabel]="podeGerenciar() ? 'Convidar Primeiro Membro' : undefined"
+    actionIcon="person_add"
+    (actionClick)="abrirModalConvidar()">
+  </app-empty-state>
 
 </div>
 

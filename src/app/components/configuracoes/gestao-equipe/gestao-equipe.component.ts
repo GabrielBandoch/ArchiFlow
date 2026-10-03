@@ -247,6 +247,22 @@ export class GestaoEquipeComponent implements OnInit {
     }
   }
 
+  obterRoleBadgeVariant(role: string): 'primary' | 'info' | 'warning' | 'neutral' {
+    switch (role) {
+      case 'Administrador':
+      case 'ArquitetoAdmin':
+        return 'primary';
+      case 'ArquitetoColaborador':
+      case 'Gerente':
+        return 'info';
+      case 'Financeiro':
+        return 'warning';
+      case 'Estagiario':
+      default:
+        return 'neutral';
+    }
+  }
+
   obterLabelRole(role: string): string {
     switch (role) {
       case 'Administrador':

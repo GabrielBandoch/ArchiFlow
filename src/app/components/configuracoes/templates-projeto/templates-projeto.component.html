@@ -32,15 +32,15 @@
             </div>
             <div class="template-title-meta d-flex flex-direction-column min-w-0">
               <h3 class="template-name font-weight-bold m-0" [title]="template.nome">{{ template.nome }}</h3>
-              <span class="template-code-badge font-label-xs">{{ template.codigo || template.id }}</span>
+              <app-badge variant="neutral" size="sm">{{ template.codigo || template.id }}</app-badge>
             </div>
           </div>
 
           <div class="template-badge-col flex-shrink-0">
-            <span class="stage-pill-badge d-inline-flex align-items-center gap-xxs" [title]="template.etapas.length + ' etapas definidas'">
+            <app-badge variant="info" [pill]="true" [title]="template.etapas.length + ' etapas definidas'">
               <span class="material-symbols-outlined badge-mini-icon">layers</span>
-              <span class="badge-text">{{ template.etapas.length }} {{ template.etapas.length === 1 ? 'etapa' : 'etapas' }}</span>
-            </span>
+              {{ template.etapas.length }} {{ template.etapas.length === 1 ? 'etapa' : 'etapas' }}
+            </app-badge>
           </div>
         </div>
 
@@ -90,14 +90,14 @@
     </div>
   </div>
 
-  <div class="empty-state-box d-flex flex-direction-column align-items-center justify-content-center" *ngIf="!loading && templates.length === 0">
-    <span class="material-symbols-outlined empty-state-icon">account_tree</span>
-    <h3 class="font-headline-sm margin-top-xs">Nenhum modelo cadastrado</h3>
-    <p class="text-on-surface-variant font-body-md">Cadastre o primeiro fluxo de trabalho padrão para padronizar as etapas do seu escritório.</p>
-    <app-button variant="primary" (btnClick)="abrirModalCriacao()" class="margin-top-sm">
-      <span class="material-symbols-outlined icon-btn-inline">add</span>
-      Criar Primeiro Modelo
-    </app-button>
-  </div>
+  <app-empty-state
+    *ngIf="!loading && templates.length === 0"
+    icon="account_tree"
+    title="Nenhum modelo cadastrado"
+    description="Cadastre o primeiro fluxo de trabalho padrão para padronizar as etapas do seu escritório."
+    actionLabel="Criar Primeiro Modelo"
+    actionIcon="add"
+    (actionClick)="abrirModalCriacao()">
+  </app-empty-state>
 
 </div>

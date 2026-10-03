@@ -1,4 +1,4 @@
-﻿import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Cliente } from '../../../models/cliente.model';
@@ -13,7 +13,7 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
   templateUrl: './selecionar-cliente-modal.component.html',
   styleUrl: './selecionar-cliente-modal.component.scss'
 })
-export class SelecionarClienteModalComponent implements OnInit {
+export class SelecionarClienteModalComponent implements OnInit, OnChanges {
   @Input() show = false;
   @Input() clientes: Cliente[] = [];
   @Input() initialSearchText = '';
@@ -48,6 +48,16 @@ export class SelecionarClienteModalComponent implements OnInit {
         error: (err) => console.error('Erro ao buscar clientes no modal', err)
       });
     } else {
+      this.filtrarModal();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['show'] && this.show) {
+      this.modalSearchText = this.initialSearchText || '';
+      this.filtrarModal();
+    }
+    if (changes['clientes']) {
       this.filtrarModal();
     }
   }

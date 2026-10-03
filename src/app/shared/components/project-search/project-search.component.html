@@ -1,0 +1,81 @@
+<div class="project-search-wrapper">
+  <label *ngIf="label" class="project-search-label" [attr.for]="id">
+    {{ label }} <span class="text-error" *ngIf="required">*</span>
+  </label>
+
+  <div *ngIf="projetoSelecionado" class="selected-project-chip d-flex align-items-center justify-content-between p-sm">
+    <div class="d-flex align-items-center gap-sm">
+      <div class="chip-icon-box">
+        <span class="material-symbols-outlined">folder</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <span class="font-weight-semibold font-body-md text-on-surface">{{ projetoSelecionado.nome }}</span>
+        <span class="font-label-xs text-on-surface-variant">
+          {{ projetoSelecionado.tipoLabel || 'Projeto' }}
+          <ng-container *ngIf="projetoSelecionado.clienteNome"> • {{ projetoSelecionado.clienteNome }}</ng-container>
+        </span>
+      </div>
+    </div>
+    <app-button variant="icon" size="sm" (btnClick)="limparSelecao()" title="Remover seleção" [disabled]="disabled">
+      <span class="material-symbols-outlined">close</span>
+    </app-button>
+  </div>
+
+  <div *ngIf="!projetoSelecionado" class="autocomplete-control-container">
+    <div class="search-input-box d-flex align-items-center" [class.has-error]="!!error">
+      <span class="material-symbols-outlined icon-prefix">folder_open</span>
+      <input 
+        [id]="id"
+        type="text" 
+        class="input-search-native" 
+        [placeholder]="placeholder" 
+        [(ngModel)]="searchText" 
+        (input)="onInputSearch()"
+        (focus)="onInputSearch()"
+        [disabled]="disabled" />
+      
+      <button 
+        type="button" 
+        class="btn-trigger-modal" 
+        (click)="abrirModal()" 
+        title="Abrir busca avançada de projetos"
+        [disabled]="disabled">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+    </div>
+
+    <div *ngIf="showDropdown && sugestoes.length > 0" class="suggestions-dropdown-panel">
+      <div 
+        *ngFor="let p of sugestoes" 
+        class="suggestion-row d-flex align-items-center gap-sm p-sm" 
+        (click)="selecionarProjeto(p)">
+        <div class="suggestion-icon-box">
+          <span class="material-symbols-outlined">folder</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="font-weight-medium font-body-md text-on-surface">{{ p.nome }}</span>
+          <span class="font-label-xs text-on-surface-variant">
+            {{ p.tipoLabel || 'Projeto' }}
+            <ng-container *ngIf="p.clienteNome"> • {{ p.clienteNome }}</ng-container>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="showDropdown && sugestoes.length === 0" class="suggestions-dropdown-panel p-sm text-center">
+      <span class="font-label-sm text-on-surface-variant">Nenhum projeto encontrado com "{{ searchText }}".</span>
+    </div>
+  </div>
+
+  <span class="font-label-sm text-error margin-top-xs d-block" *ngIf="error">
+    {{ error }}
+  </span>
+</div>
+
+<app-selecionar-projeto-modal
+  [show]="showModal"
+  [projetos]="projetos"
+  [initialSearchText]="searchText"
+  (close)="fecharModal()"
+  (projectSelected)="selecionarViaModal($event)">
+</app-selecionar-projeto-modal>

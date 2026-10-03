@@ -54,22 +54,24 @@
 
       <!-- SE FOR LEAD -->
       <div class="vinculo-selector animate-fade-in" *ngIf="form.value.tipoVinculo === 'lead'">
-        <select formControlName="leadId" class="form-control select-custom" (change)="onLeadChange($event)">
-          <option value="">Selecione um lead da lista...</option>
-          <option *ngFor="let lead of leads" [value]="lead.id">
-            {{ lead.nome }} {{ lead.telefone ? '• ' + lead.telefone : '' }}
-          </option>
-        </select>
+        <app-lead-search
+          id="paramLead"
+          placeholder="Buscar lead por nome ou e-mail..."
+          [leads]="leads"
+          [formControl]="$any(form.get('leadId'))"
+          (leadSelected)="onLeadSelected($event)">
+        </app-lead-search>
       </div>
 
       <!-- SE FOR CLIENTE -->
       <div class="vinculo-selector animate-fade-in" *ngIf="form.value.tipoVinculo === 'cliente'">
-        <select formControlName="clienteId" class="form-control select-custom" (change)="onClienteChange($event)">
-          <option value="">Selecione um cliente cadastrado...</option>
-          <option *ngFor="let cli of clientes" [value]="cli.id">
-            {{ cli.nome }} {{ cli.telefone ? '• ' + cli.telefone : '' }}
-          </option>
-        </select>
+        <app-client-search
+          id="paramCliente"
+          placeholder="Buscar cliente cadastrado..."
+          [clientes]="clientes"
+          [formControl]="$any(form.get('clienteId'))"
+          (clientSelected)="onClienteSelected($event)">
+        </app-client-search>
       </div>
 
       <!-- SE FOR CONTATO AVULSO -->

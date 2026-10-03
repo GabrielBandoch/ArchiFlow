@@ -1,0 +1,8 @@
+<span 
+  class="af-badge" 
+  [class.af-badge-pill]="pill"
+  [ngClass]="['af-badge-' + variant, 'af-badge-' + size]">
+  <span *ngIf="icon" class="material-symbols-outlined af-badge-icon">{{ icon }}</span>
+  <span class="af-badge-content" *ngIf="text">{{ text }}</span>
+  <ng-content></ng-content>
+</span>

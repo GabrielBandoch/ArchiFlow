@@ -1,4 +1,6 @@
 import { Injectable, ViewContainerRef, ComponentRef, Type } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +38,37 @@ export class DialogService {
     }
 
     return componentRef;
+  }
+
+  confirm(config: {
+    title: string;
+    message: string;
+    confirmText?: string;
+    confirmLabel?: string;
+    cancelLabel?: string;
+    variant?: string;
+    confirmVariant?: string;
+  }): Observable<boolean> {
+    const subject = new Subject<boolean>();
+    const ref = this.open(ConfirmDialogComponent, {
+      data: {
+        title: config.title,
+        message: config.message
+      }
+    });
+
+    ref.instance.confirm.subscribe(() => {
+      subject.next(true);
+      subject.complete();
+    });
+
+    ref.instance.close.subscribe(() => {
+      if (!subject.closed) {
+        subject.next(false);
+        subject.complete();
+      }
+    });
+
+    return subject.asObservable();
   }
 }

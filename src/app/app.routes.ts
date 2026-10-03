@@ -47,6 +47,17 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'agenda',
+    canActivate: [staffGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/agenda/agenda.component').then(m => m.AgendaComponent)
+      }
+    ]
+  },
+  {
     path: 'leads',
     canActivate: [staffGuard],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
