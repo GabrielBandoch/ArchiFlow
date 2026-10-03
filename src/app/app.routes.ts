@@ -88,6 +88,21 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'fornecedores',
+    canActivate: [staffGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/fornecedores/fornecedores.component').then(m => m.FornecedoresComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./components/fornecedores/detalhes-fornecedor/detalhes-fornecedor.component').then(m => m.DetalhesFornecedorComponent)
+      }
+    ]
+  },
+  {
     path: 'configuracoes',
     canActivate: [staffGuard],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
