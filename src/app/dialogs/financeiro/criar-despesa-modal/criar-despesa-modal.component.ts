@@ -11,6 +11,10 @@ import { SelectOption } from '../../../shared/components/select/select.component
 import { CriarDespesaCommand } from '../../../commands/financeiro.commands';
 import { FinanceiroForm } from '../../../components/financeiro/financeiro.form';
 
+import { ProjectSearchComponent } from '../../../shared/components/project-search/project-search.component';
+import { FornecedorService } from '../../../core/api/fornecedores/fornecedor.service';
+import { Fornecedor } from '../../../models/fornecedor.model';
+
 @Component({
   selector: 'app-criar-despesa-modal',
   standalone: true,
@@ -19,7 +23,8 @@ import { FinanceiroForm } from '../../../components/financeiro/financeiro.form';
     ReactiveFormsModule,
     CORE_IMPORTS,
     FORM_IMPORTS,
-    DESIGN_SYSTEM
+    DESIGN_SYSTEM,
+    ProjectSearchComponent
   ],
   templateUrl: './criar-despesa-modal.component.html',
   styleUrl: './criar-despesa-modal.component.scss'
@@ -28,6 +33,7 @@ export class CriarDespesaModalComponent implements OnInit {
   private fb = inject(FormBuilder);
   private financeiroService = inject(FinanceiroService);
   private projetoService = inject(ProjetoService);
+  private fornecedorService = inject(FornecedorService);
   private notificationService = inject(NotificationService);
 
   @Input() show = false;
@@ -38,6 +44,8 @@ export class CriarDespesaModalComponent implements OnInit {
   form!: FormGroup;
   projetos: Projeto[] = [];
   projetoOptions: SelectOption[] = [];
+  fornecedores: Fornecedor[] = [];
+  fornecedoresOptions: SelectOption[] = [];
   saving = false;
   uploadingFile = false;
   arquivoSelecionado: File | null = null;
@@ -55,6 +63,32 @@ export class CriarDespesaModalComponent implements OnInit {
   ngOnInit(): void {
     this.form = FinanceiroForm.createDespesa(this.fb, this.preselectedProjectId || '');
     this.carregarProjetos();
+    this.carregarFornecedores();
+  }
+
+  carregarFornecedores(): void {
+    this.fornecedorService.obterTodos().subscribe({
+      next: (data) => {
+        this.fornecedores = data || [];
+        this.fornecedoresOptions = [
+          { value: '', label: 'Nenhum fornecedor vinculado (Geral / Próprio)' },
+          ...(data || []).map(f => ({
+            value: f.id,
+            label: `${f.nome} (${f.especialidade})`
+          }))
+        ];
+      },
+      error: () => {
+        this.fornecedoresOptions = [
+          { value: '', label: 'Nenhum fornecedor vinculado (Geral / Próprio)' }
+        ];
+      }
+    });
+  }
+
+  obterNomeFornecedor(id: string): string {
+    const f = this.fornecedores.find(item => item.id === id);
+    return f ? `${f.nome} (${f.especialidade})` : '';
   }
 
   carregarProjetos(): void {
@@ -144,14 +178,20 @@ export class CriarDespesaModalComponent implements OnInit {
 
   private executarCriarDespesa(comprovanteUrl?: string): void {
     const val = this.form.value;
+    const nomeFornecedor = val.fornecedorId ? this.obterNomeFornecedor(val.fornecedorId) : '';
+    let obs = val.observacoes?.trim() || '';
+    if (nomeFornecedor) {
+      obs = obs ? `[Fornecedor: ${nomeFornecedor}] ${obs}` : `[Fornecedor: ${nomeFornecedor}]`;
+    }
 
     const command: CriarDespesaCommand = {
-      projetoId: val.projetoId,
+      projetoId: val.projetoId || this.projetos[0]?.id || '',
+      fornecedorId: val.fornecedorId || undefined,
       descricao: val.descricao,
       valor: Number(val.valor),
       dataDespesa: new Date(val.dataDespesa).toISOString(),
       categoria: val.categoria,
-      observacoes: val.observacoes || undefined,
+      observacoes: obs || undefined,
       comprovanteUrl: comprovanteUrl || undefined
     };
 

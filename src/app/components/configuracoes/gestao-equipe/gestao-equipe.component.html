@@ -1,6 +1,4 @@
 <div class="equipe-page d-flex flex-direction-column gap-lg">
-  
-  <!-- Header da Página -->
   <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-md">
     <div class="header-titles d-flex flex-direction-column gap-xs">
       <h1 class="page-title font-headline-md m-0">Gestão de Equipe e Colaboradores</h1>
@@ -17,7 +15,6 @@
     </div>
   </div>
 
-  <!-- Métricas Rápidas -->
   <div class="metrics-grid">
     <div class="metric-card">
       <div class="metric-icon-wrap bg-primary-soft text-primary">
@@ -60,7 +57,6 @@
     </div>
   </div>
 
-  <!-- Barra de Filtros e Busca -->
   <div class="filters-bar d-flex justify-content-between align-items-center flex-wrap gap-sm">
     <div class="search-input-wrap flex-grow-1">
       <span class="material-symbols-outlined search-icon">search</span>
@@ -91,13 +87,11 @@
     </div>
   </div>
 
-  <!-- Estado de Carregamento -->
   <div class="loading-box d-flex justify-content-center align-items-center" *ngIf="loading">
     <span class="material-symbols-outlined spinner-icon">progress_activity</span>
     <span class="margin-left-xs font-body-md">Carregando membros da equipe...</span>
   </div>
 
-  <!-- Lista de Membros -->
   <div class="members-grid" *ngIf="!loading && membrosFiltrados.length > 0">
     <div *ngFor="let membro of membrosFiltrados" class="member-card d-flex flex-direction-column justify-content-between" [class.inactive]="!membro.ativo">
       
@@ -138,7 +132,6 @@
         </div>
       </div>
 
-      <!-- Rodapé de Ações do Cartão -->
       <div class="member-card-footer d-flex justify-content-between align-items-center margin-top-md pt-sm border-top" *ngIf="podeGerenciar()">
         <div class="status-toggle-wrap">
           <button 
@@ -187,7 +180,6 @@
     </div>
   </div>
 
-  <!-- Estado Vazio -->
   <app-empty-state
     *ngIf="!loading && membrosFiltrados.length === 0"
     icon="group_off"
@@ -197,10 +189,8 @@
     actionIcon="person_add"
     (actionClick)="abrirModalConvidar()">
   </app-empty-state>
-
 </div>
 
-<!-- Modal de Convidar / Editar Membro -->
 <app-membro-equipe-modal
   *ngIf="modalAberto"
   [show]="modalAberto"
@@ -209,7 +199,6 @@
   (saved)="onMembroSalvo($event)">
 </app-membro-equipe-modal>
 
-<!-- Modal de Redefinir Senha -->
 <app-dialog
   [show]="modalRedefinirAberto"
   dialogTitle="Redefinir Senha de Acesso"
@@ -245,12 +234,3 @@
     </div>
   </div>
 </app-dialog>
-
-<!-- Modal de Exclusão -->
-<app-confirm-dialog
-  *ngIf="modalExcluirAberto"
-  title="Remover Colaborador da Equipe"
-  [message]="'Tem certeza que deseja remover ' + (membroExcluir?.nome || 'este colaborador') + ' da equipe? Esta ação não pode ser desfeita.'"
-  (confirm)="confirmarExcluir()"
-  (close)="fecharModalExcluir()">
-</app-confirm-dialog>

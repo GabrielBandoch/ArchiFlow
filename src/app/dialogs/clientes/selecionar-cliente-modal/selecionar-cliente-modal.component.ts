@@ -5,11 +5,12 @@ import { Cliente } from '../../../models/cliente.model';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
 import { DialogComponent } from '../../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
 
 @Component({
   selector: 'app-selecionar-cliente-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, DialogComponent, ButtonComponent, PhoneMaskPipe],
   templateUrl: './selecionar-cliente-modal.component.html',
   styleUrl: './selecionar-cliente-modal.component.scss'
 })

@@ -23,8 +23,9 @@
 
     <app-input 
       id="telefone" 
-      type="text" 
-      label="Telefone" 
+      type="tel" 
+      mask="phone"
+      label="Telefone / WhatsApp" 
       placeholder="(47) 99999-9999" 
       formControlName="telefone"
       [error]="submitted && f['telefone'].errors ? 'Telefone muito longo (máx. 20 caracteres).' : undefined">

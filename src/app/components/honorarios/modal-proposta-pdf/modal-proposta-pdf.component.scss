@@ -116,11 +116,7 @@
   justify-content: center;
   align-items: flex-start;
   padding: 24px 16px;
-}
-
-// -------------------------------------------------------------
-// COMPACT & LUXURY A4 EXECUTIVE PROPOSAL SHEET
-// -------------------------------------------------------------
+}
 .a4-document-sheet {
   background-color: #ffffff !important;
   border-radius: 4px;
@@ -148,9 +144,7 @@
   right: 0;
   height: 5px;
   border-radius: 4px 4px 0 0;
-}
-
-// HEADER
+}
 .doc-header {
   border-bottom: 1px solid #e5e2e1;
   padding-bottom: 16px;
@@ -219,9 +213,7 @@
       display: block;
     }
   }
-}
-
-// BANNER
+}
 .doc-title-banner {
   padding: 10px 16px;
   border-radius: 6px;
@@ -259,9 +251,7 @@
       margin-left: 4px;
     }
   }
-}
-
-// INTRO QUOTE
+}
 .doc-intro-quote {
   background-color: #fcfbf9;
   border-left: 3px solid;
@@ -271,9 +261,7 @@
   font-style: italic;
   line-height: 1.5;
   color: #303030;
-}
-
-// SECTIONS
+}
 .doc-section {
   display: flex;
   flex-direction: column;
@@ -299,9 +287,7 @@
       margin: 0;
     }
   }
-}
-
-// 4-COLUMN META GRID
+}
 .doc-meta-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -332,9 +318,7 @@
       text-overflow: ellipsis;
     }
   }
-}
-
-// STAGES TABLE
+}
 .doc-table {
   border-collapse: collapse;
   width: 100%;
@@ -394,9 +378,7 @@
     line-height: 1.35;
     margin-top: 3px;
   }
-}
-
-// TOTAL BAR
+}
 .doc-total-bar {
   padding: 10px 16px;
   border-radius: 6px;
@@ -423,9 +405,7 @@
     font-weight: 800;
     line-height: 1;
   }
-}
-
-// PAYMENT GRID
+}
 .doc-payment-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -453,9 +433,7 @@
   .payment-bank-box {
     font-size: 10px;
   }
-}
-
-// TERMS
+}
 .doc-terms-box {
   background-color: #fbf9f7;
   border: 1px solid #e5e2e1;
@@ -467,9 +445,7 @@
     line-height: 1.45;
     color: #4f453d;
   }
-}
-
-// SIGNATURES
+}
 .doc-signatures-section {
   margin-top: 10px;
   padding-top: 14px;
@@ -500,9 +476,7 @@
       margin-top: 2px;
     }
   }
-}
-
-// FOOTER
+}
 .doc-footer {
   margin-top: 10px;
   padding-top: 8px;

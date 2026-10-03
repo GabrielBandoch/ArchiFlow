@@ -10,6 +10,8 @@ import { SelectOption } from '../../../shared/components/select/select.component
 import { CriarContratoCommand, CriarParcelaCommand } from '../../../commands/financeiro.commands';
 import { FinanceiroForm } from '../../../components/financeiro/financeiro.form';
 
+import { ProjectSearchComponent } from '../../../shared/components/project-search/project-search.component';
+
 @Component({
   selector: 'app-criar-parcela-modal',
   standalone: true,
@@ -19,7 +21,8 @@ import { FinanceiroForm } from '../../../components/financeiro/financeiro.form';
     ReactiveFormsModule,
     CORE_IMPORTS,
     FORM_IMPORTS,
-    DESIGN_SYSTEM
+    DESIGN_SYSTEM,
+    ProjectSearchComponent
   ],
   templateUrl: './criar-parcela-modal.component.html',
   styleUrl: './criar-parcela-modal.component.scss'

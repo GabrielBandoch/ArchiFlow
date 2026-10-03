@@ -15,6 +15,7 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BadgeComponent } from './components/badge/badge.component';
 import { EmptyStateComponent } from './components/empty-state/empty-state.component';
 import { SearchInputComponent } from './components/search-input/search-input.component';
+import { WhatsAppButtonComponent } from './components/whatsapp-button/whatsapp-button.component';
 
 export const CORE_IMPORTS = [
   CommonModule,
@@ -39,7 +40,8 @@ export const DESIGN_SYSTEM = [
   SpinnerComponent,
   BadgeComponent,
   EmptyStateComponent,
-  SearchInputComponent
+  SearchInputComponent,
+  WhatsAppButtonComponent
 ] as const;
 
 export * from './components/chat-widget/chat-widget.component';
@@ -50,4 +52,9 @@ export * from './components/lead-search/lead-search.component';
 export * from './components/badge/badge.component';
 export * from './components/empty-state/empty-state.component';
 export * from './components/search-input/search-input.component';
+export * from './components/whatsapp-button/whatsapp-button.component';
+export * from '../core/utils/whatsapp-utils';
+export * from '../core/pipes/phone-mask.pipe';
+
+
 

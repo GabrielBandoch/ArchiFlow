@@ -11,11 +11,12 @@ import { DetalhesLeadModalComponent } from '../../dialogs/leads/detalhes-lead-mo
 import { MotivoPerdaModalComponent } from '../../dialogs/leads/motivo-perda-modal/motivo-perda-modal.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ConversaoLeadModalComponent } from '../../dialogs/leads/conversao-lead-modal/conversao-lead-modal.component';
+import { PhoneMaskPipe } from '../../core/pipes/phone-mask.pipe';
 
 @Component({
   selector: 'app-leads',
   standalone: true,
-  imports: [CORE_IMPORTS, DESIGN_SYSTEM],
+  imports: [CORE_IMPORTS, DESIGN_SYSTEM, PhoneMaskPipe],
   templateUrl: './leads.component.html',
   styleUrl: './leads.component.scss'
 })

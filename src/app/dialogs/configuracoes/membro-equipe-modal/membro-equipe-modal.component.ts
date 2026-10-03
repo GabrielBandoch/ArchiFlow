@@ -6,6 +6,7 @@ import { UsuarioService } from '../../../core/api/usuarios/usuario.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { MembroEquipe, PerfilUsuario } from '../../../models/usuario.model';
 import { ConvidarMembroEquipeCommand, AtualizarMembroEquipeCommand } from '../../../commands/usuario.commands';
+import { MembroEquipeForm } from './membro-equipe.form';
 
 @Component({
   selector: 'app-membro-equipe-modal',
@@ -41,15 +42,7 @@ export class MembroEquipeModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.isEditing = !!this.membroParaEdicao;
-
-    this.form = this.fb.group({
-      nome: [this.membroParaEdicao?.nome || '', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
-      email: [this.membroParaEdicao?.email || '', [Validators.required, Validators.email, Validators.maxLength(256)]],
-      role: [this.membroParaEdicao?.role || 'ArquitetoColaborador', Validators.required],
-      cargo: [this.membroParaEdicao?.cargo || '', [Validators.maxLength(100)]],
-      telefone: [this.membroParaEdicao?.telefone || '', [Validators.maxLength(30)]],
-      senhaTemporaria: ['']
-    });
+    this.form = MembroEquipeForm.create(this.fb, this.membroParaEdicao);
   }
 
   get f() {

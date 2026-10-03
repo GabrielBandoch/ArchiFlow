@@ -5,11 +5,12 @@ import { Lead } from '../../../models/lead.model';
 import { ButtonComponent } from '../button/button.component';
 import { LeadService } from '../../../core/api/leads/lead.service';
 import { SelecionarLeadModalComponent } from '../../../dialogs/leads/selecionar-lead-modal/selecionar-lead-modal.component';
+import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
 
 @Component({
   selector: 'app-lead-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, SelecionarLeadModalComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, SelecionarLeadModalComponent, PhoneMaskPipe],
   templateUrl: './lead-search.component.html',
   styleUrl: './lead-search.component.scss',
   providers: [

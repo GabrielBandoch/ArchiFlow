@@ -11,7 +11,7 @@
       <div class="d-flex flex-direction-column">
         <span class="font-weight-semibold font-body-md text-on-surface">{{ leadSelecionado.nome }}</span>
         <span class="font-label-sm text-on-surface-variant">
-          {{ leadSelecionado.email || leadSelecionado.telefone || 'Lead' }}
+          {{ leadSelecionado.email || (leadSelecionado.telefone | phoneMask) || 'Lead' }}
           <ng-container *ngIf="leadSelecionado.statusLabel"> • {{ leadSelecionado.statusLabel }}</ng-container>
         </span>
       </div>
@@ -55,7 +55,7 @@
         <div class="d-flex flex-direction-column">
           <span class="font-weight-medium font-body-md text-on-surface">{{ l.nome }}</span>
           <span class="font-label-sm text-on-surface-variant">
-            {{ l.email || l.telefone || 'Lead' }}
+            {{ l.email || (l.telefone | phoneMask) || 'Lead' }}
             <ng-container *ngIf="l.statusLabel"> • {{ l.statusLabel }}</ng-container>
           </span>
         </div>

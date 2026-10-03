@@ -39,7 +39,7 @@
               <span class="font-body-md text-on-surface">{{ c.email }}</span>
             </td>
             <td>
-              <span class="font-body-md text-on-surface-variant">{{ c.telefone || '—' }}</span>
+              <span class="font-body-md text-on-surface-variant">{{ (c.telefone | phoneMask) || '—' }}</span>
             </td>
             <td class="text-right">
               <app-button variant="secondary" size="sm" (btnClick)="selecionarViaModal(c); $event.stopPropagation()">

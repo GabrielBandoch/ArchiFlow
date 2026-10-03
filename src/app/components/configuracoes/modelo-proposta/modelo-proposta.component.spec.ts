@@ -5,11 +5,14 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
+import { DialogService } from '../../../core/services/dialog.service';
+
 describe('ModeloPropostaComponent', () => {
   let component: ModeloPropostaComponent;
   let fixture: ComponentFixture<ModeloPropostaComponent>;
   let configService: jasmine.SpyObj<ConfiguracaoPropostaService>;
   let notificationService: jasmine.SpyObj<NotificationService>;
+  let dialogServiceSpy: jasmine.SpyObj<DialogService>;
 
   const mockConfig = {
     nomeEscritorio: 'Studio Teste Arquitetura',
@@ -53,11 +56,15 @@ describe('ModeloPropostaComponent', () => {
     configSpy.formatarMoeda.and.callFake((val: number) => `R$ ${val.toFixed(2)}`);
     configSpy.gerarMensagemWhatsapp.and.returnValue('Mensagem gerada');
 
+    dialogServiceSpy = jasmine.createSpyObj('DialogService', ['confirm', 'open']);
+    dialogServiceSpy.confirm.and.returnValue(of(true));
+
     await TestBed.configureTestingModule({
       imports: [ModeloPropostaComponent, ReactiveFormsModule],
       providers: [
         { provide: ConfiguracaoPropostaService, useValue: configSpy },
-        { provide: NotificationService, useValue: notifSpy }
+        { provide: NotificationService, useValue: notifSpy },
+        { provide: DialogService, useValue: dialogServiceSpy }
       ]
     }).compileComponents();
 
@@ -107,7 +114,7 @@ describe('ModeloPropostaComponent', () => {
   });
 
   it('deve restaurar configurações para os valores de fábrica quando confirmado', () => {
-    spyOn(window, 'confirm').and.returnValue(true);
+    dialogServiceSpy.confirm.and.returnValue(of(true));
     configService.resetarPadroes.and.returnValue({
       ...mockConfig,
       nomeEscritorio: 'Studio Exemplo Arquitetura'
@@ -115,6 +122,7 @@ describe('ModeloPropostaComponent', () => {
 
     component.restaurarPadrao();
 
+    expect(dialogServiceSpy.confirm).toHaveBeenCalled();
     expect(configService.resetarPadroes).toHaveBeenCalled();
     expect(notificationService.info).toHaveBeenCalled();
   });

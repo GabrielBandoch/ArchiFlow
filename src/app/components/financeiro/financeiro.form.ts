@@ -31,7 +31,8 @@ export class FinanceiroForm {
   static createDespesa(fb: FormBuilder, preselectedProjectId = '', defaultDate?: string): FormGroup {
     const hoje = defaultDate || new Date().toISOString().substring(0, 10);
     return fb.group({
-      projetoId: [preselectedProjectId, [Validators.required]],
+      projetoId: [preselectedProjectId || ''],
+      fornecedorId: [''],
       descricao: ['', [Validators.required]],
       valor: [null, [Validators.required, Validators.min(0.01)]],
       dataDespesa: [hoje, [Validators.required]],

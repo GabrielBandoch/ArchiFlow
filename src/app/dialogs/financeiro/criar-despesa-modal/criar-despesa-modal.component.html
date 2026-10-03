@@ -17,11 +17,20 @@
 
     <div class="modal-body d-flex flex-direction-column gap-md">
       <form [formGroup]="form" class="d-flex flex-direction-column gap-md">
+        <app-project-search
+          id="despesaProjetoId"
+          label="Projeto Vinculado (Opcional)"
+          placeholder="Buscar projeto da despesa ou deixar em branco para despesa geral..."
+          [projetos]="projetos"
+          formControlName="projetoId">
+        </app-project-search>
+
         <app-select
-          label="Projeto Vinculado"
-          formControlName="projetoId"
-          [options]="projetoOptions"
-          [required]="true">
+          id="despesaFornecedorId"
+          label="Fornecedor / Favorecido (Opcional)"
+          placeholder="Selecione o parceiro comercial..."
+          formControlName="fornecedorId"
+          [options]="fornecedoresOptions">
         </app-select>
 
         <app-input

@@ -39,7 +39,7 @@
               <span class="font-body-md text-on-surface">{{ l.email || '—' }}</span>
             </td>
             <td>
-              <span class="font-body-md text-on-surface-variant">{{ l.telefone || '—' }}</span>
+              <span class="font-body-md text-on-surface-variant">{{ (l.telefone | phoneMask) || '—' }}</span>
             </td>
             <td>
               <span class="status-badge">{{ l.statusLabel || l.status || 'Novo' }}</span>

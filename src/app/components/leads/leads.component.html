@@ -59,9 +59,12 @@
           <h4 class="lead-title">{{ lead.nome }}</h4>
 
           <div class="card-body d-flex flex-direction-column gap-xs">
-            <div class="body-item d-flex align-items-center gap-sm" *ngIf="lead.telefone">
-              <span class="material-symbols-outlined">call</span>
-              <span>{{ lead.telefone }}</span>
+            <div class="body-item d-flex align-items-center gap-sm justify-content-between" *ngIf="lead.telefone">
+              <div class="d-flex align-items-center gap-xs">
+                <span class="material-symbols-outlined">call</span>
+                <span>{{ lead.telefone | phoneMask }}</span>
+              </div>
+              <app-whatsapp-button [telefone]="lead.telefone" [mensagem]="'Olá ' + lead.nome + '! Entro em contato sobre o seu projeto no ArchiFlow.'"></app-whatsapp-button>
             </div>
             <div class="body-item d-flex align-items-center gap-sm">
               <span class="material-symbols-outlined">mail</span>

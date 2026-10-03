@@ -30,7 +30,6 @@
     </div>
   </div>
 
-  <!-- ABA 1: CALCULADORA -->
   <div class="simulador-layout" *ngIf="abaAtiva === 'calculadora'">
     <div class="config-column d-flex flex-direction-column gap-md">
       <app-parametros-projeto
@@ -65,7 +64,6 @@
     </div>
   </div>
 
-  <!-- ABA 2: HISTÓRICO DE PROPOSTAS -->
   <div class="historico-tab-content d-flex flex-direction-column gap-md" *ngIf="abaAtiva === 'historico'">
     <div class="table-container-card d-flex flex-direction-column">
       <div class="table-toolbar d-flex justify-content-between align-items-center flex-wrap gap-md">
@@ -217,14 +215,15 @@
             </tr>
 
             <tr *ngIf="propostasFiltradas.length === 0">
-              <td colspan="7" class="empty-table-cell text-center p-2xl">
-                <div class="empty-table-box d-flex flex-direction-column align-items-center justify-content-center gap-xs">
-                  <div class="empty-icon-circle d-flex align-items-center justify-content-center">
-                    <span class="material-symbols-outlined">request_quote</span>
-                  </div>
-                  <span class="font-label-md font-weight-bold text-on-surface mt-xs">Nenhuma proposta comercial encontrada</span>
-                  <span class="font-body-md text-on-surface-variant text-sm">Realize uma simulação e salve sua primeira proposta para acompanhar aqui.</span>
-                </div>
+              <td colspan="7" class="p-xl">
+                <app-empty-state
+                  icon="request_quote"
+                  title="Nenhuma proposta comercial encontrada"
+                  description="Realize uma simulação e salve sua primeira proposta para acompanhar aqui."
+                  actionLabel="Nova Simulação"
+                  actionIcon="add"
+                  (actionClick)="setAba('calculadora')">
+                </app-empty-state>
               </td>
             </tr>
           </tbody>
@@ -233,7 +232,6 @@
     </div>
   </div>
 
-  <!-- Modais Especializados -->
   <app-modal-salvar-proposta
     [show]="modalSalvarAberto"
     [form]="propostaForm"
@@ -251,10 +249,4 @@
     (close)="fecharModalAjusteManual()"
     (confirmar)="confirmarAjusteManual()">
   </app-modal-ajuste-manual>
-
-  <app-modal-proposta-pdf
-    [show]="modalPdfAberto"
-    [proposta]="propostaParaPdf"
-    (close)="fecharModalPdf()">
-  </app-modal-proposta-pdf>
 </div>

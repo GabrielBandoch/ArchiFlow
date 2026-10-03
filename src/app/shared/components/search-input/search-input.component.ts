@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -9,9 +9,16 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './search-input.component.html',
-  styleUrls: ['./search-input.component.scss']
+  styleUrls: ['./search-input.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SearchInputComponent),
+      multi: true
+    }
+  ]
 })
-export class SearchInputComponent implements OnInit, OnDestroy {
+export class SearchInputComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() placeholder = 'Buscar...';
   @Input() debounce = 300;
   @Input() value = '';
@@ -21,6 +28,10 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 
   private searchSubject = new Subject<string>();
   private sub?: Subscription;
+
+  onChange: (value: string) => void = () => {};
+  onTouched: () => void = () => {};
+  disabled = false;
 
   ngOnInit(): void {
     this.sub = this.searchSubject.pipe(
@@ -35,14 +46,32 @@ export class SearchInputComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
+  writeValue(val: string): void {
+    this.value = val || '';
+  }
+
+  registerOnChange(fn: (value: string) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
   onInput(term: string): void {
     this.value = term;
+    this.onChange(term);
     this.valueChange.emit(term);
     this.searchSubject.next(term);
   }
 
   limpar(): void {
     this.value = '';
+    this.onChange('');
     this.valueChange.emit('');
     this.search.emit('');
   }

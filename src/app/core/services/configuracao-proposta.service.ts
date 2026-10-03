@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of, finalize, shareReplay } from 'rxjs';
 import { ConfiguracaoProposta, CONFIGURACAO_PROPOSTA_PADRAO } from '../models/configuracao-proposta.model';
+import { UrlBuilder } from '../utils/url-builder';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -11,7 +12,10 @@ export class ConfiguracaoPropostaService {
   private http = inject(HttpClient);
   private readonly STORAGE_KEY = 'archiflow_config_proposta_v2';
   private readonly LEGACY_STORAGE_KEY = 'archiflow_config_proposta_v1';
-  private readonly apiUrl = `${environment.apiUrl}/propostas/configuracao`;
+  private readonly apiUrl = new UrlBuilder(environment.apiUrl)
+    .segment('propostas')
+    .segment('configuracao')
+    .build();
 
   private configSubject: BehaviorSubject<ConfiguracaoProposta>;
   public configuracao$: Observable<ConfiguracaoProposta>;
@@ -32,7 +36,6 @@ export class ConfiguracaoPropostaService {
     try {
       localStorage.removeItem(this.LEGACY_STORAGE_KEY);
     } catch {
-      // ignore
     }
   }
 
@@ -44,7 +47,6 @@ export class ConfiguracaoPropostaService {
     this.carregamentoInFlight$ = this.http.get<ConfiguracaoProposta>(this.apiUrl).pipe(
       tap((res) => {
         if (res && (res.configurado || (res.nomeEscritorio && res.nomeEscritorio.trim() !== ''))) {
-          // Sanitiza se porventura houver dados residuais mockados de Duna
           if (this.contemDadosDuna(res)) {
             const limpo = this.sanitizarConfiguracao(res);
             this.salvarLocal(limpo);
@@ -98,7 +100,6 @@ export class ConfiguracaoPropostaService {
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(config));
     } catch {
-      // Ignora erro se localStorage estiver indisponível
     }
     this.configSubject.next({ ...config });
   }
@@ -164,7 +165,6 @@ export class ConfiguracaoPropostaService {
         return { ...CONFIGURACAO_PROPOSTA_PADRAO, ...parsed };
       }
     } catch {
-      // Fallback para o padrão
     }
     return { ...CONFIGURACAO_PROPOSTA_PADRAO };
   }

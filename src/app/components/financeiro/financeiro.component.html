@@ -89,24 +89,5 @@
       (novaDespesa)="abrirModalNovaDespesa()">
     </app-financeiro-tabela-despesas>
   </div>
-
-  <app-dar-baixa-parcela-modal
-    [show]="showBaixaModal"
-    [parcela]="selectedParcelaParaBaixa"
-    (close)="showBaixaModal = false"
-    (baixada)="onParcelaBaixada()">
-  </app-dar-baixa-parcela-modal>
-
-  <app-criar-parcela-modal
-    [show]="showNovaParcelaModal"
-    (close)="showNovaParcelaModal = false"
-    (salvo)="onDadosAtualizados()">
-  </app-criar-parcela-modal>
-
-  <app-criar-despesa-modal
-    [show]="showNovaDespesaModal"
-    (close)="showNovaDespesaModal = false"
-    (salva)="onDadosAtualizados()">
-  </app-criar-despesa-modal>
 </div>
 
