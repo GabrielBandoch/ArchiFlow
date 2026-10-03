@@ -40,7 +40,8 @@ export interface DarBaixaParcelaCommand {
 }
 
 export interface CriarDespesaCommand {
-  projetoId: string;
+  projetoId?: string;
+  fornecedorId?: string;
   descricao: string;
   valor: number;
   dataDespesa: string;

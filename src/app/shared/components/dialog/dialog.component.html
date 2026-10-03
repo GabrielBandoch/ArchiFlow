@@ -1,4 +1,4 @@
-<div class="dialog-overlay" *ngIf="show" (click)="onBackdropClick($event)">
+<div class="dialog-overlay" *ngIf="show" [style.z-index]="zIndex || null" (click)="onBackdropClick($event)">
   <div class="dialog-container" 
        [class]="'dialog-size-' + size" 
        [class.overflow-visible]="overflowVisible"

@@ -5,11 +5,12 @@ import { NotificationService } from '../../../core/services/notification.service
 import { Cliente } from '../../../models/cliente.model';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
 
 @Component({
   selector: 'app-lista-clientes',
   standalone: true,
-  imports: [CORE_IMPORTS, DESIGN_SYSTEM, FormsModule],
+  imports: [CORE_IMPORTS, DESIGN_SYSTEM, FormsModule, PhoneMaskPipe],
   templateUrl: './lista-clientes.component.html',
   styleUrl: './lista-clientes.component.scss'
 })

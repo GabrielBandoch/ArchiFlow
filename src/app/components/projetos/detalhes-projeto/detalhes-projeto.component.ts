@@ -7,18 +7,36 @@ import { ClienteService } from '../../../core/api/clientes/cliente.service';
 import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DialogService } from '../../../core/services/dialog.service';
-import { ProjectTemplateService } from '../../../core/services/project-template.service';
 import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TipoProjeto, TarefaEtapa } from '../../../models/projeto.model';
 import { Arquivo } from '../../../models/arquivo.model';
 import { SelectOption } from '../../../shared/components/select/select.component';
 import { EditarProjetoModalComponent } from '../../../dialogs/projetos/editar-projeto-modal/editar-projeto-modal.component';
 import { NovaEtapaModalComponent } from '../../../dialogs/projetos/nova-etapa-modal/nova-etapa-modal.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ProjetoHeroCardComponent } from './components/projeto-hero-card/projeto-hero-card.component';
+import { ProjetoEtapasComponent } from './components/projeto-etapas/projeto-etapas.component';
+import { ProjetoArquivosComponent } from './components/projeto-arquivos/projeto-arquivos.component';
+import { ProjetoSidebarComponent } from './components/projeto-sidebar/projeto-sidebar.component';
+import { ProjetoFornecedoresComponent } from './components/projeto-fornecedores/projeto-fornecedores.component';
+import { FornecedorService } from '../../../core/api/fornecedores/fornecedor.service';
+import { ProjetoFornecedor } from '../../../models/fornecedor.model';
 
 @Component({
   selector: 'app-detalhes-projeto',
   standalone: true,
-  imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [
+    CORE_IMPORTS, 
+    FORM_IMPORTS, 
+    DESIGN_SYSTEM, 
+    ReactiveFormsModule, 
+    FormsModule, 
+    RouterLink,
+    ProjetoHeroCardComponent,
+    ProjetoEtapasComponent,
+    ProjetoArquivosComponent,
+    ProjetoSidebarComponent,
+    ProjetoFornecedoresComponent
+  ],
   templateUrl: './detalhes-projeto.component.html',
   styleUrl: './detalhes-projeto.component.scss'
 })
@@ -28,15 +46,16 @@ export class DetalhesProjetoComponent implements OnInit {
   private projetoService = inject(ProjetoService);
   private clienteService = inject(ClienteService);
   private arquivoService = inject(ArquivoService);
-  private projectTemplateService = inject(ProjectTemplateService);
+  private fornecedorService = inject(FornecedorService);
   private notificationService = inject(NotificationService);
   private dialogService = inject(DialogService);
 
   projetoId = '';
   projeto: Projeto | null = null;
   arquivos: Arquivo[] = [];
+  fornecedoresProjeto: ProjetoFornecedor[] = [];
   loading = true;
-  activeTab: 'etapas' | 'arquivos' = 'etapas';
+  activeTab: 'etapas' | 'arquivos' | 'fornecedores' = 'etapas';
 
   uploadingArquivo = false;
   novoArquivoVisivelCliente = true;
@@ -76,9 +95,22 @@ export class DetalhesProjetoComponent implements OnInit {
     if (this.projetoId) {
       this.carregarProjeto();
       this.carregarArquivos();
+      this.carregarFornecedoresDoProjeto();
     } else {
       this.router.navigate(['/projetos']);
     }
+  }
+
+  carregarFornecedoresDoProjeto(): void {
+    if (!this.projetoId) return;
+    this.fornecedorService.obterFornecedoresDoProjeto(this.projetoId).subscribe({
+      next: (dados) => {
+        this.fornecedoresProjeto = dados;
+      },
+      error: () => {
+        // Silencioso se não houver vínculos
+      }
+    });
   }
 
   normalizarStatus(status: any): StatusProjeto {
@@ -144,7 +176,7 @@ export class DetalhesProjetoComponent implements OnInit {
     });
   }
 
-  setTab(tab: 'etapas' | 'arquivos'): void {
+  setTab(tab: 'etapas' | 'arquivos' | 'fornecedores'): void {
     this.activeTab = tab;
   }
 
@@ -282,61 +314,62 @@ export class DetalhesProjetoComponent implements OnInit {
     return tarefas.filter(t => t.concluida).length;
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0] && this.projeto) {
-      const file = input.files[0];
-      if (file.size > 20 * 1024 * 1024) {
-        this.notificationService.error('O arquivo excede o limite máximo permitido de 20 MB.');
-        input.value = '';
-        return;
-      }
+  onEtapaStatusAlterado(event: { etapa: EtapaProjeto; status: StatusEtapa }): void {
+    this.alterarStatusEtapa(event.etapa, event.status);
+  }
 
-      this.uploadingArquivo = true;
-      this.arquivoService.upload(file, this.projeto.id, this.novoArquivoVisivelCliente).subscribe({
-        next: (uploaded) => {
-          this.uploadingArquivo = false;
-          this.notificationService.success(`Arquivo "${uploaded.nome}" enviado!`);
-          this.arquivos.unshift(uploaded);
-          input.value = '';
-        },
-        error: (err) => {
-          this.uploadingArquivo = false;
-          console.error('Erro ao enviar arquivo', err);
-          this.notificationService.error('Erro ao realizar upload.');
-          input.value = '';
-        }
-      });
+  onTarefaToggled(event: { etapa: EtapaProjeto; tarefa: TarefaEtapa }): void {
+    this.toggleTarefa(event.etapa, event.tarefa);
+  }
+
+  onTarefaAdicionada(event: { etapa: EtapaProjeto; inputEl: HTMLInputElement }): void {
+    this.adicionarTarefa(event.etapa, event.inputEl);
+  }
+
+  onTarefaRemovida(event: { etapa: EtapaProjeto; tarefaId: string }): void {
+    this.removerTarefa(event.etapa, event.tarefaId);
+  }
+
+  onArquivoUpload(event: { file: File; visivelCliente: boolean }): void {
+    if (!this.projeto) return;
+    if (event.file.size > 20 * 1024 * 1024) {
+      this.notificationService.error('O arquivo excede o limite máximo permitido de 20 MB.');
+      return;
     }
+
+    this.uploadingArquivo = true;
+    this.arquivoService.upload(event.file, this.projeto.id, event.visivelCliente).subscribe({
+      next: (uploaded) => {
+        this.uploadingArquivo = false;
+        this.notificationService.success(`Arquivo "${uploaded.nome}" enviado!`);
+        this.arquivos.unshift(uploaded);
+      },
+      error: (err) => {
+        this.uploadingArquivo = false;
+        console.error('Erro ao enviar arquivo', err);
+        this.notificationService.error('Erro ao realizar upload.');
+      }
+    });
   }
 
   excluirArquivo(arquivo: Arquivo): void {
-    const ref = this.dialogService.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Excluir Arquivo',
-        message: `Tem certeza de que deseja excluir o arquivo "${arquivo.nome}"?`
+    this.dialogService.confirm({
+      title: 'Excluir Arquivo',
+      message: `Tem certeza de que deseja excluir o arquivo "${arquivo.nome}"?`
+    }).subscribe((confirmado) => {
+      if (confirmado) {
+        this.arquivoService.excluir(arquivo.id).subscribe({
+          next: () => {
+            this.arquivos = this.arquivos.filter(a => a.id !== arquivo.id);
+            this.notificationService.success('Arquivo removido com sucesso.');
+          },
+          error: (err) => {
+            console.error('Erro ao excluir arquivo', err);
+            this.notificationService.error('Não foi possível excluir o arquivo.');
+          }
+        });
       }
     });
-    ref.instance.confirm.subscribe(() => {
-      this.arquivoService.excluir(arquivo.id).subscribe({
-        next: () => {
-          this.arquivos = this.arquivos.filter(a => a.id !== arquivo.id);
-          this.notificationService.success('Arquivo removido com sucesso.');
-        },
-        error: (err) => {
-          console.error('Erro ao excluir arquivo', err);
-          this.notificationService.error('Não foi possível excluir o arquivo.');
-        }
-      });
-    });
-  }
-
-  getFileIcon(nome: string): string {
-    const ext = nome.split('.').pop()?.toLowerCase();
-    if (ext === 'pdf') return 'picture_as_pdf';
-    if (['jpg', 'jpeg', 'png', 'webp', 'svg'].includes(ext || '')) return 'image';
-    if (['dwg', 'dxf', 'rvt', 'skp'].includes(ext || '')) return 'architecture';
-    return 'description';
   }
 
   abrirModalEdicao(): void {

@@ -1,0 +1,62 @@
+<app-dialog
+  [show]="show"
+  dialogTitle="Avaliar Desempenho do Parceiro"
+  size="sm"
+  [overflowVisible]="true"
+  (close)="fechar()">
+
+  <div class="d-flex flex-direction-column gap-sm" *ngIf="fornecedor">
+    <p class="font-body-sm m-0 text-on-surface-variant">
+      Avalie o fornecimento e a qualidade dos serviços de <strong>{{ fornecedor.nome }}</strong>.
+    </p>
+
+    <div class="rating-banner d-flex align-items-center justify-content-center gap-xs">
+      <button 
+        type="button" 
+        *ngFor="let star of [1, 2, 3, 4, 5]" 
+        class="btn-star" 
+        [class.active-star]="star <= notaSelecionada"
+        (click)="selecionarNota(star)"
+        [title]="star + ' estrelas'">
+        <span class="material-symbols-outlined star-icon">star</span>
+      </button>
+      <span class="font-label-md font-weight-bold rating-badge">{{ notaSelecionada }}.0 / 5.0</span>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="salvar()" class="d-flex flex-direction-column gap-sm margin-top-xs">
+      <div class="field-item">
+        <app-input
+          id="comentarioAvaliacao"
+          type="textarea"
+          [rows]="3"
+          label="Comentário / Relato Técnico"
+          placeholder="Ex: Cumpriram o cronograma à risca, acabamento impecável na montagem das esquadrias..."
+          formControlName="comentario"
+          [required]="true"
+          [error]="submitted && f['comentario'].errors ? 'O comentário da avaliação é obrigatório.' : undefined">
+        </app-input>
+      </div>
+
+      <div class="field-item">
+        <app-input
+          id="autorAvaliacao"
+          type="text"
+          label="Avaliador Responsável"
+          placeholder="Ex: Carlos Eduardo (Arquiteto Titular)"
+          formControlName="autorNome">
+        </app-input>
+      </div>
+
+      <div class="dialog-actions d-flex justify-content-end align-items-center gap-xs margin-top-md">
+        <app-button variant="ghost" type="button" (btnClick)="fechar()" [disabled]="salvando">
+          Cancelar
+        </app-button>
+        <app-button variant="primary" type="submit" [disabled]="salvando">
+          <span class="material-symbols-outlined icon-btn-inline" *ngIf="!salvando">rate_review</span>
+          <span class="material-symbols-outlined icon-btn-inline spinner-icon" *ngIf="salvando">progress_activity</span>
+          {{ salvando ? 'Enviando...' : 'Registrar Avaliação' }}
+        </app-button>
+      </div>
+    </form>
+  </div>
+</app-dialog>

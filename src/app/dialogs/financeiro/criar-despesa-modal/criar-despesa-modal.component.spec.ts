@@ -3,6 +3,7 @@ import { of, throwError } from 'rxjs';
 import { CriarDespesaModalComponent } from './criar-despesa-modal.component';
 import { FinanceiroService } from '../../../core/api/financeiro/financeiro.service';
 import { ProjetoService } from '../../../core/api/projetos/projeto.service';
+import { FornecedorService } from '../../../core/api/fornecedores/fornecedor.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CategoriaDespesa } from '../../../models/financeiro.model';
 
@@ -11,14 +12,17 @@ describe('CriarDespesaModalComponent', () => {
   let fixture: ComponentFixture<CriarDespesaModalComponent>;
   let financeiroServiceSpy: jasmine.SpyObj<FinanceiroService>;
   let projetoServiceSpy: jasmine.SpyObj<ProjetoService>;
+  let fornecedorServiceSpy: jasmine.SpyObj<FornecedorService>;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   beforeEach(async () => {
     financeiroServiceSpy = jasmine.createSpyObj('FinanceiroService', ['criarDespesa', 'uploadComprovante', 'excluirComprovante']);
     projetoServiceSpy = jasmine.createSpyObj('ProjetoService', ['obterTodos']);
+    fornecedorServiceSpy = jasmine.createSpyObj('FornecedorService', ['obterTodos']);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'warning', 'error']);
 
     projetoServiceSpy.obterTodos.and.returnValue(of([{ id: 'p1', nome: 'Projeto Alpha' } as any]));
+    fornecedorServiceSpy.obterTodos.and.returnValue(of([]));
     financeiroServiceSpy.criarDespesa.and.returnValue(of({} as any));
     financeiroServiceSpy.uploadComprovante.and.returnValue(of({ url: 'https://s3.amazonaws.com/recibo.pdf', nome: 'recibo.pdf' }));
     financeiroServiceSpy.excluirComprovante.and.returnValue(of(undefined));
@@ -28,6 +32,7 @@ describe('CriarDespesaModalComponent', () => {
       providers: [
         { provide: FinanceiroService, useValue: financeiroServiceSpy },
         { provide: ProjetoService, useValue: projetoServiceSpy },
+        { provide: FornecedorService, useValue: fornecedorServiceSpy },
         { provide: NotificationService, useValue: notificationServiceSpy }
       ]
     }).compileComponents();

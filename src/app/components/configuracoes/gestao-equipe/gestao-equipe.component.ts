@@ -4,6 +4,7 @@ import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
 import { UsuarioService } from '../../../core/api/usuarios/usuario.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { MembroEquipe } from '../../../models/usuario.model';
 import { MembroEquipeModalComponent } from '../../../dialogs/configuracoes/membro-equipe-modal/membro-equipe-modal.component';
 
@@ -18,6 +19,7 @@ export class GestaoEquipeComponent implements OnInit {
   private usuarioService = inject(UsuarioService);
   public authService = inject(AuthService);
   private notificationService = inject(NotificationService);
+  private dialogService = inject(DialogService);
 
   membros: MembroEquipe[] = [];
   loading = false;
@@ -49,10 +51,6 @@ export class GestaoEquipeComponent implements OnInit {
   membroRedefinir?: MembroEquipe;
   novaSenhaManual = '';
   salvandoSenha = false;
-
-  membroExcluir?: MembroEquipe;
-  modalExcluirAberto = false;
-  excluindo = false;
 
   ngOnInit(): void {
     this.carregarEquipe();
@@ -202,30 +200,23 @@ export class GestaoEquipeComponent implements OnInit {
       this.notificationService.warning('Você não pode excluir sua própria conta.');
       return;
     }
-    this.membroExcluir = membro;
-    this.modalExcluirAberto = true;
-  }
 
-  fecharModalExcluir(): void {
-    this.modalExcluirAberto = false;
-    this.membroExcluir = undefined;
-  }
-
-  confirmarExcluir(): void {
-    if (!this.membroExcluir) return;
-
-    this.excluindo = true;
-    this.usuarioService.excluirMembro(this.membroExcluir.id).subscribe({
-      next: () => {
-        this.excluindo = false;
-        this.notificationService.success(`Colaborador ${this.membroExcluir?.nome} removido da equipe.`);
-        this.fecharModalExcluir();
-        this.carregarEquipe();
-      },
-      error: (err) => {
-        this.excluindo = false;
-        console.error('Erro ao excluir membro', err);
-        this.notificationService.error('Não foi possível remover o colaborador.');
+    this.dialogService.confirm({
+      title: 'Remover Colaborador da Equipe',
+      message: `Tem certeza que deseja remover ${membro.nome || 'este colaborador'} da equipe? Esta ação não pode ser desfeita.`,
+      confirmText: 'Remover'
+    }).subscribe((confirmou) => {
+      if (confirmou) {
+        this.usuarioService.excluirMembro(membro.id).subscribe({
+          next: () => {
+            this.notificationService.success(`Colaborador ${membro.nome} removido da equipe.`);
+            this.carregarEquipe();
+          },
+          error: (err) => {
+            console.error('Erro ao excluir membro', err);
+            this.notificationService.error('Não foi possível remover o colaborador.');
+          }
+        });
       }
     });
   }
@@ -244,6 +235,22 @@ export class GestaoEquipeComponent implements OnInit {
         return 'badge-estagiario';
       default:
         return 'badge-colab';
+    }
+  }
+
+  obterRoleBadgeVariant(role: string): 'primary' | 'info' | 'warning' | 'neutral' {
+    switch (role) {
+      case 'Administrador':
+      case 'ArquitetoAdmin':
+        return 'primary';
+      case 'ArquitetoColaborador':
+      case 'Gerente':
+        return 'info';
+      case 'Financeiro':
+        return 'warning';
+      case 'Estagiario':
+      default:
+        return 'neutral';
     }
   }
 

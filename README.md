@@ -88,13 +88,17 @@ npm run test:ci       # headless + cobertura (usado no CI)
 
 ---
 
-## Roadmap de Módulos
+## Roadmap e Módulos do Sistema
 
-| Módulo      | Status     |
-|-------------|------------|
-| Shell + Sidebar + Routing | 🔜 PR-03 |
-| Projetos    | 🔜 PR-03   |
-| Leads       | 🔜 PR-06   |
-| Clientes    | 🔜 PR-09   |
-| Honorários  | 🔜 PR-12   |
-| Dashboard   | 🔜 PR-13   |
+| Módulo | Rota | Descrição | Status |
+|--------|------|-----------|--------|
+| **Dashboard** | `/dashboard` | Indicadores de projetos, funil e métricas financeiras | Concluído |
+| **Leads** | `/leads` | Gestão de oportunidades e funil comercial | Concluído |
+| **Clientes** | `/clientes` | Cadastro, histórico e portal do cliente | Concluído |
+| **Projetos** | `/projetos` | Etapas, cronograma, tarefas e repositório de pranchas | Concluído |
+| **Agenda & Google Agenda** | `/agenda` | Calendário de visitas a obras, reuniões e Google Meet | Concluído |
+| **Financeiro** | `/financeiro` | Fluxo de caixa, parcelas de contratos e despesas | Concluído |
+| **Simulador de Honorários** | `/simulador` | Precificação baseada na tabela CAU/BR | Concluído |
+| **Modelos de Proposta** | `/configuracoes/modelo-proposta` | Personalização visual e exportação de PDF | Concluído |
+| **Gestão de Equipe** | `/configuracoes/equipe` | Arquitetos sócios, colaboradores e perfis RBAC | Concluído |
+

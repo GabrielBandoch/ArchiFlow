@@ -1,0 +1,56 @@
+.form-section-header {
+  border-bottom: 1px solid var(--af-outline-variant, #e0e0e0);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+
+  .section-badge-title {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--af-primary, #6750a4);
+  }
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-grid-location {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.fornecedor-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-actions {
+  margin-top: 1rem;
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -36,12 +36,14 @@
       </div>
 
       <div *ngIf="modo === 'avulsa'" [formGroup]="formAvulsa" class="d-flex flex-direction-column gap-md">
-        <app-select
+        <app-project-search
+          id="parcelaAvulsaProjetoId"
           label="Projeto Vinculado"
-          formControlName="projetoId"
-          [options]="projetoOptions"
-          [required]="true">
-        </app-select>
+          placeholder="Buscar projeto da parcela..."
+          [projetos]="projetos"
+          [required]="true"
+          formControlName="projetoId">
+        </app-project-search>
 
         <app-input
           label="Descrição da Parcela"
@@ -95,12 +97,14 @@
       </div>
 
       <div *ngIf="modo === 'contrato'" [formGroup]="formContrato" class="d-flex flex-direction-column gap-md">
-        <app-select
+        <app-project-search
+          id="parcelaContratoProjetoId"
           label="Projeto Vinculado"
-          formControlName="projetoId"
-          [options]="projetoOptions"
-          [required]="true">
-        </app-select>
+          placeholder="Buscar projeto do contrato..."
+          [projetos]="projetos"
+          [required]="true"
+          formControlName="projetoId">
+        </app-project-search>
 
         <div class="grid-form">
           <app-input

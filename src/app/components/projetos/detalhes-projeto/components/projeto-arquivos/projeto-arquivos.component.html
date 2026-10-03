@@ -1,0 +1,70 @@
+<section class="panel-card d-flex flex-direction-column gap-md">
+  <div class="panel-top-bar d-flex justify-content-between align-items-center flex-wrap gap-sm">
+    <div>
+      <h2 class="panel-heading font-headline-md m-0">Repositório de Pranchas e Documentos</h2>
+      <p class="panel-subheading font-label-sm text-on-surface-variant margin-top-xs m-0">Plantas, memoriais, modelos 3D e contratos com controle de visualização do cliente.</p>
+    </div>
+  </div>
+
+  <div class="upload-action-box d-flex align-items-center justify-content-between flex-wrap gap-md">
+    <label class="checkbox-custom-label d-inline-flex align-items-center gap-xs font-label-md">
+      <input type="checkbox" [(ngModel)]="novoArquivoVisivelCliente" />
+      <span>Disponibilizar no Portal do Cliente</span>
+    </label>
+
+    <app-button variant="primary" (btnClick)="fileUploadInput.click()" [disabled]="uploadingArquivo">
+      <span class="material-symbols-outlined">cloud_upload</span>
+      <span>{{ uploadingArquivo ? 'Enviando...' : 'Fazer Upload de Prancha/Arquivo' }}</span>
+    </app-button>
+    <input type="file" #fileUploadInput (change)="onFileSelected($event)" class="d-none" />
+  </div>
+
+  <div class="files-table-container w-full" *ngIf="arquivos.length > 0">
+    <table class="files-table w-full">
+      <thead>
+        <tr>
+          <th class="font-label-sm text-on-surface-variant">Documento</th>
+          <th class="font-label-sm text-on-surface-variant">Enviado em</th>
+          <th class="font-label-sm text-on-surface-variant text-center">Portal Cliente</th>
+          <th class="font-label-sm text-on-surface-variant text-right">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let arq of arquivos" class="file-row">
+          <td>
+            <div class="file-cell-main d-flex align-items-center gap-xs font-body-md">
+              <span class="material-symbols-outlined file-type-icon">{{ getFileIcon(arq.nome) }}</span>
+              <span class="file-name-text font-weight-medium">{{ arq.nome }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="file-date-text font-label-md text-on-surface-variant">{{ arq.criadoEm | date:'dd/MM/yyyy HH:mm' }}</span>
+          </td>
+          <td class="text-center">
+            <span class="visibility-tag d-inline-flex align-items-center gap-xs font-label-sm" [class.visible]="arq.visivelCliente">
+              <span class="material-symbols-outlined">{{ arq.visivelCliente ? 'visibility' : 'visibility_off' }}</span>
+              {{ arq.visivelCliente ? 'Visível' : 'Oculto' }}
+            </span>
+          </td>
+          <td class="text-right">
+            <div class="file-row-actions d-inline-flex align-items-center gap-xs">
+              <a [href]="arq.urlStorage" target="_blank" class="btn-file-action d-inline-flex align-items-center justify-content-center" title="Baixar documento">
+                <span class="material-symbols-outlined">download</span>
+              </a>
+              <button type="button" class="btn-file-action btn-file-delete d-inline-flex align-items-center justify-content-center" (click)="onExcluir(arq)" title="Excluir arquivo">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-empty-state 
+    *ngIf="arquivos.length === 0"
+    icon="folder_open"
+    title="Nenhum arquivo enviado"
+    message="Faça upload de plantas em PDF, arquivos CAD, renders ou contratos para centralizar a documentação.">
+  </app-empty-state>
+</section>

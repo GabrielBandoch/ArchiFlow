@@ -5,6 +5,7 @@ import { forkJoin } from 'rxjs';
 import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../shared';
 import { FinanceiroService } from '../../core/api/financeiro/financeiro.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { DialogService } from '../../core/services/dialog.service';
 import {
   AlertaFinanceiro,
   DespesaProjeto,
@@ -33,10 +34,7 @@ import { CriarDespesaModalComponent } from '../../dialogs/financeiro/criar-despe
     FinanceiroGraficoComponent,
     FinanceiroAlertasComponent,
     FinanceiroTabelaParcelasComponent,
-    FinanceiroTabelaDespesasComponent,
-    DarBaixaParcelaModalComponent,
-    CriarParcelaModalComponent,
-    CriarDespesaModalComponent
+    FinanceiroTabelaDespesasComponent
   ],
   templateUrl: './financeiro.component.html',
   styleUrl: './financeiro.component.scss'
@@ -44,6 +42,7 @@ import { CriarDespesaModalComponent } from '../../dialogs/financeiro/criar-despe
 export class FinanceiroComponent implements OnInit {
   private financeiroService = inject(FinanceiroService);
   private notificationService = inject(NotificationService);
+  private dialogService = inject(DialogService);
 
   loading = true;
   abaAtiva: 'geral' | 'despesas' = 'geral';
@@ -56,7 +55,6 @@ export class FinanceiroComponent implements OnInit {
 
   showBaixaModal = false;
   selectedParcelaParaBaixa: ParcelaFinanceira | null = null;
-
   showNovaParcelaModal = false;
   showNovaDespesaModal = false;
   anoSelecionado = new Date().getFullYear();
@@ -115,6 +113,10 @@ export class FinanceiroComponent implements OnInit {
   abrirModalBaixa(parcela: ParcelaFinanceira): void {
     this.selectedParcelaParaBaixa = parcela;
     this.showBaixaModal = true;
+    const ref = this.dialogService.open(DarBaixaParcelaModalComponent, {
+      data: { parcela }
+    });
+    ref.instance.baixada.subscribe(() => this.onParcelaBaixada());
   }
 
   abrirModalBaixaPorId(parcelaId: string): void {
@@ -131,10 +133,14 @@ export class FinanceiroComponent implements OnInit {
 
   abrirModalNovaParcela(): void {
     this.showNovaParcelaModal = true;
+    const ref = this.dialogService.open(CriarParcelaModalComponent);
+    ref.instance.salvo.subscribe(() => this.onDadosAtualizados());
   }
 
   abrirModalNovaDespesa(): void {
     this.showNovaDespesaModal = true;
+    const ref = this.dialogService.open(CriarDespesaModalComponent);
+    ref.instance.salva.subscribe(() => this.onDadosAtualizados());
   }
 
   onParcelaBaixada(): void {
@@ -146,31 +152,41 @@ export class FinanceiroComponent implements OnInit {
   }
 
   excluirParcela(id: string): void {
-    if (!confirm('Deseja realmente excluir este registro de parcela?')) return;
-
-    this.financeiroService.excluirParcela(id).subscribe({
-      next: () => {
-        this.notificationService.success('Parcela excluída com sucesso!');
-        this.carregarDados();
-      },
-      error: (err) => {
-        console.error('Erro ao excluir parcela', err);
-        this.notificationService.error('Erro ao excluir parcela.');
+    this.dialogService.confirm({
+      title: 'Excluir Parcela',
+      message: 'Deseja realmente excluir este registro de parcela?'
+    }).subscribe((confirmado) => {
+      if (confirmado) {
+        this.financeiroService.excluirParcela(id).subscribe({
+          next: () => {
+            this.notificationService.success('Parcela excluída com sucesso!');
+            this.carregarDados();
+          },
+          error: (err) => {
+            console.error('Erro ao excluir parcela', err);
+            this.notificationService.error('Erro ao excluir parcela.');
+          }
+        });
       }
     });
   }
 
   excluirDespesa(id: string): void {
-    if (!confirm('Deseja realmente excluir esta despesa?')) return;
-
-    this.financeiroService.excluirDespesa(id).subscribe({
-      next: () => {
-        this.notificationService.success('Despesa excluída com sucesso!');
-        this.carregarDados();
-      },
-      error: (err) => {
-        console.error('Erro ao excluir despesa', err);
-        this.notificationService.error('Erro ao excluir despesa.');
+    this.dialogService.confirm({
+      title: 'Excluir Despesa',
+      message: 'Deseja realmente excluir esta despesa?'
+    }).subscribe((confirmado) => {
+      if (confirmado) {
+        this.financeiroService.excluirDespesa(id).subscribe({
+          next: () => {
+            this.notificationService.success('Despesa excluída com sucesso!');
+            this.carregarDados();
+          },
+          error: (err) => {
+            console.error('Erro ao excluir despesa', err);
+            this.notificationService.error('Erro ao excluir despesa.');
+          }
+        });
       }
     });
   }

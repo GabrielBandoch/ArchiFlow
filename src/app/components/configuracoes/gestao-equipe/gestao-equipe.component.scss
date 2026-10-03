@@ -13,7 +13,6 @@
   letter-spacing: -0.02em;
 }
 
-// Metrics Grid
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -94,7 +93,6 @@
   font-weight: 700;
 }
 
-// Filter bar
 .filters-bar {
   background-color: var(--af-surface-container-low);
   border: 1px solid var(--af-outline-variant);
@@ -144,7 +142,6 @@
   }
 }
 
-// Loading
 .loading-box {
   padding: 48px;
   color: var(--af-on-surface-variant);
@@ -161,7 +158,6 @@
   }
 }
 
-// Members grid
 .members-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -208,74 +204,8 @@
   line-height: 1.25;
 }
 
-.you-badge {
-  background-color: rgba(118, 85, 56, 0.12);
-  color: var(--af-primary);
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.6875rem;
-}
-
 .member-email {
   font-size: 0.8125rem;
-}
-
-.status-pill {
-  padding: 3px 8px;
-  border-radius: var(--af-radius-full);
-  font-size: 0.6875rem;
-  font-weight: 600;
-
-  &.active-pill {
-    background-color: rgba(46, 125, 50, 0.12);
-    color: #2e7d32;
-    border: 1px solid rgba(46, 125, 50, 0.25);
-  }
-
-  &.inactive-pill {
-    background-color: rgba(158, 158, 158, 0.15);
-    color: #616161;
-    border: 1px solid rgba(158, 158, 158, 0.3);
-  }
-}
-
-// Role Badges
-.role-badge {
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-
-  &.badge-admin {
-    background-color: rgba(118, 85, 56, 0.12);
-    color: var(--af-primary);
-    border: 1px solid rgba(118, 85, 56, 0.25);
-  }
-
-  &.badge-arquiteto {
-    background-color: rgba(2, 136, 209, 0.12);
-    color: #0288d1;
-    border: 1px solid rgba(2, 136, 209, 0.25);
-  }
-
-  &.badge-financeiro {
-    background-color: rgba(237, 108, 2, 0.12);
-    color: #ed6c02;
-    border: 1px solid rgba(237, 108, 2, 0.25);
-  }
-
-  &.badge-estagiario {
-    background-color: rgba(156, 39, 176, 0.12);
-    color: #7b1fa2;
-    border: 1px solid rgba(156, 39, 176, 0.25);
-  }
-
-  &.badge-colab {
-    background-color: rgba(97, 97, 97, 0.12);
-    color: #424242;
-    border: 1px solid rgba(97, 97, 97, 0.25);
-  }
 }
 
 .cargo-tag, .phone-tag {
@@ -358,22 +288,4 @@
 
 .text-error {
   color: #ba1a1a;
-}
-
-.empty-state-box {
-  padding: 64px 24px;
-  text-align: center;
-  background-color: var(--af-surface-container-lowest);
-  border: 1px dashed var(--af-outline-variant);
-  border-radius: var(--af-radius-md);
-
-  .empty-state-icon {
-    font-size: 48px;
-    color: var(--af-outline);
-    opacity: 0.7;
-  }
-
-  h3 {
-    color: var(--af-on-surface);
-  }
 }

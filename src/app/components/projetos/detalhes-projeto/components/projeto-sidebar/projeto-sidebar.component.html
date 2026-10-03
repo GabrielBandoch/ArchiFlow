@@ -1,0 +1,51 @@
+<aside class="bento-side-col d-flex flex-direction-column gap-md">
+  <div class="side-card d-flex flex-direction-column gap-sm">
+    <h3 class="side-card-title font-headline-md m-0">Dados do Projeto</h3>
+
+    <div class="side-metrics-group d-flex flex-direction-column gap-xs">
+      <div class="metric-highlight-box d-flex flex-direction-column align-items-center justify-content-center text-center padding-sm" *ngIf="projeto.metragemTotal">
+        <span class="metric-val-num font-headline-lg font-weight-bold text-primary">{{ projeto.metragemTotal }}</span>
+        <span class="metric-unit-tag font-label-sm text-on-surface-variant">m² de área construída</span>
+      </div>
+
+      <div class="side-data-row d-flex justify-content-between align-items-center font-body-md">
+        <span class="data-label text-on-surface-variant">Tipo de Projeto:</span>
+        <span class="data-val font-weight-medium">{{ projeto.tipoLabel }}</span>
+      </div>
+
+      <div class="side-data-row d-flex justify-content-between align-items-center font-body-md">
+        <span class="data-label text-on-surface-variant">Etapas Concluídas:</span>
+        <span class="data-val font-weight-medium">{{ totalConcluidas }} de {{ projeto.etapas.length }}</span>
+      </div>
+
+      <div class="side-data-row d-flex justify-content-between align-items-center font-body-md" *ngIf="projeto.dataPrevistaEntrega">
+        <span class="data-label text-on-surface-variant">Previsão de Entrega:</span>
+        <span class="data-val font-weight-medium">{{ projeto.dataPrevistaEntrega | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="side-card d-flex flex-direction-column gap-sm">
+    <div class="side-card-header-row d-flex justify-content-between align-items-center">
+      <h3 class="side-card-title font-headline-md m-0">Arquivos Recentes</h3>
+      <button type="button" class="btn-link-action font-label-sm" (click)="onVerTodos()">Ver todos</button>
+    </div>
+
+    <div class="recent-files-list d-flex flex-direction-column gap-xs" *ngIf="arquivos.length > 0">
+      <div *ngFor="let arq of arquivos.slice(0, 4)" class="recent-file-item d-flex align-items-center gap-xs">
+        <span class="material-symbols-outlined recent-icon">{{ getFileIcon(arq.nome) }}</span>
+        <div class="recent-file-meta d-flex flex-direction-column flex-grow-1">
+          <span class="recent-name font-body-md font-weight-medium" [title]="arq.nome">{{ arq.nome }}</span>
+          <span class="recent-sub font-label-sm text-on-surface-variant">{{ arq.criadoEm | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <a [href]="arq.urlStorage" target="_blank" class="recent-download-link d-inline-flex align-items-center justify-content-center" title="Download">
+          <span class="material-symbols-outlined">download</span>
+        </a>
+      </div>
+    </div>
+
+    <div *ngIf="arquivos.length === 0" class="side-empty-note padding-sm text-center">
+      <span class="font-label-sm text-on-surface-variant">Nenhum arquivo enviado ainda.</span>
+    </div>
+  </div>
+</aside>

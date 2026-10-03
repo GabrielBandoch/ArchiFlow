@@ -6,38 +6,8 @@ import { ConfiguracaoPropostaService } from '../../../core/services/configuracao
 import { ConfiguracaoProposta, CONFIGURACAO_PROPOSTA_PADRAO } from '../../../core/models/configuracao-proposta.model';
 import { NotificationService } from '../../../core/services/notification.service';
 
-export interface PropostaVisualizacaoData {
-  id?: string;
-  codigo: string;
-  titulo: string;
-  clienteNome?: string;
-  clienteEmail?: string;
-  clienteTelefone?: string;
-  leadNome?: string;
-  metragemQuadrada: number;
-  padraoImovelNome?: string;
-  tipoProjetoNome?: string;
-  valorTotalSugerido?: number;
-  valorFinalAjustado: number;
-  criadoEm?: string | Date;
-  statusNome?: string;
-  etapas: Array<{
-    nome: string;
-    percentual?: number;
-    valor?: number;
-    prazo?: string;
-    incluso?: boolean;
-    descricao?: string;
-  }>;
-  memoriaCalculo?: {
-    horasEstimadasTotal?: number;
-    valorHoraBase?: number;
-    valorM2Base?: number;
-    valorBase?: number;
-    fatorPadrao?: number;
-    fatorTipologia?: number;
-  };
-}
+import { PropostaVisualizacaoData } from '../../../models/proposta-pdf.types';
+export { PropostaVisualizacaoData } from '../../../models/proposta-pdf.types';
 
 @Component({
   selector: 'app-modal-proposta-pdf',
@@ -47,9 +17,10 @@ export interface PropostaVisualizacaoData {
   styleUrls: ['./modal-proposta-pdf.component.scss']
 })
 export class ModalPropostaPdfComponent implements OnInit, OnChanges {
-  @Input() show = false;
+  @Input() show = true;
   @Input() proposta: PropostaVisualizacaoData | null = null;
   @Output() close = new EventEmitter<void>();
+  @Output() fechado = new EventEmitter<void>();
 
   private router = inject(Router);
   private configService = inject(ConfiguracaoPropostaService);
@@ -76,7 +47,9 @@ export class ModalPropostaPdfComponent implements OnInit, OnChanges {
   }
 
   public fechar(): void {
+    this.show = false;
     this.close.emit();
+    this.fechado.emit();
   }
 
   public irParaConfiguracoes(): void {

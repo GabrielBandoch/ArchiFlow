@@ -10,11 +10,12 @@ import { Projeto } from '../../../models/projeto.model';
 import { PropostaHonorario } from '../../../models/honorario.model';
 import { DialogService } from '../../../core/services/dialog.service';
 import { EditarClienteModalComponent } from '../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component';
+import { ClienteHeroCardComponent } from './components/cliente-hero-card/cliente-hero-card.component';
 
 @Component({
   selector: 'app-detalhes-cliente',
   standalone: true,
-  imports: [CORE_IMPORTS, DESIGN_SYSTEM],
+  imports: [CORE_IMPORTS, DESIGN_SYSTEM, ClienteHeroCardComponent],
   templateUrl: './detalhes-cliente.component.html',
   styleUrl: './detalhes-cliente.component.scss'
 })

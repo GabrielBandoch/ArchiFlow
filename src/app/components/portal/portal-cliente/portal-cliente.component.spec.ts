@@ -11,6 +11,7 @@ import { ConfiguracaoPropostaService } from '../../../core/services/configuracao
 import { ChatService } from '../../../core/services/chat.service';
 import { StatusProjeto, StatusEtapa, TipoProjeto } from '../../../models/projeto.model';
 import { CONFIGURACAO_PROPOSTA_PADRAO } from '../../../core/models/configuracao-proposta.model';
+import { DialogService } from '../../../core/services/dialog.service';
 
 describe('PortalClienteComponent', () => {
   let component: PortalClienteComponent;
@@ -146,6 +147,9 @@ describe('PortalClienteComponent', () => {
     chatServiceSpy.enviarMensagem.and.returnValue(Promise.resolve());
     chatServiceSpy.desconectar.and.returnValue(Promise.resolve());
 
+    const dialogSpy = jasmine.createSpyObj('DialogService', ['open', 'confirm']);
+    dialogSpy.open.and.returnValue({ instance: { close: of() } });
+
     await TestBed.configureTestingModule({
       imports: [PortalClienteComponent],
       providers: [
@@ -157,6 +161,7 @@ describe('PortalClienteComponent', () => {
         { provide: ConfiguracaoPropostaService, useValue: configServiceSpy },
         { provide: ChatService, useValue: chatServiceSpy },
         { provide: Router, useValue: routerSpy },
+        { provide: DialogService, useValue: dialogSpy },
         {
           provide: ActivatedRoute,
           useValue: {

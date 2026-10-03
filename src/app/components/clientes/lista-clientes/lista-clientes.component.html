@@ -1,5 +1,4 @@
 <div class="clientes-page-container d-flex flex-direction-column gap-lg">
-  
   <header class="page-header d-flex justify-content-between align-items-end flex-wrap gap-md">
     <div class="header-titles d-flex flex-direction-column gap-xs">
       <h1 class="page-title font-headline-lg m-0">Diretório de Clientes</h1>
@@ -56,7 +55,6 @@
   </section>
 
   <div *ngIf="clientes.length > 0; else emptyStateCRM" class="content-section d-flex flex-direction-column gap-md">
-    
     <div class="toolbar-card d-flex align-items-center justify-content-between flex-wrap gap-md">
       <div class="search-box position-relative d-flex align-items-center">
         <span class="material-symbols-outlined search-icon">search</span>
@@ -91,7 +89,7 @@
     </div>
 
     <div class="table-card w-full">
-      <div class="table-responsive w-full">
+      <div class="table-responsive w-full" *ngIf="clientesFiltrados.length > 0; else emptyFilteredTpl">
         <table class="crm-table w-full">
           <thead>
             <tr>
@@ -104,7 +102,6 @@
           </thead>
           <tbody>
             <tr *ngFor="let cliente of clientesFiltrados" class="table-row" (click)="verDetalhes(cliente.id)">
-              
               <td class="td-client">
                 <div class="client-cell d-flex align-items-center gap-sm">
                   <div class="client-avatar d-flex align-items-center justify-content-center flex-shrink-0 font-label-md font-weight-bold">
@@ -127,7 +124,8 @@
                   </div>
                   <div class="contact-line phone d-inline-flex align-items-center gap-xs font-label-md" *ngIf="cliente.telefone">
                     <span class="material-symbols-outlined icon">call</span>
-                    <span>{{ cliente.telefone }}</span>
+                    <span>{{ cliente.telefone | phoneMask }}</span>
+                    <app-whatsapp-button [telefone]="cliente.telefone" [mensagem]="'Olá ' + cliente.nome + '! Entro em contato sobre o seu projeto no ArchiFlow.'"></app-whatsapp-button>
                   </div>
                 </div>
               </td>
@@ -162,31 +160,29 @@
                   <span class="material-symbols-outlined">arrow_forward</span>
                 </button>
               </td>
-
             </tr>
-
-            <tr *ngIf="clientesFiltrados.length === 0">
-              <td colspan="5" class="empty-search-cell">
-                <div class="empty-search-box d-flex flex-direction-column align-items-center justify-content-center text-center padding-xl">
-                  <span class="material-symbols-outlined">search_off</span>
-                  <h3 class="font-headline-md margin-top-xs m-0">Nenhum cliente encontrado</h3>
-                  <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Não encontramos clientes com os termos informados. Verifique os filtros aplicados.</p>
-                  <button type="button" class="btn-clear-filter font-label-md margin-top-sm" (click)="searchQuery = ''; setFiltro('todos')">Limpar Filtros</button>
-                </div>
-              </td>
-            </tr>
-
           </tbody>
         </table>
       </div>
 
-      <div class="table-footer d-flex align-items-center justify-content-between padding-sm">
+      <ng-template #emptyFilteredTpl>
+        <div class="p-xl">
+          <app-empty-state
+            icon="search_off"
+            title="Nenhum cliente encontrado"
+            description="Não encontramos clientes com os termos informados. Verifique os filtros aplicados."
+            actionLabel="Limpar Filtros"
+            actionIcon="filter_alt_off"
+            (actionClick)="searchQuery = ''; setFiltro('todos')">
+          </app-empty-state>
+        </div>
+      </ng-template>
+
+      <div class="table-footer d-flex align-items-center justify-content-between padding-sm" *ngIf="clientesFiltrados.length > 0">
         <span class="footer-count font-label-sm text-on-surface-variant">Exibindo <strong>{{ clientesFiltrados.length }}</strong> de <strong>{{ clientes.length }}</strong> clientes cadastrados</span>
       </div>
-
     </div>
   </div>
-
 </div>
 
 <ng-template #emptyStateCRM>

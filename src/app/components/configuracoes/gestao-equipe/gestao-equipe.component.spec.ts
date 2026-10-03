@@ -6,6 +6,7 @@ import { GestaoEquipeComponent } from './gestao-equipe.component';
 import { UsuarioService } from '../../../core/api/usuarios/usuario.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { MembroEquipe, Usuario } from '../../../models/usuario.model';
 
 describe('GestaoEquipeComponent', () => {
@@ -14,6 +15,7 @@ describe('GestaoEquipeComponent', () => {
   let usuarioServiceSpy: jasmine.SpyObj<UsuarioService>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
+  let dialogServiceSpy: jasmine.SpyObj<DialogService>;
 
   const mockUsuarioLogado: Usuario = {
     id: 'user-admin',
@@ -60,6 +62,7 @@ describe('GestaoEquipeComponent', () => {
       'excluirMembro'
     ]);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'warning']);
+    dialogServiceSpy = jasmine.createSpyObj('DialogService', ['confirm', 'open']);
     authServiceSpy = jasmine.createSpyObj('AuthService', [], {
       currentUserValue: mockUsuarioLogado
     });
@@ -71,7 +74,8 @@ describe('GestaoEquipeComponent', () => {
       providers: [
         { provide: UsuarioService, useValue: usuarioServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: NotificationService, useValue: notificationServiceSpy }
+        { provide: NotificationService, useValue: notificationServiceSpy },
+        { provide: DialogService, useValue: dialogServiceSpy }
       ]
     }).compileComponents();
 
@@ -140,12 +144,12 @@ describe('GestaoEquipeComponent', () => {
 
   it('deve excluir membro com sucesso', () => {
     const colab = component.membros[1];
-    component.abrirModalExcluir(colab);
-    expect(component.modalExcluirAberto).toBeTrue();
-
+    dialogServiceSpy.confirm.and.returnValue(of(true));
     usuarioServiceSpy.excluirMembro.and.returnValue(of(void 0));
-    component.confirmarExcluir();
 
+    component.abrirModalExcluir(colab);
+
+    expect(dialogServiceSpy.confirm).toHaveBeenCalled();
     expect(usuarioServiceSpy.excluirMembro).toHaveBeenCalledWith('user-colab');
     expect(notificationServiceSpy.success).toHaveBeenCalled();
   });

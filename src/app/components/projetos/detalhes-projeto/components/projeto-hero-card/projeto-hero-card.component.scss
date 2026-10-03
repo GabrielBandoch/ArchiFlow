@@ -1,0 +1,103 @@
+.dossier-hero-card {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border-subtle, #f0ede8);
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--space-xl, 24px);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.05));
+
+  .hero-main-info {
+    min-width: 280px;
+
+    .hero-badge-row {
+      .status-pill, .tipo-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: var(--radius-full, 9999px);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .status-pill {
+        background: var(--color-primary-container, #eaddd3);
+        color: var(--color-on-primary-container, #2e1c0c);
+
+        &.status-concluido {
+          background: #e6f4ea;
+          color: #137333;
+        }
+
+        &.status-cancelado {
+          background: #fce8e6;
+          color: #c5221f;
+        }
+
+        &.status-desenvolvimento, &.status-execucao {
+          background: #e8f0fe;
+          color: #1a73e8;
+        }
+      }
+
+      .tipo-pill {
+        background: var(--color-surface-container, #f5f2ed);
+        color: var(--color-on-surface-variant, #5c564f);
+      }
+    }
+
+    .hero-project-title {
+      color: var(--color-on-surface, #1e1b18);
+    }
+
+    .hero-meta-row {
+      .meta-item-client {
+        .client-name-link {
+          color: var(--color-primary, #765538);
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .meta-item-id {
+        color: var(--color-on-surface-variant, #79747e);
+        .val {
+          font-family: monospace;
+          background: var(--color-surface-container-highest, #e6e0e9);
+          padding: 2px 6px;
+          border-radius: var(--radius-xs, 4px);
+        }
+      }
+    }
+  }
+
+  .hero-progress-box {
+    min-width: 280px;
+    background: var(--color-surface-container-low, #faf8f5);
+    border: 1px solid var(--color-border-subtle, #f0ede8);
+    border-radius: var(--radius-md, 8px);
+    padding: var(--space-md, 16px);
+
+    .progress-track-bg {
+      height: 8px;
+      background: var(--color-surface-container-highest, #e6e0e9);
+      border-radius: var(--radius-full, 9999px);
+      overflow: hidden;
+
+      .progress-track-fill {
+        height: 100%;
+        background: var(--color-primary, #765538);
+        border-radius: var(--radius-full, 9999px);
+        transition: width 0.3s ease;
+      }
+    }
+
+    .hero-actions-bottom {
+      .status-select-wrap {
+        min-width: 150px;
+      }
+    }
+  }
+}

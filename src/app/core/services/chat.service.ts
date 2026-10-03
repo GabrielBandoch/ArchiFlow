@@ -47,11 +47,8 @@ export class ChatService {
     }
 
     const token = this.authService.token;
-    const hubUrl = typeof window !== 'undefined' && (window.location.port === '4200' || window.location.hostname === 'localhost')
-      ? 'http://localhost:5000/hubs/chat'
-      : (environment.apiUrl.startsWith('http')
-          ? `${environment.apiUrl.replace(/\/api\/?$/, '')}/hubs/chat`
-          : '/hubs/chat');
+    const baseApi = environment.apiUrl.replace(/\/api\/?$/, '');
+    const hubUrl = baseApi ? `${baseApi}/hubs/chat` : '/hubs/chat';
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl, {

@@ -1,15 +1,13 @@
 export interface ConfiguracaoProposta {
-  // Identidade do Escritório
   nomeEscritorio: string;
   slogan: string;
-  registroProfissional: string; // Ex: CAU / CREA / CNPJ
+  registroProfissional: string;
   email: string;
   telefone: string;
   endereco: string;
   logoUrl?: string;
   corPrimaria: string;
 
-  // Seções Ativas no Documento
   exibirCabecalho: boolean;
   exibirResumo: boolean;
   exibirTabelaEtapas: boolean;
@@ -18,7 +16,6 @@ export interface ConfiguracaoProposta {
   exibirTermosGerais: boolean;
   exibirAssinaturas: boolean;
 
-  // Textos e Cláusulas
   textoApresentacao: string;
   validadeDias: number;
   condicoesPagamentoPadrao: string;
@@ -27,7 +24,6 @@ export interface ConfiguracaoProposta {
   termosGerais: string;
   templateMensagemWhatsapp: string;
 
-  // Flag de controle de configuração oficial
   configurado: boolean;
 }
 
