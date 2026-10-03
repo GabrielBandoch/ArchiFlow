@@ -27,12 +27,14 @@ import { UrlBuilder } from '../../utils/url-builder';
 export class FinanceiroService {
   constructor(private http: HttpClient) {}
 
-  obterPainel(): Observable<PainelFinanceiro> {
-    const url = new UrlBuilder(environment.apiUrl)
+  obterPainel(ano?: number): Observable<PainelFinanceiro> {
+    const builder = new UrlBuilder(environment.apiUrl)
       .segment('financeiro')
-      .segment('painel')
-      .build();
-    return this.http.get<PainelFinanceiro>(url);
+      .segment('painel');
+    if (ano) {
+      builder.queryParam('ano', ano.toString());
+    }
+    return this.http.get<PainelFinanceiro>(builder.build());
   }
 
   obterParcelas(params?: {

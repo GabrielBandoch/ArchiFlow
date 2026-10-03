@@ -8,3 +8,4 @@ export * from './honorarios/honorario.service';
 export * from './financeiro/financeiro.service';
 export * from './usuarios/usuario.service';
 export * from './agenda/agenda.service';
+export * from './propostas/configuracao-proposta-api.service';
