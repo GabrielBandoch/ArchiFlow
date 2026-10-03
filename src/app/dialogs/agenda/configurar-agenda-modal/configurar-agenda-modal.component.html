@@ -88,25 +88,24 @@
           </span>
         </button>
 
-        <div class="code-exchange-box w-full p-xs text-left">
-          <label class="font-label-xs font-weight-medium text-on-surface-variant d-block mb-xxs">
-            Código de autorização retornado (se aplicável):
-          </label>
-          <div class="d-flex gap-xs">
-            <input
-              type="text"
-              class="search-input w-full font-body-xs"
-              placeholder="Cole o código do Google aqui..."
-              [(ngModel)]="codigoOAuthManual"
-              [ngModelOptions]="{standalone: true}"
-            />
-            <button
-              type="button"
-              class="btn-confirm-code font-label-xs"
-              (click)="confirmarCodigoOAuth()"
+        <div class="code-exchange-box w-full text-left">
+          <div class="d-flex gap-xs align-items-end">
+            <div class="flex-grow-1">
+              <app-input
+                id="codigoOAuthManual"
+                type="text"
+                label="Código de autorização retornado (se aplicável)"
+                placeholder="Cole o código do Google aqui..."
+                [(ngModel)]="codigoOAuthManual"
+                [ngModelOptions]="{standalone: true}">
+              </app-input>
+            </div>
+            <app-button
+              variant="secondary"
+              (btnClick)="confirmarCodigoOAuth()"
               [disabled]="conectandoGoogle || !codigoOAuthManual.trim()">
               Confirmar
-            </button>
+            </app-button>
           </div>
         </div>
       </div>

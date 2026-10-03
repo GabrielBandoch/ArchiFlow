@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AgendaService } from '../../../core/api/agenda/agenda.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { ConfiguracaoAgendaEmpresa, SalvarConfiguracaoAgendaCommand } from '../../../models/agenda.model';
 import { AgendaForm } from '../../../components/agenda/agenda.form';
 import { DialogComponent } from '../../../shared/components/dialog/dialog.component';
@@ -51,7 +52,8 @@ export class ConfigurarAgendaModalComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private agendaService: AgendaService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private dialogService: DialogService
   ) {
     this.initForm();
   }
@@ -162,20 +164,28 @@ export class ConfigurarAgendaModalComponent implements OnInit, OnDestroy {
   }
 
   desconectarOAuth(): void {
-    if (!confirm('Deseja realmente desconectar a conta do Google Calendar?')) return;
+    this.dialogService.confirm({
+      title: 'Desconectar Google Calendar',
+      message: 'Deseja realmente desconectar a conta do Google Calendar?',
+      confirmLabel: 'Sim, desconectar',
+      cancelLabel: 'Cancelar',
+      variant: 'danger'
+    }).subscribe(confirmou => {
+      if (!confirmou) return;
 
-    this.desconectandoGoogle = true;
-    this.agendaService.desconectarOAuth().subscribe({
-      next: () => {
-        this.desconectandoGoogle = false;
-        this.possuiOAuthConectado = false;
-        this.googleOAuthEmail = '';
-        this.notificationService.info('Conta do Google desconectada.');
-      },
-      error: () => {
-        this.desconectandoGoogle = false;
-        this.notificationService.warning('Erro ao desconectar conta do Google.');
-      }
+      this.desconectandoGoogle = true;
+      this.agendaService.desconectarOAuth().subscribe({
+        next: () => {
+          this.desconectandoGoogle = false;
+          this.possuiOAuthConectado = false;
+          this.googleOAuthEmail = '';
+          this.notificationService.info('Conta do Google desconectada.');
+        },
+        error: () => {
+          this.desconectandoGoogle = false;
+          this.notificationService.warning('Erro ao desconectar conta do Google.');
+        }
+      });
     });
   }
 

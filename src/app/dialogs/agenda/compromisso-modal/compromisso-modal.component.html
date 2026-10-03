@@ -24,25 +24,27 @@
       </app-input>
     </div>
 
-    <!-- Seletor Visual de Tipo de Compromisso (Chips de Arquitetura) -->
-    <div class="field-item">
-      <div class="d-flex justify-content-between align-items-center mb-xs">
-        <label class="form-label font-label-sm m-0">Tipo de Atividade</label>
-        <span class="font-label-xs text-secondary-color">Selecione uma categoria</span>
+    <!-- Tipo de Atividade e Responsável da Equipe (Dropdown compacto) -->
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-select 
+          id="compromissoTipo"
+          label="Tipo de Atividade" 
+          [options]="tiposOptions" 
+          formControlName="tipo"
+          [required]="true"
+          placeholder="Selecione a atividade...">
+        </app-select>
       </div>
-      <div class="tipo-chips-grid">
-        <button 
-          type="button" 
-          *ngFor="let chip of tiposChips" 
-          class="tipo-chip-btn" 
-          [class.active]="isTipoSelecionado(chip.value)"
-          [style.--chip-accent]="chip.cor"
-          [style.--chip-bg]="chip.bg"
-          (click)="selecionarTipo(chip.value)">
-          <span class="material-symbols-outlined chip-icon">{{ chip.icon }}</span>
-          <span class="chip-label">{{ chip.label }}</span>
-          <span class="material-symbols-outlined chip-check" *ngIf="isTipoSelecionado(chip.value)">check</span>
-        </button>
+
+      <div class="field-item">
+        <app-select 
+          id="compromissoUsuario"
+          label="Responsável da Equipe" 
+          [options]="usuariosOptions" 
+          formControlName="usuarioId"
+          placeholder="Selecione o profissional...">
+        </app-select>
       </div>
     </div>
 
@@ -60,7 +62,7 @@
     <div class="datetime-card">
       <div class="d-flex justify-content-between align-items-center mb-xs">
         <div class="d-flex align-items-center gap-xs">
-          <span class="material-symbols-outlined text-primary font-label-md">schedule</span>
+          <span class="material-symbols-outlined text-primary">schedule</span>
           <span class="font-label-sm font-weight-bold">Data e Duração</span>
         </div>
         <span *ngIf="duracaoEstimada" class="badge-duracao">
@@ -133,7 +135,7 @@
           class="btn-meet-inline font-label-xs" 
           (click)="abrirGoogleMeet()"
           title="Acessar videochamada">
-          <span class="material-symbols-outlined font-label-sm">open_in_new</span>
+          <span class="material-symbols-outlined">open_in_new</span>
           Entrar na Sala
         </button>
       </div>

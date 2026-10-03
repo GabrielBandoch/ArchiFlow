@@ -19,6 +19,9 @@ import { ClientSearchComponent } from '../../../shared/components/client-search/
 import { ProjectSearchComponent } from '../../../shared/components/project-search/project-search.component';
 import { LeadSearchComponent } from '../../../shared/components/lead-search/lead-search.component';
 
+import { UsuarioService } from '../../../core/api/usuarios/usuario.service';
+import { MembroEquipe } from '../../../models/usuario.model';
+
 @Component({
   selector: 'app-compromisso-modal',
   standalone: true,
@@ -52,6 +55,8 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
   projetos: Projeto[] = [];
   clientes: Cliente[] = [];
   leads: Lead[] = [];
+  membrosEquipe: MembroEquipe[] = [];
+  usuariosOptions: SelectOption[] = [];
   tipoVinculo: 'nenhum' | 'projeto' | 'cliente' | 'lead' = 'nenhum';
 
   tiposOptions: SelectOption[] = [
@@ -61,15 +66,6 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
     { label: 'Apresentação de Projeto', value: TiposCompromisso.ApresentacaoProjeto },
     { label: 'Entrega de Etapa', value: TiposCompromisso.EntregaEtapa },
     { label: 'Geral / Outro', value: TiposCompromisso.Geral }
-  ];
-
-  tiposChips = [
-    { label: 'Reunião com Cliente', value: TiposCompromisso.ReuniaoCliente, icon: 'groups', cor: '#765538', bg: '#f6f0ea' },
-    { label: 'Visita à Obra', value: TiposCompromisso.VisitaObra, icon: 'construction', cor: '#8d4f25', bg: '#fbf2eb' },
-    { label: 'Medição Técnica', value: TiposCompromisso.MedicaoTecnica, icon: 'square_foot', cor: '#426b58', bg: '#eef5f1' },
-    { label: 'Apresentação Projeto', value: TiposCompromisso.ApresentacaoProjeto, icon: 'slideshow', cor: '#6e4359', bg: '#f9eff4' },
-    { label: 'Entrega de Etapa', value: TiposCompromisso.EntregaEtapa, icon: 'task_alt', cor: '#36663f', bg: '#eef6f0' },
-    { label: 'Geral / Outro', value: TiposCompromisso.Geral, icon: 'event_note', cor: '#5f5e5e', bg: '#f0eded' }
   ];
 
   statusOptions: SelectOption[] = [
@@ -122,7 +118,8 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
     private projetoService: ProjetoService,
     private clienteService: ClienteService,
     private notificationService: NotificationService,
-    private leadService: LeadService
+    private leadService: LeadService,
+    private usuarioService: UsuarioService
   ) {
     this.initForm();
   }
@@ -131,7 +128,30 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
     this.carregarProjetos();
     this.carregarClientes();
     this.carregarLeads();
+    this.carregarEquipe();
     this.atualizarValoresForm();
+  }
+
+  private carregarEquipe(): void {
+    this.usuarioService.obterEquipe().subscribe({
+      next: (equipe) => {
+        if (equipe && equipe.length > 0) {
+          this.membrosEquipe = equipe;
+          this.usuariosOptions = [
+            { label: 'Nenhum responsável atribuído', value: '' },
+            ...equipe.map(m => ({
+              label: `${m.nome}${m.cargo ? ' - ' + m.cargo : ''}`,
+              value: m.id
+            }))
+          ];
+        }
+      },
+      error: () => {
+        this.usuariosOptions = [
+          { label: 'Nenhum responsável atribuído', value: '' }
+        ];
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -188,6 +208,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
         projetoId: this.compromissoParaEdicao.projetoId || '',
         clienteId: this.compromissoParaEdicao.clienteId || '',
         leadId: this.compromissoParaEdicao.leadId || '',
+        usuarioId: this.compromissoParaEdicao.usuarioId || '',
         gerarGoogleMeet: false,
         linkGoogleMeet: this.compromissoParaEdicao.linkGoogleMeet || ''
       });
@@ -206,6 +227,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
         projetoId: '',
         clienteId: '',
         leadId: '',
+        usuarioId: '',
         gerarGoogleMeet: true,
         linkGoogleMeet: ''
       });
@@ -322,6 +344,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
     const projetoId = this.tipoVinculo === 'projeto' && val.projetoId ? val.projetoId : undefined;
     const clienteId = this.tipoVinculo === 'cliente' && val.clienteId ? val.clienteId : undefined;
     const leadId = this.tipoVinculo === 'lead' && val.leadId ? val.leadId : undefined;
+    const usuarioId = val.usuarioId ? val.usuarioId : undefined;
 
     if (this.isEditing && this.compromissoParaEdicao) {
       const command: AtualizarCompromissoCommand = {
@@ -335,6 +358,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
         linkGoogleMeet: val.linkGoogleMeet || undefined,
         projetoId,
         clienteId,
+        usuarioId,
         ...(leadId ? { leadId } : {})
       } as AtualizarCompromissoCommand;
 
@@ -366,6 +390,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
         descricao: val.descricao || undefined,
         projetoId,
         clienteId,
+        usuarioId,
         gerarGoogleMeet: val.gerarGoogleMeet,
         ...(leadId ? { leadId } : {})
       } as CriarCompromissoCommand;

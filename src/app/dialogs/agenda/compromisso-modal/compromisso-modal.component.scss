@@ -2,74 +2,13 @@
   padding-top: var(--af-spacing-xs);
 }
 
-// Grid de Chips de Tipos de Compromisso
-.tipo-chips-grid {
+.form-grid-2 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--af-space-md, 16px);
 
-  @media (max-width: 680px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 440px) {
+  @media (max-width: 640px) {
     grid-template-columns: 1fr;
-  }
-}
-
-.tipo-chip-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.65rem;
-  border-radius: var(--af-radius-md, 8px);
-  border: 1.5px solid var(--af-color-outline-variant, #e0e0e0);
-  background-color: var(--af-color-surface, #fff);
-  color: var(--af-color-on-surface, #333);
-  cursor: pointer;
-  font-size: 0.785rem;
-  font-weight: 500;
-  text-align: left;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  user-select: none;
-
-  .chip-icon {
-    font-size: 1.15rem;
-    color: var(--chip-accent, var(--af-color-primary));
-    transition: transform 0.2s ease;
-  }
-
-  .chip-label {
-    flex: 1;
-    line-height: 1.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .chip-check {
-    font-size: 0.95rem;
-    color: var(--chip-accent, var(--af-color-primary));
-    font-weight: bold;
-  }
-
-  &:hover {
-    border-color: var(--chip-accent, var(--af-color-primary));
-    background-color: var(--chip-bg, rgba(26, 115, 232, 0.05));
-    transform: translateY(-1px);
-
-    .chip-icon {
-      transform: scale(1.1);
-    }
-  }
-
-  &.active {
-    border-color: var(--chip-accent, var(--af-color-primary));
-    background-color: var(--chip-bg, rgba(26, 115, 232, 0.12));
-    color: var(--af-color-on-surface, #1a1a1a);
-    font-weight: 600;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   }
 }
 

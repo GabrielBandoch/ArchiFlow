@@ -15,6 +15,7 @@ export class AgendaForm {
       projetoId: [''],
       clienteId: [''],
       leadId: [''],
+      usuarioId: [''],
       gerarGoogleMeet: [true],
       linkGoogleMeet: ['']
     });

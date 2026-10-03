@@ -190,6 +190,7 @@
   background: var(--af-surface-container-lowest, #ffffff);
   border: 1px solid var(--af-outline-variant, #d3c4b9);
   border-radius: var(--af-radius-default, 8px);
+  padding: var(--af-space-md, 16px);
 }
 
 .btn-confirm-code {
