@@ -1,4 +1,8 @@
-@use '../../../../styles/variables' as *;
+@use '../../../../styles/variables' as *;
+
+// -----------------------------------------------------------------------------
+// PÁGINA PRINCIPAL - MODELO DE PROPOSTA
+// -----------------------------------------------------------------------------
 .modelo-proposta-page {
   width: 100%;
   max-width: 1600px;
@@ -14,7 +18,11 @@
     padding: 20px 16px 40px 16px;
     gap: 20px;
   }
-}
+}
+
+// -----------------------------------------------------------------------------
+// CABEÇALHO DA PÁGINA
+// -----------------------------------------------------------------------------
 .page-header {
   padding-bottom: 24px;
   border-bottom: 1px solid var(--af-outline-variant, #d3c4b9);
@@ -73,7 +81,11 @@
   app-button {
     display: inline-flex;
   }
-}
+}
+
+// -----------------------------------------------------------------------------
+// BARRA DE NAVEGAÇÃO DE ABAS
+// -----------------------------------------------------------------------------
 .nav-tabs-bar {
   display: flex;
   align-items: center;
@@ -119,7 +131,11 @@
       box-shadow: 0 2px 6px rgba(118, 85, 56, 0.25);
     }
   }
-}
+}
+
+// -----------------------------------------------------------------------------
+// GRID PRINCIPAL DE DOIS PAINÉIS
+// -----------------------------------------------------------------------------
 .config-editor-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
@@ -153,7 +169,11 @@
     padding: 24px 20px;
     gap: 22px;
   }
-}
+}
+
+// -----------------------------------------------------------------------------
+// CONTEÚDO DAS ABAS (TAB PANES)
+// -----------------------------------------------------------------------------
 .tab-pane {
   display: flex;
   flex-direction: column;
@@ -180,7 +200,11 @@
   font-size: 13.5px;
   line-height: 1.5;
   margin: 0;
-}
+}
+
+// -----------------------------------------------------------------------------
+// SEÇÕES E BLOCOS DE FORMULÁRIO (COM ESPAÇAMENTO E HIERARQUIA CLARA)
+// -----------------------------------------------------------------------------
 .form-section-block {
   display: flex;
   flex-direction: column;
@@ -309,7 +333,11 @@
   border-radius: 4px;
   border: 1px solid var(--af-outline-variant, #d3c4b9);
   letter-spacing: 0.02em;
-}
+}
+
+// -----------------------------------------------------------------------------
+// PALETA CROMÁTICA DO DOCUMENTO
+// -----------------------------------------------------------------------------
 .palette-selector-card {
   background-color: var(--af-surface-container-low, #f6f3f2);
   border: 1px solid var(--af-surface-container, #e5e2e1);
@@ -401,7 +429,11 @@
     text-transform: uppercase;
     font-weight: 600;
   }
-}
+}
+
+// -----------------------------------------------------------------------------
+// LOGOTIPO OFICIAL & DROPZONE LUXUOSO
+// -----------------------------------------------------------------------------
 .logo-upload-container {
   width: 100%;
 }
@@ -540,7 +572,11 @@
       border-color: #dc2626;
     }
   }
-}
+}
+
+// -----------------------------------------------------------------------------
+// FEATURE TOGGLES & SWITCHES IOS (ESPAÇOSO, CLARO E MODERNO)
+// -----------------------------------------------------------------------------
 .feature-toggles-list {
   display: flex;
   flex-direction: column;
@@ -630,7 +666,11 @@
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
   }
-}
+}
+
+// -----------------------------------------------------------------------------
+// WHATSAPP INTEGRAÇÃO & SIMULADOR
+// -----------------------------------------------------------------------------
 .tags-helper-bar {
   background-color: var(--af-surface-container-low, #f6f3f2);
   border-radius: 8px;
@@ -714,7 +754,11 @@
 
 .whitespace-pre-line {
   white-space: pre-line;
-}
+}
+
+// -----------------------------------------------------------------------------
+// COLUNA DIREITA: PREVIEW EDITORIAL A4 (DESK CANVAS ESPAÇOSO)
+// -----------------------------------------------------------------------------
 .preview-column {
   position: sticky;
   top: 24px;
@@ -769,7 +813,11 @@
   justify-content: center;
   align-items: flex-start;
   box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.45);
-}
+}
+
+// -----------------------------------------------------------------------------
+// FOLHA A4 TIMBRADA ARQUITETÔNICA (REFINADA, ELEGANTE E ESPAÇOSA)
+// -----------------------------------------------------------------------------
 .a4-sheet {
   background-color: #ffffff !important;
   border-radius: 4px;

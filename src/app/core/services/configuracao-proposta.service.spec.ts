@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ConfiguracaoPropostaService } from './configuracao-proposta.service';
+import { ConfiguracaoPropostaApiService } from '../api/propostas/configuracao-proposta-api.service';
 import { CONFIGURACAO_PROPOSTA_PADRAO } from '../models/configuracao-proposta.model';
 
 describe('ConfiguracaoPropostaService', () => {
@@ -13,6 +14,7 @@ describe('ConfiguracaoPropostaService', () => {
     TestBed.configureTestingModule({
       providers: [
         ConfiguracaoPropostaService,
+        ConfiguracaoPropostaApiService,
         provideHttpClient(),
         provideHttpClientTesting()
       ]
@@ -55,7 +57,7 @@ describe('ConfiguracaoPropostaService', () => {
     expect(atual.validadeDias).toBe(30);
   });
 
-  it('deve resetar configurações para os valores de fábrica', () => {
+  it('deve resetar configurações para os valores de fábrica somente após sucesso da API', () => {
     service.salvarConfiguracao({
       ...CONFIGURACAO_PROPOSTA_PADRAO,
       nomeEscritorio: 'Modificado'
@@ -63,12 +65,42 @@ describe('ConfiguracaoPropostaService', () => {
     const req1 = httpMock.expectOne((r) => r.url.includes('/propostas/configuracao') && r.method === 'PUT');
     req1.flush({});
 
-    const resetado = service.resetarPadroes();
+    let resetado: any = null;
+    service.resetarPadroes().subscribe((res) => {
+      resetado = res;
+    });
+
     const req2 = httpMock.expectOne((r) => r.url.includes('/propostas/configuracao') && r.method === 'PUT');
     req2.flush(CONFIGURACAO_PROPOSTA_PADRAO);
 
     expect(resetado.nomeEscritorio).toBe(CONFIGURACAO_PROPOSTA_PADRAO.nomeEscritorio);
     expect(service.getConfiguracao().nomeEscritorio).toBe(CONFIGURACAO_PROPOSTA_PADRAO.nomeEscritorio);
+  });
+
+  it('não deve resetar configurações no estado local se o backend falhar em resetarPadroes', () => {
+    service.salvarConfiguracao({
+      ...CONFIGURACAO_PROPOSTA_PADRAO,
+      nomeEscritorio: 'Escritório Personalizado Mantido'
+    }).subscribe();
+    const req1 = httpMock.expectOne((r) => r.url.includes('/propostas/configuracao') && r.method === 'PUT');
+    req1.flush({
+      ...CONFIGURACAO_PROPOSTA_PADRAO,
+      nomeEscritorio: 'Escritório Personalizado Mantido'
+    });
+
+    let erroRecebido: any = null;
+    service.resetarPadroes().subscribe({
+      next: () => fail('Deveria ter falhado'),
+      error: (err) => {
+        erroRecebido = err;
+      }
+    });
+
+    const req2 = httpMock.expectOne((r) => r.url.includes('/propostas/configuracao') && r.method === 'PUT');
+    req2.flush({ message: 'Erro ao resetar no servidor' }, { status: 500, statusText: 'Internal Server Error' });
+
+    expect(erroRecebido).toBeTruthy();
+    expect(service.getConfiguracao().nomeEscritorio).toBe('Escritório Personalizado Mantido');
   });
 
   it('deve gerar mensagem de WhatsApp formatada substituindo placeholders', () => {

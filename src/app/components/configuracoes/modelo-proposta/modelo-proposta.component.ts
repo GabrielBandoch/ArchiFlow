@@ -1,25 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfiguracaoPropostaService } from '../../../core/services/configuracao-proposta.service';
 import { ConfiguracaoProposta, CONFIGURACAO_PROPOSTA_PADRAO } from '../../../core/models/configuracao-proposta.model';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { NotificationService } from '../../../core/services/notification.service';
-import { DialogService } from '../../../core/services/dialog.service';
-import { ModalPropostaPdfComponent } from '../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component';
-import { PropostaVisualizacaoData } from '../../../models/proposta-pdf.types';
-import { ModeloPropostaForm } from './modelo-proposta.form';
+import { ModalPropostaPdfComponent, PropostaVisualizacaoData } from '../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component';
 
 @Component({
   selector: 'app-modelo-proposta',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, ModalPropostaPdfComponent],
   templateUrl: './modelo-proposta.component.html',
   styleUrls: ['./modelo-proposta.component.scss']
 })
 export class ModeloPropostaComponent implements OnInit {
   public form!: FormGroup;
   public abaAtiva: 'identidade' | 'secoes' | 'textos' | 'whatsapp' = 'identidade';
+  public modalPdfAberto = false;
 
   public previewData: PropostaVisualizacaoData = {
     codigo: 'PROP-2026-084',
@@ -52,8 +50,7 @@ export class ModeloPropostaComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private configService: ConfiguracaoPropostaService,
-    private notificationService: NotificationService,
-    private dialogService: DialogService
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +65,32 @@ export class ModeloPropostaComponent implements OnInit {
   }
 
   private initForm(config: ConfiguracaoProposta): void {
-    this.form = ModeloPropostaForm.create(this.fb, config);
+    this.form = this.fb.group({
+      nomeEscritorio: [config.nomeEscritorio, [Validators.required]],
+      slogan: [config.slogan],
+      registroProfissional: [config.registroProfissional],
+      email: [config.email, [Validators.required, Validators.email]],
+      telefone: [config.telefone, [Validators.required]],
+      endereco: [config.endereco],
+      logoUrl: [config.logoUrl || ''],
+      corPrimaria: [config.corPrimaria || '#765538', [Validators.required]],
+
+      exibirCabecalho: [config.exibirCabecalho],
+      exibirResumo: [config.exibirResumo],
+      exibirTabelaEtapas: [config.exibirTabelaEtapas],
+      exibirMemoriaCalculo: [config.exibirMemoriaCalculo],
+      exibirCondicoesPagamento: [config.exibirCondicoesPagamento],
+      exibirTermosGerais: [config.exibirTermosGerais],
+      exibirAssinaturas: [config.exibirAssinaturas],
+
+      textoApresentacao: [config.textoApresentacao, [Validators.required]],
+      validadeDias: [config.validadeDias, [Validators.required, Validators.min(1)]],
+      condicoesPagamentoPadrao: [config.condicoesPagamentoPadrao, [Validators.required]],
+      chavePix: [config.chavePix],
+      dadosBancarios: [config.dadosBancarios],
+      termosGerais: [config.termosGerais, [Validators.required]],
+      templateMensagemWhatsapp: [config.templateMensagemWhatsapp, [Validators.required]]
+    });
   }
 
   public setAba(aba: 'identidade' | 'secoes' | 'textos' | 'whatsapp'): void {
@@ -79,14 +101,12 @@ export class ModeloPropostaComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-
       if (!file.type.startsWith('image/')) {
-        this.notificationService.warning('Formato inválido. Por favor, envie uma imagem PNG, SVG ou JPG.');
+        this.notificationService.warning('Por favor, selecione um arquivo de imagem válido (PNG, SVG ou JPG).');
         return;
       }
-
       if (file.size > 2 * 1024 * 1024) {
-        this.notificationService.warning('Arquivo muito grande. O limite máximo do logotipo é 2 MB.');
+        this.notificationService.warning('A imagem do logotipo deve ter no máximo 2MB.');
         return;
       }
 
@@ -100,17 +120,9 @@ export class ModeloPropostaComponent implements OnInit {
     }
   }
 
-  public removerLogo(): void {
+  public removerLogotipo(): void {
     this.form.patchValue({ logoUrl: '' });
     this.notificationService.info('Logotipo removido.');
-  }
-
-  public removerLogotipo(): void {
-    this.removerLogo();
-  }
-
-  public selecionarCor(corHex: string): void {
-    this.form.patchValue({ corPrimaria: corHex });
   }
 
   public salvar(): void {
@@ -132,24 +144,25 @@ export class ModeloPropostaComponent implements OnInit {
   }
 
   public restaurarPadrao(): void {
-    this.dialogService.confirm({
-      title: 'Restaurar Padrões',
-      message: 'Deseja restaurar todas as configurações e textos para o padrão original do ArchiFlow?'
-    }).subscribe((confirmado) => {
-      if (confirmado) {
-        const padrao = this.configService.resetarPadroes();
-        this.form.patchValue(padrao);
-        this.notificationService.info('Configurações restauradas com sucesso.');
-      }
-    });
+    if (confirm('Deseja restaurar todas as configurações e textos para o padrão original do ArchiFlow?')) {
+      this.configService.resetarPadroes().subscribe({
+        next: (padrao) => {
+          this.form.patchValue(padrao);
+          this.notificationService.info('Configurações restauradas com sucesso.');
+        },
+        error: () => {
+          this.notificationService.error('Erro ao restaurar configurações padrão.');
+        }
+      });
+    }
   }
 
   public testarImpressao(): void {
-    this.dialogService.open(ModalPropostaPdfComponent, {
-      data: {
-        proposta: this.previewData
-      }
-    });
+    this.modalPdfAberto = true;
+  }
+
+  public fecharModalPdf(): void {
+    this.modalPdfAberto = false;
   }
 
   public get configAtual(): ConfiguracaoProposta {
@@ -160,9 +173,22 @@ export class ModeloPropostaComponent implements OnInit {
     return this.configService.formatarMoeda(valor || 0);
   }
 
+  public readonly paletasPredefinidas = [
+    { nome: 'Terracota', cor: '#765538' },
+    { nome: 'Grafite', cor: '#2d3238' },
+    { nome: 'Azul Petróleo', cor: '#1e3a47' },
+    { nome: 'Ocre Nobre', cor: '#946638' },
+    { nome: 'Verde Oliva', cor: '#37473a' },
+    { nome: 'Bordô', cor: '#582b2b' }
+  ];
+
+  public selecionarCor(cor: string): void {
+    this.form.patchValue({ corPrimaria: cor });
+  }
+
   public inserirTagWhatsapp(tag: string): void {
     const atual = this.form.get('templateMensagemWhatsapp')?.value || '';
-    this.form.patchValue({ templateMensagemWhatsapp: atual + tag });
+    this.form.patchValue({ templateMensagemWhatsapp: atual + ' ' + tag });
   }
 
   public get previewWhatsappMsg(): string {
@@ -171,15 +197,6 @@ export class ModeloPropostaComponent implements OnInit {
       projetoTitulo: this.previewData.titulo,
       metragem: this.previewData.metragemQuadrada,
       valorFinal: this.previewData.valorFinalAjustado
-    }, this.form.value);
+    }, this.configAtual);
   }
-
-  public readonly paletasPredefinidas = [
-    { nome: 'Terracota Studio (Padrão)', hex: '#765538', cor: '#765538' },
-    { nome: 'Carvão Arquitetônico', hex: '#2B2B2B', cor: '#2B2B2B' },
-    { nome: 'Nogueira Escura', hex: '#4A3525', cor: '#4A3525' },
-    { nome: 'Verde Botânico', hex: '#2D4A3E', cor: '#2D4A3E' },
-    { nome: 'Azul Concreto', hex: '#2C3E50', cor: '#2C3E50' },
-    { nome: 'Bronze Metálico', hex: '#8C6D46', cor: '#8C6D46' }
-  ];
 }

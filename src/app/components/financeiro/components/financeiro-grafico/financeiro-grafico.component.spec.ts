@@ -39,9 +39,11 @@ describe('FinanceiroGraficoComponent', () => {
     expect(component.getBarHeight(0)).toBe(4);
   });
 
-  it('should update selected year', () => {
+  it('should update selected year and emit anoChange', () => {
+    spyOn(component.anoChange, 'emit');
     component.selectAno(2025);
     expect(component.selectedYear).toBe(2025);
+    expect(component.anoChange.emit).toHaveBeenCalledWith(2025);
   });
 });
 

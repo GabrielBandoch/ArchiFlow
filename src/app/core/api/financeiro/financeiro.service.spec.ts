@@ -44,6 +44,14 @@ describe('FinanceiroService', () => {
     req.flush(mockPainel);
   });
 
+  it('obterPainel with ano should send GET with query param', () => {
+    service.obterPainel(2025).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/financeiro/painel?ano=2025`);
+    expect(req.request.method).toBe('GET');
+    req.flush({});
+  });
+
   it('obterParcelas with params should build query string correctly', () => {
     service.obterParcelas({ projetoId: 'p1', status: 'Pendente' }).subscribe(res => {
       expect(res.length).toBe(1);
