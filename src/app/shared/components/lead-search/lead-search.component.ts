@@ -4,6 +4,7 @@ import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/f
 import { Lead } from '../../../models/lead.model';
 import { ButtonComponent } from '../button/button.component';
 import { LeadService } from '../../../core/api/leads/lead.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { SelecionarLeadModalComponent } from '../../../dialogs/leads/selecionar-lead-modal/selecionar-lead-modal.component';
 import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
 
@@ -32,6 +33,8 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
   @Output() leadSelected = new EventEmitter<Lead | null>();
 
   private leadService = inject(LeadService, { optional: true });
+  private notificationService = inject(NotificationService, { optional: true });
+  private elementRef = inject(ElementRef);
 
   leadSelecionado: Lead | null = null;
   searchText = '';
@@ -39,12 +42,10 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
   showDropdown = false;
   showModal = false;
   disabled = false;
-  private pendingValue: any = null;
+  private pendingValue: string | Lead | null = null;
 
-  onChange: (value: any) => void = () => {};
+  onChange: (value: string | null) => void = () => {};
   onTouched: () => void = () => {};
-
-  constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {
     if ((!this.leads || this.leads.length === 0) && this.leadService) {
@@ -69,7 +70,9 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
           this.writeValue(this.pendingValue);
         }
       },
-      error: (err) => console.error('Erro ao buscar leads no LeadSearchComponent', err)
+      error: () => {
+        this.notificationService?.warning('Não foi possível carregar a lista de leads.');
+      }
     });
   }
 
@@ -80,7 +83,7 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
     }
   }
 
-  writeValue(value: any): void {
+  writeValue(value: string | Lead | null): void {
     this.pendingValue = value;
     if (!value) {
       this.leadSelecionado = null;
@@ -100,11 +103,11 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: string | null) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

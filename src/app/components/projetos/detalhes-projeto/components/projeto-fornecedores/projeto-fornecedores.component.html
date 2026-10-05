@@ -38,13 +38,14 @@
         <span class="date-tag font-label-xs text-on-surface-variant">
           Vinculado em: {{ vinculo.dataVinculo | date:'dd/MM/yyyy' }}
         </span>
-        <button 
-          type="button" 
-          class="btn-icon-danger" 
-          (click)="desvincular(vinculo)" 
-          title="Desvincular parceiro desta obra">
+        <app-button 
+          variant="danger" 
+          size="sm"
+          (btnClick)="desvincular(vinculo)" 
+          title="Desvincular parceiro desta obra"
+          ariaLabel="Desvincular parceiro desta obra">
           <span class="material-symbols-outlined">link_off</span>
-        </button>
+        </app-button>
       </div>
     </div>
   </div>

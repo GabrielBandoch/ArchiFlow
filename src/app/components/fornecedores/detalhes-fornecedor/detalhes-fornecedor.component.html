@@ -1,9 +1,9 @@
 <div class="dossier-page" *ngIf="fornecedor && !carregando">
   <nav class="dossier-nav d-flex justify-content-between align-items-center">
-    <button type="button" class="nav-back-btn font-label-md" (click)="voltar()">
+    <app-button variant="ghost" size="sm" (btnClick)="voltar()" customClass="nav-back-btn">
       <span class="material-symbols-outlined">arrow_back</span>
       <span>Voltar para Fornecedores</span>
-    </button>
+    </app-button>
     <div class="dossier-badge-wrap d-flex align-items-center gap-xs">
       <span class="dossier-code-chip font-mono">PARCEIRO #{{ fornecedor.id.substring(0, 8) }}</span>
     </div>
@@ -48,9 +48,9 @@
           <span class="material-symbols-outlined">edit</span>
           Editar Ficha
         </app-button>
-        <button type="button" class="btn-delete-action" (click)="excluir()" title="Excluir parceiro">
+        <app-button variant="danger" size="sm" (btnClick)="excluir()" title="Excluir parceiro" ariaLabel="Excluir parceiro">
           <span class="material-symbols-outlined">delete</span>
-        </button>
+        </app-button>
       </div>
     </div>
 
@@ -115,9 +115,9 @@
               [telefone]="fornecedor.telefone" 
               [mensagem]="'Olá ' + fornecedor.nome + '! Entro em contato sobre uma parceria de projeto no ArchiFlow.'">
             </app-whatsapp-button>
-            <button type="button" class="btn-copy-chip" (click)="copiarTexto(fornecedor.telefone, 'Telefone')" title="Copiar telefone">
+            <app-button variant="ghost" size="sm" (btnClick)="copiarTexto(fornecedor.telefone, 'Telefone')" title="Copiar telefone" ariaLabel="Copiar telefone" customClass="btn-copy-chip">
               <span class="material-symbols-outlined">content_copy</span>
-            </button>
+            </app-button>
           </div>
           <ng-template #noPhoneTpl>
             <span class="detail-value text-muted font-body-sm">Não informado</span>
@@ -135,9 +135,9 @@
             <a class="detail-value link truncate" [href]="'mailto:' + fornecedor.email" [title]="fornecedor.email">
               {{ fornecedor.email }}
             </a>
-            <button type="button" class="btn-copy-chip" (click)="copiarTexto(fornecedor.email, 'E-mail')" title="Copiar e-mail">
+            <app-button variant="ghost" size="sm" (btnClick)="copiarTexto(fornecedor.email, 'E-mail')" title="Copiar e-mail" ariaLabel="Copiar e-mail" customClass="btn-copy-chip">
               <span class="material-symbols-outlined">content_copy</span>
-            </button>
+            </app-button>
           </div>
           <ng-template #noEmailTpl>
             <span class="detail-value text-muted font-body-sm">Não informado</span>
@@ -254,13 +254,14 @@
             </div>
             <div class="d-flex align-items-center gap-sm" (click)="$event.stopPropagation()">
               <span class="font-label-xs text-on-surface-variant font-mono">{{ p.dataVinculo | date:'dd/MM/yyyy' }}</span>
-              <button 
-                type="button" 
-                class="btn-icon-danger" 
-                (click)="desvincular(p)" 
-                title="Desvincular parceiro desta obra">
+              <app-button 
+                variant="danger" 
+                size="sm"
+                (btnClick)="desvincular(p)" 
+                title="Desvincular parceiro desta obra"
+                ariaLabel="Desvincular parceiro desta obra">
                 <span class="material-symbols-outlined">link_off</span>
-              </button>
+              </app-button>
             </div>
           </div>
         </div>

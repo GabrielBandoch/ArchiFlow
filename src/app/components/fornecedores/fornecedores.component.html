@@ -110,27 +110,30 @@
 
           <td class="td-actions text-right" (click)="$event.stopPropagation()">
             <div class="d-flex align-items-center justify-content-end gap-xxs">
-              <button 
-                type="button" 
-                class="btn-icon" 
-                (click)="abrirModalAvaliar(item, $event)" 
-                title="Avaliar Desempenho">
+              <app-button 
+                variant="ghost" 
+                size="sm"
+                (btnClick)="abrirModalAvaliar(item, $event)" 
+                title="Avaliar Desempenho"
+                ariaLabel="Avaliar Desempenho">
                 <span class="material-symbols-outlined">star_rate</span>
-              </button>
-              <button 
-                type="button" 
-                class="btn-icon" 
-                (click)="abrirModalEditar(item, $event)" 
-                title="Editar Cadastro">
+              </app-button>
+              <app-button 
+                variant="ghost" 
+                size="sm"
+                (btnClick)="abrirModalEditar(item, $event)" 
+                title="Editar Cadastro"
+                ariaLabel="Editar Cadastro">
                 <span class="material-symbols-outlined">edit</span>
-              </button>
-              <button 
-                type="button" 
-                class="btn-icon btn-icon-danger" 
-                (click)="excluir(item, $event)" 
-                title="Excluir Fornecedor">
+              </app-button>
+              <app-button 
+                variant="danger" 
+                size="sm"
+                (btnClick)="excluir(item, $event)" 
+                title="Excluir Fornecedor"
+                ariaLabel="Excluir Fornecedor">
                 <span class="material-symbols-outlined">delete</span>
-              </button>
+              </app-button>
             </div>
           </td>
         </tr>

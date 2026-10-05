@@ -14,6 +14,7 @@ import { SelectComponent, SelectOption } from '../../../../../shared/components/
 import { InputComponent } from '../../../../../shared/components/input/input.component';
 import { WhatsAppButtonComponent } from '../../../../../shared/components/whatsapp-button/whatsapp-button.component';
 import { PhoneMaskPipe } from '../../../../../core/pipes/phone-mask.pipe';
+import { ProjetoFornecedoresForm } from './projeto-fornecedores.form';
 
 @Component({
   selector: 'app-projeto-fornecedores',
@@ -53,10 +54,7 @@ export class ProjetoFornecedoresComponent implements OnInit {
   submitted = false;
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      fornecedorId: ['', Validators.required],
-      funcaoNoProjeto: ['', [Validators.required, Validators.maxLength(150)]]
-    });
+    this.form = ProjetoFornecedoresForm.create(this.fb);
     this.carregarTodosFornecedores();
   }
 

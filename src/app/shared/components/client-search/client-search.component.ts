@@ -4,6 +4,7 @@ import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/f
 import { Cliente } from '../../../models/cliente.model';
 import { ButtonComponent } from '../button/button.component';
 import { ClienteService } from '../../../core/api/clientes/cliente.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { SelecionarClienteModalComponent } from '../../../dialogs/clientes/selecionar-cliente-modal/selecionar-cliente-modal.component';
 
 @Component({
@@ -31,6 +32,8 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   @Output() clientSelected = new EventEmitter<Cliente | null>();
 
   private clienteService = inject(ClienteService, { optional: true });
+  private notificationService = inject(NotificationService, { optional: true });
+  private elementRef = inject(ElementRef);
 
   clienteSelecionado: Cliente | null = null;
   searchText = '';
@@ -38,12 +41,10 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   showDropdown = false;
   showModal = false;
   disabled = false;
-  private pendingValue: any = null;
+  private pendingValue: string | Cliente | null = null;
 
-  onChange: (value: any) => void = () => {};
+  onChange: (value: string | null) => void = () => {};
   onTouched: () => void = () => {};
-
-  constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {
     if ((!this.clientes || this.clientes.length === 0) && this.clienteService) {
@@ -68,7 +69,9 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
           this.writeValue(this.pendingValue);
         }
       },
-      error: (err) => console.error('Erro ao buscar clientes no ClientSearchComponent', err)
+      error: () => {
+        this.notificationService?.warning('Não foi possível carregar a lista de clientes.');
+      }
     });
   }
 
@@ -79,7 +82,7 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
     }
   }
 
-  writeValue(value: any): void {
+  writeValue(value: string | Cliente | null): void {
     this.pendingValue = value;
     if (!value) {
       this.clienteSelecionado = null;
@@ -99,11 +102,11 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: string | null) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
