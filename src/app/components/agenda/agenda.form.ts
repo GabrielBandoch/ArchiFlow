@@ -26,7 +26,7 @@ export class AgendaForm {
       googleCalendarId: ['', [Validators.required]],
       chaveGoogleServiceAccountJson: [''],
       nomeAgenda: ['Agenda Oficial do Escritório', [Validators.maxLength(200)]],
-      sincronizarAutomaticamente: [true]
+      sincronizacaoAutomaticaAtiva: [true]
     });
   }
 }

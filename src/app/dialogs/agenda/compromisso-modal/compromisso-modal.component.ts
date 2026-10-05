@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Compromisso, CriarCompromissoCommand, AtualizarCompromissoCommand, TiposCompromisso } from '../../../models/agenda.model';
 import { AgendaForm } from '../../../components/agenda/agenda.form';
 import { Projeto } from '../../../models/projeto.model';
@@ -46,6 +46,14 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
 
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<Compromisso>();
+
+  private fb = inject(FormBuilder);
+  private agendaService = inject(AgendaService);
+  private projetoService = inject(ProjetoService);
+  private clienteService = inject(ClienteService);
+  private notificationService = inject(NotificationService);
+  private leadService = inject(LeadService);
+  private usuarioService = inject(UsuarioService);
 
   form!: FormGroup;
   saving = false;
@@ -112,15 +120,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
     return `${mins}min de duração`;
   }
 
-  constructor(
-    private fb: FormBuilder,
-    private agendaService: AgendaService,
-    private projetoService: ProjetoService,
-    private clienteService: ClienteService,
-    private notificationService: NotificationService,
-    private leadService: LeadService,
-    private usuarioService: UsuarioService
-  ) {
+  constructor() {
     this.initForm();
   }
 
@@ -166,6 +166,11 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
 
   get f() {
     return this.form.controls;
+  }
+
+  temErro(campo: string): boolean {
+    const control = this.form.get(campo);
+    return !!(this.submitted && control && control.errors);
   }
 
   private initForm(): void {
@@ -360,7 +365,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
         clienteId,
         usuarioId,
         ...(leadId ? { leadId } : {})
-      } as AtualizarCompromissoCommand;
+      };
 
       this.agendaService.atualizar(this.compromissoParaEdicao.id, command).subscribe({
         next: (compromisso) => {
@@ -393,7 +398,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
         usuarioId,
         gerarGoogleMeet: val.gerarGoogleMeet,
         ...(leadId ? { leadId } : {})
-      } as CriarCompromissoCommand;
+      };
 
       this.agendaService.criar(command).subscribe({
         next: (compromisso) => {

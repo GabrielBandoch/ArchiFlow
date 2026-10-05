@@ -78,12 +78,11 @@ export interface AlterarStatusCompromissoCommand {
 export interface ConfiguracaoAgendaEmpresa {
   emailAgendaEmpresa?: string;
   googleCalendarId?: string;
-  chaveGoogleServiceAccountJson?: string;
   possuiChaveServiceAccount?: boolean;
   googleOAuthEmail?: string;
   possuiOAuthConectado?: boolean;
   googleClientId?: string;
-  tipoIntegracao?: string; // 'OAuth' | 'ServiceAccount' | 'Nenhum'
+  tipoIntegracao?: 'OAuth' | 'ServiceAccount' | 'Nenhum';
   nomeAgenda: string;
   sincronizacaoAutomaticaAtiva: boolean;
   linkEmbedGoogleCalendar?: string;
@@ -95,7 +94,21 @@ export interface SalvarConfiguracaoAgendaCommand {
   chaveGoogleServiceAccountJson?: string;
   googleClientId?: string;
   googleClientSecret?: string;
-  tipoIntegracao?: string;
+  tipoIntegracao?: 'OAuth' | 'ServiceAccount' | 'Nenhum';
   nomeAgenda: string;
   sincronizacaoAutomaticaAtiva: boolean;
 }
+
+export interface ConectarGoogleOAuthCommand {
+  code: string;
+  redirectUri: string;
+  state: string;
+  clientId?: string;
+  clientSecret?: string;
+}
+
+export interface OAuthUrlResponse {
+  url: string;
+  state: string;
+}
+

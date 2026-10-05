@@ -141,46 +141,46 @@
       <!-- Rodapé de Ações do Cartão -->
       <div class="member-card-footer d-flex justify-content-between align-items-center margin-top-md pt-sm border-top" *ngIf="podeGerenciar()">
         <div class="status-toggle-wrap">
-          <button 
-            type="button" 
-            class="action-text-btn font-label-xs" 
-            [class.text-error]="membro.ativo" 
-            [class.text-success]="!membro.ativo"
+          <app-button 
+            variant="ghost"
+            size="sm"
+            [customClass]="membro.ativo ? 'action-text-btn font-label-xs text-error' : 'action-text-btn font-label-xs text-success'" 
             [disabled]="isCurrentUser(membro) && membro.ativo"
-            (click)="alternarStatus(membro)"
+            (btnClick)="alternarStatus(membro)"
             [title]="membro.ativo ? 'Desativar acesso do colaborador' : 'Reativar acesso'">
             <span class="material-symbols-outlined font-size-16">
               {{ membro.ativo ? 'person_off' : 'person_check' }}
             </span>
             {{ membro.ativo ? 'Inativar' : 'Reativar' }}
-          </button>
+          </app-button>
         </div>
 
         <div class="actions-group d-flex gap-xxs align-items-center">
-          <button 
-            type="button" 
-            class="icon-action-btn" 
-            (click)="abrirModalRedefinir(membro)" 
+          <app-button 
+            variant="icon"
+            size="sm"
+            (btnClick)="abrirModalRedefinir(membro)" 
             title="Redefinir Senha de Acesso">
             <span class="material-symbols-outlined">lock_reset</span>
-          </button>
+          </app-button>
 
-          <button 
-            type="button" 
-            class="icon-action-btn" 
-            (click)="abrirModalEditar(membro)" 
+          <app-button 
+            variant="icon"
+            size="sm"
+            (btnClick)="abrirModalEditar(membro)" 
             title="Editar Colaborador">
             <span class="material-symbols-outlined">edit</span>
-          </button>
+          </app-button>
 
-          <button 
-            type="button" 
-            class="icon-action-btn text-error" 
+          <app-button 
+            variant="icon"
+            size="sm"
+            customClass="text-error" 
             [disabled]="isCurrentUser(membro)"
-            (click)="abrirModalExcluir(membro)" 
+            (btnClick)="abrirModalExcluir(membro)" 
             title="Excluir Colaborador">
             <span class="material-symbols-outlined">delete</span>
-          </button>
+          </app-button>
         </div>
       </div>
 

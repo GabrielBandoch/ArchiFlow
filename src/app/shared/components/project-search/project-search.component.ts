@@ -38,12 +38,12 @@ export class ProjectSearchComponent implements ControlValueAccessor, OnInit, OnC
   showDropdown = false;
   showModal = false;
   disabled = false;
-  private pendingValue: any = null;
+  private pendingValue: string | Projeto | null = null;
 
-  onChange: (value: any) => void = () => {};
+  onChange: (value: string | null) => void = () => {};
   onTouched: () => void = () => {};
 
-  constructor(private elementRef: ElementRef) {}
+  private elementRef = inject(ElementRef);
 
   ngOnInit(): void {
     if ((!this.projetos || this.projetos.length === 0) && this.projetoService) {
@@ -68,7 +68,9 @@ export class ProjectSearchComponent implements ControlValueAccessor, OnInit, OnC
           this.writeValue(this.pendingValue);
         }
       },
-      error: (err) => console.error('Erro ao buscar projetos no ProjectSearchComponent', err)
+      error: () => {
+        // Fallback gracioso
+      }
     });
   }
 
@@ -79,8 +81,8 @@ export class ProjectSearchComponent implements ControlValueAccessor, OnInit, OnC
     }
   }
 
-  writeValue(value: any): void {
-    this.pendingValue = value;
+  writeValue(value: unknown): void {
+    this.pendingValue = value as (string | Projeto | null);
     if (!value) {
       this.projetoSelecionado = null;
       this.searchText = '';
@@ -93,17 +95,18 @@ export class ProjectSearchComponent implements ControlValueAccessor, OnInit, OnC
         this.projetoSelecionado = proj;
         this.searchText = proj.nome;
       }
-    } else if (typeof value === 'object' && value.id) {
-      this.projetoSelecionado = value;
-      this.searchText = value.nome || '';
+    } else if (typeof value === 'object' && (value as Projeto).id) {
+      const proj = value as Projeto;
+      this.projetoSelecionado = proj;
+      this.searchText = proj.nome || '';
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: string | null) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

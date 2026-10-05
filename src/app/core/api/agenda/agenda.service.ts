@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -6,7 +6,11 @@ import {
   Compromisso, 
   CriarCompromissoCommand, 
   AtualizarCompromissoCommand, 
-  AlterarStatusCompromissoCommand 
+  AlterarStatusCompromissoCommand,
+  ConfiguracaoAgendaEmpresa,
+  SalvarConfiguracaoAgendaCommand,
+  ConectarGoogleOAuthCommand,
+  OAuthUrlResponse
 } from '../../../models/agenda.model';
 import { UrlBuilder } from '../../utils/url-builder';
 
@@ -14,7 +18,7 @@ import { UrlBuilder } from '../../utils/url-builder';
   providedIn: 'root'
 })
 export class AgendaService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   listar(inicio?: string, fim?: string, usuarioId?: string, projetoId?: string): Observable<Compromisso[]> {
     return this.obterPorPeriodo(inicio, fim, usuarioId, projetoId);
@@ -83,6 +87,17 @@ export class AgendaService {
     return this.http.delete<void>(url);
   }
 
+  baixarIcs(inicio?: string, fim?: string): Observable<Blob> {
+    const builder = new UrlBuilder(environment.apiUrl)
+      .segment('agenda')
+      .segment('exportar-ics');
+
+    if (inicio) builder.queryParam('inicio', inicio);
+    if (fim) builder.queryParam('fim', fim);
+
+    return this.http.get(builder.build(), { responseType: 'blob' });
+  }
+
   exportarIcsUrl(inicio?: string, fim?: string): string {
     const builder = new UrlBuilder(environment.apiUrl)
       .segment('agenda')
@@ -94,48 +109,48 @@ export class AgendaService {
     return builder.build();
   }
 
-  obterConfiguracaoAgendaEmpresa(): Observable<any> {
+  obterConfiguracaoAgendaEmpresa(): Observable<ConfiguracaoAgendaEmpresa> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment('agenda')
       .segment('configuracao')
       .build();
-    return this.http.get<any>(url);
+    return this.http.get<ConfiguracaoAgendaEmpresa>(url);
   }
 
-  salvarConfiguracaoAgendaEmpresa(command: any): Observable<any> {
+  salvarConfiguracaoAgendaEmpresa(command: SalvarConfiguracaoAgendaCommand): Observable<ConfiguracaoAgendaEmpresa> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment('agenda')
       .segment('configuracao')
       .build();
-    return this.http.post<any>(url, command);
+    return this.http.post<ConfiguracaoAgendaEmpresa>(url, command);
   }
 
-  obterLinkCompartilhadoGoogleAgenda(): Observable<any> {
+  obterLinkCompartilhadoGoogleAgenda(): Observable<{ linkEmbed: string }> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment('agenda')
       .segment('google')
       .segment('link-compartilhado')
       .build();
-    return this.http.get<any>(url);
+    return this.http.get<{ linkEmbed: string }>(url);
   }
 
-  obterUrlOAuth(redirectUri: string): Observable<{ url: string }> {
+  obterUrlOAuth(redirectUri: string): Observable<OAuthUrlResponse> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment('agenda')
       .segment('oauth')
       .segment('url')
       .queryParam('redirectUri', redirectUri)
       .build();
-    return this.http.get<{ url: string }>(url);
+    return this.http.get<OAuthUrlResponse>(url);
   }
 
-  conectarOAuth(command: { code: string; redirectUri: string; clientId?: string; clientSecret?: string }): Observable<any> {
+  conectarOAuth(command: ConectarGoogleOAuthCommand): Observable<ConfiguracaoAgendaEmpresa> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment('agenda')
       .segment('oauth')
       .segment('conectar')
       .build();
-    return this.http.post<any>(url, command);
+    return this.http.post<ConfiguracaoAgendaEmpresa>(url, command);
   }
 
   desconectarOAuth(): Observable<void> {

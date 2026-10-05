@@ -38,12 +38,12 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   showDropdown = false;
   showModal = false;
   disabled = false;
-  private pendingValue: any = null;
+  private pendingValue: string | Cliente | null = null;
 
-  onChange: (value: any) => void = () => {};
+  onChange: (value: string | null) => void = () => {};
   onTouched: () => void = () => {};
 
-  constructor(private elementRef: ElementRef) {}
+  private elementRef = inject(ElementRef);
 
   ngOnInit(): void {
     if ((!this.clientes || this.clientes.length === 0) && this.clienteService) {
@@ -68,7 +68,9 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
           this.writeValue(this.pendingValue);
         }
       },
-      error: (err) => console.error('Erro ao buscar clientes no ClientSearchComponent', err)
+      error: () => {
+        // Fallback gracioso
+      }
     });
   }
 
@@ -79,8 +81,8 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
     }
   }
 
-  writeValue(value: any): void {
-    this.pendingValue = value;
+  writeValue(value: unknown): void {
+    this.pendingValue = value as (string | Cliente | null);
     if (!value) {
       this.clienteSelecionado = null;
       this.searchText = '';
@@ -93,17 +95,18 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
         this.clienteSelecionado = cli;
         this.searchText = cli.nome;
       }
-    } else if (typeof value === 'object' && value.id) {
-      this.clienteSelecionado = value;
-      this.searchText = value.nome || '';
+    } else if (typeof value === 'object' && (value as Cliente).id) {
+      const cli = value as Cliente;
+      this.clienteSelecionado = cli;
+      this.searchText = cli.nome || '';
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: string | null) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

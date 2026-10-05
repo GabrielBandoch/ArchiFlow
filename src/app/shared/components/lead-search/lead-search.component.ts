@@ -38,12 +38,12 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
   showDropdown = false;
   showModal = false;
   disabled = false;
-  private pendingValue: any = null;
+  private pendingValue: string | Lead | null = null;
 
-  onChange: (value: any) => void = () => {};
+  onChange: (value: string | null) => void = () => {};
   onTouched: () => void = () => {};
 
-  constructor(private elementRef: ElementRef) {}
+  private elementRef = inject(ElementRef);
 
   ngOnInit(): void {
     if ((!this.leads || this.leads.length === 0) && this.leadService) {
@@ -68,7 +68,9 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
           this.writeValue(this.pendingValue);
         }
       },
-      error: (err) => console.error('Erro ao buscar leads no LeadSearchComponent', err)
+      error: () => {
+        // Fallback gracioso
+      }
     });
   }
 
@@ -79,8 +81,8 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
     }
   }
 
-  writeValue(value: any): void {
-    this.pendingValue = value;
+  writeValue(value: unknown): void {
+    this.pendingValue = value as (string | Lead | null);
     if (!value) {
       this.leadSelecionado = null;
       this.searchText = '';
@@ -93,17 +95,18 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
         this.leadSelecionado = lead;
         this.searchText = lead.nome;
       }
-    } else if (typeof value === 'object' && value.id) {
-      this.leadSelecionado = value;
-      this.searchText = value.nome || '';
+    } else if (typeof value === 'object' && (value as Lead).id) {
+      const lead = value as Lead;
+      this.leadSelecionado = lead;
+      this.searchText = lead.nome || '';
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: string | null) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

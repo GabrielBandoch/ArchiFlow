@@ -50,6 +50,7 @@ describe('AgendaComponent', () => {
       'alterarStatus',
       'excluir',
       'exportarIcsUrl',
+      'baixarIcs',
       'obterConfiguracaoAgendaEmpresa'
     ]);
 
@@ -57,6 +58,7 @@ describe('AgendaComponent', () => {
     agendaServiceSpy.alterarStatus.and.returnValue(of(mockCompromissos[0]));
     agendaServiceSpy.excluir.and.returnValue(of(void 0));
     agendaServiceSpy.exportarIcsUrl.and.returnValue('http://localhost:5000/api/agenda/exportar-ics');
+    agendaServiceSpy.baixarIcs.and.returnValue(of(new Blob(['BEGIN:VCALENDAR...'], { type: 'text/calendar' })));
     agendaServiceSpy.obterConfiguracaoAgendaEmpresa.and.returnValue(of({
       emailAgendaEmpresa: 'agenda@estudio.com',
       googleCalendarId: 'estudio_id',
@@ -197,10 +199,8 @@ describe('AgendaComponent', () => {
   });
 
   it('deve baixar o arquivo de calendário .ics', () => {
-    spyOn(window, 'open');
     component.baixarIcs();
-    expect(agendaServiceSpy.exportarIcsUrl).toHaveBeenCalled();
-    expect(window.open).toHaveBeenCalledWith('http://localhost:5000/api/agenda/exportar-ics', '_blank');
+    expect(agendaServiceSpy.baixarIcs).toHaveBeenCalled();
   });
 
   it('deve carregar configuracao da agenda da empresa e abrir modal de configuracao', () => {

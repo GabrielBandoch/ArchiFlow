@@ -20,7 +20,7 @@
         placeholder="Ex: Reunião de Apresentação de Layout, Medição de Obra..." 
         formControlName="titulo"
         [required]="true"
-        [error]="submitted && f['titulo'].errors ? 'Título é obrigatório (mínimo 2 caracteres).' : undefined">
+        [error]="temErro('titulo') ? 'Título é obrigatório (mínimo 2 caracteres).' : undefined">
       </app-input>
     </div>
 
@@ -216,7 +216,7 @@
         label="Projeto Vinculado"
         placeholder="Buscar projeto por nome..."
         [projetos]="projetos"
-        [formControl]="$any(form.get('projetoId'))">
+        formControlName="projetoId">
       </app-project-search>
     </div>
 
@@ -226,7 +226,7 @@
         label="Cliente Vinculado"
         placeholder="Buscar cliente por nome ou e-mail..."
         [clientes]="clientes"
-        [formControl]="$any(form.get('clienteId'))">
+        formControlName="clienteId">
       </app-client-search>
     </div>
 
@@ -236,7 +236,7 @@
         label="Lead Vinculado"
         placeholder="Buscar lead por nome ou e-mail..."
         [leads]="leads"
-        [formControl]="$any(form.get('leadId'))">
+        formControlName="leadId">
       </app-lead-search>
     </div>
 
@@ -272,7 +272,7 @@
         <app-button variant="ghost" type="button" (btnClick)="onClose()" [disabled]="saving">
           Cancelar
         </app-button>
-        <app-button variant="primary" type="submit" [disabled]="saving" (btnClick)="onSubmit()">
+        <app-button variant="primary" type="submit" [disabled]="saving">
           <span class="material-symbols-outlined icon-btn-inline" *ngIf="!saving">
             {{ isEditing ? 'check' : 'add' }}
           </span>
