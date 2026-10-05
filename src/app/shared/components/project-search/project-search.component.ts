@@ -82,8 +82,8 @@ export class ProjectSearchComponent implements ControlValueAccessor, OnInit, OnC
     }
   }
 
-  writeValue(value: string | Projeto | null): void {
-    this.pendingValue = value;
+  writeValue(value: unknown): void {
+    this.pendingValue = value as (string | Projeto | null);
     if (!value) {
       this.projetoSelecionado = null;
       this.searchText = '';
@@ -96,9 +96,10 @@ export class ProjectSearchComponent implements ControlValueAccessor, OnInit, OnC
         this.projetoSelecionado = proj;
         this.searchText = proj.nome;
       }
-    } else if (typeof value === 'object' && value.id) {
-      this.projetoSelecionado = value;
-      this.searchText = value.nome || '';
+    } else if (typeof value === 'object' && (value as Projeto).id) {
+      const proj = value as Projeto;
+      this.projetoSelecionado = proj;
+      this.searchText = proj.nome || '';
     }
   }
 

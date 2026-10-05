@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgendaService } from '../../../core/api/agenda/agenda.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DialogService } from '../../../core/services/dialog.service';
@@ -29,6 +29,11 @@ export class ConfigurarAgendaModalComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<ConfiguracaoAgendaEmpresa>();
 
+  private fb = inject(FormBuilder);
+  private agendaService = inject(AgendaService);
+  private notificationService = inject(NotificationService);
+  private dialogService = inject(DialogService);
+
   form!: FormGroup;
   carregando = false;
   salvando = false;
@@ -43,18 +48,32 @@ export class ConfigurarAgendaModalComponent implements OnInit, OnDestroy {
   desconectandoGoogle = false;
   codigoOAuthManual = '';
 
+  private expectedOAuthState: string | null = null;
+  private oauthPopup: Window | null = null;
+
   private ouvinteMensagemOAuth = (event: MessageEvent) => {
-    if (event.data?.type === 'GOOGLE_OAUTH_CODE' && event.data?.code) {
-      this.conectarComCodigo(event.data.code);
+    if (typeof window === 'undefined') return;
+    if (event.origin !== window.location.origin) return;
+    if (this.oauthPopup && event.source !== this.oauthPopup) return;
+
+    if (!event.data || typeof event.data !== 'object' || event.data.type !== 'GOOGLE_OAUTH_CODE') {
+      return;
     }
+
+    const { code, state } = event.data;
+    if (typeof code !== 'string' || !code.trim()) {
+      return;
+    }
+
+    if (this.expectedOAuthState && state !== this.expectedOAuthState) {
+      this.notificationService.error('Falha de segurança do OAuth: estado CSRF inválido.');
+      return;
+    }
+
+    this.conectarComCodigo(code.trim(), state || this.expectedOAuthState || '');
   };
 
-  constructor(
-    private fb: FormBuilder,
-    private agendaService: AgendaService,
-    private notificationService: NotificationService,
-    private dialogService: DialogService
-  ) {
+  constructor() {
     this.initForm();
   }
 
@@ -69,6 +88,11 @@ export class ConfigurarAgendaModalComponent implements OnInit, OnDestroy {
     if (typeof window !== 'undefined') {
       window.removeEventListener('message', this.ouvinteMensagemOAuth);
     }
+    if (this.oauthPopup && !this.oauthPopup.closed) {
+      this.oauthPopup.close();
+    }
+    this.oauthPopup = null;
+    this.expectedOAuthState = null;
   }
 
   private initForm(): void {
@@ -115,7 +139,8 @@ export class ConfigurarAgendaModalComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.conectandoGoogle = false;
         if (res?.url) {
-          window.open(res.url, 'google_oauth_popup', 'width=550,height=650,menubar=no,toolbar=no');
+          this.expectedOAuthState = res.state;
+          this.oauthPopup = window.open(res.url, 'google_oauth_popup', 'width=550,height=650,menubar=no,toolbar=no');
         } else {
           this.notificationService.warning('Não foi possível obter a URL de autenticação do Google.');
         }
@@ -133,20 +158,26 @@ export class ConfigurarAgendaModalComponent implements OnInit, OnDestroy {
       this.notificationService.warning('Cole o código de autorização do Google para continuar.');
       return;
     }
-    this.conectarComCodigo(this.codigoOAuthManual.trim());
+    this.conectarComCodigo(this.codigoOAuthManual.trim(), this.expectedOAuthState || '');
   }
 
-  conectarComCodigo(code: string): void {
+  conectarComCodigo(code: string, state: string): void {
     this.conectandoGoogle = true;
     const redirectUri = window.location.origin + '/agenda';
 
     this.agendaService.conectarOAuth({
       code: code.trim(),
-      redirectUri
+      redirectUri,
+      state: state.trim()
     }).subscribe({
       next: (config) => {
         this.conectandoGoogle = false;
         this.codigoOAuthManual = '';
+        this.expectedOAuthState = null;
+        if (this.oauthPopup && !this.oauthPopup.closed) {
+          this.oauthPopup.close();
+        }
+        this.oauthPopup = null;
         this.possuiOAuthConectado = true;
         this.googleOAuthEmail = config.googleOAuthEmail || 'Conta Google Conectada';
         if (config.googleCalendarId) {
@@ -224,7 +255,7 @@ export class ConfigurarAgendaModalComponent implements OnInit, OnDestroy {
       chaveGoogleServiceAccountJson: val.chaveGoogleServiceAccountJson?.trim() || '',
       tipoIntegracao: this.abaAtiva === 'oauth' ? 'OAuth' : 'ServiceAccount',
       nomeAgenda: val.nomeAgenda || 'Agenda Oficial do Escritório',
-      sincronizacaoAutomaticaAtiva: true
+      sincronizacaoAutomaticaAtiva: val.sincronizacaoAutomaticaAtiva ?? true
     };
 
     this.agendaService.salvarConfiguracaoAgendaEmpresa(cmd).subscribe({

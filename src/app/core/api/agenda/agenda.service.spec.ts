@@ -105,13 +105,13 @@ describe('AgendaService', () => {
     };
 
     service.salvarConfiguracaoAgendaEmpresa(payload).subscribe(res => {
-      expect(res.sucesso).toBeTrue();
+      expect(res.nomeAgenda).toBe('Agenda Principal ArchiFlow');
     });
 
     const req = httpMock.expectOne(`${baseUrl}/configuracao`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
-    req.flush({ sucesso: true });
+    req.flush({ ...payload });
   });
 
   it('[RED] deve obter link de visualização compartilhada da agenda do Google', () => {
@@ -122,5 +122,18 @@ describe('AgendaService', () => {
     const req = httpMock.expectOne(`${baseUrl}/google/link-compartilhado`);
     expect(req.request.method).toBe('GET');
     req.flush({ linkEmbed: 'https://calendar.google.com/calendar/embed?src=agenda@estudio.com' });
+  });
+
+  it('deve baixar arquivo ICS como blob autenticado', () => {
+    const mockBlob = new Blob(['BEGIN:VCALENDAR...'], { type: 'text/calendar' });
+
+    service.baixarIcs('2026-10-01', '2026-10-31').subscribe(res => {
+      expect(res).toBeTruthy();
+      expect(res.type).toBe('text/calendar');
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/exportar-ics?inicio=2026-10-01&fim=2026-10-31`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockBlob);
   });
 });

@@ -30,6 +30,14 @@
         Configurar Google Agenda
       </app-button>
 
+      <app-button 
+        variant="secondary" 
+        (btnClick)="baixarIcs()" 
+        title="Exportar agenda no formato iCalendar (.ics)">
+        <span class="material-symbols-outlined icon-btn-inline">download</span>
+        Exportar iCal (.ics)
+      </app-button>
+
       <app-button variant="primary" (btnClick)="abrirModalNovo()">
         <span class="material-symbols-outlined icon-btn-inline">add</span>
         Novo Compromisso
@@ -297,53 +305,52 @@
         </div>
 
         <div class="event-card-actions d-flex align-items-center gap-xs flex-wrap">
-          <!-- Botão Google Meet -->
-          <button 
+          <app-button 
             *ngIf="comp.linkGoogleMeet" 
-            type="button" 
-            class="btn-action-icon btn-meet" 
-            (click)="abrirMeet(comp, $event)" 
+            variant="icon" 
+            size="sm"
+            customClass="btn-meet" 
+            (btnClick)="abrirMeet(comp, $event)" 
             title="Entrar na sala do Google Meet">
             <span class="material-symbols-outlined">videocam</span>
-          </button>
+          </app-button>
 
-          <!-- Botão Google Agenda -->
-          <button 
+          <app-button 
             *ngIf="comp.linkGoogleCalendarWeb" 
-            type="button" 
-            class="btn-action-icon btn-calendar" 
-            (click)="abrirGoogleAgenda(comp, $event)" 
+            variant="icon" 
+            size="sm"
+            customClass="btn-calendar" 
+            (btnClick)="abrirGoogleAgenda(comp, $event)" 
             title="Adicionar ao Google Agenda">
             <span class="material-symbols-outlined">event</span>
-          </button>
+          </app-button>
 
-          <!-- Botão Marcar Concluído -->
-          <button 
-            type="button" 
-            class="btn-action-icon btn-check" 
+          <app-button 
+            variant="icon" 
+            size="sm"
+            customClass="btn-check" 
             [class.active-check]="comp.status === 'Concluido'"
-            (click)="marcarComoConcluido(comp, $event)" 
+            (btnClick)="marcarComoConcluido(comp, $event)" 
             [title]="comp.status === 'Concluido' ? 'Reabrir compromisso' : 'Marcar como concluído'">
             <span class="material-symbols-outlined">check_circle</span>
-          </button>
+          </app-button>
 
-          <!-- Botão Editar -->
-          <button 
-            type="button" 
-            class="btn-action-icon" 
-            (click)="abrirModalEditar(comp, $event)" 
+          <app-button 
+            variant="icon" 
+            size="sm"
+            (btnClick)="abrirModalEditar(comp, $event)" 
             title="Editar compromisso">
             <span class="material-symbols-outlined">edit</span>
-          </button>
+          </app-button>
 
-          <!-- Botão Excluir -->
-          <button 
-            type="button" 
-            class="btn-action-icon btn-delete" 
-            (click)="abrirModalExcluir(comp, $event)" 
+          <app-button 
+            variant="icon" 
+            size="sm"
+            customClass="btn-delete" 
+            (btnClick)="abrirModalExcluir(comp, $event)" 
             title="Excluir compromisso">
             <span class="material-symbols-outlined">delete</span>
-          </button>
+          </app-button>
         </div>
 
       </div>

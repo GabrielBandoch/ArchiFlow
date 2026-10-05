@@ -83,8 +83,8 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
     }
   }
 
-  writeValue(value: string | Lead | null): void {
-    this.pendingValue = value;
+  writeValue(value: unknown): void {
+    this.pendingValue = value as (string | Lead | null);
     if (!value) {
       this.leadSelecionado = null;
       this.searchText = '';
@@ -97,9 +97,10 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
         this.leadSelecionado = lead;
         this.searchText = lead.nome;
       }
-    } else if (typeof value === 'object' && value.id) {
-      this.leadSelecionado = value;
-      this.searchText = value.nome || '';
+    } else if (typeof value === 'object' && (value as Lead).id) {
+      const lead = value as Lead;
+      this.leadSelecionado = lead;
+      this.searchText = lead.nome || '';
     }
   }
 

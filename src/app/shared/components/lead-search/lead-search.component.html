@@ -34,14 +34,15 @@
         (focus)="onInputSearch()"
         [disabled]="disabled" />
       
-      <button 
-        type="button" 
-        class="btn-trigger-modal" 
-        (click)="abrirModal()" 
+      <app-button 
+        variant="icon"
+        size="sm"
+        customClass="btn-trigger-modal" 
+        (btnClick)="abrirModal()" 
         title="Abrir busca avançada de leads"
         [disabled]="disabled">
         <span class="material-symbols-outlined">search</span>
-      </button>
+      </app-button>
     </div>
 
     <div *ngIf="showDropdown && sugestoes.length > 0" class="suggestions-dropdown-panel">

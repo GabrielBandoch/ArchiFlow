@@ -89,12 +89,13 @@ export class AgendaComponent implements OnInit {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
+        const state = urlParams.get('state');
         if (code) {
-          window.opener.postMessage({ type: 'GOOGLE_OAUTH_CODE', code }, window.location.origin);
+          window.opener.postMessage({ type: 'GOOGLE_OAUTH_CODE', code, state }, window.location.origin);
           window.close();
         }
-      } catch (e) {
-        console.error('Erro ao processar retorno OAuth:', e);
+      } catch {
+        // Ignora erros ao fechar ou postar mensagem para popup
       }
     }
   }
@@ -356,8 +357,27 @@ export class AgendaComponent implements OnInit {
   }
 
   baixarIcs(): void {
-    const url = this.agendaService.exportarIcsUrl();
-    window.open(url, '_blank');
+    const ano = this.dataReferencia.getFullYear();
+    const mes = this.dataReferencia.getMonth();
+    const inicio = new Date(ano, mes, 1, 0, 0, 0).toISOString();
+    const fim = new Date(ano, mes + 1, 0, 23, 59, 59).toISOString();
+
+    this.agendaService.baixarIcs(inicio, fim).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `agenda-${ano}-${String(mes + 1).padStart(2, '0')}.ics`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        this.notificationService.success('Calendário (.ics) exportado com sucesso.');
+      },
+      error: () => {
+        this.notificationService.error('Erro ao exportar o calendário no formato .ics.');
+      }
+    });
   }
 
   obterBadgeClasseTipo(tipo: TipoCompromisso): string {

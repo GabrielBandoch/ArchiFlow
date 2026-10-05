@@ -58,7 +58,7 @@
           id="paramLead"
           placeholder="Buscar lead por nome ou e-mail..."
           [leads]="leads"
-          [formControl]="$any(form.get('leadId'))"
+          formControlName="leadId"
           (leadSelected)="onLeadSelected($event)">
         </app-lead-search>
       </div>
@@ -69,7 +69,7 @@
           id="paramCliente"
           placeholder="Buscar cliente cadastrado..."
           [clientes]="clientes"
-          [formControl]="$any(form.get('clienteId'))"
+          formControlName="clienteId"
           (clientSelected)="onClienteSelected($event)">
         </app-client-search>
       </div>

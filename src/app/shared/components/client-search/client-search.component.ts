@@ -82,8 +82,8 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
     }
   }
 
-  writeValue(value: string | Cliente | null): void {
-    this.pendingValue = value;
+  writeValue(value: unknown): void {
+    this.pendingValue = value as (string | Cliente | null);
     if (!value) {
       this.clienteSelecionado = null;
       this.searchText = '';
@@ -96,9 +96,10 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
         this.clienteSelecionado = cli;
         this.searchText = cli.nome;
       }
-    } else if (typeof value === 'object' && value.id) {
-      this.clienteSelecionado = value;
-      this.searchText = value.nome || '';
+    } else if (typeof value === 'object' && (value as Cliente).id) {
+      const cli = value as Cliente;
+      this.clienteSelecionado = cli;
+      this.searchText = cli.nome || '';
     }
   }
 
