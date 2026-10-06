@@ -1,0 +1,71 @@
+<section class="dossier-hero-card d-flex justify-content-between align-items-start gap-lg flex-wrap">
+  <div class="hero-main-info d-flex flex-direction-column gap-xs flex-grow-1">
+    <div class="hero-badge-row d-flex align-items-center gap-xs">
+      <span class="status-pill font-label-sm" [class]="'status-' + projeto.statusLabel.toLowerCase()">
+        {{ projeto.statusLabel }}
+      </span>
+      <span class="tipo-pill font-label-sm">{{ projeto.tipoLabel }}</span>
+    </div>
+
+    <h1 class="hero-project-title font-headline-lg m-0">{{ projeto.nome }}</h1>
+
+    <div class="hero-meta-row d-flex align-items-center gap-md flex-wrap font-body-md text-on-surface-variant margin-top-xs">
+      <div class="meta-item-client d-flex align-items-center gap-xs" *ngIf="projeto.clienteId">
+        <span class="material-symbols-outlined">person</span>
+        <span>Cliente:</span>
+        <a [routerLink]="['/clientes', projeto.clienteId]" class="client-name-link font-weight-semibold">
+          {{ projeto.clienteNome || 'Visualizar ficha do cliente' }}
+        </a>
+      </div>
+
+      <div class="meta-item-id d-flex align-items-center gap-xs font-label-md">
+        <span class="label">ID:</span>
+        <span class="val">{{ projeto.id.substring(0, 8) }}</span>
+      </div>
+    </div>
+
+    <p class="hero-description font-body-md text-on-surface-variant margin-top-xs m-0" *ngIf="projeto.descricao">{{ projeto.descricao }}</p>
+  </div>
+
+  <div class="hero-progress-box d-flex flex-direction-column gap-sm">
+    <div class="progress-header-row d-flex justify-content-between align-items-center">
+      <span class="progress-title font-label-md font-weight-semibold">Progresso Global</span>
+      <span class="progress-percent-value font-headline-md font-weight-bold text-primary">{{ projeto.progressoPercentual }}%</span>
+    </div>
+
+    <div class="progress-track-bg w-full">
+      <div class="progress-track-fill" [style.width.%]="projeto.progressoPercentual"></div>
+    </div>
+
+    <div class="dates-meta-row d-flex justify-content-between align-items-center font-label-sm text-on-surface-variant">
+      <span class="date-item d-flex align-items-center gap-xs">
+        <span class="material-symbols-outlined">calendar_today</span>
+        Início: {{ projeto.dataInicio | date:'dd/MM/yyyy' }}
+      </span>
+      <span class="date-item d-flex align-items-center gap-xs" *ngIf="projeto.dataPrevistaEntrega">
+        <span class="material-symbols-outlined">timer</span>
+        Prazo: {{ projeto.dataPrevistaEntrega | date:'dd/MM/yyyy' }}
+      </span>
+    </div>
+
+    <div class="hero-actions-bottom d-flex align-items-center gap-xs margin-top-xs">
+      <div class="status-select-wrap flex-grow-1">
+        <app-select 
+          id="statusHero"
+          [options]="statusProjetoOptions" 
+          [ngModel]="projeto.status" 
+          (ngModelChange)="onStatusChange($event)">
+        </app-select>
+      </div>
+
+      <app-button 
+        variant="secondary" 
+        size="md" 
+        (btnClick)="onEditar()" 
+        title="Editar dados cadastrais do projeto">
+        <span class="material-symbols-outlined">edit</span>
+        Editar
+      </app-button>
+    </div>
+  </div>
+</section>

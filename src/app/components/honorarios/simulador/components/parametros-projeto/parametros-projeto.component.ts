@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Cliente } from '../../../../../models/cliente.model';
 import { Lead } from '../../../../../models/lead.model';
+import { ClientSearchComponent, LeadSearchComponent } from '../../../../../shared';
 
 @Component({
   selector: 'app-parametros-projeto',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ClientSearchComponent, LeadSearchComponent],
   templateUrl: './parametros-projeto.component.html',
   styleUrl: './parametros-projeto.component.scss'
 })
@@ -33,6 +34,44 @@ export class ParametrosProjetoComponent {
       clienteTelefone: '',
       clienteEmail: ''
     });
+    this.vinculoAlterado.emit();
+  }
+
+  onLeadSelected(lead: Lead | null): void {
+    if (lead) {
+      this.form.patchValue({
+        leadId: lead.id,
+        clienteNome: lead.nome,
+        clienteTelefone: lead.telefone || '',
+        clienteEmail: lead.email || ''
+      });
+    } else {
+      this.form.patchValue({
+        leadId: '',
+        clienteNome: '',
+        clienteTelefone: '',
+        clienteEmail: ''
+      });
+    }
+    this.vinculoAlterado.emit();
+  }
+
+  onClienteSelected(cliente: Cliente | null): void {
+    if (cliente) {
+      this.form.patchValue({
+        clienteId: cliente.id,
+        clienteNome: cliente.nome,
+        clienteTelefone: cliente.telefone || '',
+        clienteEmail: cliente.email || ''
+      });
+    } else {
+      this.form.patchValue({
+        clienteId: '',
+        clienteNome: '',
+        clienteTelefone: '',
+        clienteEmail: ''
+      });
+    }
     this.vinculoAlterado.emit();
   }
 

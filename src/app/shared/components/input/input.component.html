@@ -31,7 +31,7 @@
       [checked]="type === 'checkbox' ? value : undefined"
       [required]="required"
       [attr.accept]="accept || null"
-      [attr.maxlength]="maxlength || null"
+      [attr.maxlength]="effectiveMaxLength"
       [attr.min]="min || null"
       [attr.max]="max || null"
       [attr.autocomplete]="autocomplete || null"

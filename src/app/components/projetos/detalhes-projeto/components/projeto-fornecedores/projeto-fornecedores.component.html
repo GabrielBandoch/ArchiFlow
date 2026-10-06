@@ -1,0 +1,111 @@
+<div class="projeto-fornecedores-card">
+  <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-md">
+    <div class="d-flex align-items-center gap-xs">
+      <span class="material-symbols-outlined text-primary header-icon">engineering</span>
+      <div>
+        <h2 class="card-title font-title-md m-0">Parceiros & Especialistas da Obra</h2>
+        <p class="card-subtitle font-body-sm text-on-surface-variant m-0">
+          Fornecedores, instaladores e empreiteiros especializados atuando neste projeto.
+        </p>
+      </div>
+    </div>
+
+    <app-button variant="primary" size="sm" (btnClick)="abrirModalVincular()">
+      <span class="material-symbols-outlined icon-btn-inline">add_business</span>
+      Vincular Parceiro
+    </app-button>
+  </div>
+
+  <div class="suppliers-list margin-top-md" *ngIf="fornecedoresVinculados.length > 0; else emptyStateTpl">
+    <div class="supplier-row p-md d-flex justify-content-between align-items-center flex-wrap gap-md margin-bottom-xs" *ngFor="let vinculo of fornecedoresVinculados">
+      <div class="d-flex align-items-center gap-sm">
+        <div class="supplier-avatar">
+          <span class="material-symbols-outlined">storefront</span>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-xs">
+            <a [routerLink]="['/fornecedores', vinculo.fornecedorId]" class="supplier-name font-body-md font-weight-bold">
+              {{ vinculo.fornecedorNome || 'Parceiro Especializado' }}
+            </a>
+          </div>
+          <span class="supplier-role font-label-sm text-on-surface-variant d-block margin-top-xxs">
+            <strong class="text-primary">Função na Obra:</strong> {{ vinculo.funcaoNoProjeto }}
+          </span>
+        </div>
+      </div>
+
+      <div class="supplier-actions d-flex align-items-center gap-sm" (click)="$event.stopPropagation()">
+        <span class="date-tag font-label-xs text-on-surface-variant">
+          Vinculado em: {{ vinculo.dataVinculo | date:'dd/MM/yyyy' }}
+        </span>
+        <app-button 
+          variant="danger" 
+          size="sm"
+          (btnClick)="desvincular(vinculo)" 
+          title="Desvincular parceiro desta obra"
+          ariaLabel="Desvincular parceiro desta obra">
+          <span class="material-symbols-outlined">link_off</span>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyStateTpl>
+    <app-empty-state
+      icon="engineering"
+      title="Nenhum parceiro ou especialista vinculado"
+      description="Vincule eletricistas, marmorarias, vidraçarias e marceneiros para organizar quem está executando cada parte desta obra."
+      actionLabel="Vincular Primeiro Parceiro"
+      actionIcon="add"
+      (actionClick)="abrirModalVincular()">
+    </app-empty-state>
+  </ng-template>
+</div>
+
+<app-dialog
+  [show]="modalVincularAberto"
+  dialogTitle="Vincular Parceiro à Obra"
+  size="sm"
+  [overflowVisible]="true"
+  (close)="fecharModalVincular()">
+
+  <form [formGroup]="form" (ngSubmit)="salvarVinculo()" class="d-flex flex-direction-column gap-md">
+    <div class="field-item">
+      <app-select
+        id="fornecedorId"
+        label="Selecione o Parceiro Especializado"
+        [options]="fornecedoresOptions"
+        formControlName="fornecedorId"
+        placeholder="Selecione um parceiro..."
+        [required]="true"
+        [error]="submitted && f['fornecedorId'].errors ? 'Selecione um parceiro cadastrado.' : undefined">
+      </app-select>
+      <span class="font-label-xs text-on-surface-variant margin-top-xxs" *ngIf="fornecedoresOptions.length === 0">
+        Não há outros parceiros disponíveis. Cadastre novos na aba Fornecedores.
+      </span>
+    </div>
+
+    <div class="field-item">
+      <app-input
+        id="funcaoNoProjeto"
+        type="text"
+        label="Função ou Escopo nesta Obra"
+        placeholder="Ex: Fabricação dos móveis sob medida da cozinha e lavabo"
+        formControlName="funcaoNoProjeto"
+        [required]="true"
+        [error]="submitted && f['funcaoNoProjeto'].errors ? 'A função ou escopo na obra é obrigatório.' : undefined">
+      </app-input>
+    </div>
+
+    <div class="dialog-actions d-flex justify-content-end align-items-center gap-xs margin-top-md">
+      <app-button variant="ghost" type="button" (btnClick)="fecharModalVincular()" [disabled]="salvando">
+        Cancelar
+      </app-button>
+      <app-button variant="primary" type="submit" [disabled]="salvando || fornecedoresOptions.length === 0">
+        <span class="material-symbols-outlined icon-btn-inline" *ngIf="!salvando">add_link</span>
+        <span class="material-symbols-outlined icon-btn-inline spinner-icon" *ngIf="salvando">progress_activity</span>
+        {{ salvando ? 'Vinculando...' : 'Confirmar Vínculo' }}
+      </app-button>
+    </div>
+  </form>
+</app-dialog>

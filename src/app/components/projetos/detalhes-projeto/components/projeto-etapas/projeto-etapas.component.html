@@ -1,0 +1,172 @@
+<section class="panel-card d-flex flex-direction-column gap-md">
+  <div class="panel-top-bar d-flex justify-content-between align-items-center flex-wrap gap-sm">
+    <div>
+      <h2 class="panel-heading font-headline-md m-0">Etapas do Projeto</h2>
+      <p class="panel-subheading font-label-sm text-on-surface-variant margin-top-xs m-0">Acompanhamento sequencial das fases arquitetônicas.</p>
+    </div>
+
+    <button type="button" class="btn-add-etapa d-inline-flex align-items-center gap-xs font-label-sm" (click)="onNovaEtapa()">
+      <span class="material-symbols-outlined">add</span>
+      NOVA ETAPA
+    </button>
+  </div>
+
+  <div class="stepper-section w-full" *ngIf="etapas.length > 0">
+    <div class="stepper-track-wrap position-relative w-full">
+      <div class="stepper-line-bg"></div>
+      <div class="stepper-line-active" [style.width.%]="progressoPercentual"></div>
+
+      <div class="stepper-nodes-row d-flex justify-content-between position-relative">
+        <div *ngFor="let etapa of etapas" class="stepper-step-item clickable-step d-flex flex-direction-column align-items-center text-center" (click)="toggleEtapaStatus(etapa)" title="Clique para avançar ou alternar o status desta etapa">
+          <div *ngIf="etapa.status === StatusEtapa.Concluida" class="step-circle step-done d-flex align-items-center justify-content-center">
+            <span class="material-symbols-outlined">check</span>
+          </div>
+
+          <div *ngIf="etapa.status === StatusEtapa.EmAndamento" class="step-circle step-current d-flex align-items-center justify-content-center">
+            <div class="current-dot"></div>
+          </div>
+
+          <div *ngIf="etapa.status === StatusEtapa.Pendente" class="step-circle step-pending d-flex align-items-center justify-content-center font-label-sm font-weight-bold">
+            {{ etapa.ordem }}
+          </div>
+
+          <span class="step-title font-label-sm margin-top-xs" [class.step-title-active]="etapa.status === StatusEtapa.EmAndamento" [class.step-title-done]="etapa.status === StatusEtapa.Concluida">
+            {{ etapa.nome }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stepper-action-bar d-flex align-items-center justify-content-between flex-wrap gap-sm" *ngIf="etapas.length > 0">
+    <div class="current-etapa-info d-flex align-items-center gap-xs font-label-md">
+      <span class="label text-on-surface-variant">Etapa Atual:</span>
+      <span class="val font-weight-bold text-primary">{{ etapaAtiva ? etapaAtiva.nome : 'Todas concluídas' }}</span>
+    </div>
+
+    <div class="action-buttons-group d-flex align-items-center gap-xs" *ngIf="etapaAtiva">
+      <button 
+        *ngIf="etapaAtiva.status === StatusEtapa.Pendente" 
+        type="button" 
+        class="btn-trigger-step font-label-md" 
+        (click)="alterarStatus(etapaAtiva, StatusEtapa.EmAndamento)">
+        Iniciar {{ etapaAtiva.nome }}
+      </button>
+
+      <button 
+        *ngIf="etapaAtiva.status === StatusEtapa.EmAndamento" 
+        type="button" 
+        class="btn-trigger-step btn-done d-inline-flex align-items-center gap-xs font-label-md" 
+        (click)="alterarStatus(etapaAtiva, StatusEtapa.Concluida)">
+        <span class="material-symbols-outlined">task_alt</span>
+        Concluir {{ etapaAtiva.nome }}
+      </button>
+    </div>
+  </div>
+
+  <div class="etapas-list-wrap d-flex flex-direction-column gap-md" *ngIf="etapas.length > 0">
+    <div *ngFor="let etapa of etapas" class="etapa-card-item d-flex flex-direction-column gap-sm" [class.etapa-card-active]="etapa.status === StatusEtapa.EmAndamento" [class.etapa-card-done]="etapa.status === StatusEtapa.Concluida">
+      <div class="etapa-card-header d-flex justify-content-between align-items-start gap-md flex-wrap">
+        <div class="etapa-header-left d-flex align-items-start gap-sm">
+          <div class="etapa-index-badge d-flex align-items-center justify-content-center font-label-md font-weight-bold" [class.badge-done]="etapa.status === StatusEtapa.Concluida" [class.badge-active]="etapa.status === StatusEtapa.EmAndamento">
+            <span *ngIf="etapa.status !== StatusEtapa.Concluida">{{ etapa.ordem }}</span>
+            <span *ngIf="etapa.status === StatusEtapa.Concluida" class="material-symbols-outlined">check</span>
+          </div>
+          <div class="etapa-info-text d-flex flex-direction-column gap-xs">
+            <div class="etapa-title-row d-flex align-items-center gap-xs">
+              <h3 class="etapa-name-heading font-body-lg font-weight-bold m-0">{{ etapa.nome }}</h3>
+              <span class="etapa-pill font-label-sm" [class]="'pill-' + etapa.statusLabel.toLowerCase()">
+                {{ etapa.statusLabel }}
+              </span>
+            </div>
+            <p class="etapa-desc-text font-body-md text-on-surface-variant m-0" *ngIf="etapa.descricao">{{ etapa.descricao }}</p>
+            <span class="etapa-conclusao-tag d-inline-flex align-items-center gap-xs font-label-sm text-on-surface-variant" *ngIf="etapa.dataConclusao">
+              <span class="material-symbols-outlined">event_available</span>
+              Concluída em {{ etapa.dataConclusao | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="etapa-header-actions d-flex align-items-center gap-xs">
+          <button 
+            *ngIf="etapa.status === StatusEtapa.Pendente" 
+            type="button" 
+            class="btn-stage-action btn-stage-start d-inline-flex align-items-center gap-xs font-label-sm" 
+            (click)="alterarStatus(etapa, StatusEtapa.EmAndamento)" 
+            title="Iniciar esta etapa">
+            <span class="material-symbols-outlined">play_arrow</span>
+            Iniciar Etapa
+          </button>
+
+          <button 
+            *ngIf="etapa.status === StatusEtapa.EmAndamento" 
+            type="button" 
+            class="btn-stage-action btn-stage-finish d-inline-flex align-items-center gap-xs font-label-sm" 
+            (click)="alterarStatus(etapa, StatusEtapa.Concluida)" 
+            title="Concluir esta etapa e avançar">
+            <span class="material-symbols-outlined">check_circle</span>
+            Concluir Etapa
+          </button>
+
+          <button 
+            *ngIf="etapa.status === StatusEtapa.Concluida" 
+            type="button" 
+            class="btn-stage-action btn-stage-reopen d-inline-flex align-items-center gap-xs font-label-sm" 
+            (click)="alterarStatus(etapa, StatusEtapa.EmAndamento)" 
+            title="Reabrir esta etapa para revisões">
+            <span class="material-symbols-outlined">restart_alt</span>
+            Reabrir
+          </button>
+        </div>
+      </div>
+
+      <div class="etapa-checklist-box d-flex flex-direction-column gap-sm">
+        <div class="checklist-top-row d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-xs font-label-sm font-weight-bold">
+            <span class="material-symbols-outlined icon-tasks">checklist</span>
+            <span class="checklist-heading">Entregáveis da Fase</span>
+          </div>
+          <span class="checklist-counter font-label-sm text-on-surface-variant">
+            {{ getTarefasConcluidasCount(etapa) }} de {{ obterTarefas(etapa).length }} entregáveis prontos
+          </span>
+        </div>
+
+        <div class="checklist-items-list d-flex flex-direction-column gap-xs">
+          <div 
+            *ngFor="let tarefa of obterTarefas(etapa)" 
+            class="checklist-item-row d-flex align-items-center gap-sm" 
+            [class.item-checked]="tarefa.concluida"
+            (click)="toggleTarefa(etapa, tarefa)">
+            <div class="custom-checkbox d-flex align-items-center justify-content-center" [class.checked]="tarefa.concluida">
+              <span class="material-symbols-outlined" *ngIf="tarefa.concluida">check</span>
+            </div>
+            <span class="task-title-text font-body-md flex-grow-1">{{ tarefa.titulo }}</span>
+            <button 
+              type="button" 
+              class="btn-remove-task d-inline-flex align-items-center justify-content-center" 
+              (click)="removerTarefa(etapa, tarefa.id); $event.stopPropagation()" 
+              title="Remover entregável">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="add-task-row w-full">
+          <input 
+            #novaTarefaInput 
+            type="text" 
+            class="input-new-task font-body-md w-full" 
+            placeholder="+ Adicionar novo entregável ou tarefa técnica (Pressione Enter)..." 
+            (keyup.enter)="adicionarTarefa(etapa, novaTarefaInput)" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-empty-state 
+    *ngIf="etapas.length === 0"
+    icon="format_list_numbered"
+    title="Nenhuma etapa cadastrada"
+    message="Adicione etapas para estruturar o cronograma do projeto.">
+  </app-empty-state>
+</section>

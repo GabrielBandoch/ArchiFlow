@@ -39,7 +39,7 @@
               <span class="font-body-md text-on-surface">{{ c.email }}</span>
             </td>
             <td>
-              <span class="font-body-md text-on-surface-variant">{{ c.telefone || '—' }}</span>
+              <span class="font-body-md text-on-surface-variant">{{ (c.telefone | phoneMask) || '—' }}</span>
             </td>
             <td class="text-right">
               <app-button variant="secondary" size="sm" (btnClick)="selecionarViaModal(c); $event.stopPropagation()">
@@ -51,10 +51,12 @@
       </table>
     </div>
 
-    <div *ngIf="modalClientesFiltrados.length === 0" class="empty-results-box text-center p-lg">
-      <span class="material-symbols-outlined empty-results-icon">person_off</span>
-      <h4 class="font-headline-md margin-top-xs m-0">Nenhum cliente encontrado</h4>
-      <p class="font-body-md text-on-surface-variant margin-top-xs m-0">Verifique os termos da busca.</p>
+    <div *ngIf="modalClientesFiltrados.length === 0" class="empty-results-box d-flex flex-direction-column align-items-center justify-content-center text-center">
+      <div class="empty-results-icon-wrap">
+        <span class="material-symbols-outlined empty-results-icon">person_search</span>
+      </div>
+      <h4 class="empty-results-title">Nenhum cliente encontrado</h4>
+      <p class="empty-results-text">Verifique os termos da busca ou limpe o campo para ver todos os clientes cadastrados.</p>
     </div>
 
     <div class="modal-footer-pagination d-flex justify-content-between align-items-center pt-sm" *ngIf="modalClientesFiltrados.length > 0">
@@ -81,9 +83,9 @@
         </app-button>
       </div>
     </div>
+  </div>
 
-    <div dialog-footer class="d-flex justify-content-end gap-sm margin-top-sm">
-      <app-button variant="secondary" (btnClick)="onClose()">Cancelar</app-button>
-    </div>
+  <div dialog-footer class="d-flex justify-content-end gap-sm">
+    <app-button variant="secondary" (btnClick)="onClose()">Cancelar</app-button>
   </div>
 </app-dialog>

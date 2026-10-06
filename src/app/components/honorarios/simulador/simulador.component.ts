@@ -43,8 +43,7 @@ import { ModalPropostaPdfComponent, PropostaVisualizacaoData } from '../modal-pr
     MemoriaCalculoCardComponent,
     ModalSalvarPropostaComponent,
     ModalAjusteManualComponent,
-    ModalHistoricoPropostasComponent,
-    ModalPropostaPdfComponent
+    ModalHistoricoPropostasComponent
   ],
   templateUrl: './simulador.component.html',
   styleUrl: './simulador.component.scss'
@@ -511,6 +510,9 @@ export class SimuladorComponent implements OnInit, OnDestroy {
     };
 
     this.modalPdfAberto = true;
+    this.dialogService.open(ModalPropostaPdfComponent, {
+      data: { proposta: this.propostaParaPdf }
+    });
   }
 
   compartilharWhatsappSimulacaoAtual(): void {
@@ -587,6 +589,9 @@ export class SimuladorComponent implements OnInit, OnDestroy {
     };
 
     this.modalPdfAberto = true;
+    this.dialogService.open(ModalPropostaPdfComponent, {
+      data: { proposta: this.propostaParaPdf }
+    });
   }
 
   compartilharWhatsappPropostaSalva(proposta: PropostaHonorario): void {

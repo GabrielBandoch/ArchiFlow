@@ -16,7 +16,9 @@ import { PortalHeroComponent } from '../portal-hero/portal-hero.component';
 import { PortalTimelineComponent } from '../portal-timeline/portal-timeline.component';
 import { PortalDocumentosComponent } from '../portal-documentos/portal-documentos.component';
 import { PortalSuporteComponent } from '../portal-suporte/portal-suporte.component';
-import { ModalPropostaPdfComponent, PropostaVisualizacaoData } from '../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component';
+import { DialogService } from '../../../core/services/dialog.service';
+import { ModalPropostaPdfComponent } from '../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component';
+import { PropostaVisualizacaoData } from '../../../models/proposta-pdf.types';
 
 @Component({
   selector: 'app-portal-cliente',
@@ -27,8 +29,7 @@ import { ModalPropostaPdfComponent, PropostaVisualizacaoData } from '../../honor
     PortalHeroComponent,
     PortalTimelineComponent,
     PortalDocumentosComponent,
-    PortalSuporteComponent,
-    ModalPropostaPdfComponent
+    PortalSuporteComponent
   ],
   templateUrl: './portal-cliente.component.html',
   styleUrl: './portal-cliente.component.scss'
@@ -43,6 +44,7 @@ export class PortalClienteComponent implements OnInit {
   private honorarioService = inject(HonorarioService);
   private configPropostaService = inject(ConfiguracaoPropostaService);
   private notificationService = inject(NotificationService, { optional: true });
+  private dialogService = inject(DialogService, { optional: true });
 
   projetoId = '';
   projeto: Projeto | null = null;
@@ -192,6 +194,11 @@ export class PortalClienteComponent implements OnInit {
     }
 
     this.modalPdfAberto = true;
+    if (this.dialogService) {
+      this.dialogService.open(ModalPropostaPdfComponent, {
+        data: { proposta: this.propostaParaPdf }
+      });
+    }
   }
 
   fecharModalPdf(): void {

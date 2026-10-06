@@ -7,6 +7,7 @@ import { FinanceiroComponent } from './financeiro.component';
 import { FinanceiroService } from '../../core/api/financeiro/financeiro.service';
 import { ProjetoService } from '../../core/api/projetos/projeto.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { DialogService } from '../../core/services/dialog.service';
 import { PainelFinanceiro, ParcelaFinanceira, StatusParcela } from '../../models/financeiro.model';
 
 registerLocaleData(localePt);
@@ -17,6 +18,7 @@ describe('FinanceiroComponent', () => {
   let financeiroServiceSpy: jasmine.SpyObj<FinanceiroService>;
   let projetoServiceSpy: jasmine.SpyObj<ProjetoService>;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
+  let dialogServiceSpy: jasmine.SpyObj<DialogService>;
 
   const mockPainel: PainelFinanceiro = {
     totalPrevisto: 145200,
@@ -72,6 +74,19 @@ describe('FinanceiroComponent', () => {
     ]);
     projetoServiceSpy = jasmine.createSpyObj('ProjetoService', ['obterTodos']);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'warning']);
+    dialogServiceSpy = jasmine.createSpyObj('DialogService', ['open', 'confirm']);
+
+    dialogServiceSpy.open.and.returnValue({
+      instance: {
+        salvo: of(null),
+        salva: of(null),
+        baixada: of(null),
+        fechado: of(null)
+      },
+      afterClosed$: of(null),
+      close: () => {}
+    } as any);
+    dialogServiceSpy.confirm.and.returnValue(of(true));
 
     financeiroServiceSpy.obterPainel.and.returnValue(of(mockPainel));
     financeiroServiceSpy.obterParcelas.and.returnValue(of(mockParcelas));
@@ -86,7 +101,8 @@ describe('FinanceiroComponent', () => {
         { provide: LOCALE_ID, useValue: 'pt-BR' },
         { provide: FinanceiroService, useValue: financeiroServiceSpy },
         { provide: ProjetoService, useValue: projetoServiceSpy },
-        { provide: NotificationService, useValue: notificationServiceSpy }
+        { provide: NotificationService, useValue: notificationServiceSpy },
+        { provide: DialogService, useValue: dialogServiceSpy }
       ]
     }).compileComponents();
 

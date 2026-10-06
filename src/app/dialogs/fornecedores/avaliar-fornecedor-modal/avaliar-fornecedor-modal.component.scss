@@ -1,0 +1,52 @@
+.rating-banner {
+  background: var(--af-surface-container, #f3edf7);
+  padding: 0.75rem;
+  border-radius: var(--af-radius-sm, 8px);
+  margin-top: 0.25rem;
+}
+
+.rating-badge {
+  color: var(--af-on-surface, #1c1b1f);
+  margin-left: 0.5rem;
+}
+
+.btn-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--af-outline-variant, #cac4d0);
+  transition: transform 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    transform: scale(1.15);
+    color: #e65100;
+  }
+
+  &.active-star {
+    color: #f59e0b;
+  }
+
+  .star-icon {
+    font-size: 28px;
+    font-variation-settings: 'FILL' 1;
+  }
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-actions {
+  margin-top: 0.5rem;
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

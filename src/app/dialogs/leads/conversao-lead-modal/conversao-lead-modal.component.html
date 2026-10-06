@@ -46,13 +46,14 @@
         </div>
 
         <div class="field-item">
-          <label class="field-label font-label-sm">Telefone de Contato</label>
+          <label class="field-label font-label-sm">Telefone / WhatsApp</label>
           <input 
-            type="text" 
+            type="tel" 
             class="field-input font-body-md" 
-            placeholder="(00) 00000-0000" 
+            placeholder="(47) 99999-9999" 
             formControlName="telefone" 
-            (input)="onTelefoneInput($event)" />
+            (input)="onTelefoneInput($event)"
+            maxlength="15" />
         </div>
       </div>
 

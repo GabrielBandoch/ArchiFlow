@@ -1,0 +1,39 @@
+.af-empty-state {
+  width: 100%;
+  padding: var(--af-space-xl, 32px) var(--af-space-lg, 24px);
+  background-color: var(--af-surface-container-low, #f6f3f2);
+  border: 1px dashed var(--af-outline-variant, #d3c4b9);
+  border-radius: var(--af-radius-lg, 16px);
+  box-sizing: border-box;
+
+  .af-empty-state-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--af-surface-container-highest, #e5e2e1);
+    color: var(--af-primary, #765538);
+
+    .af-empty-state-icon {
+      font-size: 32px;
+      line-height: 1;
+      opacity: 0.85;
+    }
+  }
+
+  .af-empty-state-title {
+    color: var(--af-on-surface, #1b1c1c);
+    font-weight: 600;
+  }
+
+  .af-empty-state-desc {
+    max-width: 480px;
+    color: var(--af-on-surface-variant, #4f453d);
+    line-height: 1.5;
+  }
+
+  .icon-btn-inline {
+    font-size: 18px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+}

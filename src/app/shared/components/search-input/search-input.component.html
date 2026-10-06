@@ -1,0 +1,20 @@
+<div class="af-search-input-wrapper d-flex align-items-center">
+  <span class="material-symbols-outlined af-search-icon">search</span>
+  <input
+    type="text"
+    class="af-search-field font-body-md"
+    [placeholder]="placeholder"
+    [ngModel]="value"
+    (ngModelChange)="onInput($event)"
+    aria-label="Campo de busca"
+  />
+  <button
+    *ngIf="value"
+    type="button"
+    class="af-search-clear-btn d-flex align-items-center justify-content-center"
+    title="Limpar busca"
+    (click)="limpar()"
+  >
+    <span class="material-symbols-outlined">close</span>
+  </button>
+</div>

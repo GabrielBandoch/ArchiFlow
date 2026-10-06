@@ -9,11 +9,12 @@ import { SelectOption } from '../../../shared/components/select/select.component
 import { DialogService } from '../../../core/services/dialog.service';
 import { ConversaoLeadModalComponent } from '../conversao-lead-modal/conversao-lead-modal.component';
 import { Router } from '@angular/router';
+import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
 
 @Component({
   selector: 'app-detalhes-lead-modal',
   standalone: true,
-  imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule],
+  imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule, PhoneMaskPipe],
   templateUrl: './detalhes-lead-modal.component.html',
   styleUrl: './detalhes-lead-modal.component.scss'
 })

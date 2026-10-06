@@ -1,0 +1,82 @@
+<div class="lead-search-wrapper">
+  <label *ngIf="label" class="lead-search-label" [attr.for]="id">
+    {{ label }} <span class="text-error" *ngIf="required">*</span>
+  </label>
+
+  <div *ngIf="leadSelecionado" class="selected-lead-chip d-flex align-items-center justify-content-between p-sm">
+    <div class="d-flex align-items-center gap-sm">
+      <div class="chip-avatar">
+        <span>{{ leadSelecionado.nome.substring(0, 2).toUpperCase() }}</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <span class="font-weight-semibold font-body-md text-on-surface">{{ leadSelecionado.nome }}</span>
+        <span class="font-label-sm text-on-surface-variant">
+          {{ leadSelecionado.email || (leadSelecionado.telefone | phoneMask) || 'Lead' }}
+          <ng-container *ngIf="leadSelecionado.statusLabel"> • {{ leadSelecionado.statusLabel }}</ng-container>
+        </span>
+      </div>
+    </div>
+    <app-button variant="icon" size="sm" (btnClick)="limparSelecao()" title="Remover seleção" [disabled]="disabled">
+      <span class="material-symbols-outlined">close</span>
+    </app-button>
+  </div>
+
+  <div *ngIf="!leadSelecionado" class="autocomplete-control-container">
+    <div class="search-input-box d-flex align-items-center" [class.has-error]="!!error">
+      <span class="material-symbols-outlined icon-prefix">person_search</span>
+      <input 
+        [id]="id"
+        type="text" 
+        class="input-search-native" 
+        [placeholder]="placeholder" 
+        [(ngModel)]="searchText" 
+        (input)="onInputSearch()"
+        (focus)="onInputSearch()"
+        [disabled]="disabled" />
+      
+      <app-button 
+        variant="icon"
+        size="sm"
+        customClass="btn-trigger-modal" 
+        (btnClick)="abrirModal()" 
+        title="Abrir busca avançada de leads"
+        [disabled]="disabled">
+        <span class="material-symbols-outlined">search</span>
+      </app-button>
+    </div>
+
+    <div *ngIf="showDropdown && sugestoes.length > 0" class="suggestions-dropdown-panel">
+      <div 
+        *ngFor="let l of sugestoes" 
+        class="suggestion-row d-flex align-items-center gap-sm p-sm" 
+        (click)="selecionarLead(l)">
+        <div class="suggestion-avatar">
+          <span>{{ l.nome.substring(0, 2).toUpperCase() }}</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="font-weight-medium font-body-md text-on-surface">{{ l.nome }}</span>
+          <span class="font-label-sm text-on-surface-variant">
+            {{ l.email || (l.telefone | phoneMask) || 'Lead' }}
+            <ng-container *ngIf="l.statusLabel"> • {{ l.statusLabel }}</ng-container>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="showDropdown && sugestoes.length === 0" class="suggestions-dropdown-panel p-sm text-center">
+      <span class="font-label-sm text-on-surface-variant">Nenhum lead encontrado com "{{ searchText }}".</span>
+    </div>
+  </div>
+
+  <span class="font-label-sm text-error margin-top-xs d-block" *ngIf="error">
+    {{ error }}
+  </span>
+</div>
+
+<app-selecionar-lead-modal
+  [show]="showModal"
+  [leads]="leads"
+  [initialSearchText]="searchText"
+  (close)="fecharModal()"
+  (leadSelected)="selecionarViaModal($event)">
+</app-selecionar-lead-modal>

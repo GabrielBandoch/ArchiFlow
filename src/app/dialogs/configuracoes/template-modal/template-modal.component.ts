@@ -4,6 +4,7 @@ import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
 import { ProjectTemplateService } from '../../../core/services/project-template.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ProjectTemplate, TemplateEtapaItem } from '../../../models/project-template.model';
+import { TemplateForm } from './template.form';
 
 @Component({
   selector: 'app-template-modal',
@@ -44,16 +45,7 @@ export class TemplateModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.isEditing = !!this.templateParaEdicao;
-
-    this.form = this.fb.group({
-      nome: [this.templateParaEdicao?.nome || '', [Validators.required, Validators.maxLength(200)]],
-      codigo: [
-        this.templateParaEdicao?.codigo || this.templateParaEdicao?.id || '',
-        [Validators.required, Validators.maxLength(100)]
-      ],
-      descricao: [this.templateParaEdicao?.descricao || ''],
-      icone: [this.templateParaEdicao?.icone || 'home', Validators.required]
-    });
+    this.form = TemplateForm.create(this.fb, this.templateParaEdicao);
 
     if (this.templateParaEdicao && this.templateParaEdicao.etapas) {
       this.etapas = JSON.parse(JSON.stringify(this.templateParaEdicao.etapas));

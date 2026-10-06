@@ -42,23 +42,23 @@
     </div>
 
     <div class="field-item animate-fade-in" *ngIf="form.value.tipoVinculo === 'lead'">
-      <label class="field-label font-label-sm" for="selectLead">Selecione o Lead</label>
-      <select id="selectLead" formControlName="leadId" class="field-input font-body-md select-custom">
-        <option value="">Selecione um lead...</option>
-        <option *ngFor="let lead of leads" [value]="lead.id">
-          {{ lead.nome }} ({{ lead.email }})
-        </option>
-      </select>
+      <app-lead-search
+        id="selectLead"
+        label="Selecione o Lead"
+        placeholder="Buscar lead por nome, e-mail ou telefone..."
+        [leads]="leads"
+        formControlName="leadId">
+      </app-lead-search>
     </div>
 
     <div class="field-item animate-fade-in" *ngIf="form.value.tipoVinculo === 'cliente'">
-      <label class="field-label font-label-sm" for="selectCliente">Selecione o Cliente</label>
-      <select id="selectCliente" formControlName="clienteId" class="field-input font-body-md select-custom">
-        <option value="">Selecione um cliente...</option>
-        <option *ngFor="let cli of clientes" [value]="cli.id">
-          {{ cli.nome }} ({{ cli.email }})
-        </option>
-      </select>
+      <app-client-search
+        id="selectCliente"
+        label="Selecione o Cliente"
+        placeholder="Buscar cliente por nome ou e-mail..."
+        [clientes]="clientes"
+        formControlName="clienteId">
+      </app-client-search>
     </div>
 
     <div class="field-item">

@@ -1,0 +1,341 @@
+<div class="dossier-page" *ngIf="fornecedor && !carregando">
+  <nav class="dossier-nav d-flex justify-content-between align-items-center">
+    <app-button variant="ghost" size="sm" (btnClick)="voltar()" customClass="nav-back-btn">
+      <span class="material-symbols-outlined">arrow_back</span>
+      <span>Voltar para Fornecedores</span>
+    </app-button>
+    <div class="dossier-badge-wrap d-flex align-items-center gap-xs">
+      <span class="dossier-code-chip font-mono">PARCEIRO #{{ fornecedor.id.substring(0, 8) }}</span>
+    </div>
+  </nav>
+
+  <section class="profile-unified-card">
+    <div class="profile-top-row d-flex justify-content-between align-items-center flex-wrap gap-md">
+      <div class="profile-identity d-flex align-items-center gap-lg">
+        <div class="profile-avatar">
+          <span class="material-symbols-outlined icon-avatar">storefront</span>
+        </div>
+
+        <div class="profile-titles d-flex flex-direction-column gap-xs">
+          <div class="name-badge-row d-flex align-items-center gap-sm flex-wrap">
+            <h1 class="client-fullname m-0">{{ fornecedor.nome }}</h1>
+            <app-badge variant="neutral">{{ fornecedor.especialidade }}</app-badge>
+            <span class="portal-badge" [class.active]="fornecedor.ativo">
+              <span class="status-dot"></span>
+              {{ fornecedor.ativo ? 'Parceiro Homologado' : 'Parceiro Inativo' }}
+            </span>
+          </div>
+          <div class="avatar-actions-sub d-flex align-items-center gap-md font-label-sm text-on-surface-variant flex-wrap">
+            <span class="d-inline-flex align-items-center gap-xxs" *ngIf="fornecedor.cidade || fornecedor.estado">
+              <span class="material-symbols-outlined icon-xs text-primary">location_on</span>
+              {{ fornecedor.cidade }}{{ fornecedor.cidade && fornecedor.estado ? ', ' : '' }}{{ fornecedor.estado }}
+            </span>
+            <span class="d-inline-flex align-items-center gap-xxs">
+              <span class="material-symbols-outlined icon-xs text-primary">calendar_month</span>
+              Cadastrado em {{ fornecedor.dataCriacao | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-actions d-flex align-items-center gap-sm flex-wrap">
+        <app-button variant="outline" (btnClick)="abrirModalAvaliar()" title="Registrar Avaliação Técnica">
+          <span class="material-symbols-outlined">star_rate</span>
+          Avaliar
+        </app-button>
+        <app-button variant="primary" (btnClick)="abrirModalEditar()" title="Editar dados cadastrais">
+          <span class="material-symbols-outlined">edit</span>
+          Editar Ficha
+        </app-button>
+        <app-button variant="danger" size="sm" (btnClick)="excluir()" title="Excluir parceiro" ariaLabel="Excluir parceiro">
+          <span class="material-symbols-outlined">delete</span>
+        </app-button>
+      </div>
+    </div>
+
+    <div class="client-stats-ribbon">
+      <div class="stat-card-pill">
+        <div class="stat-icon-box stat-icon-rating">
+          <span class="material-symbols-outlined">star</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="stat-lbl font-label-xs">AVALIAÇÃO MÉDIA</span>
+          <span class="stat-val font-headline-sm">{{ (fornecedor.avaliacaoMedia || 0).toFixed(1) }} <span class="font-body-xs text-on-surface-variant font-weight-normal">/ 5.0</span></span>
+        </div>
+      </div>
+
+      <div class="stat-card-pill">
+        <div class="stat-icon-box stat-icon-evals">
+          <span class="material-symbols-outlined">rate_review</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="stat-lbl font-label-xs">AVALIAÇÕES TÉCNICAS</span>
+          <span class="stat-val font-headline-sm">{{ fornecedor.totalAvaliacoes || 0 }} {{ fornecedor.totalAvaliacoes === 1 ? 'Avaliação' : 'Avaliações' }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card-pill">
+        <div class="stat-icon-box stat-icon-projects">
+          <span class="material-symbols-outlined">apartment</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="stat-lbl font-label-xs">OBRAS VINCULADAS</span>
+          <span class="stat-val font-headline-sm">{{ projetosVinculados.length }} {{ projetosVinculados.length === 1 ? 'Projeto' : 'Projetos' }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card-pill">
+        <div class="stat-icon-box stat-icon-category">
+          <span class="material-symbols-outlined">category</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <span class="stat-lbl font-label-xs">ESPECIALIDADE</span>
+          <span class="stat-val font-body-md font-weight-bold truncate">{{ fornecedor.especialidade }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-divider"></div>
+
+    <div class="profile-details-grid">
+      <div class="detail-card-item">
+        <div class="detail-icon-circle whatsapp-circle">
+          <span class="material-symbols-outlined">chat</span>
+        </div>
+        <div class="detail-content-wrap">
+          <span class="detail-label">TELEFONE / WHATSAPP</span>
+          <div class="d-flex align-items-center gap-xs" *ngIf="fornecedor.telefone; else noPhoneTpl">
+            <span class="detail-value font-weight-bold">
+              {{ fornecedor.telefone | phoneMask }}
+            </span>
+            <app-whatsapp-button 
+              [telefone]="fornecedor.telefone" 
+              [mensagem]="'Olá ' + fornecedor.nome + '! Entro em contato sobre uma parceria de projeto no ArchiFlow.'">
+            </app-whatsapp-button>
+            <app-button variant="ghost" size="sm" (btnClick)="copiarTexto(fornecedor.telefone, 'Telefone')" title="Copiar telefone" ariaLabel="Copiar telefone" customClass="btn-copy-chip">
+              <span class="material-symbols-outlined">content_copy</span>
+            </app-button>
+          </div>
+          <ng-template #noPhoneTpl>
+            <span class="detail-value text-muted font-body-sm">Não informado</span>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="detail-card-item">
+        <div class="detail-icon-circle">
+          <span class="material-symbols-outlined">mail</span>
+        </div>
+        <div class="detail-content-wrap">
+          <span class="detail-label">E-MAIL COMERCIAL</span>
+          <div class="d-flex align-items-center gap-xs" *ngIf="fornecedor.email; else noEmailTpl">
+            <a class="detail-value link truncate" [href]="'mailto:' + fornecedor.email" [title]="fornecedor.email">
+              {{ fornecedor.email }}
+            </a>
+            <app-button variant="ghost" size="sm" (btnClick)="copiarTexto(fornecedor.email, 'E-mail')" title="Copiar e-mail" ariaLabel="Copiar e-mail" customClass="btn-copy-chip">
+              <span class="material-symbols-outlined">content_copy</span>
+            </app-button>
+          </div>
+          <ng-template #noEmailTpl>
+            <span class="detail-value text-muted font-body-sm">Não informado</span>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="detail-card-item">
+        <div class="detail-icon-circle location-circle">
+          <span class="material-symbols-outlined">location_on</span>
+        </div>
+        <div class="detail-content-wrap">
+          <span class="detail-label">BASE OPERACIONAL</span>
+          <span class="detail-value" *ngIf="fornecedor.cidade || fornecedor.estado">
+            {{ fornecedor.cidade || '—' }}{{ fornecedor.cidade && fornecedor.estado ? ' / ' : '' }}{{ fornecedor.estado }}
+          </span>
+          <span class="detail-value text-muted font-body-sm" *ngIf="!fornecedor.cidade && !fornecedor.estado">
+            Não informada
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-card-item span-all">
+        <div class="detail-icon-circle engineering-circle">
+          <span class="material-symbols-outlined">engineering</span>
+        </div>
+        <div class="detail-content-wrap">
+          <span class="detail-label">CAPACIDADES TÉCNICAS & ESCOPO DE FORNECIMENTO</span>
+          <p class="detail-value description-text m-0" *ngIf="fornecedor.descricao">
+            {{ fornecedor.descricao }}
+          </p>
+          <span class="detail-value text-muted font-body-sm" *ngIf="!fornecedor.descricao">
+            Nenhuma observação ou escopo cadastrado para este parceiro.
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="bottom-dual-grid">
+    <section class="studio-panel">
+      <div class="panel-header d-flex align-items-center justify-content-between">
+        <div class="title-with-pill d-flex align-items-center gap-xs">
+          <span class="material-symbols-outlined panel-header-icon">rate_review</span>
+          <h2 class="panel-heading font-headline-sm m-0">Histórico de Avaliações Técnicas</h2>
+          <span class="count-pill font-label-xs">{{ avaliacoes.length }}</span>
+        </div>
+        <app-button variant="outline" size="sm" (btnClick)="abrirModalAvaliar()" title="Registrar nova avaliação">
+          <span class="material-symbols-outlined">add</span>
+          Nova Avaliação
+        </app-button>
+      </div>
+
+      <div class="panel-content">
+        <div class="evaluations-list d-flex flex-direction-column gap-sm" *ngIf="avaliacoes.length > 0; else emptyAvaliacoesTpl">
+          <div *ngFor="let av of avaliacoes" class="evaluation-card-clean p-md">
+            <div class="d-flex justify-content-between align-items-center mb-xs">
+              <div class="d-flex align-items-center gap-xxs">
+                <span class="material-symbols-outlined star-icon-gold" *ngFor="let s of [1,2,3,4,5]" [class.filled]="s <= av.nota">star</span>
+                <span class="font-label-md font-weight-bold margin-left-xs text-on-surface">{{ av.nota }}.0</span>
+              </div>
+              <span class="font-label-xs text-on-surface-variant">{{ av.dataAvaliacao | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <p class="evaluation-comment font-body-sm text-on-surface m-0">{{ av.comentario }}</p>
+            <div class="d-flex align-items-center gap-xs margin-top-xs font-label-xs text-on-surface-variant">
+              <span class="material-symbols-outlined icon-xxs text-primary">person</span>
+              <span>Avaliador: <strong>{{ av.autorNome }}</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #emptyAvaliacoesTpl>
+          <app-empty-state
+            icon="star_rate"
+            title="Nenhuma avaliação técnica registrada"
+            description="Registre avaliações após o término de etapas ou fornecimento de materiais para manter o histórico de qualidade."
+            actionLabel="Avaliar Parceiro"
+            actionIcon="rate_review"
+            (actionClick)="abrirModalAvaliar()">
+          </app-empty-state>
+        </ng-template>
+      </div>
+    </section>
+
+    <section class="studio-panel">
+      <div class="panel-header d-flex align-items-center justify-content-between">
+        <div class="title-with-pill d-flex align-items-center gap-xs">
+          <span class="material-symbols-outlined panel-header-icon">apartment</span>
+          <h2 class="panel-heading font-headline-sm m-0">Obras & Projetos Vinculados</h2>
+          <span class="count-pill font-label-xs">{{ projetosVinculados.length }}</span>
+        </div>
+        <app-button variant="outline" size="sm" (btnClick)="abrirModalVincular()" title="Vincular a uma obra">
+          <span class="material-symbols-outlined">add_business</span>
+          Vincular à Obra
+        </app-button>
+      </div>
+
+      <div class="panel-content">
+        <div class="projects-list d-flex flex-direction-column gap-sm" *ngIf="projetosVinculados.length > 0; else emptyProjetosTpl">
+          <div *ngFor="let p of projetosVinculados" class="project-card-clean clickable-project d-flex justify-content-between align-items-center" [routerLink]="['/projetos', p.projetoId]" title="Clique para abrir detalhes do projeto">
+            <div class="d-flex align-items-center gap-sm">
+              <div class="proj-icon-box">
+                <span class="material-symbols-outlined">architecture</span>
+              </div>
+              <div>
+                <h4 class="proj-name m-0">{{ obterNomeProjeto(p.projetoId) }}</h4>
+                <span class="proj-role-text font-label-xs text-on-surface-variant d-block margin-top-xxs">
+                  <strong class="text-primary">Função na Obra:</strong> {{ p.funcaoNoProjeto }}
+                </span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-sm" (click)="$event.stopPropagation()">
+              <span class="font-label-xs text-on-surface-variant font-mono">{{ p.dataVinculo | date:'dd/MM/yyyy' }}</span>
+              <app-button 
+                variant="danger" 
+                size="sm"
+                (btnClick)="desvincular(p)" 
+                title="Desvincular parceiro desta obra"
+                ariaLabel="Desvincular parceiro desta obra">
+                <span class="material-symbols-outlined">link_off</span>
+              </app-button>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #emptyProjetosTpl>
+          <app-empty-state
+            icon="architecture"
+            title="Nenhum projeto vinculado"
+            description="Vincule este fornecedor a uma obra para registrar o escopo técnico e prazos de entrega."
+            actionLabel="Vincular à Obra"
+            actionIcon="add_business"
+            (actionClick)="abrirModalVincular()">
+          </app-empty-state>
+        </ng-template>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="dossier-loading d-flex flex-direction-column align-items-center justify-content-center p-xl" *ngIf="carregando">
+  <span class="material-symbols-outlined spinner-icon mb-sm">progress_activity</span>
+  <p class="font-body-md font-weight-semibold text-on-surface m-0">Carregando ficha e histórico do fornecedor...</p>
+</div>
+
+<app-fornecedor-modal
+  *ngIf="modalEditarAberto"
+  [show]="modalEditarAberto"
+  [fornecedor]="fornecedor"
+  (close)="modalEditarAberto = false"
+  (salvo)="onFornecedorSalvo($event)">
+</app-fornecedor-modal>
+
+<app-avaliar-fornecedor-modal
+  *ngIf="modalAvaliarAberto && fornecedor"
+  [show]="modalAvaliarAberto"
+  [fornecedor]="fornecedor"
+  (close)="modalAvaliarAberto = false"
+  (avaliado)="onAvaliacaoRegistrada()">
+</app-avaliar-fornecedor-modal>
+
+<app-dialog
+  [show]="modalVincularAberto"
+  dialogTitle="Vincular Parceiro à Obra"
+  size="sm"
+  [overflowVisible]="true"
+  (close)="fecharModalVincular()">
+
+  <form [formGroup]="formVinculo" (ngSubmit)="salvarVinculo()" class="d-flex flex-direction-column gap-md" *ngIf="formVinculo">
+    <div class="field-item">
+      <app-project-search
+        id="projetoId"
+        label="Selecione o Projeto / Obra"
+        placeholder="Buscar projeto por nome ou cliente..."
+        [projetos]="todosProjetos"
+        formControlName="projetoId"
+        [required]="true"
+        [error]="submittedVinculo && fVinculo['projetoId'].errors ? 'Selecione um projeto cadastrado.' : undefined">
+      </app-project-search>
+    </div>
+
+    <div class="field-item">
+      <app-input
+        id="funcaoNoProjeto"
+        type="text"
+        label="Função ou Escopo nesta Obra"
+        placeholder="Ex: Fornecimento de luminárias e automação dos pendentes"
+        formControlName="funcaoNoProjeto"
+        [required]="true"
+        [error]="submittedVinculo && fVinculo['funcaoNoProjeto'].errors ? 'O escopo do parceiro na obra é obrigatório.' : undefined">
+      </app-input>
+    </div>
+
+    <div class="dialog-actions d-flex justify-content-end align-items-center gap-xs margin-top-md">
+      <app-button variant="ghost" type="button" (btnClick)="fecharModalVincular()" [disabled]="salvandoVinculo">
+        Cancelar
+      </app-button>
+      <app-button variant="primary" type="submit" [disabled]="salvandoVinculo">
+        <span class="material-symbols-outlined icon-btn-inline">link</span>
+        {{ salvandoVinculo ? 'Vinculando...' : 'Confirmar Vínculo' }}
+      </app-button>
+    </div>
+  </form>
+</app-dialog>

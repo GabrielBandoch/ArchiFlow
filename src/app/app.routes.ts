@@ -47,6 +47,17 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'agenda',
+    canActivate: [staffGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/agenda/agenda.component').then(m => m.AgendaComponent)
+      }
+    ]
+  },
+  {
     path: 'leads',
     canActivate: [staffGuard],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
@@ -73,6 +84,21 @@ export const appRoutes: Routes = [
       {
         path: ':id',
         loadComponent: () => import('./components/clientes/detalhes-cliente/detalhes-cliente.component').then(m => m.DetalhesClienteComponent)
+      }
+    ]
+  },
+  {
+    path: 'fornecedores',
+    canActivate: [staffGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/fornecedores/fornecedores.component').then(m => m.FornecedoresComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./components/fornecedores/detalhes-fornecedor/detalhes-fornecedor.component').then(m => m.DetalhesFornecedorComponent)
       }
     ]
   },

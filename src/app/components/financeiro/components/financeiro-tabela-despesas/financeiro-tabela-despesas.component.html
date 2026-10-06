@@ -116,14 +116,15 @@
         </tr>
 
         <tr *ngIf="despesasFiltradas.length === 0">
-          <td colspan="7" class="empty-table-cell text-center p-2xl">
-            <div class="empty-table-box d-flex flex-direction-column align-items-center justify-content-center gap-xs">
-              <div class="empty-icon-circle d-flex align-items-center justify-content-center">
-                <span class="material-symbols-outlined">receipt</span>
-              </div>
-              <span class="font-label-md font-weight-bold text-on-surface mt-xs">Nenhuma saída ou despesa</span>
-              <span class="font-body-md text-on-surface-variant text-sm">Não há despesas cadastradas nos filtros atuais.</span>
-            </div>
+          <td colspan="7" class="p-xl">
+            <app-empty-state
+              icon="receipt"
+              title="Nenhuma saída ou despesa"
+              description="Não há despesas cadastradas nos filtros atuais."
+              actionLabel="Nova Despesa"
+              actionIcon="trending_down"
+              (actionClick)="onNovaDespesa()">
+            </app-empty-state>
           </td>
         </tr>
       </tbody>

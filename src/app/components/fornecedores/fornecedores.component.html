@@ -1,0 +1,169 @@
+<div class="fornecedores-container">
+  <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-md">
+    <div class="header-titles">
+      <h1 class="page-title font-headline-md m-0">Gestão de Fornecedores</h1>
+      <p class="page-subtitle text-on-surface-variant font-body-md m-0 margin-top-xxs">
+        Gerencie e avalie seus parceiros de arquitetura, fornecedores de materiais e empreiteiros especializados.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <app-button variant="primary" (btnClick)="abrirModalNovo()">
+        <span class="material-symbols-outlined icon-btn-inline">storefront</span>
+        Novo Parceiro
+      </app-button>
+    </div>
+  </div>
+
+  <div class="filters-card margin-top-md">
+    <div class="filters-row d-flex justify-content-between align-items-center flex-wrap gap-md">
+      <div class="specialty-chips d-flex align-items-center gap-xs flex-wrap">
+        <span class="font-label-sm font-weight-bold text-on-surface-variant text-uppercase">Especialidade:</span>
+        <button 
+          type="button" 
+          *ngFor="let chip of especialidadesChips"
+          class="filter-chip font-label-sm"
+          [class.active-chip]="especialidadeSelecionada === chip.value"
+          (click)="filtrarPorEspecialidade(chip.value)">
+          {{ chip.label }}
+        </button>
+      </div>
+
+      <div class="search-and-rating d-flex align-items-center gap-sm flex-wrap">
+        <app-search-input
+          placeholder="Buscar parceiro ou cidade..."
+          [(ngModel)]="termoBusca"
+          class="search-bar">
+        </app-search-input>
+
+        <div class="rating-select-wrap">
+          <app-select
+            [options]="classificacaoOptions"
+            [(ngModel)]="filtroClassificacao"
+            placeholder="Classificação">
+          </app-select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-state d-flex justify-content-center align-items-center margin-top-xl" *ngIf="carregando">
+    <span class="material-symbols-outlined spinner-icon">progress_activity</span>
+    <span class="margin-left-xs font-body-md">Carregando parceiros cadastrados...</span>
+  </div>
+
+  <div class="suppliers-table-container margin-top-md" *ngIf="!carregando && fornecedoresFiltrados.length > 0">
+    <table class="suppliers-table w-full">
+      <thead>
+        <tr>
+          <th class="th-partner">Fornecedor</th>
+          <th class="th-specialty">Especialidade</th>
+          <th class="th-contact">Contato / WhatsApp</th>
+          <th class="th-rating">Classificação</th>
+          <th class="th-projects">Projetos Ativos</th>
+          <th class="th-actions text-right">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of fornecedoresFiltrados" class="table-row" (click)="verDetalhes(item)">
+          <td class="td-partner">
+            <div class="d-flex align-items-center gap-sm">
+              <div class="partner-avatar">
+                <span class="material-symbols-outlined">business</span>
+              </div>
+              <div class="d-flex flex-direction-column">
+                <span class="partner-name font-weight-bold">{{ item.nome }}</span>
+                <span class="partner-location font-body-xs text-on-surface-variant" *ngIf="item.cidade || item.estado">
+                  {{ item.cidade }}{{ item.cidade && item.estado ? ', ' : '' }}{{ item.estado }}
+                </span>
+              </div>
+            </div>
+          </td>
+
+          <td class="td-specialty">
+            <app-badge variant="neutral">
+              {{ item.especialidade }}
+            </app-badge>
+          </td>
+
+          <td class="td-contact" (click)="$event.stopPropagation()">
+            <div class="d-flex align-items-center gap-xs" *ngIf="item.telefone">
+              <span class="font-body-sm">{{ item.telefone | phoneMask }}</span>
+              <app-whatsapp-button [telefone]="item.telefone" [mensagem]="'Olá ' + item.nome + '! Entro em contato sobre uma parceria de projeto no ArchiFlow.'"></app-whatsapp-button>
+            </div>
+            <span class="font-body-xs text-on-surface-variant" *ngIf="!item.telefone">—</span>
+          </td>
+
+          <td class="td-rating">
+            <div class="d-flex align-items-center gap-xxs rating-cell">
+              <span class="material-symbols-outlined star-icon-gold">star</span>
+              <span class="font-label-md font-weight-bold">{{ item.avaliacaoMedia.toFixed(1) }}</span>
+              <span class="font-body-xs text-on-surface-variant" *ngIf="item.totalAvaliacoes > 0">
+                ({{ item.totalAvaliacoes }})
+              </span>
+            </div>
+          </td>
+
+          <td class="td-projects">
+            <span class="font-body-md font-weight-semibold">{{ item.totalProjetosAtivos }}</span>
+          </td>
+
+          <td class="td-actions text-right" (click)="$event.stopPropagation()">
+            <div class="d-flex align-items-center justify-content-end gap-xxs">
+              <app-button 
+                variant="ghost" 
+                size="sm"
+                (btnClick)="abrirModalAvaliar(item, $event)" 
+                title="Avaliar Desempenho"
+                ariaLabel="Avaliar Desempenho">
+                <span class="material-symbols-outlined">star_rate</span>
+              </app-button>
+              <app-button 
+                variant="ghost" 
+                size="sm"
+                (btnClick)="abrirModalEditar(item, $event)" 
+                title="Editar Cadastro"
+                ariaLabel="Editar Cadastro">
+                <span class="material-symbols-outlined">edit</span>
+              </app-button>
+              <app-button 
+                variant="danger" 
+                size="sm"
+                (btnClick)="excluir(item, $event)" 
+                title="Excluir Fornecedor"
+                ariaLabel="Excluir Fornecedor">
+                <span class="material-symbols-outlined">delete</span>
+              </app-button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-empty-state
+    *ngIf="!carregando && fornecedoresFiltrados.length === 0"
+    icon="storefront"
+    title="Nenhum parceiro encontrado"
+    [description]="termoBusca || especialidadeSelecionada !== 'todos' ? 'Tente ajustar os filtros para localizar o parceiro.' : 'Cadastre o primeiro parceiro ou fornecedor para vincular aos projetos.'"
+    actionLabel="Cadastrar Primeiro Parceiro"
+    actionIcon="add"
+    (actionClick)="abrirModalNovo()">
+  </app-empty-state>
+</div>
+
+<app-fornecedor-modal
+  *ngIf="modalCadastroAberto"
+  [show]="modalCadastroAberto"
+  [fornecedor]="fornecedorSelecionado"
+  (close)="modalCadastroAberto = false"
+  (salvo)="onFornecedorSalvo()">
+</app-fornecedor-modal>
+
+<app-avaliar-fornecedor-modal
+  *ngIf="modalAvaliarAberto"
+  [show]="modalAvaliarAberto"
+  [fornecedor]="fornecedorSelecionado"
+  (close)="modalAvaliarAberto = false"
+  (avaliado)="onFornecedorAvaliado()">
+</app-avaliar-fornecedor-modal>

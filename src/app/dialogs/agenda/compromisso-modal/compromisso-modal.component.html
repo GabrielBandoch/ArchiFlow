@@ -1,0 +1,288 @@
+<app-dialog 
+  [show]="show" 
+  [dialogTitle]="isEditing ? 'Editar Compromisso' : 'Novo Compromisso na Agenda'" 
+  size="lg" 
+  (close)="onClose()">
+  
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md compromisso-form">
+    
+    <div *ngIf="errorMessage" class="error-banner font-body-sm text-error bg-error-container p-sm rounded-sm">
+      <span class="material-symbols-outlined icon-inline">error</span>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Título do Compromisso -->
+    <div class="field-item">
+      <app-input 
+        id="compromissoTitulo"
+        type="text" 
+        label="Título do Compromisso" 
+        placeholder="Ex: Reunião de Apresentação de Layout, Medição de Obra..." 
+        formControlName="titulo"
+        [required]="true"
+        [error]="temErro('titulo') ? 'Título é obrigatório (mínimo 2 caracteres).' : undefined">
+      </app-input>
+    </div>
+
+    <!-- Tipo de Atividade e Responsável da Equipe (Dropdown compacto) -->
+    <div class="form-grid-2">
+      <div class="field-item">
+        <app-select 
+          id="compromissoTipo"
+          label="Tipo de Atividade" 
+          [options]="tiposOptions" 
+          formControlName="tipo"
+          [required]="true"
+          placeholder="Selecione a atividade...">
+        </app-select>
+      </div>
+
+      <div class="field-item">
+        <app-select 
+          id="compromissoUsuario"
+          label="Responsável da Equipe" 
+          [options]="usuariosOptions" 
+          formControlName="usuarioId"
+          placeholder="Selecione o profissional...">
+        </app-select>
+      </div>
+    </div>
+
+    <!-- Status se estiver editando -->
+    <div class="field-item" *ngIf="isEditing">
+      <app-select 
+        id="compromissoStatus"
+        label="Status do Compromisso"
+        [options]="statusOptions"
+        formControlName="status">
+      </app-select>
+    </div>
+
+    <!-- Bloco de Data e Horários com Estimativa de Duração -->
+    <div class="datetime-card">
+      <div class="d-flex justify-content-between align-items-center mb-xs">
+        <div class="d-flex align-items-center gap-xs">
+          <span class="material-symbols-outlined text-primary">schedule</span>
+          <span class="font-label-sm font-weight-bold">Data e Duração</span>
+        </div>
+        <span *ngIf="duracaoEstimada" class="badge-duracao">
+          {{ duracaoEstimada }}
+        </span>
+      </div>
+
+      <div class="form-grid-3">
+        <div class="field-item">
+          <app-input 
+            id="compromissoData"
+            type="date" 
+            label="Data" 
+            formControlName="data"
+            [required]="true">
+          </app-input>
+        </div>
+
+        <div class="field-item">
+          <app-input 
+            id="compromissoHoraInicio"
+            type="time" 
+            label="Início" 
+            formControlName="horaInicio"
+            [required]="true">
+          </app-input>
+        </div>
+
+        <div class="field-item">
+          <app-input 
+            id="compromissoHoraFim"
+            type="time" 
+            label="Término" 
+            formControlName="horaFim"
+            [required]="true">
+          </app-input>
+        </div>
+      </div>
+    </div>
+
+    <!-- Local / Endereço -->
+    <div class="field-item">
+      <app-input 
+        id="compromissoLocal"
+        type="text" 
+        label="Local / Endereço da Visita (Opcional)" 
+        placeholder="Ex: Obra Residencial Alpha, Av. Central 500, Sala de Reuniões..." 
+        formControlName="local">
+      </app-input>
+    </div>
+
+    <!-- Google Meet & Integração Online -->
+    <div class="google-section-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-sm">
+          <div class="meet-icon-avatar">
+            <span class="material-symbols-outlined">video_camera_front</span>
+          </div>
+          <div>
+            <div class="font-label-sm font-weight-bold text-on-surface">Videoconferência Google Meet</div>
+            <div class="font-body-xs text-secondary-color">
+              {{ isEditing ? 'Link da sala de reunião compartilhada' : 'Gera link instantâneo sincronizado com o Google Agenda' }}
+            </div>
+          </div>
+        </div>
+
+        <button 
+          *ngIf="form.get('linkGoogleMeet')?.value" 
+          type="button" 
+          class="btn-meet-inline font-label-xs" 
+          (click)="abrirGoogleMeet()"
+          title="Acessar videochamada">
+          <span class="material-symbols-outlined">open_in_new</span>
+          Entrar na Sala
+        </button>
+      </div>
+
+      <div *ngIf="!isEditing" class="mt-xs">
+        <label class="meet-toggle-label cursor-pointer">
+          <input 
+            type="checkbox" 
+            id="checkGerarMeet" 
+            formControlName="gerarGoogleMeet"
+            class="meet-toggle-checkbox" 
+          />
+          <span class="toggle-slider"></span>
+          <span class="font-body-sm">Gerar link automático do Google Meet para esta reunião</span>
+        </label>
+      </div>
+
+      <div *ngIf="isEditing" class="mt-xs">
+        <app-input 
+          id="linkGoogleMeet"
+          type="url" 
+          label="Link da Reunião (Meet / Teams / Zoom)" 
+          placeholder="https://meet.google.com/..." 
+          formControlName="linkGoogleMeet">
+        </app-input>
+      </div>
+    </div>
+
+    <!-- Vínculos: Seletor de Tipo de Vínculo (Opção 1) -->
+    <div class="field-item">
+      <div class="d-flex justify-content-between align-items-center mb-xs">
+        <label class="form-label font-label-sm m-0">Vincular Atividade a:</label>
+        <span class="font-label-xs text-secondary-color">Associe a um contexto (opcional)</span>
+      </div>
+      <div class="vinculo-tabs-grid">
+        <button 
+          type="button" 
+          class="vinculo-tab-btn" 
+          [class.active]="tipoVinculo === 'nenhum'"
+          (click)="selecionarTipoVinculo('nenhum')">
+          <span class="material-symbols-outlined tab-icon">event_busy</span>
+          <span class="tab-label">Nenhum</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="vinculo-tab-btn" 
+          [class.active]="tipoVinculo === 'projeto'"
+          (click)="selecionarTipoVinculo('projeto')">
+          <span class="material-symbols-outlined tab-icon">folder</span>
+          <span class="tab-label">Projeto</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="vinculo-tab-btn" 
+          [class.active]="tipoVinculo === 'cliente'"
+          (click)="selecionarTipoVinculo('cliente')">
+          <span class="material-symbols-outlined tab-icon">person</span>
+          <span class="tab-label">Cliente</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="vinculo-tab-btn" 
+          [class.active]="tipoVinculo === 'lead'"
+          (click)="selecionarTipoVinculo('lead')">
+          <span class="material-symbols-outlined tab-icon">contact_page</span>
+          <span class="tab-label">Lead / Prospecção</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Campo de Busca Contextual de acordo com o vínculo selecionado -->
+    <div class="field-item" *ngIf="tipoVinculo === 'projeto'">
+      <app-project-search
+        id="compromissoProjeto"
+        label="Projeto Vinculado"
+        placeholder="Buscar projeto por nome..."
+        [projetos]="projetos"
+        formControlName="projetoId">
+      </app-project-search>
+    </div>
+
+    <div class="field-item" *ngIf="tipoVinculo === 'cliente'">
+      <app-client-search
+        id="compromissoCliente"
+        label="Cliente Vinculado"
+        placeholder="Buscar cliente por nome ou e-mail..."
+        [clientes]="clientes"
+        formControlName="clienteId">
+      </app-client-search>
+    </div>
+
+    <div class="field-item" *ngIf="tipoVinculo === 'lead'">
+      <app-lead-search
+        id="compromissoLead"
+        label="Lead Vinculado"
+        placeholder="Buscar lead por nome ou e-mail..."
+        [leads]="leads"
+        formControlName="leadId">
+      </app-lead-search>
+    </div>
+
+    <!-- Pauta / Descrição -->
+    <div class="field-item">
+      <label class="form-label font-label-sm mb-xxs d-block" for="compromissoDescricao">
+        Pauta & Observações Técnicas
+      </label>
+      <textarea 
+        id="compromissoDescricao"
+        class="search-input w-full pauta-textarea" 
+        rows="3"
+        placeholder="Descreva detalhes, etapas a serem conferidas, plantas ou materiais a apresentar..." 
+        formControlName="descricao">
+      </textarea>
+    </div>
+
+    <!-- Ações e Rodapé -->
+    <div dialog-footer class="dialog-actions d-flex justify-content-between align-items-center w-full flex-wrap gap-xs">
+      <div>
+        <app-button 
+          *ngIf="isEditing && compromissoParaEdicao?.linkGoogleCalendarWeb" 
+          variant="secondary" 
+          type="button" 
+          (btnClick)="abrirGoogleAgenda()"
+          title="Adicionar evento à sua conta do Google Agenda">
+          <span class="material-symbols-outlined icon-btn-inline">calendar_month</span>
+          Google Agenda
+        </app-button>
+      </div>
+
+      <div class="d-flex align-items-center gap-xs">
+        <app-button variant="ghost" type="button" (btnClick)="onClose()" [disabled]="saving">
+          Cancelar
+        </app-button>
+        <app-button variant="primary" type="submit" [disabled]="saving">
+          <span class="material-symbols-outlined icon-btn-inline" *ngIf="!saving">
+            {{ isEditing ? 'check' : 'add' }}
+          </span>
+          <span class="material-symbols-outlined icon-btn-inline spinner-icon" *ngIf="saving">
+            progress_activity
+          </span>
+          {{ saving ? 'Salvando...' : (isEditing ? 'Salvar Alterações' : 'Criar Compromisso') }}
+        </app-button>
+      </div>
+    </div>
+
+  </form>
+</app-dialog>

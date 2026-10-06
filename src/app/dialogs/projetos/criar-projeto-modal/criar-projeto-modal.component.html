@@ -31,7 +31,7 @@
           placeholder="Digite o nome ou selecione na lista..."
           [required]="true"
           [clientes]="clientes"
-          [formControl]="$any(form.get('clienteId'))"
+          formControlName="clienteId"
           [error]="submitted && f['clienteId'].errors ? 'Selecione um cliente para vincular ao projeto.' : undefined">
         </app-client-search>
       </div>

@@ -1,0 +1,371 @@
+<div class="agenda-page d-flex flex-direction-column gap-lg">
+  
+  <!-- Header da Página -->
+  <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-md">
+    <div class="header-titles d-flex flex-direction-column gap-xs">
+      <div class="d-flex align-items-center gap-xs">
+        <h1 class="page-title font-headline-md m-0">Agenda & Reuniões</h1>
+      </div>
+      <p class="page-subtitle font-body-md text-on-surface-variant m-0">
+        Gerencie visitas a obras, reuniões com clientes e sincronize eventos no Google Calendar com links do Google Meet.
+      </p>
+    </div>
+
+    <div class="header-actions d-flex align-items-center gap-xs flex-wrap">
+      <app-button 
+        *ngIf="configuracaoEmpresa?.linkEmbedGoogleCalendar" 
+        variant="secondary" 
+        (btnClick)="abrirGoogleAgendaEmpresa()" 
+        title="Abrir a agenda oficial do escritório no Google Calendar Web">
+        <span class="material-symbols-outlined icon-btn-inline">open_in_new</span>
+        Agenda no Google
+      </app-button>
+
+      <app-button 
+        *ngIf="podeConfigurarAgenda"
+        variant="secondary" 
+        (btnClick)="abrirModalConfiguracao()" 
+        title="Configurar conta corporativa do Google Agenda para toda a equipe">
+        <span class="material-symbols-outlined icon-btn-inline">settings</span>
+        Configurar Google Agenda
+      </app-button>
+
+      <app-button 
+        variant="secondary" 
+        (btnClick)="baixarIcs()" 
+        title="Exportar agenda no formato iCalendar (.ics)">
+        <span class="material-symbols-outlined icon-btn-inline">download</span>
+        Exportar iCal (.ics)
+      </app-button>
+
+      <app-button variant="primary" (btnClick)="abrirModalNovo()">
+        <span class="material-symbols-outlined icon-btn-inline">add</span>
+        Novo Compromisso
+      </app-button>
+    </div>
+  </div>
+
+  <!-- Banner Corporativo de Integração do Google Calendar -->
+  <div *ngIf="!configuracaoEmpresa && podeConfigurarAgenda" class="company-sync-banner p-md rounded-md d-flex justify-content-between align-items-center flex-wrap gap-sm">
+    <div class="d-flex align-items-center gap-sm">
+      <div class="banner-icon-box">
+        <span class="material-symbols-outlined text-primary">calendar_add_on</span>
+      </div>
+      <div class="d-flex flex-direction-column">
+        <h4 class="font-headline-sm m-0">Integração com Google Agenda do Escritório</h4>
+        <p class="font-body-sm text-on-surface-variant m-0">
+          Vincule o e-mail oficial do estúdio para centralizar as reuniões com clientes e visitas técnicas para toda a equipe.
+        </p>
+      </div>
+    </div>
+    <app-button variant="primary" size="sm" (btnClick)="abrirModalConfiguracao()">
+      <span class="material-symbols-outlined icon-btn-inline">settings</span>
+      Configurar Agora
+    </app-button>
+  </div>
+
+  <!-- Métricas do Mês -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-primary-soft text-primary">
+        <span class="material-symbols-outlined">event</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Total no Mês</span>
+        <span class="metric-value font-headline-sm">{{ totalCompromissosMes }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-info-soft text-info">
+        <span class="material-symbols-outlined">groups</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Reuniões</span>
+        <span class="metric-value font-headline-sm">{{ totalReunioes }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-warning-soft text-warning">
+        <span class="material-symbols-outlined">construction</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Visitas a Obras</span>
+        <span class="metric-value font-headline-sm">{{ totalVisitasObras }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-success-soft text-success">
+        <span class="material-symbols-outlined">check_circle</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Concluídos</span>
+        <span class="metric-value font-headline-sm">{{ totalConcluidos }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Navegação e Filtros -->
+  <div class="controls-bar d-flex justify-content-between align-items-center flex-wrap gap-md">
+    
+    <!-- Navegação de Período (Mês Anterior / Título / Próximo Mês / Hoje) -->
+    <div class="calendar-nav-group d-flex align-items-center gap-xs">
+      <button type="button" class="btn-nav-arrow" (click)="mesAnterior()" title="Mês Anterior">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+
+      <span class="calendar-period-label font-headline-sm">{{ mesAnoTitulo }}</span>
+
+      <button type="button" class="btn-nav-arrow" (click)="proximoMes()" title="Próximo Mês">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+
+      <button type="button" class="btn-nav-today font-label-sm margin-left-xs" (click)="irParaHoje()">
+        Hoje
+      </button>
+    </div>
+
+    <!-- Alternador de Visualização & Filtros -->
+    <div class="controls-right d-flex align-items-center gap-sm flex-wrap">
+      
+      <!-- Toggle Calendário / Lista -->
+      <div class="view-toggle d-flex">
+        <button 
+          type="button" 
+          class="toggle-btn" 
+          [class.active]="modoVisualizacao === 'calendario'" 
+          (click)="modoVisualizacao = 'calendario'"
+          title="Visualização em Calendário Mensal">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <span>Calendário</span>
+        </button>
+        <button 
+          type="button" 
+          class="toggle-btn" 
+          [class.active]="modoVisualizacao === 'lista'" 
+          (click)="modoVisualizacao = 'lista'"
+          title="Visualização em Lista">
+          <span class="material-symbols-outlined">format_list_bulleted</span>
+          <span>Lista</span>
+        </button>
+      </div>
+
+      <!-- Campo de Busca -->
+      <div class="search-wrap">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input 
+          type="text" 
+          class="search-input" 
+          [(ngModel)]="termoBusca" 
+          (ngModelChange)="gerarGradeCalendario()"
+          placeholder="Buscar compromisso..." 
+        />
+      </div>
+
+      <!-- Filtro Tipo -->
+      <div class="filter-wrap">
+        <app-select
+          placeholder="Todos os Tipos"
+          [options]="filtroTipoOptions"
+          [(ngModel)]="filtroTipo"
+          (ngModelChange)="gerarGradeCalendario()">
+        </app-select>
+      </div>
+
+      <!-- Filtro Status -->
+      <div class="filter-wrap">
+        <app-select
+          placeholder="Todos os Status"
+          [options]="filtroStatusOptions"
+          [(ngModel)]="filtroStatus"
+          (ngModelChange)="gerarGradeCalendario()">
+        </app-select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-box d-flex justify-content-center align-items-center" *ngIf="carregando">
+    <span class="material-symbols-outlined spinner-icon">progress_activity</span>
+    <span class="margin-left-xs font-body-md">Carregando compromissos da agenda...</span>
+  </div>
+
+  <!-- VISUALIZAÇÃO: CALENDÁRIO MENSAL -->
+  <div class="calendar-container" *ngIf="!carregando && modoVisualizacao === 'calendario'">
+    
+    <!-- Cabeçalho dos dias da semana -->
+    <div class="calendar-header-grid">
+      <div *ngFor="let dia of diasSemana" class="weekday-header font-label-md">
+        {{ dia }}
+      </div>
+    </div>
+
+    <!-- Grade dos Dias -->
+    <div class="calendar-days-grid">
+      <div 
+        *ngFor="let celula of diasMes" 
+        class="calendar-day-cell"
+        [class.other-month]="!celula.mesmoMes"
+        [class.is-today]="celula.isHoje"
+        (click)="abrirModalNovo(celula.data)">
+        
+        <div class="day-cell-top d-flex justify-content-between align-items-center">
+          <span class="day-number" [class.today-badge]="celula.isHoje">
+            {{ celula.diaNumero }}
+          </span>
+          <button 
+            type="button" 
+            class="btn-quick-add" 
+            title="Agendar neste dia"
+            (click)="$event.stopPropagation(); abrirModalNovo(celula.data)">
+            <span class="material-symbols-outlined">add</span>
+          </button>
+        </div>
+
+        <div class="day-events-list d-flex flex-direction-column gap-xxs">
+          <div 
+            *ngFor="let comp of celula.compromissos" 
+            class="event-pill"
+            [ngClass]="obterBadgeClasseTipo(comp.tipo)"
+            [class.event-concluido]="comp.status === 'Concluido'"
+            (click)="abrirModalEditar(comp, $event)"
+            [title]="comp.titulo + ' (' + formatarHora(comp.dataHoraInicio) + ')'">
+            <span class="material-symbols-outlined event-mini-icon" *ngIf="comp.linkGoogleMeet">videocam</span>
+            <span class="event-time font-label-xs">{{ formatarHora(comp.dataHoraInicio) }}</span>
+            <span class="event-title font-label-xs">{{ comp.titulo }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VISUALIZAÇÃO: LISTA DE COMPROMISSOS -->
+  <div class="list-container" *ngIf="!carregando && modoVisualizacao === 'lista'">
+    <div class="events-list-cards d-flex flex-direction-column gap-sm" *ngIf="compromissosFiltrados.length > 0">
+      <div 
+        *ngFor="let comp of compromissosFiltrados" 
+        class="event-card d-flex justify-content-between align-items-center p-md rounded-md"
+        [class.event-card-concluido]="comp.status === 'Concluido'">
+        
+        <div class="event-card-main d-flex align-items-start gap-md">
+          <div class="event-date-badge d-flex flex-direction-column align-items-center justify-content-center">
+            <span class="font-headline-sm font-weight-bold">{{ comp.dataHoraInicio | date:'dd' }}</span>
+            <span class="font-label-xs text-uppercase">{{ comp.dataHoraInicio | date:'MMM' }}</span>
+          </div>
+
+          <div class="event-card-details d-flex flex-direction-column gap-xs">
+            <div class="d-flex align-items-center gap-xs flex-wrap">
+              <app-badge [variant]="obterBadgeVarianteTipo(comp.tipo)">
+                {{ obterNomeTipo(comp.tipo) }}
+              </app-badge>
+              <h3 class="event-card-title font-headline-sm m-0" [class.text-decoration-line-through]="comp.status === 'Concluido'">
+                {{ comp.titulo }}
+              </h3>
+              <app-badge [variant]="obterBadgeVarianteStatus(comp.status)" [pill]="true">
+                {{ comp.status }}
+              </app-badge>
+            </div>
+
+            <div class="event-meta-info d-flex align-items-center gap-md flex-wrap font-body-sm text-on-surface-variant">
+              <span class="d-flex align-items-center gap-xxs">
+                <span class="material-symbols-outlined icon-sm">schedule</span>
+                {{ formatarHora(comp.dataHoraInicio) }} - {{ formatarHora(comp.dataHoraFim) }}
+              </span>
+
+              <span *ngIf="comp.local" class="d-flex align-items-center gap-xxs">
+                <span class="material-symbols-outlined icon-sm">location_on</span>
+                {{ comp.local }}
+              </span>
+
+              <span *ngIf="comp.nomeProjeto" class="d-flex align-items-center gap-xxs">
+                <span class="material-symbols-outlined icon-sm">folder</span>
+                Projeto: <strong>{{ comp.nomeProjeto }}</strong>
+              </span>
+
+              <span *ngIf="comp.nomeCliente" class="d-flex align-items-center gap-xxs">
+                <span class="material-symbols-outlined icon-sm">person</span>
+                Cliente: <strong>{{ comp.nomeCliente }}</strong>
+              </span>
+
+              <span *ngIf="comp.nomeLead" class="d-flex align-items-center gap-xxs">
+                <span class="material-symbols-outlined icon-sm">contact_page</span>
+                Lead: <strong>{{ comp.nomeLead }}</strong>
+              </span>
+            </div>
+
+            <p *ngIf="comp.descricao" class="event-desc font-body-sm text-on-surface-variant m-0">
+              {{ comp.descricao }}
+            </p>
+          </div>
+        </div>
+
+        <div class="event-card-actions d-flex align-items-center gap-xs flex-wrap">
+          <app-button 
+            *ngIf="comp.linkGoogleMeet" 
+            variant="icon" 
+            size="sm"
+            customClass="btn-meet" 
+            (btnClick)="abrirMeet(comp, $event)" 
+            title="Entrar na sala do Google Meet">
+            <span class="material-symbols-outlined">videocam</span>
+          </app-button>
+
+          <app-button 
+            *ngIf="comp.linkGoogleCalendarWeb" 
+            variant="icon" 
+            size="sm"
+            customClass="btn-calendar" 
+            (btnClick)="abrirGoogleAgenda(comp, $event)" 
+            title="Adicionar ao Google Agenda">
+            <span class="material-symbols-outlined">event</span>
+          </app-button>
+
+          <app-button 
+            variant="icon" 
+            size="sm"
+            customClass="btn-check" 
+            [class.active-check]="comp.status === 'Concluido'"
+            (btnClick)="marcarComoConcluido(comp, $event)" 
+            [title]="comp.status === 'Concluido' ? 'Reabrir compromisso' : 'Marcar como concluído'">
+            <span class="material-symbols-outlined">check_circle</span>
+          </app-button>
+
+          <app-button 
+            variant="icon" 
+            size="sm"
+            (btnClick)="abrirModalEditar(comp, $event)" 
+            title="Editar compromisso">
+            <span class="material-symbols-outlined">edit</span>
+          </app-button>
+
+          <app-button 
+            variant="icon" 
+            size="sm"
+            customClass="btn-delete" 
+            (btnClick)="abrirModalExcluir(comp, $event)" 
+            title="Excluir compromisso">
+            <span class="material-symbols-outlined">delete</span>
+          </app-button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado Vazio -->
+  <app-empty-state
+    *ngIf="!carregando && compromissosFiltrados.length === 0"
+    icon="event_busy"
+    title="Nenhum compromisso encontrado"
+    [description]="(termoBusca || filtroTipo !== 'todos' || filtroStatus !== 'todos') ? 'Tente ajustar os filtros ou a busca para localizar os compromissos.' : 'Você não possui compromissos agendados para este mês.'"
+    actionLabel="Agendar Primeiro Compromisso"
+    actionIcon="add"
+    (actionClick)="abrirModalNovo()">
+  </app-empty-state>
+
+</div>
