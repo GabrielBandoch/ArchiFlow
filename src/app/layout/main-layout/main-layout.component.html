@@ -37,6 +37,10 @@
         <span class="material-symbols-outlined nav-icon">calculate</span>
         <span class="nav-label">Simulador</span>
       </a>
+      <a routerLink="/admin/assinantes" routerLinkActive="active" class="nav-item" *ngIf="authService.isAdmin">
+        <span class="material-symbols-outlined nav-icon">shield_person</span>
+        <span class="nav-label">COTU Assinantes</span>
+      </a>
 
       <div class="nav-group-section">
         <button type="button" class="nav-item nav-item-btn w-full" (click)="toggleConfiguracoes()" [class.active-parent]="router.url.includes('/configuracoes')">

@@ -83,6 +83,11 @@ export class AuthService {
     return !!user && !this.isCliente;
   }
 
+  public get isAdmin(): boolean {
+    const perfil = this.currentUserValue?.perfil;
+    return perfil === 'Administrador' || perfil === 'ArquitetoAdmin';
+  }
+
   public get projetoId(): string | null | undefined {
     return this.currentUserValue?.projetoId;
   }

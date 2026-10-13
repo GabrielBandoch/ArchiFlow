@@ -1,0 +1,536 @@
+<div class="superadmin-container">
+  <!-- Top Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <div class="brand-badge">
+        <span class="material-symbols-outlined badge-icon">shield_person</span>
+        <span class="badge-text">COTU CLOUD &bull; MASTER SAAS</span>
+      </div>
+      <h1 class="page-title">Gestão de Escritórios & Assinantes</h1>
+      <p class="page-subtitle">
+        Controle central de clientes contratantes, faturamento recorrente (MRR), inadimplência e provisionamento de novos ambientes.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <app-button variant="outline" size="md" (btnClick)="carregarDados()" [disabled]="loading" title="Atualizar dados">
+        <span class="material-symbols-outlined" [class.spin]="loading">sync</span>
+        <span>Atualizar</span>
+      </app-button>
+      <app-button variant="primary" size="md" (btnClick)="abrirModalNovo()">
+        <span class="material-symbols-outlined">add_business</span>
+        <span>Novo Escritório</span>
+      </app-button>
+    </div>
+  </header>
+
+  <!-- KPI Cards Grid -->
+  <section class="kpis-grid">
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-label">TOTAL DE ESCRITÓRIOS</span>
+        <div class="kpi-icon-wrapper primary">
+          <span class="material-symbols-outlined">apartment</span>
+        </div>
+      </div>
+      <div class="kpi-value">{{ kpis.totalEscritorios }}</div>
+      <div class="kpi-footer">
+        <span class="kpi-subtext">
+          <strong>{{ kpis.totalAdimplentes }}</strong> ativos &bull; <strong>{{ kpis.totalTrial }}</strong> em teste
+        </span>
+      </div>
+    </div>
+
+    <div class="kpi-card highlight-mrr">
+      <div class="kpi-header">
+        <span class="kpi-label">MRR (RECEITA RECORRENTE)</span>
+        <div class="kpi-icon-wrapper success">
+          <span class="material-symbols-outlined">payments</span>
+        </div>
+      </div>
+      <div class="kpi-value">R$ {{ kpis.mrrTotal | number:'1.2-2' }}</div>
+      <div class="kpi-footer">
+        <span class="badge-pill success">
+          <span class="material-symbols-outlined icon-inline">trending_up</span>
+          {{ kpis.taxaAdimplenciaPercentual }}% adimplência
+        </span>
+      </div>
+    </div>
+
+    <div class="kpi-card" [class.alert-border]="kpis.totalEmDebito > 0">
+      <div class="kpi-header">
+        <span class="kpi-label">EM DÉBITO (ATRASO)</span>
+        <div class="kpi-icon-wrapper warning">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+      </div>
+      <div class="kpi-value text-warning">{{ kpis.totalEmDebito }}</div>
+      <div class="kpi-footer">
+        <span class="kpi-subtext" *ngIf="kpis.totalEmAtrasoReais > 0">
+          R$ {{ kpis.totalEmAtrasoReais | number:'1.2-2' }} em aberto
+        </span>
+        <span class="kpi-subtext text-success" *ngIf="kpis.totalEmDebito === 0">
+          Nenhum pagamento em atraso!
+        </span>
+      </div>
+    </div>
+
+    <div class="kpi-card" [class.danger-border]="kpis.totalSuspensos > 0">
+      <div class="kpi-header">
+        <span class="kpi-label">ACESSOS SUSPENSOS</span>
+        <div class="kpi-icon-wrapper danger">
+          <span class="material-symbols-outlined">block</span>
+        </div>
+      </div>
+      <div class="kpi-value text-danger">{{ kpis.totalSuspensos }}</div>
+      <div class="kpi-footer">
+        <span class="kpi-subtext">
+          {{ kpis.totalSuspensos === 0 ? 'Nenhum cliente bloqueado' : 'Bloqueados por inadimplência' }}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter & Search Toolbar -->
+  <section class="toolbar-section">
+    <div class="search-box">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input
+        type="text"
+        placeholder="Buscar por escritório, subdomínio, responsável ou e-mail..."
+        [(ngModel)]="termoBusca"
+        (input)="onBuscaChange()"
+        class="search-input"
+      />
+      <button *ngIf="termoBusca" (click)="termoBusca = ''; onBuscaChange()" class="clear-btn">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="filter-chips">
+      <button
+        class="chip-btn"
+        [class.active]="filtroStatus === 'Todos'"
+        (click)="filtrarPorStatus('Todos')">
+        Todos ({{ kpis.totalEscritorios }})
+      </button>
+      <button
+        class="chip-btn chip-warning"
+        [class.active]="filtroStatus === 'EmDebito'"
+        (click)="filtrarPorStatus('EmDebito')">
+        <span class="material-symbols-outlined icon-chip">error</span>
+        Em Débito ({{ kpis.totalEmDebito }})
+      </button>
+      <button
+        class="chip-btn chip-success"
+        [class.active]="filtroStatus === 'Adimplente'"
+        (click)="filtrarPorStatus('Adimplente')">
+        <span class="material-symbols-outlined icon-chip">check_circle</span>
+        Adimplentes ({{ kpis.totalAdimplentes }})
+      </button>
+      <button
+        class="chip-btn chip-danger"
+        [class.active]="filtroStatus === 'Suspenso'"
+        (click)="filtrarPorStatus('Suspenso')">
+        <span class="material-symbols-outlined icon-chip">lock</span>
+        Suspensos ({{ kpis.totalSuspensos }})
+      </button>
+      <button
+        class="chip-btn chip-info"
+        [class.active]="filtroStatus === 'Trial'"
+        (click)="filtrarPorStatus('Trial')">
+        <span class="material-symbols-outlined icon-chip">science</span>
+        Trial ({{ kpis.totalTrial }})
+      </button>
+    </div>
+  </section>
+
+  <!-- Subscribers Table -->
+  <section class="table-card">
+    <div class="table-responsive" *ngIf="escritorios.length > 0">
+      <table class="saas-table">
+        <thead>
+          <tr>
+            <th>ESCRITÓRIO & SUBDOMÍNIO</th>
+            <th>RESPONSÁVEL</th>
+            <th>PLANO</th>
+            <th>MENSALIDADE</th>
+            <th>VENCIMENTO</th>
+            <th>STATUS</th>
+            <th>ACESSO</th>
+            <th class="text-right">AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of escritorios" [class.row-debito]="item.statusFinanceiro === 'EmDebito'" [class.row-suspenso]="item.bloqueadoPorInadimplencia">
+            <!-- Escritório & Subdomínio -->
+            <td>
+              <div class="escritorio-cell">
+                <div class="escritorio-nome">
+                  <strong>{{ item.nomeEscritorio }}</strong>
+                </div>
+                <div class="subdominio-tag" (click)="copiarLink(item.linkAcesso)" title="Clique para copiar link de acesso">
+                  <span class="subdominio-text">{{ item.subdominio }}.cotu.com.br</span>
+                  <a [href]="item.linkAcesso" target="_blank" (click)="$event.stopPropagation()" class="link-open" title="Abrir sistema do cliente">
+                    <span class="material-symbols-outlined">open_in_new</span>
+                  </a>
+                </div>
+                <div class="razao-social" *ngIf="item.razaoSocial">
+                  {{ item.razaoSocial }}
+                </div>
+              </div>
+            </td>
+
+            <!-- Responsável -->
+            <td>
+              <div class="responsavel-cell">
+                <span class="resp-nome">{{ item.nomeResponsavel }}</span>
+                <span class="resp-email">{{ item.emailResponsavel }}</span>
+                <span class="resp-tel" *ngIf="item.telefoneResponsavel">{{ item.telefoneResponsavel }}</span>
+              </div>
+            </td>
+
+            <!-- Plano -->
+            <td>
+              <div class="plano-cell">
+                <span class="badge-plano" [attr.data-plano]="item.plano">{{ item.plano }}</span>
+                <span class="ciclo-text">{{ item.cicloFaturamento }}</span>
+              </div>
+            </td>
+
+            <!-- Mensalidade -->
+            <td>
+              <div class="valor-cell">
+                <span class="valor-text">R$ {{ item.valorMensalidade | number:'1.2-2' }}</span>
+                <span class="valor-subtext">/mês</span>
+              </div>
+            </td>
+
+            <!-- Vencimento -->
+            <td>
+              <div class="vencimento-cell">
+                <span class="data-text">{{ item.dataVencimento | date:'dd/MM/yyyy' }}</span>
+                <span class="atraso-badge" *ngIf="item.diasEmAtraso > 0">
+                  <span class="material-symbols-outlined icon-mini">schedule</span>
+                  {{ item.diasEmAtraso }} dias em atraso
+                </span>
+                <span class="ok-badge" *ngIf="item.diasEmAtraso === 0 && item.statusFinanceiro === 'Adimplente'">
+                  Em dia
+                </span>
+              </div>
+            </td>
+
+            <!-- Status Financeiro -->
+            <td>
+              <div class="status-cell">
+                <span class="status-badge" [class.adimplente]="item.statusFinanceiro === 'Adimplente'"
+                      [class.em-debito]="item.statusFinanceiro === 'EmDebito'"
+                      [class.suspenso]="item.statusFinanceiro === 'Suspenso'"
+                      [class.trial]="item.statusFinanceiro === 'Trial'">
+                  <span class="status-dot"></span>
+                  {{ item.statusFinanceiro === 'EmDebito' ? 'Em Débito' : item.statusFinanceiro }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Acesso -->
+            <td>
+              <div class="acesso-cell">
+                <span class="acesso-badge bloqueado" *ngIf="item.bloqueadoPorInadimplencia" title="Usuários deste escritório não conseguem acessar o sistema">
+                  <span class="material-symbols-outlined icon-mini">lock</span>
+                  Bloqueado
+                </span>
+                <span class="acesso-badge liberado" *ngIf="!item.bloqueadoPorInadimplencia">
+                  <span class="material-symbols-outlined icon-mini">lock_open</span>
+                  Liberado
+                </span>
+              </div>
+            </td>
+
+            <!-- Ações -->
+            <td class="text-right">
+              <div class="actions-cell">
+                <!-- Cobrança via WhatsApp -->
+                <button
+                  type="button"
+                  class="action-btn-icon btn-whatsapp"
+                  (click)="abrirWhatsApp(item.linkWhatsAppCobranca)"
+                  [disabled]="!item.telefoneResponsavel"
+                  title="Enviar mensagem de cobrança/lembrete no WhatsApp">
+                  <span class="material-symbols-outlined">chat</span>
+                </button>
+
+                <!-- Confirmar Pagamento -->
+                <button
+                  type="button"
+                  class="action-btn-icon btn-pagar"
+                  (click)="confirmarPagamento(item)"
+                  title="Confirmar pagamento da mensalidade (estender vencimento)">
+                  <span class="material-symbols-outlined">paid</span>
+                </button>
+
+                <!-- Alterar Status Financeiro -->
+                <button
+                  type="button"
+                  class="action-btn-icon"
+                  (click)="abrirModalStatus(item)"
+                  title="Alterar status financeiro">
+                  <span class="material-symbols-outlined">tune</span>
+                </button>
+
+                <!-- Bloquear / Desbloquear -->
+                <button
+                  type="button"
+                  class="action-btn-icon"
+                  [class.btn-danger]="!item.bloqueadoPorInadimplencia"
+                  [class.btn-success]="item.bloqueadoPorInadimplencia"
+                  (click)="alternarBloqueio(item)"
+                  [title]="item.bloqueadoPorInadimplencia ? 'Liberar acesso do escritório' : 'Suspender acesso por inadimplência'">
+                  <span class="material-symbols-outlined">{{ item.bloqueadoPorInadimplencia ? 'lock_reset' : 'block' }}</span>
+                </button>
+
+                <!-- Anotações Internas -->
+                <button
+                  type="button"
+                  class="action-btn-icon"
+                  [class.has-notes]="!!item.notasInternas"
+                  (click)="abrirModalNotas(item)"
+                  title="Anotações internas da equipe COTU">
+                  <span class="material-symbols-outlined">edit_note</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="escritorios.length === 0 && !loading">
+      <span class="material-symbols-outlined empty-icon">apartment</span>
+      <h3 class="empty-title">Nenhum escritório encontrado</h3>
+      <p class="empty-text">Tente alterar os termos de busca ou filtros aplicados.</p>
+      <app-button variant="outline" size="sm" (btnClick)="termoBusca = ''; filtroStatus = 'Todos'; carregarEscritorios()">
+        Limpar Filtros
+      </app-button>
+    </div>
+  </section>
+
+  <!-- Modal: Novo Escritório Assinante -->
+  <div class="modal-backdrop" *ngIf="modalNovoAberto" (click)="fecharModalNovo()">
+    <div class="modal-dialog modal-md" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="material-symbols-outlined modal-icon">add_business</span>
+          <div>
+            <h2 class="modal-title">Novo Escritório Assinante COTU</h2>
+            <p class="modal-subtitle">Cadastra o cliente e provisiona automaticamente o banco de dados dedicado.</p>
+          </div>
+        </div>
+        <button type="button" class="close-modal-btn" (click)="fecharModalNovo()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid">
+          <!-- Subdomínio -->
+          <div class="form-group full-width">
+            <label class="form-label">Subdomínio COTU <span class="required">*</span></label>
+            <div class="subdominio-input-wrapper">
+              <span class="subdominio-prefix">https://</span>
+              <input
+                type="text"
+                class="form-input"
+                placeholder="ex: duna, bandoch-arq"
+                [(ngModel)]="novoForm.subdominio"
+                (ngModelChange)="novoForm.subdominio = novoForm.subdominio.toLowerCase().replace(' ', '-')"
+              />
+              <span class="subdominio-suffix">.cotu.com.br</span>
+            </div>
+            <span class="form-hint">Este será o endereço DNS exclusivo e o nome do banco de dados (cotu_{{ novoForm.subdominio || 'subdominio' }}).</span>
+          </div>
+
+          <!-- Nome do Escritório -->
+          <div class="form-group">
+            <label class="form-label">Nome Fantasia do Escritório <span class="required">*</span></label>
+            <input type="text" class="form-input" placeholder="ex: Duna Studio de Arquitetura" [(ngModel)]="novoForm.nomeEscritorio" />
+          </div>
+
+          <!-- Razão Social -->
+          <div class="form-group">
+            <label class="form-label">Razão Social</label>
+            <input type="text" class="form-input" placeholder="ex: Duna Arquitetura LTDA" [(ngModel)]="novoForm.razaoSocial" />
+          </div>
+
+          <!-- CNPJ / CPF -->
+          <div class="form-group">
+            <label class="form-label">CNPJ ou CPF</label>
+            <input type="text" class="form-input" placeholder="00.000.000/0000-00" [(ngModel)]="novoForm.cnpjCpf" />
+          </div>
+
+          <!-- Nome do Responsável -->
+          <div class="form-group">
+            <label class="form-label">Nome do Responsável Titular <span class="required">*</span></label>
+            <input type="text" class="form-input" placeholder="ex: Arq. Gabriel Bandoch" [(ngModel)]="novoForm.nomeResponsavel" />
+          </div>
+
+          <!-- Email do Responsável -->
+          <div class="form-group">
+            <label class="form-label">E-mail do Responsável <span class="required">*</span></label>
+            <input type="email" class="form-input" placeholder="contato@dunastudio.com.br" [(ngModel)]="novoForm.emailResponsavel" />
+          </div>
+
+          <!-- Telefone / WhatsApp -->
+          <div class="form-group">
+            <label class="form-label">Telefone / WhatsApp</label>
+            <input type="tel" class="form-input" placeholder="+55 47 99999-9999" [(ngModel)]="novoForm.telefoneResponsavel" />
+          </div>
+
+          <!-- Plano -->
+          <div class="form-group">
+            <label class="form-label">Plano COTU <span class="required">*</span></label>
+            <select class="form-select" [(ngModel)]="novoForm.plano" (change)="onPlanoChange()">
+              <option value="Starter">Starter (R$ 189,90/mês)</option>
+              <option value="Professional">Professional (R$ 349,00/mês)</option>
+              <option value="Studio Scale">Studio Scale (R$ 599,00/mês)</option>
+              <option value="Enterprise">Enterprise (Sob Consulta)</option>
+            </select>
+          </div>
+
+          <!-- Ciclo -->
+          <div class="form-group">
+            <label class="form-label">Ciclo de Cobrança</label>
+            <select class="form-select" [(ngModel)]="novoForm.cicloFaturamento">
+              <option value="Mensal">Mensal</option>
+              <option value="Anual">Anual (Desconto 15%)</option>
+            </select>
+          </div>
+
+          <!-- Valor Mensalidade -->
+          <div class="form-group">
+            <label class="form-label">Valor Mensalidade (R$)</label>
+            <input type="number" class="form-input" step="0.01" [(ngModel)]="novoForm.valorMensalidade" />
+          </div>
+
+          <!-- Status Inicial -->
+          <div class="form-group">
+            <label class="form-label">Status Financeiro Inicial</label>
+            <select class="form-select" [(ngModel)]="novoForm.statusFinanceiro">
+              <option value="Adimplente">Adimplente (Liberado)</option>
+              <option value="Trial">Trial (14 dias de degustação)</option>
+              <option value="EmDebito">Em Débito</option>
+            </select>
+          </div>
+
+          <!-- Notas Internas -->
+          <div class="form-group full-width">
+            <label class="form-label">Anotações Internas (COTU)</label>
+            <textarea class="form-textarea" rows="2" placeholder="Observações de venda, canal de contato, acordos..." [(ngModel)]="novoForm.notasInternas"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <app-button variant="ghost" size="md" (btnClick)="fecharModalNovo()" [disabled]="salvandoNovo">
+          Cancelar
+        </app-button>
+        <app-button variant="primary" size="md" (btnClick)="salvarNovoEscritorio()" [disabled]="salvandoNovo">
+          <span class="material-symbols-outlined" *ngIf="!salvandoNovo">rocket_launch</span>
+          <span class="material-symbols-outlined spin" *ngIf="salvandoNovo">sync</span>
+          <span>{{ salvandoNovo ? 'Provisionando Banco...' : 'Criar e Provisionar' }}</span>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Alterar Status Financeiro -->
+  <div class="modal-backdrop" *ngIf="modalStatusAberto" (click)="fecharModalStatus()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="material-symbols-outlined modal-icon">tune</span>
+          <div>
+            <h2 class="modal-title">Status Financeiro</h2>
+            <p class="modal-subtitle">{{ escritorioSelecionado?.nomeEscritorio }} ({{ escritorioSelecionado?.subdominio }})</p>
+          </div>
+        </div>
+        <button type="button" class="close-modal-btn" (click)="fecharModalStatus()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Status da Assinatura</label>
+          <select class="form-select" [(ngModel)]="statusForm.statusFinanceiro">
+            <option value="Adimplente">Adimplente (Em Dia)</option>
+            <option value="EmDebito">Em Débito (Pagamento Atrasado)</option>
+            <option value="Suspenso">Suspenso (Bloquear Acesso)</option>
+            <option value="Trial">Trial (Degustação)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Data de Vencimento</label>
+          <input type="date" class="form-input" [(ngModel)]="statusForm.novaDataVencimento" />
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="statusForm.registrarPagamentoHoje" />
+            <span>Registrar pagamento confirmado hoje (estende vencimento em +1 mês e desbloqueia acesso)</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Anotações Internas</label>
+          <textarea class="form-textarea" rows="3" placeholder="Histórico de contato..." [(ngModel)]="statusForm.notasInternas"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <app-button variant="ghost" size="md" (btnClick)="fecharModalStatus()" [disabled]="salvandoStatus">
+          Cancelar
+        </app-button>
+        <app-button variant="primary" size="md" (btnClick)="salvarStatusFinanceiro()" [disabled]="salvandoStatus">
+          <span>{{ salvandoStatus ? 'Salvando...' : 'Salvar Alterações' }}</span>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Anotações Internas -->
+  <div class="modal-backdrop" *ngIf="modalNotasAberto" (click)="fecharModalNotas()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="material-symbols-outlined modal-icon">edit_note</span>
+          <div>
+            <h2 class="modal-title">Anotações Internas COTU</h2>
+            <p class="modal-subtitle">{{ escritorioSelecionado?.nomeEscritorio }}</p>
+          </div>
+        </div>
+        <button type="button" class="close-modal-btn" (click)="fecharModalNotas()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Registro de negociações, contatos e histórico do cliente</label>
+          <textarea class="form-textarea" rows="6" placeholder="Escreva observações internas..." [(ngModel)]="notasTexto"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <app-button variant="ghost" size="md" (btnClick)="fecharModalNotas()" [disabled]="salvandoNotas">
+          Cancelar
+        </app-button>
+        <app-button variant="primary" size="md" (btnClick)="salvarNotas()" [disabled]="salvandoNotas">
+          <span>{{ salvandoNotas ? 'Salvando...' : 'Salvar Anotações' }}</span>
+        </app-button>
+      </div>
+    </div>
+  </div>
+</div>
