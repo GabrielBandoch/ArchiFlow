@@ -125,7 +125,7 @@
                   <div class="contact-line phone d-inline-flex align-items-center gap-xs font-label-md" *ngIf="cliente.telefone">
                     <span class="material-symbols-outlined icon">call</span>
                     <span>{{ cliente.telefone | phoneMask }}</span>
-                    <app-whatsapp-button [telefone]="cliente.telefone" [mensagem]="'Olá ' + cliente.nome + '! Entro em contato sobre o seu projeto no Cotu.'"></app-whatsapp-button>
+                    <app-whatsapp-button [telefone]="cliente.telefone" [nomeDestinatario]="cliente.nome"></app-whatsapp-button>
                   </div>
                 </div>
               </td>
@@ -193,7 +193,7 @@
       </div>
       <h2 class="onboarding-title font-headline-lg m-0">Diretório de Clientes Vazio</h2>
       <p class="onboarding-subtitle font-body-md text-on-surface-variant margin-top-xs m-0">
-        No Cotu, os clientes nascem do seu funil comercial de leads. Quando um lead aprova o orçamento, converta-o para gerar o cliente e o acesso ao Portal automaticamente.
+        No COTU, os clientes nascem do seu funil comercial de leads. Quando um lead aprova o orçamento, converta-o para gerar o cliente e o acesso ao Portal automaticamente.
       </p>
     </div>
 

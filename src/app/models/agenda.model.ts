@@ -4,6 +4,7 @@ export const TiposCompromisso = {
   MedicaoTecnica: 'MedicaoTecnica',
   ApresentacaoProjeto: 'ApresentacaoProjeto',
   EntregaEtapa: 'EntregaEtapa',
+  Tarefa: 'Tarefa',
   Geral: 'Geral'
 } as const;
 

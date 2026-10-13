@@ -1,29 +1,29 @@
 export const DASHBOARD_COLORS = {
   fasesProjeto: {
-    Briefing: '#3B82F6',
-    Desenvolvimento: '#F59E0B',
-    Revisao: '#8B5CF6',
-    Aprovacao: '#10B981',
-    Execucao: '#06B6D4',
-    Concluido: '#22C55E',
-    Cancelado: '#EF4444'
+    Briefing: '#916d4e',
+    Desenvolvimento: '#765538',
+    Revisao: '#b45309',
+    Aprovacao: '#2e7d32',
+    Execucao: '#685c51',
+    Concluido: '#1b5e20',
+    Cancelado: '#ba1a1a'
   } as Record<string, string>,
   tiposProjeto: {
     Residencial: '#765538',
-    Comercial: '#1E40AF',
-    Corporativo: '#4F46E5',
-    Interiores: '#D97706'
+    Comercial: '#916d4e',
+    Corporativo: '#685c51',
+    Interiores: '#b45309'
   } as Record<string, string>,
   funilLeads: {
-    Novo: '#3B82F6',
-    EmContato: '#0EA5E9',
-    PropostaEnviada: '#F59E0B',
-    Negociando: '#D97706',
-    Convertido: '#10B981',
-    Perdido: '#94A3B8'
+    Novo: '#685c51',
+    EmContato: '#916d4e',
+    PropostaEnviada: '#b45309',
+    Negociando: '#765538',
+    Convertido: '#2e7d32',
+    Perdido: '#81756b'
   } as Record<string, string>,
   origens: [
-    '#765538', '#1E40AF', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#64748B'
+    '#765538', '#916d4e', '#685c51', '#b45309', '#2e7d32', '#81756b', '#d3c4b9'
   ],
-  defaultColor: '#94A3B8'
+  defaultColor: '#81756b'
 };

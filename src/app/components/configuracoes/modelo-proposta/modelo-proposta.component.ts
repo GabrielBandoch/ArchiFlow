@@ -6,6 +6,8 @@ import { ConfiguracaoProposta, CONFIGURACAO_PROPOSTA_PADRAO } from '../../../cor
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ModalPropostaPdfComponent, PropostaVisualizacaoData } from '../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-modelo-proposta',
@@ -50,7 +52,8 @@ export class ModeloPropostaComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private configService: ConfiguracaoPropostaService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -105,18 +108,29 @@ export class ModeloPropostaComponent implements OnInit {
         this.notificationService.warning('Por favor, selecione um arquivo de imagem válido (PNG, SVG ou JPG).');
         return;
       }
-      if (file.size > 2 * 1024 * 1024) {
-        this.notificationService.warning('A imagem do logotipo deve ter no máximo 2MB.');
+      if (file.size > 20 * 1024 * 1024) {
+        this.notificationService.warning('A imagem do logotipo deve ter no máximo 20MB.');
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result as string;
-        this.form.patchValue({ logoUrl: base64 });
-        this.notificationService.success('Logotipo carregado com sucesso!');
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      this.http.post<{ url: string }>(`${environment.apiUrl}/arquivos/upload-geral`, formData).subscribe({
+        next: (res) => {
+          this.form.patchValue({ logoUrl: res.url });
+          this.notificationService.success('Logotipo enviado para o armazenamento em nuvem AWS!');
+        },
+        error: () => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64 = reader.result as string;
+            this.form.patchValue({ logoUrl: base64 });
+            this.notificationService.info('Logotipo carregado localmente.');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
     }
   }
 
@@ -135,6 +149,9 @@ export class ModeloPropostaComponent implements OnInit {
     const valores: ConfiguracaoProposta = this.form.value;
     this.configService.salvarConfiguracao(valores).subscribe({
       next: () => {
+        if (valores.nomeEscritorio) {
+          localStorage.setItem('nomeEscritorio', valores.nomeEscritorio.trim());
+        }
         this.notificationService.success('Configurações do modelo de proposta salvas com sucesso!');
       },
       error: () => {
@@ -144,7 +161,7 @@ export class ModeloPropostaComponent implements OnInit {
   }
 
   public restaurarPadrao(): void {
-    if (confirm('Deseja restaurar todas as configurações e textos para o padrão original do Cotu?')) {
+    if (confirm('Deseja restaurar todas as configurações e textos para o padrão original do COTU?')) {
       this.configService.resetarPadroes().subscribe({
         next: (padrao) => {
           this.form.patchValue(padrao);

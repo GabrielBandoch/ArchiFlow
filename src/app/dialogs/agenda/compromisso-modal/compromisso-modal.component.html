@@ -1,6 +1,6 @@
 <app-dialog 
   [show]="show" 
-  [dialogTitle]="isEditing ? 'Editar Compromisso' : 'Novo Compromisso na Agenda'" 
+  [dialogTitle]="isEditing ? (isTarefa ? 'Editar Tarefa' : 'Editar Compromisso') : (isTarefa ? 'Nova Tarefa / Entregável' : 'Novo Compromisso na Agenda')" 
   size="lg" 
   (close)="onClose()">
   
@@ -16,8 +16,8 @@
       <app-input 
         id="compromissoTitulo"
         type="text" 
-        label="Título do Compromisso" 
-        placeholder="Ex: Reunião de Apresentação de Layout, Medição de Obra..." 
+        [label]="isTarefa ? 'Título da Tarefa / Entregável' : 'Título do Compromisso'" 
+        [placeholder]="isTarefa ? 'Ex: Enviar detalhamento para marcenaria, Revisar pranchas...' : 'Ex: Reunião de Apresentação de Layout, Medição de Obra...'" 
         formControlName="titulo"
         [required]="true"
         [error]="temErro('titulo') ? 'Título é obrigatório (mínimo 2 caracteres).' : undefined">

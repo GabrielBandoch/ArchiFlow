@@ -38,6 +38,14 @@
         Exportar iCal (.ics)
       </app-button>
 
+      <app-button 
+        variant="secondary" 
+        (btnClick)="abrirModalNovaTarefa()" 
+        title="Adicionar nova tarefa ou entregável com data prevista">
+        <span class="material-symbols-outlined icon-btn-inline">task_alt</span>
+        Nova Tarefa
+      </app-button>
+
       <app-button variant="primary" (btnClick)="abrirModalNovo()">
         <span class="material-symbols-outlined icon-btn-inline">add</span>
         Novo Compromisso
@@ -93,6 +101,16 @@
       <div class="metric-content">
         <span class="metric-label font-label-sm">Visitas a Obras</span>
         <span class="metric-value font-headline-sm">{{ totalVisitasObras }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap bg-purple-soft text-purple">
+        <span class="material-symbols-outlined">task_alt</span>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label font-label-sm">Tarefas</span>
+        <span class="metric-value font-headline-sm">{{ totalTarefas }}</span>
       </div>
     </div>
 
@@ -216,26 +234,47 @@
           <span class="day-number" [class.today-badge]="celula.isHoje">
             {{ celula.diaNumero }}
           </span>
-          <button 
-            type="button" 
-            class="btn-quick-add" 
-            title="Agendar neste dia"
-            (click)="$event.stopPropagation(); abrirModalNovo(celula.data)">
-            <span class="material-symbols-outlined">add</span>
-          </button>
+          <div class="cell-quick-actions d-flex align-items-center gap-xxs">
+            <button 
+              type="button" 
+              class="btn-cell-action btn-quick-task" 
+              title="Nova tarefa neste dia"
+              (click)="$event.stopPropagation(); abrirModalNovaTarefa(celula.data)">
+              <span class="material-symbols-outlined">task_alt</span>
+            </button>
+            <button 
+              type="button" 
+              class="btn-cell-action btn-quick-add" 
+              title="Agendar neste dia"
+              (click)="$event.stopPropagation(); abrirModalNovo(celula.data)">
+              <span class="material-symbols-outlined">add</span>
+            </button>
+          </div>
         </div>
 
         <div class="day-events-list d-flex flex-direction-column gap-xxs">
           <div 
             *ngFor="let comp of celula.compromissos" 
             class="event-pill"
-            [ngClass]="obterBadgeClasseTipo(comp.tipo)"
+            [ngClass]="[obterBadgeClasseTipo(comp.tipo), comp.tipo === 'Tarefa' ? 'event-pill-tarefa' : '']"
             [class.event-concluido]="comp.status === 'Concluido'"
             (click)="abrirModalEditar(comp, $event)"
-            [title]="comp.titulo + ' (' + formatarHora(comp.dataHoraInicio) + ')'">
-            <span class="material-symbols-outlined event-mini-icon" *ngIf="comp.linkGoogleMeet">videocam</span>
-            <span class="event-time font-label-xs">{{ formatarHora(comp.dataHoraInicio) }}</span>
-            <span class="event-title font-label-xs">{{ comp.titulo }}</span>
+            [title]="(comp.tipo === 'Tarefa' ? 'Tarefa: ' : '') + comp.titulo + (comp.tipo !== 'Tarefa' ? ' (' + formatarHora(comp.dataHoraInicio) + ')' : '')">
+            
+            <!-- Checkbox direto para Tarefas no Calendário -->
+            <button 
+              *ngIf="comp.tipo === 'Tarefa'"
+              type="button"
+              class="task-toggle-btn"
+              [class.checked]="comp.status === 'Concluido'"
+              [title]="comp.status === 'Concluido' ? 'Reabrir tarefa' : 'Concluir tarefa'"
+              (click)="marcarComoConcluido(comp, $event)">
+              <span class="material-symbols-outlined">{{ comp.status === 'Concluido' ? 'check_box' : 'check_box_outline_blank' }}</span>
+            </button>
+
+            <span class="material-symbols-outlined event-mini-icon" *ngIf="comp.tipo !== 'Tarefa' && comp.linkGoogleMeet">videocam</span>
+            <span class="event-time font-label-xs" *ngIf="comp.tipo !== 'Tarefa'">{{ formatarHora(comp.dataHoraInicio) }}</span>
+            <span class="event-title font-label-xs" [class.text-decoration-line-through]="comp.status === 'Concluido'">{{ comp.titulo }}</span>
           </div>
         </div>
 

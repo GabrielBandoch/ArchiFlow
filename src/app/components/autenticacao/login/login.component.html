@@ -16,14 +16,13 @@
 
   <div class="form-side d-flex flex-direction-column justify-content-between position-relative overflow-y-auto h-full">
     <div class="logo-header d-flex align-items-center gap-sm animate-fade-in-up">
-      <span class="material-symbols-outlined logo-icon">architecture</span>
-      <span class="logo-text">Cotu</span>
+      <app-cotu-logo [theme]="'light'" [size]="'lg'" [subtitle]="'STUDIO'"></app-cotu-logo>
     </div>
 
     <div class="form-container w-full">
       <div class="form-intro margin-bottom-xl animate-fade-in-up delay-100">
         <h2 class="intro-title">Bem-vindo de volta</h2>
-        <p class="intro-subtitle font-body-md">Insira suas credenciais para acessar seu workspace.</p>
+        <p class="intro-subtitle font-body-md">Insira suas credenciais para acessar seu workspace no COTU.</p>
       </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form d-flex flex-direction-column gap-lg">
@@ -43,7 +42,9 @@
         <div class="animate-fade-in-up delay-300">
           <div class="password-label-row d-flex justify-content-end">
             <span class="forgot-password-link font-label-md">
-              <a href="#">Esqueci a senha</a>
+              <a href="javascript:void(0)" (click)="abrirModalRecuperacao()" class="link-recuperar-senha">
+                Esqueci minha senha
+              </a>
             </span>
           </div>
           <app-input 
@@ -77,8 +78,140 @@
     </div>
 
     <div class="footer-area d-flex justify-content-between align-items-center gap-md margin-top-xl animate-fade-in-up delay-400">
-      <span class="footer-copy font-label-sm">© 2026 Cotu Technologies</span>
+      <span class="footer-copy font-label-sm">© 2026 COTU Technologies</span>
       <span class="footer-version font-label-sm">Versão 3.2.0 (Studio)</span>
     </div>
   </div>
 </div>
+
+<!-- MODAL DE RECUPERAÇÃO DE SENHA -->
+<app-dialog
+  [show]="showEsqueciSenhaModal"
+  [dialogTitle]="etapaRecuperacao === 1 ? 'Recuperação de Acesso COTU' : 'Redefinir Senha'"
+  size="sm"
+  (close)="fecharModalRecuperacao()">
+
+  <div class="recovery-modal-body d-flex flex-direction-column gap-md">
+
+    <!-- Mensagens de Alerta / Feedback -->
+    <div *ngIf="recuperacaoErro" class="alert-error">
+      {{ recuperacaoErro }}
+    </div>
+
+    <div *ngIf="recuperacaoSucesso" class="alert-info">
+      <span class="material-symbols-outlined icon">check_circle</span>
+      <span>{{ recuperacaoSucesso }}</span>
+    </div>
+
+    <!-- ETAPA 1: SOLICITAR CÓDIGO -->
+    <div *ngIf="etapaRecuperacao === 1" class="d-flex flex-direction-column gap-md">
+      <div class="recovery-intro">
+        <p class="font-body-sm text-on-surface-variant m-0">
+          Informe seu e-mail de acesso. Enviaremos um código de segurança de 6 dígitos para você redefinir sua senha com facilidade.
+        </p>
+      </div>
+
+      <div class="field-item">
+        <app-input
+          id="emailRecuperacao"
+          type="email"
+          label="E-mail cadastrado"
+          placeholder="seu.email@estudio.com.br"
+          icon="mail"
+          [(ngModel)]="emailRecuperacao"
+          [ngModelOptions]="{standalone: true}">
+        </app-input>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-xs">
+        <button type="button" class="btn-text-link font-label-sm" (click)="avancarParaEtapa2()">
+          Já possui um código?
+        </button>
+      </div>
+
+      <div class="dialog-actions d-flex justify-content-end align-items-center gap-xs mt-sm">
+        <app-button variant="ghost" type="button" (btnClick)="fecharModalRecuperacao()" [disabled]="loadingRecuperacao">
+          Cancelar
+        </app-button>
+        <app-button variant="primary" type="button" (btnClick)="solicitarCodigoRecuperacao()" [loading]="loadingRecuperacao">
+          <span class="material-symbols-outlined icon-btn-inline">send</span>
+          Enviar Código
+        </app-button>
+      </div>
+    </div>
+
+    <!-- ETAPA 2: VALIDAR CÓDIGO E DEFINIR NOVA SENHA -->
+    <div *ngIf="etapaRecuperacao === 2" class="d-flex flex-direction-column gap-md">
+      <div class="recovery-intro">
+        <p class="font-body-sm text-on-surface-variant m-0">
+          Insira o código de 6 dígitos enviado para <strong>{{ emailRecuperacao || 'seu e-mail' }}</strong> e crie uma nova senha de acesso.
+        </p>
+      </div>
+
+      <div class="field-item" *ngIf="!emailRecuperacao">
+        <app-input
+          id="emailRecuperacaoConfirm"
+          type="email"
+          label="E-mail"
+          placeholder="seu.email@estudio.com.br"
+          icon="mail"
+          [(ngModel)]="emailRecuperacao"
+          [ngModelOptions]="{standalone: true}">
+        </app-input>
+      </div>
+
+      <div class="field-item">
+        <app-input
+          id="codigoRecuperacao"
+          type="text"
+          label="Código de Verificação"
+          placeholder="Ex: 123456"
+          icon="key"
+          [(ngModel)]="codigoRecuperacao"
+          [ngModelOptions]="{standalone: true}">
+        </app-input>
+      </div>
+
+      <div class="field-item">
+        <app-input
+          id="novaSenhaInput"
+          type="password"
+          label="Nova Senha"
+          placeholder="Mínimo 6 caracteres"
+          icon="lock"
+          [(ngModel)]="novaSenha"
+          [ngModelOptions]="{standalone: true}">
+        </app-input>
+      </div>
+
+      <div class="field-item">
+        <app-input
+          id="confirmarNovaSenhaInput"
+          type="password"
+          label="Confirmar Nova Senha"
+          placeholder="Repita a nova senha"
+          icon="lock"
+          [(ngModel)]="confirmarNovaSenha"
+          [ngModelOptions]="{standalone: true}">
+        </app-input>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-xs">
+        <button type="button" class="btn-text-link font-label-sm" (click)="voltarParaEtapa1()">
+          ← Voltar e reenviar código
+        </button>
+      </div>
+
+      <div class="dialog-actions d-flex justify-content-end align-items-center gap-xs mt-sm">
+        <app-button variant="ghost" type="button" (btnClick)="fecharModalRecuperacao()" [disabled]="loadingRecuperacao">
+          Cancelar
+        </app-button>
+        <app-button variant="primary" type="button" (btnClick)="concluirRedefinicaoSenha()" [loading]="loadingRecuperacao">
+          <span class="material-symbols-outlined icon-btn-inline">lock_reset</span>
+          Redefinir Senha
+        </app-button>
+      </div>
+    </div>
+
+  </div>
+</app-dialog>

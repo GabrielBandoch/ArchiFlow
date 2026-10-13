@@ -17,11 +17,15 @@ describe('LoginComponent', () => {
       isStaff: false
     });
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const apiAuthSpy = jasmine.createSpyObj('AutenticacaoService', ['esqueciSenha', 'redefinirSenha']);
+    const notificationSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'warning']);
 
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
+        { provide: AutenticacaoService, useValue: apiAuthSpy },
+        { provide: NotificationService, useValue: notificationSpy },
         { provide: Router, useValue: routerSpy },
         {
           provide: ActivatedRoute,

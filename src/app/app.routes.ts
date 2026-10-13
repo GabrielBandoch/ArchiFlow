@@ -17,6 +17,16 @@ export const appRoutes: Routes = [
     ]
   },
   {
+    path: 'recuperar-senha',
+    redirectTo: 'login?recuperar=1',
+    pathMatch: 'full'
+  },
+  {
+    path: 'esqueci-senha',
+    redirectTo: 'login?recuperar=1',
+    pathMatch: 'full'
+  },
+  {
     path: 'portal',
     canActivate: [portalGuard],
     loadComponent: () => import('./layout/portal-layout/portal-layout.component').then(m => m.PortalLayoutComponent),
@@ -123,6 +133,14 @@ export const appRoutes: Routes = [
       {
         path: 'origens-lead',
         loadComponent: () => import('./components/leads/origens-lead/origens-lead.component').then(m => m.OrigensLeadComponent)
+      },
+      {
+        path: 'empresa',
+        loadComponent: () => import('./components/configuracoes/configuracao-empresa/configuracao-empresa.component').then(m => m.ConfiguracaoEmpresaComponent)
+      },
+      {
+        path: 'perfil',
+        loadComponent: () => import('./components/configuracoes/perfil-usuario/perfil-usuario.component').then(m => m.PerfilUsuarioComponent)
       },
       {
         path: 'equipe',

@@ -91,6 +91,31 @@
   z-index: 15;
 }
 
+.link-recuperar-senha {
+  color: var(--af-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+
+  &:hover {
+    text-decoration: underline;
+    opacity: 0.85;
+  }
+}
+
+.btn-text-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--af-primary);
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
 .btn-arrow-icon {
   font-size: 18px;
 }

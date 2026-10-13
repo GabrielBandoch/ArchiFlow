@@ -22,3 +22,14 @@ export interface AlterarStatusMembroCommand {
 export interface RedefinirSenhaMembroCommand {
   novaSenha?: string | null;
 }
+
+export interface AlterarMinhaSenhaCommand {
+  senhaAtual: string;
+  novaSenha: string;
+}
+
+export interface AtualizarMeuPerfilCommand {
+  nome: string;
+  telefone?: string | null;
+  cargo?: string | null;
+}

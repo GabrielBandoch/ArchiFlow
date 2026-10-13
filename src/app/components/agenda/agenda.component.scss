@@ -98,6 +98,8 @@
 .bg-info-soft { background-color: rgba(145, 109, 78, 0.14); color: var(--af-primary-container, #916d4e); }
 .bg-warning-soft { background-color: rgba(141, 79, 37, 0.12); color: #8d4f25; }
 .bg-success-soft { background-color: rgba(54, 102, 63, 0.12); color: #36663f; }
+.bg-purple-soft { background-color: rgba(124, 75, 181, 0.12); color: #7c4bb5; }
+.text-purple { color: #7c4bb5; }
 
 /* Barra de Controles e Filtros */
 .controls-bar {
@@ -272,7 +274,7 @@
   &:hover {
     background: #f8faff;
 
-    .btn-quick-add {
+    .cell-quick-actions {
       opacity: 1;
     }
   }
@@ -304,32 +306,49 @@
     color: var(--af-on-surface, #1b1c1c);
   }
 
-  .btn-quick-add {
+  .cell-quick-actions {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .btn-cell-action {
     background: transparent;
     border: none;
     cursor: pointer;
-    opacity: 0;
-    color: var(--af-primary, #765538);
     padding: 0.15rem;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 4px;
-    transition: opacity 0.15s, background 0.15s;
+    transition: background 0.15s, color 0.15s, transform 0.15s;
 
     .material-symbols-outlined {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
     }
 
     &:hover {
-      background: rgba(118, 85, 56, 0.1);
+      transform: scale(1.12);
+    }
+
+    &.btn-quick-task {
+      color: #7c4bb5;
+      &:hover {
+        background: rgba(124, 75, 181, 0.12);
+      }
+    }
+
+    &.btn-quick-add {
+      color: var(--af-primary, #765538);
+      &:hover {
+        background: rgba(118, 85, 56, 0.1);
+      }
     }
   }
 }
 
 .day-events-list {
   overflow-y: auto;
-  max-height: 90px;
+  max-height: 110px;
 }
 
 .event-pill {
@@ -356,6 +375,46 @@
     text-decoration: line-through;
   }
 
+  &.event-pill-tarefa {
+    background-color: #f7f3fb;
+    border-left: 3px solid #7c4bb5;
+    color: #4b306b;
+
+    &.event-concluido {
+      background-color: #f0f0f2;
+      color: #8c8994;
+      border-left-color: #b0a8bd;
+    }
+  }
+
+  .task-toggle-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-right: 2px;
+    line-height: 1;
+
+    .material-symbols-outlined {
+      font-size: 1rem;
+      color: #7c4bb5;
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+
+    &:hover .material-symbols-outlined {
+      transform: scale(1.2);
+      color: #5d3f82;
+    }
+
+    &.checked .material-symbols-outlined {
+      color: #36663f;
+    }
+  }
+
   .event-mini-icon {
     font-size: 0.9rem;
     flex-shrink: 0;
@@ -374,6 +433,12 @@
 }
 
 /* Badges e Pílulas por Tipo Arquitetônico ArchiFlow */
+.badge-tipo-tarefa {
+  background-color: #f7f3fb;
+  color: #5d3f82;
+  border-left: 3px solid #7c4bb5;
+}
+
 .badge-tipo-reuniao {
   background-color: #f6f0ea;
   color: #765538;

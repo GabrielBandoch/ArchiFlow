@@ -1,5 +1,5 @@
 .dashboard-header {
-  padding-bottom: var(--af-space-md);
+  padding-bottom: var(--af-space-lg);
   border-bottom: 1px solid var(--af-surface-container);
 }
 
@@ -7,19 +7,20 @@
   background-color: var(--af-surface-container-low);
   border: 1px solid var(--af-surface-container);
   color: var(--af-primary);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: var(--af-radius-full);
   width: fit-content;
 
   span:first-child {
-    font-size: 15px;
+    font-size: 16px;
   }
 }
 
 .header-subtitle {
   max-width: 680px;
+  line-height: 1.5;
 }
 
 .spinning {
@@ -43,7 +44,7 @@
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--af-space-md);
+  gap: var(--af-space-lg);
   width: 100%;
 }
 

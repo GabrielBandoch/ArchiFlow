@@ -1,7 +1,7 @@
 <app-dialog 
   [show]="show" 
   [dialogTitle]="isEditing ? 'Editar Membro da Equipe' : 'Convidar Novo Membro da Equipe'" 
-  size="md" 
+  size="lg" 
   [overflowVisible]="true"
   (close)="onClose()">
   
@@ -41,7 +41,7 @@
       <div class="field-item">
         <app-select 
           id="membroRole"
-          label="Função / Perfil de Acesso"
+          label="Perfil Base / Modelo de Função"
           [options]="rolesOptions"
           formControlName="role"
           [required]="true"
@@ -53,7 +53,7 @@
         <app-input 
           id="membroCargo"
           type="text" 
-          label="Cargo / Especialidade" 
+          label="Cargo / Especialidade no Escritório" 
           placeholder="Ex: Arquiteto de Interiores, Projetista BIM" 
           formControlName="cargo">
         </app-input>
@@ -83,6 +83,38 @@
         <span class="font-label-xs text-on-surface-variant margin-top-xxs d-block">
           Se não informada, uma senha segura será gerada e enviada por e-mail.
         </span>
+      </div>
+    </div>
+
+    <!-- SEÇÃO DE PERMISSÕES GRANULARES POR MÓDULO -->
+    <div class="form-section-header margin-top-xs d-flex justify-content-between align-items-center">
+      <span class="section-badge-title">Permissões de Acesso por Módulo</span>
+      <div class="quick-perm-links d-flex gap-xs font-label-xs">
+        <button type="button" class="btn-text-action" (click)="marcarTodasPermissoes(true)">Marcar Todos</button>
+        <span class="text-on-surface-variant">•</span>
+        <button type="button" class="btn-text-action" (click)="marcarTodasPermissoes(false)">Desmarcar Todos</button>
+      </div>
+    </div>
+
+    <div class="permissions-checklist-grid">
+      <div 
+        *ngFor="let mod of permissoesModulos" 
+        class="permission-card-item d-flex align-items-center justify-content-between"
+        [class.active]="mod.selecionado"
+        (click)="alternarPermissao(mod)">
+        <div class="d-flex align-items-center gap-xs">
+          <div class="perm-icon-wrap" [class.active]="mod.selecionado">
+            <span class="material-symbols-outlined">{{ mod.icone }}</span>
+          </div>
+          <div class="perm-text d-flex flex-direction-column">
+            <span class="perm-name font-label-sm">{{ mod.nome }}</span>
+            <span class="perm-desc font-label-xs text-on-surface-variant">{{ mod.descricao }}</span>
+          </div>
+        </div>
+
+        <div class="perm-checkbox" [class.checked]="mod.selecionado">
+          <span class="material-symbols-outlined" *ngIf="mod.selecionado">check</span>
+        </div>
       </div>
     </div>
 

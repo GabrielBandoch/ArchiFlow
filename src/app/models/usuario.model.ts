@@ -32,3 +32,15 @@ export interface MembroEquipe {
   atualizadoEm?: string | null;
 }
 
+export interface PerfilUsuarioDetalhado {
+  id: string;
+  escritorioId?: string | null;
+  nome: string;
+  email: string;
+  role: PerfilUsuario | string;
+  cargo?: string | null;
+  telefone?: string | null;
+  criadoEm: string;
+  atualizadoEm?: string | null;
+}
+

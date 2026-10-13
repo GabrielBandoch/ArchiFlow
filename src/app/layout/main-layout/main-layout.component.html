@@ -1,8 +1,7 @@
 <div class="layout-container">
   <aside class="sidebar">
     <div class="logo-area">
-      <span class="material-symbols-outlined logo-icon">architecture</span>
-      <span class="logo-text">Cotu</span>
+      <app-cotu-logo [theme]="'dark'" [size]="'md'" [subtitle]="'STUDIO'"></app-cotu-logo>
     </div>
 
     <nav class="nav-menu">
@@ -47,6 +46,18 @@
         </button>
 
         <div class="nav-submenu" *ngIf="configuracoesAberto">
+          <a routerLink="/configuracoes/empresa" routerLinkActive="active" class="nav-subitem">
+            <span class="material-symbols-outlined nav-subicon">business</span>
+            <span class="nav-sublabel">Dados da Empresa</span>
+          </a>
+          <a routerLink="/configuracoes/perfil" routerLinkActive="active" class="nav-subitem">
+            <span class="material-symbols-outlined nav-subicon">manage_accounts</span>
+            <span class="nav-sublabel">Meu Perfil & Senha</span>
+          </a>
+          <a routerLink="/configuracoes/equipe" routerLinkActive="active" class="nav-subitem">
+            <span class="material-symbols-outlined nav-subicon">groups</span>
+            <span class="nav-sublabel">Membros da Equipe</span>
+          </a>
           <a routerLink="/configuracoes/templates-projeto" routerLinkActive="active" class="nav-subitem">
             <span class="material-symbols-outlined nav-subicon">account_tree</span>
             <span class="nav-sublabel">Modelos de Projetos</span>
@@ -59,16 +70,12 @@
             <span class="material-symbols-outlined nav-subicon">hub</span>
             <span class="nav-sublabel">Origens de Leads</span>
           </a>
-          <a routerLink="/configuracoes/equipe" routerLinkActive="active" class="nav-subitem">
-            <span class="material-symbols-outlined nav-subicon">groups</span>
-            <span class="nav-sublabel">Membros da Equipe</span>
-          </a>
         </div>
       </div>
     </nav>
 
     <div class="user-profile" *ngIf="authService.currentUser$ | async as user">
-      <div class="user-info">
+      <div class="user-info" routerLink="/configuracoes/perfil" style="cursor: pointer;" title="Abrir meu perfil e configurações de segurança">
         <span class="user-name">{{ user.nome }}</span>
         <span class="user-email">{{ user.email }}</span>
       </div>
@@ -85,7 +92,7 @@
     </main>
 
     <footer class="footer">
-      <span class="footer-text">© 2026 Cotu Technologies</span>
+      <span class="footer-text">© 2026 COTU Technologies</span>
     </footer>
   </div>
 </div>

@@ -77,10 +77,13 @@ import { WhatsAppUtils } from '../../../core/utils/whatsapp-utils';
 export class WhatsAppButtonComponent {
   @Input() telefone?: string | null;
   @Input() mensagem?: string;
+  @Input() nomeDestinatario?: string | null;
+  @Input() tipoMensagem: 'projeto' | 'parceria' = 'projeto';
   @Input() label?: string;
   @Input() compact = true;
 
   onClick(event: Event): void {
-    WhatsAppUtils.abrirWhatsApp(this.telefone, this.mensagem, event);
+    const msg = this.mensagem || WhatsAppUtils.getMensagemContato(this.nomeDestinatario, this.tipoMensagem);
+    WhatsAppUtils.abrirWhatsApp(this.telefone, msg, event);
   }
 }

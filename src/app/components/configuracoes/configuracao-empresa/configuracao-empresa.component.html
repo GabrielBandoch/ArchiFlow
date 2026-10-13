@@ -1,0 +1,213 @@
+<div class="empresa-page">
+  <div class="page-header">
+    <div class="header-info-wrap">
+      <div class="breadcrumb-label">
+        <span>CONFIGURAÇÕES</span>
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        <span>DADOS DA EMPRESA</span>
+      </div>
+      <h1 class="page-title">Configurações da Empresa & Escritório</h1>
+      <p class="page-subtitle">
+        Defina os dados oficiais do escritório. O nome configurado é utilizado automaticamente nas mensagens de WhatsApp para clientes e fornecedores.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <app-button variant="primary" (btnClick)="salvar()" [disabled]="salvando" title="Salvar configurações">
+        <span class="material-symbols-outlined">{{ salvando ? 'hourglass_top' : 'save' }}</span>
+        {{ salvando ? 'Salvando...' : 'Salvar Alterações' }}
+      </app-button>
+    </div>
+  </div>
+
+  <div class="empresa-layout">
+    <form [formGroup]="form" class="empresa-form-card">
+
+      <!-- Seção 1: Identidade da Marca -->
+      <div class="form-section">
+        <div class="section-title-row">
+          <span class="material-symbols-outlined section-icon">business</span>
+          <div>
+            <h3 class="section-title">Identidade da Marca & Nome Oficial</h3>
+            <p class="section-subtitle">
+              O nome do escritório será utilizado nos cabeçalhos timbrados e nas abordagens de WhatsApp com clientes.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group col-span-2">
+            <label class="form-label">Nome do Escritório / Razão Social *</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">domain</span>
+              <input type="text" class="af-input" formControlName="nomeEscritorio" placeholder="Ex: Duna Arquitetura">
+            </div>
+            <span class="form-hint">Este nome aparecerá como "Olá [Cliente]! Entro em contato sobre o seu projeto na [Sua Empresa]"</span>
+          </div>
+
+          <div class="form-group col-span-2">
+            <label class="form-label">Slogan ou Subtítulo Conceitual</label>
+            <input type="text" class="af-input" formControlName="slogan" placeholder="Ex: Arquitetura e Interiores de Alto Padrão">
+          </div>
+
+          <div class="form-group col-span-2">
+            <label class="form-label">Registro Profissional & Fiscal (CAU / CREA / CNPJ)</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">verified</span>
+              <input type="text" class="af-input" formControlName="registroProfissional" placeholder="Ex: CAU/BR A000000-0 • CNPJ 00.000.000/0001-00">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 2: Logotipo Oficial (S3 Storage) -->
+      <div class="form-section">
+        <div class="section-title-row">
+          <span class="material-symbols-outlined section-icon">image</span>
+          <div>
+            <h3 class="section-title">Logotipo Oficial do Escritório</h3>
+            <p class="section-subtitle">
+              Armazenado em nuvem de alta performance (AWS S3). Recomendado PNG com fundo transparente ou SVG.
+            </p>
+          </div>
+        </div>
+
+        <div class="logo-upload-wrap">
+          <input #fileInput type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" (change)="onFileSelected($event)" style="display: none">
+
+          <div class="logo-card-active" *ngIf="form.get('logoUrl')?.value; else noLogoTpl">
+            <div class="logo-preview-box">
+              <img [src]="form.get('logoUrl')?.value" alt="Logotipo preview" class="logo-img">
+            </div>
+            <div class="logo-info">
+              <div class="logo-status-tag">
+                <span class="material-symbols-outlined icon-sm">cloud_done</span>
+                <span>Logotipo em Nuvem</span>
+              </div>
+              <span class="logo-desc">Exibido em propostas, orçamentos e relatórios</span>
+            </div>
+            <div class="logo-actions">
+              <button type="button" class="btn-subtle" (click)="fileInput.click()" [disabled]="enviandoLogo">
+                <span class="material-symbols-outlined icon-sm">sync</span>
+                Substituir
+              </button>
+              <button type="button" class="btn-subtle btn-danger" (click)="removerLogotipo()">
+                <span class="material-symbols-outlined icon-sm">delete</span>
+                Remover
+              </button>
+            </div>
+          </div>
+
+          <ng-template #noLogoTpl>
+            <div class="logo-dropzone" (click)="fileInput.click()">
+              <div class="dropzone-icon">
+                <span class="material-symbols-outlined">{{ enviandoLogo ? 'hourglass_top' : 'cloud_upload' }}</span>
+              </div>
+              <span class="dropzone-title">{{ enviandoLogo ? 'Enviando imagem para a nuvem...' : 'Clique para enviar o logotipo da sua marca' }}</span>
+              <span class="dropzone-sub">PNG com fundo transparente, SVG ou JPG (máx. 20MB)</span>
+              <button type="button" class="btn-browse-file" [disabled]="enviandoLogo">
+                <span class="material-symbols-outlined icon-sm">add_photo_alternate</span>
+                Escolher Arquivo
+              </button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Seção 3: Paleta de Cores -->
+      <div class="form-section">
+        <div class="section-title-row">
+          <span class="material-symbols-outlined section-icon">palette</span>
+          <div>
+            <h3 class="section-title">Cor da Marca</h3>
+            <p class="section-subtitle">
+              A cor de destaque da sua identidade visual.
+            </p>
+          </div>
+        </div>
+
+        <div class="palette-grid">
+          <button 
+            type="button" 
+            class="swatch-btn" 
+            *ngFor="let p of paletasPredefinidas"
+            [class.active]="form.get('corPrimaria')?.value?.toLowerCase() === p.cor.toLowerCase()"
+            (click)="selecionarCor(p.cor)">
+            <span class="swatch-dot" [style.background-color]="p.cor"></span>
+            <span class="swatch-label">{{ p.nome }}</span>
+            <span class="material-symbols-outlined icon-xs check" *ngIf="form.get('corPrimaria')?.value?.toLowerCase() === p.cor.toLowerCase()">check</span>
+          </button>
+        </div>
+
+        <div class="color-custom-row">
+          <label class="color-custom-label">Cor Personalizada:</label>
+          <input type="color" class="color-native" formControlName="corPrimaria">
+          <input type="text" class="af-input hex-input" formControlName="corPrimaria" placeholder="#765538">
+        </div>
+      </div>
+
+      <!-- Seção 4: Contatos e Endereço -->
+      <div class="form-section">
+        <div class="section-title-row">
+          <span class="material-symbols-outlined section-icon">contact_phone</span>
+          <div>
+            <h3 class="section-title">Contatos Oficiais & Sede</h3>
+            <p class="section-subtitle">
+              Canais diretos de atendimento ao cliente.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">E-mail Comercial *</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">mail</span>
+              <input type="email" class="af-input" formControlName="email" placeholder="contato@seuescritorio.com.br">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Telefone / WhatsApp Comercial *</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">call</span>
+              <input type="text" class="af-input" formControlName="telefone" placeholder="(11) 98765-4321">
+            </div>
+          </div>
+
+          <div class="form-group col-span-2">
+            <label class="form-label">Endereço Comercial / Sede</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">location_on</span>
+              <input type="text" class="af-input" formControlName="endereco" placeholder="Ex: Av. Paulista, 1000 - Sala 802, São Paulo/SP">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção 5: Demonstração do WhatsApp com Nome da Empresa -->
+      <div class="form-section preview-section">
+        <div class="section-title-row">
+          <span class="material-symbols-outlined section-icon text-success">chat</span>
+          <div>
+            <h3 class="section-title">Prévia da Mensagem do WhatsApp</h3>
+            <p class="section-subtitle">
+              Veja como seus clientes receberão a abordagem comercial no WhatsApp:
+            </p>
+          </div>
+        </div>
+
+        <div class="whatsapp-preview-bubble">
+          <div class="bubble-header">
+            <span class="material-symbols-outlined icon-sm">chat_bubble</span>
+            <span>Mensagem com o Cliente</span>
+          </div>
+          <div class="bubble-body">
+            {{ previewMensagemWhatsapp }}
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

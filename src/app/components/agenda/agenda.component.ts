@@ -58,6 +58,7 @@ export class AgendaComponent implements OnInit {
 
   filtroTipoOptions: SelectOption[] = [
     { label: 'Todos os Tipos', value: 'todos' },
+    { label: 'Tarefas / To-Dos', value: TiposCompromisso.Tarefa },
     { label: 'Reunião com Cliente', value: TiposCompromisso.ReuniaoCliente },
     { label: 'Visita à Obra', value: TiposCompromisso.VisitaObra },
     { label: 'Medição Técnica', value: TiposCompromisso.MedicaoTecnica },
@@ -142,6 +143,10 @@ export class AgendaComponent implements OnInit {
 
   get totalVisitasObras(): number {
     return this.compromissos.filter(c => c.tipo === TiposCompromisso.VisitaObra || c.tipo === TiposCompromisso.MedicaoTecnica).length;
+  }
+
+  get totalTarefas(): number {
+    return this.compromissos.filter(c => c.tipo === TiposCompromisso.Tarefa).length;
   }
 
   get totalConcluidos(): number {
@@ -286,6 +291,25 @@ export class AgendaComponent implements OnInit {
     });
   }
 
+  abrirModalNovaTarefa(data?: Date): void {
+    let dataInicial: string;
+    if (data) {
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const dia = String(data.getDate()).padStart(2, '0');
+      dataInicial = `${ano}-${mes}-${dia}`;
+    } else {
+      dataInicial = new Date().toISOString().substring(0, 10);
+    }
+
+    const ref = this.dialogService.open(CompromissoModalComponent, {
+      data: { dataInicial, tipoInicial: TiposCompromisso.Tarefa }
+    });
+    ref.instance.saved.subscribe(() => {
+      this.carregarCompromissos();
+    });
+  }
+
   abrirModalEditar(compromisso: Compromisso, event?: Event): void {
     if (event) {
       event.stopPropagation();
@@ -382,6 +406,8 @@ export class AgendaComponent implements OnInit {
 
   obterBadgeClasseTipo(tipo: TipoCompromisso): string {
     switch (tipo) {
+      case TiposCompromisso.Tarefa:
+        return 'badge-tipo-tarefa';
       case TiposCompromisso.ReuniaoCliente:
         return 'badge-tipo-reuniao';
       case TiposCompromisso.VisitaObra:
@@ -399,6 +425,7 @@ export class AgendaComponent implements OnInit {
 
   obterNomeTipo(tipo: TipoCompromisso): string {
     const map: Record<string, string> = {
+      [TiposCompromisso.Tarefa]: 'Tarefa',
       [TiposCompromisso.ReuniaoCliente]: 'Reunião',
       [TiposCompromisso.VisitaObra]: 'Visita Obra',
       [TiposCompromisso.MedicaoTecnica]: 'Medição',
@@ -421,6 +448,8 @@ export class AgendaComponent implements OnInit {
 
   obterBadgeVarianteTipo(tipo: TipoCompromisso): 'primary' | 'info' | 'warning' | 'neutral' {
     switch (tipo) {
+      case TiposCompromisso.Tarefa:
+        return 'info';
       case TiposCompromisso.ReuniaoCliente:
       case TiposCompromisso.ApresentacaoProjeto:
         return 'primary';

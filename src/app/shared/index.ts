@@ -16,6 +16,7 @@ import { BadgeComponent } from './components/badge/badge.component';
 import { EmptyStateComponent } from './components/empty-state/empty-state.component';
 import { SearchInputComponent } from './components/search-input/search-input.component';
 import { WhatsAppButtonComponent } from './components/whatsapp-button/whatsapp-button.component';
+import { CotuLogoComponent } from './components/cotu-logo/cotu-logo.component';
 
 export const CORE_IMPORTS = [
   CommonModule,
@@ -41,9 +42,11 @@ export const DESIGN_SYSTEM = [
   BadgeComponent,
   EmptyStateComponent,
   SearchInputComponent,
-  WhatsAppButtonComponent
+  WhatsAppButtonComponent,
+  CotuLogoComponent
 ] as const;
 
+export * from './components/cotu-logo/cotu-logo.component';
 export * from './components/chat-widget/chat-widget.component';
 export * from './components/spinner/spinner.component';
 export * from './components/client-search/client-search.component';

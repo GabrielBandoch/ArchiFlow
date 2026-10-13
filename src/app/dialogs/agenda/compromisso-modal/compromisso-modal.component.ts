@@ -43,6 +43,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
   @Input() show = false;
   @Input() compromissoParaEdicao: Compromisso | null = null;
   @Input() dataInicial: string | null = null; // YYYY-MM-DD
+  @Input() tipoInicial?: string;
 
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<Compromisso>();
@@ -68,6 +69,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
   tipoVinculo: 'nenhum' | 'projeto' | 'cliente' | 'lead' = 'nenhum';
 
   tiposOptions: SelectOption[] = [
+    { label: 'Tarefa / Entregável', value: TiposCompromisso.Tarefa },
     { label: 'Reunião com Cliente', value: TiposCompromisso.ReuniaoCliente },
     { label: 'Visita à Obra', value: TiposCompromisso.VisitaObra },
     { label: 'Medição Técnica', value: TiposCompromisso.MedicaoTecnica },
@@ -164,6 +166,10 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
     return !!this.compromissoParaEdicao;
   }
 
+  get isTarefa(): boolean {
+    return this.form?.get('tipo')?.value === TiposCompromisso.Tarefa;
+  }
+
   get f() {
     return this.form.controls;
   }
@@ -220,9 +226,11 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
     } else {
       this.tipoVinculo = 'nenhum';
       const dataStr = this.dataInicial || new Date().toISOString().substring(0, 10);
+      const tipoDefinido = this.tipoInicial || TiposCompromisso.ReuniaoCliente;
+      const isTarefa = tipoDefinido === TiposCompromisso.Tarefa;
       this.form.reset({
         titulo: '',
-        tipo: TiposCompromisso.ReuniaoCliente,
+        tipo: tipoDefinido,
         status: 'Agendado',
         data: dataStr,
         horaInicio: '09:00',
@@ -233,7 +241,7 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
         clienteId: '',
         leadId: '',
         usuarioId: '',
-        gerarGoogleMeet: true,
+        gerarGoogleMeet: !isTarefa,
         linkGoogleMeet: ''
       });
     }

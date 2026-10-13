@@ -1,0 +1,148 @@
+<div class="perfil-page">
+  <div class="page-header">
+    <div class="header-info-wrap">
+      <div class="breadcrumb-label">
+        <span>CONFIGURAÇÕES</span>
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        <span>MEU PERFIL & SEGURANÇA</span>
+      </div>
+      <h1 class="page-title">Meu Perfil & Segurança</h1>
+      <p class="page-subtitle">
+        Gerencie seus dados pessoais, informações de contato e altere sua senha de acesso.
+      </p>
+    </div>
+  </div>
+
+  <div class="perfil-grid">
+    <!-- Card 1: Dados Pessoais -->
+    <div class="perfil-card">
+      <div class="card-header">
+        <span class="material-symbols-outlined card-icon">person</span>
+        <div>
+          <h2 class="card-title">Informações Pessoais</h2>
+          <p class="card-subtitle">Atualize seu nome, cargo e telefone para identificação na equipe.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="formPerfil" (ngSubmit)="salvarPerfil()" class="card-body">
+        <div class="form-group">
+          <label class="form-label">Nome Completo *</label>
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon">badge</span>
+            <input type="text" class="af-input" formControlName="nome" placeholder="Seu nome completo">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">E-mail de Acesso (Login)</label>
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon">mail</span>
+            <input type="email" class="af-input disabled-input" formControlName="email">
+          </div>
+          <span class="form-hint">O e-mail é a sua chave exclusiva de login.</span>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Telefone / WhatsApp</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">call</span>
+              <input type="text" class="af-input" formControlName="telefone" placeholder="(11) 98765-4321">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Cargo / Especialidade</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">work</span>
+              <input type="text" class="af-input" formControlName="cargo" placeholder="Ex: Arquiteto Titular">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Função no Sistema</label>
+          <div class="role-badge">
+            <span class="material-symbols-outlined icon-sm">shield_person</span>
+            <span>{{ formPerfil.get('role')?.value || 'Usuário' }}</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <app-button variant="primary" [disabled]="salvandoPerfil" (btnClick)="salvarPerfil()">
+            <span class="material-symbols-outlined">{{ salvandoPerfil ? 'hourglass_top' : 'save' }}</span>
+            {{ salvandoPerfil ? 'Salvando...' : 'Salvar Perfil' }}
+          </app-button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Card 2: Alteração de Senha -->
+    <div class="perfil-card security-card">
+      <div class="card-header">
+        <span class="material-symbols-outlined card-icon text-warning">lock_reset</span>
+        <div>
+          <h2 class="card-title">Alterar Senha de Acesso</h2>
+          <p class="card-subtitle">
+            Se você recebeu uma senha temporária por e-mail, crie sua senha pessoal definitiva aqui.
+          </p>
+        </div>
+      </div>
+
+      <form [formGroup]="formSenha" (ngSubmit)="alterarSenha()" class="card-body">
+        <div class="form-group">
+          <label class="form-label">Senha Atual (ou Temporária) *</label>
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon">key</span>
+            <input 
+              [type]="mostrarSenhaAtual ? 'text' : 'password'" 
+              class="af-input" 
+              formControlName="senhaAtual" 
+              placeholder="Digite a senha atual ou temporária">
+            <button type="button" class="btn-toggle-eye" (click)="mostrarSenhaAtual = !mostrarSenhaAtual">
+              <span class="material-symbols-outlined icon-sm">{{ mostrarSenhaAtual ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nova Senha *</label>
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon">password</span>
+            <input 
+              [type]="mostrarNovaSenha ? 'text' : 'password'" 
+              class="af-input" 
+              formControlName="novaSenha" 
+              placeholder="Mínimo 6 caracteres">
+            <button type="button" class="btn-toggle-eye" (click)="mostrarNovaSenha = !mostrarNovaSenha">
+              <span class="material-symbols-outlined icon-sm">{{ mostrarNovaSenha ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+          <span class="form-hint">Recomendamos usar letras, números e símbolos especiais.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirmação da Nova Senha *</label>
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon">check_circle</span>
+            <input 
+              [type]="mostrarConfirmacao ? 'text' : 'password'" 
+              class="af-input" 
+              formControlName="confirmacaoSenha" 
+              placeholder="Repita a nova senha">
+            <button type="button" class="btn-toggle-eye" (click)="mostrarConfirmacao = !mostrarConfirmacao">
+              <span class="material-symbols-outlined icon-sm">{{ mostrarConfirmacao ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <app-button variant="secondary" [disabled]="salvandoSenha" (btnClick)="alterarSenha()">
+            <span class="material-symbols-outlined">{{ salvandoSenha ? 'hourglass_top' : 'lock' }}</span>
+            {{ salvandoSenha ? 'Atualizando...' : 'Atualizar Minha Senha' }}
+          </app-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

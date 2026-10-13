@@ -24,11 +24,13 @@
 
 .card-pipeline-badge {
   .badge-kpi {
-    background-color: rgba(16, 185, 129, 0.12);
-    color: #059669;
+    background-color: rgba(118, 85, 56, 0.12);
+    color: var(--af-primary);
+    border: 1px solid rgba(118, 85, 56, 0.2);
     padding: 6px 12px;
     border-radius: var(--af-radius-full);
     font-size: 13px;
+    font-weight: 600;
   }
 }
 
@@ -84,7 +86,7 @@
 
 .column-bar {
   width: 36px;
-  background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+  background: linear-gradient(180deg, var(--af-primary-container) 0%, var(--af-primary) 100%);
   border-radius: 6px 6px 0 0;
   transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s ease;
   min-height: 8px;

@@ -60,7 +60,7 @@ export class GestaoEquipeComponent implements OnInit {
     this.loading = true;
     this.usuarioService.obterEquipe().subscribe({
       next: (dados) => {
-        this.membros = dados;
+        this.membros = dados.filter(m => m.email?.toLowerCase() !== 'suporte.cotu@cotu.com.br');
         this.loading = false;
       },
       error: (err) => {
@@ -280,5 +280,52 @@ export class GestaoEquipeComponent implements OnInit {
     const partes = nome.trim().split(' ');
     if (partes.length === 1) return partes[0].substring(0, 2).toUpperCase();
     return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+  }
+
+  obterModulosPermitidos(role: string): { label: string; icone: string }[] {
+    switch (role) {
+      case 'Administrador':
+      case 'ArquitetoAdmin':
+        return [
+          { label: 'Projetos', icone: 'folder' },
+          { label: 'Agenda', icone: 'calendar_month' },
+          { label: 'Clientes', icone: 'group' },
+          { label: 'Financeiro', icone: 'payments' },
+          { label: 'Fornecedores', icone: 'handshake' },
+          { label: 'Equipe', icone: 'badge' }
+        ];
+      case 'Gerente':
+        return [
+          { label: 'Projetos', icone: 'folder' },
+          { label: 'Agenda', icone: 'calendar_month' },
+          { label: 'Clientes', icone: 'group' },
+          { label: 'Fornecedores', icone: 'handshake' },
+          { label: 'Equipe', icone: 'badge' }
+        ];
+      case 'Financeiro':
+        return [
+          { label: 'Financeiro', icone: 'payments' },
+          { label: 'Agenda', icone: 'calendar_month' },
+          { label: 'Clientes', icone: 'group' }
+        ];
+      case 'Estagiario':
+        return [
+          { label: 'Projetos', icone: 'folder' },
+          { label: 'Agenda', icone: 'calendar_month' }
+        ];
+      case 'Colaborador':
+        return [
+          { label: 'Projetos', icone: 'folder' },
+          { label: 'Fornecedores', icone: 'handshake' }
+        ];
+      case 'ArquitetoColaborador':
+      default:
+        return [
+          { label: 'Projetos', icone: 'folder' },
+          { label: 'Agenda', icone: 'calendar_month' },
+          { label: 'Clientes', icone: 'group' },
+          { label: 'Fornecedores', icone: 'handshake' }
+        ];
+    }
   }
 }

@@ -289,3 +289,23 @@
 .text-error {
   color: #ba1a1a;
 }
+
+.member-permissions-row {
+  margin-top: 6px;
+}
+
+.perm-module-badge {
+  background-color: var(--af-surface-container, #f1f5f9);
+  color: var(--af-on-surface-variant, #475569);
+  border: 1px solid var(--af-outline-variant, #e2e8f0);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.2;
+
+  .font-size-12 {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+}

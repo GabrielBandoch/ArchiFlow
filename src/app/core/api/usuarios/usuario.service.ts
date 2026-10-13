@@ -81,4 +81,28 @@ export class UsuarioService {
       .build();
     return this.http.delete<void>(url);
   }
+
+  obterMeuPerfil(): Observable<import('../../../models/usuario.model').PerfilUsuarioDetalhado> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('usuarios')
+      .segment('perfil')
+      .build();
+    return this.http.get<import('../../../models/usuario.model').PerfilUsuarioDetalhado>(url);
+  }
+
+  atualizarMeuPerfil(command: import('../../../commands/usuario.commands').AtualizarMeuPerfilCommand): Observable<import('../../../models/usuario.model').PerfilUsuarioDetalhado> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('usuarios')
+      .segment('perfil')
+      .build();
+    return this.http.put<import('../../../models/usuario.model').PerfilUsuarioDetalhado>(url, command);
+  }
+
+  alterarMinhaSenha(command: import('../../../commands/usuario.commands').AlterarMinhaSenhaCommand): Observable<void> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('usuarios')
+      .segment('alterar-senha')
+      .build();
+    return this.http.post<void>(url, command);
+  }
 }

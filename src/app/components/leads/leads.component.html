@@ -64,7 +64,7 @@
                 <span class="material-symbols-outlined">call</span>
                 <span>{{ lead.telefone | phoneMask }}</span>
               </div>
-              <app-whatsapp-button [telefone]="lead.telefone" [mensagem]="'Olá ' + lead.nome + '! Entro em contato sobre o seu projeto no Cotu.'"></app-whatsapp-button>
+              <app-whatsapp-button [telefone]="lead.telefone" [nomeDestinatario]="lead.nome"></app-whatsapp-button>
             </div>
             <div class="body-item d-flex align-items-center gap-sm">
               <span class="material-symbols-outlined">mail</span>

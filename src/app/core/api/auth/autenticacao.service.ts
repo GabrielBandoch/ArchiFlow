@@ -19,4 +19,20 @@ export class AutenticacaoService {
       .build();
     return this.http.post<Usuario>(url, command);
   }
+
+  esqueciSenha(email: string): Observable<{ message: string }> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('auth')
+      .segment('esqueci-senha')
+      .build();
+    return this.http.post<{ message: string }>(url, { email });
+  }
+
+  redefinirSenha(command: { email: string; token: string; novaSenha: string }): Observable<{ message: string }> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('auth')
+      .segment('redefinir-senha')
+      .build();
+    return this.http.post<{ message: string }>(url, command);
+  }
 }
