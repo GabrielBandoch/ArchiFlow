@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { MembroEquipe } from '../../../models/usuario.model';
 import {
@@ -10,6 +11,9 @@ import {
   RedefinirSenhaMembroCommand
 } from '../../../commands/usuario.commands';
 import { UrlBuilder } from '../../utils/url-builder';
+
+/** Conta interna de suporte da COTU: não deve aparecer na equipe do estúdio. */
+const EMAIL_SUPORTE_COTU = 'suporte.cotu@cotu.com.br';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +26,9 @@ export class UsuarioService {
       .segment('usuarios')
       .segment('equipe')
       .build();
-    return this.http.get<MembroEquipe[]>(url);
+    return this.http.get<MembroEquipe[]>(url).pipe(
+      map(membros => membros.filter(m => m.email?.toLowerCase() !== EMAIL_SUPORTE_COTU))
+    );
   }
 
   obterMembroPorId(id: string): Observable<MembroEquipe> {

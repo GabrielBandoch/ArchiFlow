@@ -51,6 +51,21 @@ describe('UsuarioService', () => {
     req.flush(mockMembros);
   });
 
+  it('deve ocultar a conta de suporte COTU da listagem de equipe', () => {
+    const base = { role: 'Administrador', ativo: true, criadoEm: '2026-01-01T00:00:00Z' };
+    const mockMembros: MembroEquipe[] = [
+      { ...base, id: 'sup', nome: 'Administrador Geral', email: 'Suporte.Cotu@cotu.com.br' },
+      { ...base, id: 'user-1', nome: 'Arquiteto Titular', email: 'titular@studio.com' }
+    ] as MembroEquipe[];
+
+    service.obterEquipe().subscribe((membros) => {
+      expect(membros.length).toBe(1);
+      expect(membros[0].email).toBe('titular@studio.com');
+    });
+
+    httpMock.expectOne(baseUrl).flush(mockMembros);
+  });
+
   it('deve obter membro por id via GET (obterMembroPorId)', () => {
     const mockMembro: MembroEquipe = {
       id: 'user-1',

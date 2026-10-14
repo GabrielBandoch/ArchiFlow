@@ -1,3 +1,4 @@
+import { CotuLogoComponent } from '../../shared/components/cotu-logo/cotu-logo.component';
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router } from '@angular/router';
@@ -8,7 +9,7 @@ import { DESIGN_SYSTEM } from '../../shared';
 @Component({
   selector: 'app-portal-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, DESIGN_SYSTEM],
+  imports: [CotuLogoComponent, CommonModule, RouterOutlet, DESIGN_SYSTEM],
   templateUrl: './portal-layout.component.html',
   styleUrl: './portal-layout.component.scss'
 })

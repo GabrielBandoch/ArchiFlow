@@ -1,3 +1,4 @@
+import { CotuLogoComponent } from '../../../shared/components/cotu-logo/cotu-logo.component';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -9,7 +10,7 @@ import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM],
+  imports: [CotuLogoComponent, CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
