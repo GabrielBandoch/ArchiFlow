@@ -51,20 +51,21 @@ describe('UsuarioService', () => {
     req.flush(mockMembros);
   });
 
-  it('deve ocultar a conta de suporte COTU da listagem de equipe', () => {
-    const base = { role: 'Administrador', ativo: true, criadoEm: '2026-01-01T00:00:00Z' };
+  it('deve retornar lista completa de membros retornada pela API', () => {
     const mockMembros: MembroEquipe[] = [
-      { ...base, id: 'sup', nome: 'Administrador Geral', email: 'Suporte.Cotu@cotu.com.br' },
-      { ...base, id: 'user-1', nome: 'Arquiteto Titular', email: 'titular@studio.com' }
-    ] as MembroEquipe[];
+      { id: 'user-1', nome: 'Membro 1', email: 'm1@studio.com', role: 'Colaborador', ativo: true, criadoEm: '2026-01-01T00:00:00Z' },
+      { id: 'user-2', nome: 'Membro 2', email: 'm2@studio.com', role: 'Gerente', ativo: true, criadoEm: '2026-01-01T00:00:00Z' }
+    ];
 
     service.obterEquipe().subscribe((membros) => {
-      expect(membros.length).toBe(1);
-      expect(membros[0].email).toBe('titular@studio.com');
+      expect(membros.length).toBe(2);
+      expect(membros[0].id).toBe('user-1');
+      expect(membros[1].id).toBe('user-2');
     });
 
     httpMock.expectOne(baseUrl).flush(mockMembros);
   });
+
 
   it('deve obter membro por id via GET (obterMembroPorId)', () => {
     const mockMembro: MembroEquipe = {

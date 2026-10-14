@@ -1,24 +1,15 @@
 import { Component, Input } from '@angular/core';
 
-/**
- * Logo oficial COTU: marca gráfica (monograma "C" com ponto de acento) + wordmark.
- * A cor do wordmark é herdada do elemento pai (currentColor) para funcionar em fundos claros e escuros.
- */
 @Component({
   selector: 'app-cotu-logo',
   standalone: true,
   template: `
-    <span class="cotu-logo" [style.--cotu-logo-size.px]="size">
-      <svg class="mark" viewBox="0 0 48 48" role="img" aria-label="COTU" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cotuLogoGradient" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="var(--af-primary, #765538)" />
-            <stop offset="1" stop-color="var(--af-primary-container, #a47e5d)" />
-          </linearGradient>
-        </defs>
-        <rect width="48" height="48" rx="13" fill="url(#cotuLogoGradient)" />
-        <path d="M33.5 17.2A12.5 12.5 0 1 0 33.5 30.8" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round" />
-        <circle cx="35.2" cy="24" r="2.9" fill="#fff" />
+    <span class="cotu-logo" [style.--cotu-logo-size.px]="size" [attr.aria-label]="showText ? null : 'COTU'">
+      <svg class="mark" viewBox="0 0 48 48" [attr.aria-hidden]="showText ? 'true' : null" [attr.role]="showText ? null : 'img'" [attr.aria-label]="showText ? null : 'COTU'" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="12" fill="var(--af-primary, #765538)" />
+        <path d="M 10 24 L 38 24" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="2 2" />
+        <path d="M 14 19 C 14 14.6 17.6 11 22 11 L 36 11 C 37.1 11 38 11.9 38 13 L 38 17 C 38 18.1 37.1 19 36 19 L 23 19 C 20.8 19 19 20.8 19 23 L 19 25 C 19 27.2 20.8 29 23 29 L 36 29 C 37.1 29 38 29.9 38 31 L 38 35 C 38 36.1 37.1 37 36 37 L 22 37 C 17.6 37 14 33.4 14 29 Z" fill="#ffffff" />
+        <rect x="30" y="21" width="6" height="6" rx="1.5" fill="#ffffff" opacity="0.9" />
       </svg>
       @if (showText) {
         <span class="wordmark">COTU</span>
@@ -38,12 +29,12 @@ import { Component, Input } from '@angular/core';
       width: var(--cotu-logo-size);
       height: var(--cotu-logo-size);
       flex-shrink: 0;
-      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.16));
     }
     .wordmark {
       font-size: calc(var(--cotu-logo-size) * 0.62);
       font-weight: 800;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.2em;
       line-height: 1;
       color: currentColor;
     }
