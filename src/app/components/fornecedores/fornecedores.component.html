@@ -89,7 +89,7 @@
           <td class="td-contact" (click)="$event.stopPropagation()">
             <div class="d-flex align-items-center gap-xs" *ngIf="item.telefone">
               <span class="font-body-sm">{{ item.telefone | phoneMask }}</span>
-              <app-whatsapp-button [telefone]="item.telefone" [mensagem]="'Olá ' + item.nome + '! Entro em contato sobre uma parceria de projeto no Cotu.'"></app-whatsapp-button>
+              <app-whatsapp-button [telefone]="item.telefone" [mensagem]="'Olá ' + item.nome + '! Entro em contato sobre uma parceria de projeto no COTU.'"></app-whatsapp-button>
             </div>
             <span class="font-body-xs text-on-surface-variant" *ngIf="!item.telefone">—</span>
           </td>

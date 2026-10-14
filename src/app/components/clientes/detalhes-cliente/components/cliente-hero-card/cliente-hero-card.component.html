@@ -129,7 +129,7 @@
           <span class="detail-value font-weight-bold">
             {{ cliente.telefone | phoneMask }}
           </span>
-          <app-whatsapp-button [telefone]="cliente.telefone" [mensagem]="'Olá ' + cliente.nome + '! Entro em contato sobre o seu projeto no Cotu.'"></app-whatsapp-button>
+          <app-whatsapp-button [telefone]="cliente.telefone" [mensagem]="'Olá ' + cliente.nome + '! Entro em contato sobre o seu projeto no COTU.'"></app-whatsapp-button>
           <button type="button" class="btn-copy-chip" (click)="onCopy(cliente.telefone, 'Telefone')" title="Copiar telefone">
             <span class="material-symbols-outlined">content_copy</span>
           </button>

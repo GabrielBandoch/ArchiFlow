@@ -4,7 +4,7 @@ export class WhatsAppUtils {
     const limpo = telefone.replace(/\D/g, '');
     if (!limpo) return '';
     const ddi = limpo.length === 10 || limpo.length === 11 ? `55${limpo}` : limpo;
-    const texto = mensagem ? encodeURIComponent(mensagem) : encodeURIComponent('Olá! Entro em contato através do Cotu.');
+    const texto = mensagem ? encodeURIComponent(mensagem) : encodeURIComponent('Olá! Entro em contato através do COTU.');
     return `https://wa.me/${ddi}?text=${texto}`;
   }
 
