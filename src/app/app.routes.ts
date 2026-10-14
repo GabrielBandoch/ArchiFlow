@@ -182,22 +182,6 @@ export const appRoutes: Routes = [
     ]
   },
   {
-    path: 'admin/assinantes',
-    canActivate: [staffGuard],
-    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./components/superadmin/gestao-assinantes/gestao-assinantes.component').then(m => m.GestaoAssinantesComponent)
-      }
-    ]
-  },
-  {
-    path: 'cotu-admin',
-    redirectTo: 'admin/assinantes',
-    pathMatch: 'full'
-  },
-  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'
