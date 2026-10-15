@@ -1,3 +1,4 @@
+import { CotuLogoComponent } from '../../shared/components/cotu-logo/cotu-logo.component';
 import { Component, inject, ViewContainerRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
@@ -11,7 +12,7 @@ import { DESIGN_SYSTEM } from '../../shared';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, DESIGN_SYSTEM],
+  imports: [CotuLogoComponent, CommonModule, RouterOutlet, RouterLink, RouterLinkActive, DESIGN_SYSTEM],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })
