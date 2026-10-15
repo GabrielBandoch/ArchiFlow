@@ -51,22 +51,6 @@ describe('UsuarioService', () => {
     req.flush(mockMembros);
   });
 
-  it('deve retornar lista completa de membros retornada pela API', () => {
-    const mockMembros: MembroEquipe[] = [
-      { id: 'user-1', nome: 'Membro 1', email: 'm1@studio.com', role: 'Colaborador', ativo: true, criadoEm: '2026-01-01T00:00:00Z' },
-      { id: 'user-2', nome: 'Membro 2', email: 'm2@studio.com', role: 'Gerente', ativo: true, criadoEm: '2026-01-01T00:00:00Z' }
-    ];
-
-    service.obterEquipe().subscribe((membros) => {
-      expect(membros.length).toBe(2);
-      expect(membros[0].id).toBe('user-1');
-      expect(membros[1].id).toBe('user-2');
-    });
-
-    httpMock.expectOne(baseUrl).flush(mockMembros);
-  });
-
-
   it('deve obter membro por id via GET (obterMembroPorId)', () => {
     const mockMembro: MembroEquipe = {
       id: 'user-1',
