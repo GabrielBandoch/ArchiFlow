@@ -144,7 +144,7 @@ export class ModeloPropostaComponent implements OnInit {
   }
 
   public restaurarPadrao(): void {
-    if (confirm('Deseja restaurar todas as configurações e textos para o padrão original do Cotu?')) {
+    if (confirm('Deseja restaurar todas as configurações e textos para o padrão original do COTU?')) {
       this.configService.resetarPadroes().subscribe({
         next: (padrao) => {
           this.form.patchValue(padrao);
