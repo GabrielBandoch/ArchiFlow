@@ -48,6 +48,9 @@
           </td>
           <td class="text-right">
             <div class="file-row-actions d-inline-flex align-items-center gap-xs">
+              <button type="button" class="btn-file-action d-inline-flex align-items-center justify-content-center" (click)="visualizarArquivo(arq)" title="Visualizar arquivo">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
               <a [href]="arq.urlStorage" target="_blank" class="btn-file-action d-inline-flex align-items-center justify-content-center" title="Baixar documento">
                 <span class="material-symbols-outlined">download</span>
               </a>
@@ -60,6 +63,37 @@
       </tbody>
     </table>
   </div>
+
+  <app-dialog
+    [show]="!!arquivoParaVisualizar"
+    [dialogTitle]="arquivoParaVisualizar ? arquivoParaVisualizar.nome : 'Visualizar Arquivo'"
+    (close)="fecharModalVisualizacao()"
+    size="lg">
+    <div class="preview-container d-flex flex-direction-column align-items-center justify-content-center" *ngIf="arquivoParaVisualizar">
+      <div *ngIf="tipoVisualizacao === 'imagem'" class="preview-media preview-image-wrapper">
+        <img [src]="safeUrl" [alt]="arquivoParaVisualizar.nome" class="preview-image" />
+      </div>
+
+      <div *ngIf="tipoVisualizacao === 'pdf'" class="preview-media preview-pdf-wrapper w-full">
+        <iframe [src]="safeUrl" class="preview-iframe w-full" frameborder="0"></iframe>
+      </div>
+
+      <div *ngIf="tipoVisualizacao === 'video'" class="preview-media preview-video-wrapper w-full">
+        <video [src]="arquivoParaVisualizar.urlStorage" controls class="preview-video w-full" autoplay></video>
+      </div>
+    </div>
+
+    <div dialog-footer class="preview-dialog-footer d-flex justify-content-between align-items-center w-full" *ngIf="arquivoParaVisualizar">
+      <button type="button" class="btn-secondary-link font-label-md d-inline-flex align-items-center gap-xs" (click)="abrirEmNovaAba(arquivoParaVisualizar.urlStorage)">
+        <span class="material-symbols-outlined font-sm">open_in_new</span>
+        <span>Abrir em nova aba</span>
+      </button>
+
+      <app-button variant="secondary" (btnClick)="fecharModalVisualizacao()">
+        Fechar
+      </app-button>
+    </div>
+  </app-dialog>
 
   <app-empty-state 
     *ngIf="arquivos.length === 0"

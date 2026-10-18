@@ -1,0 +1,318 @@
+<div class="empresa-container p-xl">
+  <div class="header-section margin-bottom-xl">
+    <div class="d-flex align-items-center gap-sm">
+      <a routerLink="/configuracoes" class="back-link">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      <div>
+        <h1 class="page-title">Dados da Empresa & Marca</h1>
+        <p class="page-subtitle text-secondary">
+          Centralize a identidade visual, dados cadastrais e registro profissional do escritório.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  @if (carregando) {
+    <div class="loading-state d-flex justify-content-center p-xxl">
+      <app-spinner size="lg"></app-spinner>
+    </div>
+  } @else {
+    <div class="empresa-grid">
+      <div class="left-col d-flex flex-direction-column gap-xl">
+        <app-card>
+          <div class="p-lg text-center">
+            <h3 class="card-title margin-bottom-xs">Logotipo Oficial</h3>
+            <p class="card-subtitle text-secondary font-body-sm margin-bottom-lg">
+              Utilizado nos cabeçalhos de propostas, documentos e Portal do Cliente.
+            </p>
+
+            <div class="logo-preview-box margin-bottom-lg">
+              @if (empresa?.logoUrl) {
+                <img [src]="empresa?.logoUrl" alt="Logotipo da empresa" class="logo-img" />
+              } @else {
+                <div class="logo-empty-state d-flex flex-direction-column align-items-center justify-content-center">
+                  <span class="material-symbols-outlined logo-icon">corporate_fare</span>
+                  <span class="font-label-sm text-secondary margin-top-xs">Nenhum logotipo enviado</span>
+                </div>
+              }
+            </div>
+
+            <div class="logo-actions d-flex flex-direction-column gap-xs">
+              <label class="btn-upload">
+                <input type="file" (change)="onLogoSelecionado($event)" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="d-none" [disabled]="enviandoLogo" />
+                <span class="material-symbols-outlined icon">upload</span>
+                {{ enviandoLogo ? 'Enviando logotipo...' : (empresa?.logoUrl ? 'Substituir logotipo' : 'Enviar logotipo') }}
+              </label>
+
+              @if (empresa?.logoUrl) {
+                <button type="button" class="btn-remove-logo" (click)="removerLogo()" [disabled]="enviandoLogo">
+                  <span class="material-symbols-outlined icon">delete</span>
+                  Remover logotipo
+                </button>
+              }
+            </div>
+            <p class="font-label-xs text-secondary margin-top-sm">Formatos: PNG, JPG, WEBP, SVG (máx. 5MB)</p>
+          </div>
+        </app-card>
+
+        <app-card>
+          <div class="p-lg">
+            <div class="d-flex justify-content-between align-items-center margin-bottom-xs">
+              <h3 class="card-title m-0">Identidade Visual</h3>
+              <span class="badge-db font-label-xs">Persistido no Banco</span>
+            </div>
+            <p class="card-subtitle text-secondary font-body-sm margin-bottom-md">
+              Cor primária aplicada a relatórios, cabeçalhos, propostas comerciais e destaques do sistema.
+            </p>
+
+            <div class="swatches-container d-flex gap-xs margin-bottom-md flex-wrap">
+              <button 
+                *ngFor="let cor of paletaCores" 
+                type="button" 
+                class="swatch-btn" 
+                [style.background-color]="cor"
+                [class.active]="empresaForm.get('corPrimaria')?.value === cor"
+                [title]="cor"
+                (click)="selecionarCorPredefinida(cor)">
+                <span class="material-symbols-outlined check-icon" *ngIf="empresaForm.get('corPrimaria')?.value === cor">check</span>
+              </button>
+            </div>
+
+            <div class="color-picker-row d-flex align-items-center gap-md margin-bottom-md">
+              <input 
+                type="color" 
+                class="color-input" 
+                [value]="empresaForm.get('corPrimaria')?.value || '#765538'"
+                (input)="empresaForm.get('corPrimaria')?.setValue($any($event.target).value)" />
+              
+              <div class="flex-1">
+                <span class="font-label-xs text-secondary d-block">Código Hexadecimal</span>
+                <input 
+                  type="text" 
+                  class="hex-text-input"
+                  [formControl]="$any(empresaForm.get('corPrimaria'))" 
+                  placeholder="#765538" />
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <app-button 
+                type="button" 
+                variant="secondary" 
+                (btnClick)="salvarIdentidadeVisual()" 
+                [loading]="salvandoCor">
+                Salvar Identidade Visual
+                <span class="material-symbols-outlined icon">palette</span>
+              </app-button>
+            </div>
+          </div>
+        </app-card>
+
+        <div class="info-sync-card p-md">
+          <div class="d-flex gap-sm">
+            <span class="material-symbols-outlined info-icon">sync</span>
+            <div>
+              <strong class="font-label-sm">Sincronização Automática</strong>
+              <p class="font-body-xs text-secondary margin-top-xs">
+                As alterações realizadas nesta tela são refletidas imediatamente nas novas propostas em PDF e nas comunicações oficiais.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-col">
+        <app-card>
+          <div class="p-lg">
+            <div class="card-title-row margin-bottom-lg">
+              <h3 class="card-title">Informações Cadastrais</h3>
+              <p class="card-subtitle text-secondary font-body-sm">
+                Dados institucionais e regulatórios do escritório de arquitetura.
+              </p>
+            </div>
+
+            <form [formGroup]="empresaForm" (ngSubmit)="salvar()" class="d-flex flex-direction-column gap-lg">
+              <div class="form-section">
+                <h4 class="section-title font-label-md margin-bottom-sm">Identificação do Escritório</h4>
+                <div class="d-flex flex-direction-column gap-md">
+                  <div class="form-row d-flex gap-md flex-wrap">
+                    <div class="flex-1">
+                      <app-input
+                        id="nomeEmpresa"
+                        type="text"
+                        label="Nome Fantasia / Nome do Escritório *"
+                        placeholder="Ex: Studio ArchiFlow Arquitetura"
+                        icon="apartment"
+                        formControlName="nomeEmpresa"
+                        [error]="f['nomeEmpresa'].errors && f['nomeEmpresa'].touched ? 'Nome do escritório é obrigatório.' : undefined">
+                      </app-input>
+                    </div>
+
+                    <div class="flex-1">
+                      <app-input
+                        id="razaoSocial"
+                        type="text"
+                        label="Razão Social"
+                        placeholder="Ex: Studio ArchiFlow LTDA"
+                        icon="domain"
+                        formControlName="razaoSocial">
+                      </app-input>
+                    </div>
+                  </div>
+
+                  <div class="form-row d-flex gap-md flex-wrap">
+                    <div class="flex-1">
+                      <app-input
+                        id="cnpj"
+                        type="text"
+                        label="CNPJ / CPF"
+                        placeholder="00.000.000/0000-00"
+                        icon="pin"
+                        mask="cpf-cnpj"
+                        formControlName="cnpj"
+                        (input)="onCnpjInput($event)"
+                        [error]="f['cnpj'].errors && f['cnpj'].touched ? 'CPF ou CNPJ inválido.' : undefined">
+                      </app-input>
+                    </div>
+
+                    <div class="flex-1">
+                      <app-input
+                        id="registroProfissional"
+                        type="text"
+                        label="Registro Profissional (CAU / CREA)"
+                        placeholder="Ex: CAU/SP A12345-6"
+                        icon="verified"
+                        formControlName="registroProfissional">
+                      </app-input>
+                    </div>
+                  </div>
+
+                  <app-input
+                    id="slogan"
+                    type="text"
+                    label="Slogan / Assinatura Institucional"
+                    placeholder="Ex: Arquitetura autoral, funcional e sustentável"
+                    icon="format_quote"
+                    formControlName="slogan">
+                  </app-input>
+                </div>
+              </div>
+
+              <div class="form-section border-top pt-md">
+                <h4 class="section-title font-label-md margin-bottom-sm">Canais de Contato</h4>
+                <div class="d-flex flex-direction-column gap-md">
+                  <div class="form-row d-flex gap-md flex-wrap">
+                    <div class="flex-1">
+                      <app-input
+                        id="email"
+                        type="email"
+                        label="E-mail Comercial"
+                        placeholder="contato@estudio.com.br"
+                        icon="mail"
+                        formControlName="email"
+                        [error]="f['email'].errors && f['email'].touched ? 'Formato de e-mail inválido.' : undefined">
+                      </app-input>
+                    </div>
+
+                    <div class="flex-1">
+                      <app-input
+                        id="telefone"
+                        type="tel"
+                        label="Telefone / WhatsApp Comercial"
+                        placeholder="(00) 00000-0000"
+                        icon="call"
+                        mask="phone"
+                        formControlName="telefone"
+                        (input)="onTelefoneInput($event)">
+                      </app-input>
+                    </div>
+                  </div>
+
+                  <app-input
+                    id="website"
+                    type="text"
+                    label="Website Institucional"
+                    placeholder="https://www.estudio.com.br"
+                    icon="language"
+                    formControlName="website"
+                    [error]="f['website'].errors && f['website'].touched ? 'Endereço de website inválido (ex: https://empresa.com.br).' : undefined">
+                  </app-input>
+                </div>
+              </div>
+
+              <div class="form-section border-top pt-md">
+                <h4 class="section-title font-label-md margin-bottom-sm">Endereço Comercial</h4>
+                <div class="d-flex flex-direction-column gap-md">
+                  <div class="form-row d-flex gap-md flex-wrap">
+                    <div class="flex-2">
+                      <app-input
+                        id="endereco"
+                        type="text"
+                        label="Logradouro e Número"
+                        placeholder="Av. Paulista, 1000 - Conjunto 101"
+                        icon="location_on"
+                        formControlName="endereco"
+                        [error]="f['endereco'].errors?.['minlength'] && f['endereco'].touched ? 'Mínimo de 3 caracteres.' : undefined">
+                      </app-input>
+                    </div>
+
+                    <div class="flex-1">
+                      <app-input
+                        id="cep"
+                        type="text"
+                        label="CEP"
+                        placeholder="00000-000"
+                        icon="markunread_mailbox"
+                        mask="cep"
+                        formControlName="cep"
+                        (input)="onCepInput($event)"
+                        (valueChange)="onCepChange($event)">
+                      </app-input>
+                      <span *ngIf="buscandoCep" class="font-label-xs text-primary d-block margin-top-xs">
+                        <span class="mini-spin d-inline-block"></span> Consultando ViaCEP...
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="form-row d-flex gap-md flex-wrap">
+                    <div class="flex-2">
+                      <app-input
+                        id="cidade"
+                        type="text"
+                        label="Cidade"
+                        placeholder="São Paulo"
+                        icon="map"
+                        formControlName="cidade"
+                        [error]="f['cidade'].errors?.['minlength'] && f['cidade'].touched ? 'Mínimo de 2 caracteres.' : undefined">
+                      </app-input>
+                    </div>
+
+                    <div class="flex-1">
+                      <app-input
+                        id="estado"
+                        type="text"
+                        label="Estado (UF)"
+                        placeholder="SP"
+                        icon="flag"
+                        formControlName="estado"
+                        [error]="f['estado'].errors?.['minlength'] && f['estado'].touched ? 'Mínimo de 2 caracteres.' : undefined">
+                      </app-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end margin-top-md">
+                <app-button type="submit" [loading]="salvando">
+                  Salvar Dados da Empresa
+                  <span class="material-symbols-outlined icon">save</span>
+                </app-button>
+              </div>
+            </form>
+          </div>
+        </app-card>
+      </div>
+    </div>
+  }
+</div>

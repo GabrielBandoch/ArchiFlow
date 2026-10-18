@@ -8,6 +8,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { DashboardMetricas, DashboardWidgetConfig, WIDGETS_DEFAULT } from '../../models/dashboard.model';
+import { AgendaService } from '../../core/api/agenda/agenda.service';
+import { FinanceiroService } from '../../core/api/financeiro/financeiro.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -16,6 +18,8 @@ describe('DashboardComponent', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let dialogServiceSpy: jasmine.SpyObj<DialogService>;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
+  let agendaServiceSpy: jasmine.SpyObj<AgendaService>;
+  let financeiroServiceSpy: jasmine.SpyObj<FinanceiroService>;
 
   const mockMetricas: DashboardMetricas = {
     kpis: {
@@ -98,12 +102,17 @@ describe('DashboardComponent', () => {
     });
     dialogServiceSpy = jasmine.createSpyObj('DialogService', ['open']);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'info']);
+    agendaServiceSpy = jasmine.createSpyObj('AgendaService', ['obterProximos']);
+    financeiroServiceSpy = jasmine.createSpyObj('FinanceiroService', ['obterDespesas', 'obterParcelas']);
 
     dashboardServiceSpy.obterMetricas.and.returnValue(of(mockMetricas));
     dashboardServiceSpy.obterPreferencias.and.returnValue(of(null));
     dashboardServiceSpy.salvarPreferencias.and.returnValue(
       of({ usuarioId: 'u1', layoutJson: '[]', atualizadoEm: '2026-09-22T00:00:00Z' })
     );
+    agendaServiceSpy.obterProximos.and.returnValue(of([]));
+    financeiroServiceSpy.obterDespesas.and.returnValue(of([]));
+    financeiroServiceSpy.obterParcelas.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
@@ -112,7 +121,9 @@ describe('DashboardComponent', () => {
         { provide: DashboardService, useValue: dashboardServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
         { provide: DialogService, useValue: dialogServiceSpy },
-        { provide: NotificationService, useValue: notificationServiceSpy }
+        { provide: NotificationService, useValue: notificationServiceSpy },
+        { provide: AgendaService, useValue: agendaServiceSpy },
+        { provide: FinanceiroService, useValue: financeiroServiceSpy }
       ]
     }).compileComponents();
 
@@ -151,7 +162,7 @@ describe('DashboardComponent', () => {
 
   it('should merge saved preferences when preferences request succeeds with valid json', () => {
     const savedConfig: DashboardWidgetConfig[] = [
-      { id: 'atalhos_rapidos', titulo: 'Atalhos', icone: 'bolt', largura: 'full', visivel: false, ordem: 1 }
+      { id: 'pendencias_hoje', titulo: 'Pendências', icone: 'today', largura: 'full', visivel: false, ordem: 1 }
     ];
     dashboardServiceSpy.obterPreferencias.and.returnValue(of({
       usuarioId: 'u1',
@@ -161,8 +172,8 @@ describe('DashboardComponent', () => {
 
     component.carregarDados();
 
-    const atalhos = component.widgets.find(w => w.id === 'atalhos_rapidos');
-    expect(atalhos?.visivel).toBeFalse();
+    const widget = component.widgets.find(w => w.id === 'pendencias_hoje');
+    expect(widget?.visivel).toBeFalse();
   });
 
   it('should fallback to default widgets when layoutJson is malformed', () => {

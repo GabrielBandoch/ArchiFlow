@@ -20,3 +20,11 @@ export interface AtualizarPortalAccessCommand {
   id: string;
   ativo: boolean;
 }
+
+export interface ConvidarRepresentanteCommand {
+  nome: string;
+  email: string;
+  cargo?: string | null;
+  telefone?: string | null;
+  enviarEmailConvite?: boolean;
+}

@@ -7,19 +7,14 @@ import { AuthService } from '../../core/services/auth.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { DashboardMetricas, DashboardWidgetConfig, WIDGETS_DEFAULT } from '../../models/dashboard.model';
-import { DashboardKpisComponent } from './components/dashboard-kpis/dashboard-kpis.component';
-import { DashboardAcoesRapidasComponent } from './components/dashboard-acoes-rapidas/dashboard-acoes-rapidas.component';
-import { ProjetosStatusChartComponent } from './components/dashboard-graficos/projetos-status-chart/projetos-status-chart.component';
-import { ProjetosTipoChartComponent } from './components/dashboard-graficos/projetos-tipo-chart/projetos-tipo-chart.component';
-import { LeadsFunilChartComponent } from './components/dashboard-graficos/leads-funil-chart/leads-funil-chart.component';
-import { LeadsOrigemChartComponent } from './components/dashboard-graficos/leads-origem-chart/leads-origem-chart.component';
-import { PropostasMensaisChartComponent } from './components/dashboard-graficos/propostas-mensais-chart/propostas-mensais-chart.component';
-import { ProjetosRecentesComponent } from './components/dashboard-tabelas/projetos-recentes/projetos-recentes.component';
-import { LeadsRecentesComponent } from './components/dashboard-tabelas/leads-recentes/leads-recentes.component';
-import { PropostasRecentesComponent } from './components/dashboard-tabelas/propostas-recentes/propostas-recentes.component';
+import { Compromisso } from '../../models/agenda.model';
+import { AgendaService } from '../../core/api/agenda/agenda.service';
+import { DespesaProjeto, ParcelaFinanceira } from '../../models/financeiro.model';
+import { FinanceiroService } from '../../core/api/financeiro/financeiro.service';
 import { PersonalizarDashboardModalComponent } from '../../dialogs/dashboard/personalizar-dashboard-modal/personalizar-dashboard-modal.component';
 import { CriarProjetoModalComponent } from '../../dialogs/projetos/criar-projeto-modal/criar-projeto-modal.component';
 import { NovoLeadModalComponent } from '../../dialogs/leads/novo-lead-modal/novo-lead-modal.component';
+import { CompromissoModalComponent } from '../../dialogs/agenda/compromisso-modal/compromisso-modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,17 +23,7 @@ import { NovoLeadModalComponent } from '../../dialogs/leads/novo-lead-modal/novo
     CommonModule,
     RouterLink,
     CORE_IMPORTS,
-    DESIGN_SYSTEM,
-    DashboardKpisComponent,
-    DashboardAcoesRapidasComponent,
-    ProjetosStatusChartComponent,
-    ProjetosTipoChartComponent,
-    LeadsFunilChartComponent,
-    LeadsOrigemChartComponent,
-    PropostasMensaisChartComponent,
-    ProjetosRecentesComponent,
-    LeadsRecentesComponent,
-    PropostasRecentesComponent
+    DESIGN_SYSTEM
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -48,6 +33,8 @@ export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private dialogService = inject(DialogService);
   private notificationService = inject(NotificationService);
+  private agendaService = inject(AgendaService);
+  private financeiroService = inject(FinanceiroService);
 
   loading = true;
   salvandoPreferencias = false;
@@ -55,6 +42,17 @@ export class DashboardComponent implements OnInit {
   widgets: DashboardWidgetConfig[] = [...WIDGETS_DEFAULT];
 
   currentUser$ = this.authService.currentUser$;
+
+  compromissosHoje: Compromisso[] = [];
+  carregandoAgenda = false;
+
+  contasPagarSemana: DespesaProjeto[] = [];
+  totalPagarSemana = 0;
+
+  recebiveisSemana: ParcelaFinanceira[] = [];
+  totalReceberSemana = 0;
+  parcelasAtrasadas: ParcelaFinanceira[] = [];
+  carregandoFinanceiro = false;
 
   get widgetsOrdenados(): DashboardWidgetConfig[] {
     return [...this.widgets].sort((a, b) => a.ordem - b.ordem);
@@ -66,9 +64,13 @@ export class DashboardComponent implements OnInit {
 
   carregarDados(): void {
     this.loading = true;
+    this.carregandoAgenda = true;
+    this.carregandoFinanceiro = true;
+
     this.dashboardService.obterMetricas().subscribe({
       next: (dados) => {
         this.metricas = dados;
+        this.loading = false;
         this.carregarPreferencias();
       },
       error: () => {
@@ -76,12 +78,63 @@ export class DashboardComponent implements OnInit {
         this.notificationService.error('Não foi possível carregar as métricas do dashboard.');
       }
     });
+
+    this.agendaService.obterProximos(15).subscribe({
+      next: (proximos) => {
+        this.carregandoAgenda = false;
+        const hojeStr = new Date().toISOString().split('T')[0];
+        const itemsHoje = proximos.filter(c => c.dataHoraInicio?.startsWith(hojeStr));
+        this.compromissosHoje = itemsHoje.length > 0 ? itemsHoje : proximos.slice(0, 5);
+      },
+      error: () => {
+        this.carregandoAgenda = false;
+      }
+    });
+
+    const hoje = new Date();
+    const diaSemana = hoje.getDay();
+    const diffSegunda = hoje.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1);
+    const primeiroDia = new Date(hoje);
+    primeiroDia.setDate(diffSegunda);
+    const ultimoDia = new Date(primeiroDia);
+    ultimoDia.setDate(primeiroDia.getDate() + 6);
+
+    const inicioSemana = primeiroDia.toISOString().split('T')[0];
+    const fimSemana = ultimoDia.toISOString().split('T')[0];
+    const hojeStr = hoje.toISOString().split('T')[0];
+
+    this.financeiroService.obterDespesas({ inicio: inicioSemana, fim: fimSemana }).subscribe({
+      next: (despesas) => {
+        this.contasPagarSemana = despesas;
+        this.totalPagarSemana = despesas.reduce((acc, d) => acc + (d.valor || 0), 0);
+      },
+      error: () => {}
+    });
+
+    this.financeiroService.obterParcelas().subscribe({
+      next: (parcelas) => {
+        this.carregandoFinanceiro = false;
+        this.recebiveisSemana = parcelas.filter(p => 
+          p.status === 'Pendente' && 
+          p.dataVencimento >= inicioSemana && 
+          p.dataVencimento <= fimSemana
+        );
+        this.totalReceberSemana = this.recebiveisSemana.reduce((acc, p) => acc + (p.valor || 0), 0);
+
+        this.parcelasAtrasadas = parcelas.filter(p => 
+          p.status === 'Atrasado' || 
+          (p.status === 'Pendente' && p.dataVencimento < hojeStr)
+        );
+      },
+      error: () => {
+        this.carregandoFinanceiro = false;
+      }
+    });
   }
 
   private carregarPreferencias(): void {
     this.dashboardService.obterPreferencias().subscribe({
       next: (pref) => {
-        this.loading = false;
         if (pref && pref.layoutJson) {
           try {
             const configuracoesSalvas = JSON.parse(pref.layoutJson) as DashboardWidgetConfig[];
@@ -94,7 +147,6 @@ export class DashboardComponent implements OnInit {
         }
       },
       error: () => {
-        this.loading = false;
         this.widgets = [...WIDGETS_DEFAULT];
       }
     });
@@ -113,6 +165,52 @@ export class DashboardComponent implements OnInit {
       }
       return { ...padrao, ordem: index + 1 };
     }).sort((a, b) => a.ordem - b.ordem);
+  }
+
+  formatarMoeda(valor?: number): string {
+    if (valor === undefined || valor === null) return 'R$ 0,00';
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  formatarData(dataStr?: string): string {
+    if (!dataStr) return '-';
+    try {
+      const parts = dataStr.split('T')[0].split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}`;
+      }
+      return dataStr;
+    } catch {
+      return dataStr;
+    }
+  }
+
+  get saudacao(): string {
+    const user = this.authService.currentUserValue;
+    if (!user?.nome || user.nome.trim().toLowerCase() === 'usuário' || user.nome.trim().toLowerCase() === 'usuario') {
+      return 'Bom dia!';
+    }
+    const primeiroNome = user.nome.trim().split(' ')[0];
+    return `Olá, ${primeiroNome}`;
+  }
+
+  formatarHora(dataHoraStr?: string): string {
+    if (!dataHoraStr) return '';
+    try {
+      const d = new Date(dataHoraStr);
+      return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return '';
+    }
+  }
+
+  dataHojeExtenso(): string {
+    const hoje = new Date();
+    const diaSemana = hoje.toLocaleDateString('pt-BR', { weekday: 'long' });
+    const diaSemanaCap = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+    const dia = hoje.getDate();
+    const mes = hoje.toLocaleDateString('pt-BR', { month: 'long' });
+    return `${diaSemanaCap}, ${dia} de ${mes}`;
   }
 
   abrirModalPersonalizar(): void {
@@ -175,6 +273,18 @@ export class DashboardComponent implements OnInit {
         modalRef.instance.salvando = false;
         this.notificationService.error('Erro ao restaurar layout padrão.');
       }
+    });
+  }
+
+  abrirModalCompromisso(): void {
+    const ref = this.dialogService.open(CompromissoModalComponent, {
+      data: {
+        show: true,
+        dataInicial: new Date().toISOString().split('T')[0]
+      }
+    });
+    ref.instance.saved.subscribe(() => {
+      this.carregarDados();
     });
   }
 

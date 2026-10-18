@@ -16,7 +16,9 @@ describe('LoginComponent', () => {
       isCliente: false,
       isStaff: false
     });
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], {
+      events: of()
+    });
 
     await TestBed.configureTestingModule({
       imports: [LoginComponent],

@@ -1,4 +1,4 @@
-<app-dialog [show]="show" dialogTitle="Editar Projeto Arquitetônico" size="md" [overflowVisible]="true" (close)="onClose()">
+<app-dialog [show]="show" dialogTitle="Editar Projeto Arquitetônico" size="md" (close)="onClose()">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
     
     <app-input 

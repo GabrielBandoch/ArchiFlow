@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Projeto } from '../../../../../models/projeto.model';
 import { Arquivo } from '../../../../../models/arquivo.model';
+import { RepresentanteCliente } from '../../../../../models/cliente.model';
 
 @Component({
   selector: 'app-projeto-sidebar',
@@ -14,11 +15,22 @@ export class ProjetoSidebarComponent {
   @Input({ required: true }) projeto!: Projeto;
   @Input({ required: true }) arquivos: Arquivo[] = [];
   @Input() totalConcluidas = 0;
+  @Input() representantes: RepresentanteCliente[] = [];
 
   @Output() verTodosArquivos = new EventEmitter<void>();
+  @Output() verPortal = new EventEmitter<void>();
+  @Output() convidarRepresentante = new EventEmitter<void>();
 
   onVerTodos(): void {
     this.verTodosArquivos.emit();
+  }
+
+  onVerPortal(): void {
+    this.verPortal.emit();
+  }
+
+  onConvidarRepresentante(): void {
+    this.convidarRepresentante.emit();
   }
 
   getFileIcon(nome: string): string {

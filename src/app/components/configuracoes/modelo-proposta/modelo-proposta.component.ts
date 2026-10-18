@@ -7,10 +7,14 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 import { NotificationService } from '../../../core/services/notification.service';
 import { ModalPropostaPdfComponent, PropostaVisualizacaoData } from '../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component';
 
+import { RouterLink } from '@angular/router';
+import { EmpresaService } from '../../../core/api/empresa/empresa.service';
+import { DadosEmpresa } from '../../../models/empresa.model';
+
 @Component({
   selector: 'app-modelo-proposta',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, ModalPropostaPdfComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonComponent, ModalPropostaPdfComponent],
   templateUrl: './modelo-proposta.component.html',
   styleUrls: ['./modelo-proposta.component.scss']
 })
@@ -18,6 +22,7 @@ export class ModeloPropostaComponent implements OnInit {
   public form!: FormGroup;
   public abaAtiva: 'identidade' | 'secoes' | 'textos' | 'whatsapp' = 'identidade';
   public modalPdfAberto = false;
+  public empresa: DadosEmpresa | null = null;
 
   public previewData: PropostaVisualizacaoData = {
     codigo: 'PROP-2026-084',
@@ -50,17 +55,40 @@ export class ModeloPropostaComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private configService: ConfiguracaoPropostaService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private empresaService: EmpresaService
   ) {}
 
   ngOnInit(): void {
     this.initForm(this.configService.getConfiguracao());
+    this.carregarDadosEmpresa();
     this.configService.carregarDoServidor().subscribe({
       next: (config) => {
         if (config) {
           this.form.patchValue(config);
         }
       }
+    });
+  }
+
+  public carregarDadosEmpresa(): void {
+    this.empresaService.obterDadosEmpresa().subscribe({
+      next: (emp) => {
+        this.empresa = emp;
+        if (emp) {
+          this.form.patchValue({
+            nomeEscritorio: emp.nomeEmpresa,
+            slogan: emp.slogan,
+            registroProfissional: emp.registroProfissional,
+            email: emp.email || this.form.get('email')?.value,
+            telefone: emp.telefone || this.form.get('telefone')?.value,
+            endereco: emp.endereco || this.form.get('endereco')?.value,
+            logoUrl: emp.logoUrl || this.form.get('logoUrl')?.value,
+            corPrimaria: emp.corPrimaria || this.form.get('corPrimaria')?.value
+          });
+        }
+      },
+      error: () => {}
     });
   }
 

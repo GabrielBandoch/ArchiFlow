@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { PortalClienteComponent } from './portal-cliente.component';
 import { AuthService } from '../../../core/services/auth.service';
@@ -123,7 +123,9 @@ describe('PortalClienteComponent', () => {
       conectado$: of(true),
       mensagens: []
     });
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], {
+      events: of()
+    });
 
     projetoServiceSpy.obterPorId.and.returnValue(of(mockProjeto as any));
     arquivoServiceSpy.obterPorProjeto.and.returnValue(of(mockArquivos as any));
@@ -169,7 +171,8 @@ describe('PortalClienteComponent', () => {
               paramMap: {
                 get: (key: string) => key === 'id' ? 'proj-123' : null
               }
-            }
+            },
+            paramMap: of(convertToParamMap({ id: 'proj-123' }))
           }
         }
       ]

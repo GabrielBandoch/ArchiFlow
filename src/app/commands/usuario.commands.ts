@@ -5,6 +5,7 @@ export interface ConvidarMembroEquipeCommand {
   cargo?: string | null;
   telefone?: string | null;
   senhaTemporaria?: string | null;
+  modulosPermitidos?: string[];
 }
 
 export interface AtualizarMembroEquipeCommand {
@@ -13,6 +14,7 @@ export interface AtualizarMembroEquipeCommand {
   role: string;
   cargo?: string | null;
   telefone?: string | null;
+  modulosPermitidos?: string[];
 }
 
 export interface AlterarStatusMembroCommand {
@@ -21,4 +23,27 @@ export interface AlterarStatusMembroCommand {
 
 export interface RedefinirSenhaMembroCommand {
   novaSenha?: string | null;
+}
+
+export interface AtualizarPerfilCommand {
+  nome: string;
+  telefone?: string | null;
+  cargo?: string | null;
+}
+
+export interface AlterarSenhaCommand {
+  senhaAtual: string;
+  novaSenha: string;
+  confirmacaoNovaSenha: string;
+}
+
+export interface PerfilUsuarioDto {
+  id: string;
+  nome: string;
+  email: string;
+  role: string;
+  cargo?: string | null;
+  telefone?: string | null;
+  fotoUrl?: string | null;
+  modulosPermitidos: string[];
 }

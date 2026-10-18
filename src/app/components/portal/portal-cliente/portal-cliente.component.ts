@@ -48,6 +48,8 @@ export class PortalClienteComponent implements OnInit {
 
   projetoId = '';
   projeto: Projeto | null = null;
+  listaProjetosCliente: Projeto[] = [];
+  modoSelecaoProjeto = false;
   arquivos: Arquivo[] = [];
   propostaVinculada: PropostaHonorario | null = null;
   modalPdfAberto = false;
@@ -69,16 +71,50 @@ export class PortalClienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const paramId = this.route.snapshot.paramMap.get('id');
-    const userProjectId = this.authService.currentUserValue?.projetoId;
+    this.route.paramMap.subscribe(params => {
+      const paramId = params.get('id');
+      if (paramId) {
+        this.projetoId = paramId;
+        this.modoSelecaoProjeto = false;
+        this.carregarDados();
+      } else {
+        this.carregarMeusProjetos();
+      }
+    });
+  }
 
-    this.projetoId = paramId || userProjectId || '';
+  carregarMeusProjetos(): void {
+    this.loading = true;
+    this.projetoService.obterMeusProjetos().subscribe({
+      next: (projetos) => {
+        this.listaProjetosCliente = projetos || [];
+        if (this.listaProjetosCliente.length === 1) {
+          this.projetoId = this.listaProjetosCliente[0].id;
+          this.modoSelecaoProjeto = false;
+          this.carregarDados();
+        } else if (this.listaProjetosCliente.length > 1) {
+          this.modoSelecaoProjeto = true;
+          this.projeto = null;
+          this.loading = false;
+        } else {
+          this.modoSelecaoProjeto = false;
+          this.projeto = null;
+          this.loading = false;
+        }
+      },
+      error: () => {
+        this.loading = false;
+        this.projeto = null;
+      }
+    });
+  }
 
-    if (this.projetoId) {
-      this.carregarDados();
-    } else {
-      this.loading = false;
-    }
+  selecionarProjeto(p: Projeto): void {
+    this.router.navigate(['/portal', p.id]);
+  }
+
+  voltarParaSelecao(): void {
+    this.router.navigate(['/portal']);
   }
 
   carregarDados(): void {

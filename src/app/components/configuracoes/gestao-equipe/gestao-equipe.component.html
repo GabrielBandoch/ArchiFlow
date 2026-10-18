@@ -129,6 +129,11 @@
             <span class="material-symbols-outlined font-size-14">phone</span>
             {{ membro.telefone }}
           </span>
+
+          <span class="cargo-tag font-label-xs" *ngIf="membro.modulosPermitidos && membro.modulosPermitidos.length > 0" [title]="membro.modulosPermitidos.join(', ')">
+            <span class="material-symbols-outlined font-size-14">lock_open</span>
+            {{ membro.modulosPermitidos.length }} módulo(s)
+          </span>
         </div>
       </div>
 

@@ -1,28 +1,32 @@
-<div class="d-flex flex-direction-column gap-lg w-full">
+<div class="d-flex flex-direction-column gap-lg w-full dashboard-page">
   <header class="dashboard-header d-flex align-items-center justify-content-between flex-wrap gap-md">
     <div class="d-flex flex-direction-column gap-xs">
       <div class="header-tag d-inline-flex align-items-center gap-xs">
-        <span class="material-symbols-outlined">space_dashboard</span>
-        <span>Visão Geral do Escritório</span>
+        <span class="material-symbols-outlined">calendar_today</span>
+        <span>Visão do Dia • {{ dataHojeExtenso() }}</span>
       </div>
-      <h1 class="font-headline-lg m-0 text-on-surface">Dashboard</h1>
+      <h1 class="font-headline-lg m-0 text-on-surface">
+        {{ saudacao }}
+      </h1>
       <p class="font-body-md text-on-surface-variant m-0 header-subtitle">
-        Acompanhamento consolidado de projetos, funil de vendas, honorários e métricas em tempo real.
+        Acompanhe suas tarefas de hoje, contas a pagar, recebíveis da semana, fases dos projetos e novos contatos.
       </p>
     </div>
 
     <div class="d-flex align-items-center gap-sm flex-wrap">
-      <app-button variant="outline" size="md" (btnClick)="abrirModalPersonalizar()">
-        <span class="material-symbols-outlined">tune</span>
-        Personalizar Painel
+      <app-button variant="outline" size="md" (btnClick)="abrirModalCompromisso()">
+        <span class="material-symbols-outlined">add_task</span>
+        Novo Compromisso
       </app-button>
 
-      <a routerLink="/simulador">
-        <app-button variant="primary" size="md">
-          <span class="material-symbols-outlined">calculate</span>
-          Simulador
-        </app-button>
-      </a>
+      <app-button variant="primary" size="md" (btnClick)="abrirModalCriarProjeto()">
+        <span class="material-symbols-outlined">add</span>
+        Novo Projeto
+      </app-button>
+
+      <app-button variant="outline" size="md" (btnClick)="abrirModalPersonalizar()" title="Personalizar disposição dos cards">
+        <span class="material-symbols-outlined">tune</span>
+      </app-button>
 
       <app-button variant="outline" size="md" [disabled]="loading" (btnClick)="carregarDados()" title="Atualizar dados">
         <span class="material-symbols-outlined" [class.spinning]="loading">refresh</span>
@@ -32,50 +36,254 @@
 
   <div *ngIf="loading" class="d-flex align-items-center justify-content-center gap-md padding-xl text-on-surface-variant">
     <div class="spinner"></div>
-    <span class="font-body-md">Carregando métricas consolidadas...</span>
+    <span class="font-body-md">Carregando painel consolidado...</span>
   </div>
 
   <div *ngIf="!loading && metricas" class="dashboard-grid">
     <ng-container *ngFor="let widget of widgetsOrdenados">
-      
-      <div *ngIf="widget.id === 'kpi_resumo' && widget.visivel" class="widget-wrapper col-full">
-        <app-dashboard-kpis [kpis]="metricas.kpis"></app-dashboard-kpis>
+
+      <div *ngIf="widget.id === 'pendencias_hoje' && widget.visivel" class="widget-wrapper col-full">
+        <app-card>
+          <div class="p-lg">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-sm margin-bottom-md border-bottom pb-sm">
+              <div class="d-flex align-items-center gap-sm">
+                <div class="section-icon-wrap d-flex align-items-center justify-content-center">
+                  <span class="material-symbols-outlined text-primary">event_available</span>
+                </div>
+                <div>
+                  <h3 class="font-headline-sm m-0">O Que Fazer Hoje • Pendências & Agenda</h3>
+                  <p class="font-body-xs text-on-surface-variant m-0">Compromissos, visitas de obra e prazos agendados no calendário</p>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-xs">
+                <span class="badge-count font-label-xs">{{ compromissosHoje.length }} item(ns) hoje</span>
+                <a routerLink="/agenda">
+                  <app-button variant="outline" size="sm">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    Abrir Calendário
+                  </app-button>
+                </a>
+              </div>
+            </div>
+
+            <div *ngIf="compromissosHoje.length > 0" class="today-tasks-list d-flex flex-direction-column gap-xs">
+              <div *ngFor="let item of compromissosHoje" class="today-task-row d-flex align-items-center justify-content-between p-sm">
+                <div class="d-flex align-items-center gap-md">
+                  <div class="time-pill font-label-sm d-flex flex-direction-column align-items-center justify-content-center">
+                    <strong>{{ formatarHora(item.dataHoraInicio) || 'Dia todo' }}</strong>
+                  </div>
+                  <div>
+                    <h4 class="font-body-md font-weight-semibold m-0 text-on-surface">{{ item.titulo }}</h4>
+                    <p class="font-body-xs text-on-surface-variant m-0">
+                      <span *ngIf="item.nomeProjeto">Projeto: <strong>{{ item.nomeProjeto }}</strong> • </span>
+                      <span *ngIf="item.nomeCliente">Cliente: {{ item.nomeCliente }} • </span>
+                      <span *ngIf="item.local">{{ item.local }}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-xs">
+                  <span class="task-type-badge font-label-xs">{{ item.tipo || 'Compromisso' }}</span>
+                  <span class="task-status-badge font-label-xs" [class.badge-done]="item.status === 'Concluido'">
+                    {{ item.status === 'Concluido' ? 'Concluído' : 'Pendente' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="compromissosHoje.length === 0" class="today-empty-state d-flex align-items-center justify-content-between p-md flex-wrap gap-md">
+              <div class="d-flex align-items-center gap-md">
+                <div class="empty-icon-circle d-flex align-items-center justify-content-center">
+                  <span class="material-symbols-outlined text-primary">check_circle</span>
+                </div>
+                <div>
+                  <h4 class="font-body-md font-weight-semibold m-0 text-on-surface">Tudo em dia para hoje!</h4>
+                  <p class="font-body-xs text-on-surface-variant m-0">Nenhum compromisso ou pendência agendada para hoje. Aproveite para planejar suas entregas no calendário.</p>
+                </div>
+              </div>
+              <app-button variant="outline" size="sm" (btnClick)="abrirModalCompromisso()">
+                <span class="material-symbols-outlined">add</span>
+                Agendar Tarefa
+              </app-button>
+            </div>
+          </div>
+        </app-card>
       </div>
 
-      <div *ngIf="widget.id === 'atalhos_rapidos' && widget.visivel" class="widget-wrapper col-full">
-        <app-dashboard-acoes-rapidas (novoProjeto)="abrirModalCriarProjeto()" (novoLead)="abrirModalCriarLead()"></app-dashboard-acoes-rapidas>
+      <div *ngIf="widget.id === 'financeiro_semana' && widget.visivel" class="widget-wrapper col-full">
+        <div class="financeiro-semana-grid">
+          <app-card>
+            <div class="p-lg d-flex flex-direction-column gap-md h-full">
+              <div class="d-flex align-items-center justify-content-between border-bottom pb-xs">
+                <div class="d-flex align-items-center gap-xs text-danger">
+                  <span class="material-symbols-outlined">receipt_long</span>
+                  <h3 class="font-headline-sm m-0">Contas a Pagar na Semana</h3>
+                </div>
+                <span class="badge-danger font-label-xs">{{ contasPagarSemana.length }} despesa(s)</span>
+              </div>
+
+              <div>
+                <span class="font-label-sm text-on-surface-variant d-block">Total a Pagar Esta Semana</span>
+                <span class="font-headline-md font-weight-bold text-danger">{{ formatarMoeda(totalPagarSemana) }}</span>
+              </div>
+
+              <div *ngIf="contasPagarSemana.length > 0" class="mini-finance-list d-flex flex-direction-column gap-xs">
+                <div *ngFor="let desp of contasPagarSemana.slice(0, 4)" class="mini-finance-item d-flex align-items-center justify-content-between p-xs">
+                  <div>
+                    <span class="font-body-xs font-weight-semibold d-block text-on-surface">{{ desp.descricao }}</span>
+                    <span class="font-label-xs text-on-surface-variant">{{ desp.categoriaNome || 'Despesa' }} • Vence: {{ formatarData(desp.dataDespesa) }}</span>
+                  </div>
+                  <strong class="font-body-xs text-danger">{{ formatarMoeda(desp.valor) }}</strong>
+                </div>
+              </div>
+
+              <div *ngIf="contasPagarSemana.length === 0" class="mini-empty-finance font-body-xs text-on-surface-variant p-sm text-center">
+                Nenhuma conta ou despesa vencendo nesta semana.
+              </div>
+
+              <div class="margin-top-auto pt-xs border-top d-flex justify-content-end">
+                <a routerLink="/financeiro" class="link-action font-label-sm d-flex align-items-center gap-xs">
+                  <span>Ver todas no Financeiro</span>
+                  <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+          </app-card>
+
+          <app-card>
+            <div class="p-lg d-flex flex-direction-column gap-md h-full">
+              <div class="d-flex align-items-center justify-content-between border-bottom pb-xs">
+                <div class="d-flex align-items-center gap-xs text-success">
+                  <span class="material-symbols-outlined">payments</span>
+                  <h3 class="font-headline-sm m-0">Recebíveis da Semana</h3>
+                </div>
+                <span class="badge-success font-label-xs">{{ recebiveisSemana.length }} parcela(s)</span>
+              </div>
+
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-xs">
+                <div>
+                  <span class="font-label-sm text-on-surface-variant d-block">Previsão a Receber Esta Semana</span>
+                  <span class="font-headline-md font-weight-bold text-success">{{ formatarMoeda(totalReceberSemana) }}</span>
+                </div>
+
+                <div *ngIf="parcelasAtrasadas.length > 0" class="alert-overdue-pill font-label-xs">
+                  <span class="material-symbols-outlined icon-inline-sm">warning</span>
+                  <span>{{ parcelasAtrasadas.length }} parcela(s) em atraso</span>
+                </div>
+              </div>
+
+              <div *ngIf="recebiveisSemana.length > 0" class="mini-finance-list d-flex flex-direction-column gap-xs">
+                <div *ngFor="let parc of recebiveisSemana.slice(0, 4)" class="mini-finance-item d-flex align-items-center justify-content-between p-xs">
+                  <div>
+                    <span class="font-body-xs font-weight-semibold d-block text-on-surface">{{ parc.projetoNome }}</span>
+                    <span class="font-label-xs text-on-surface-variant">{{ parc.descricao }} • Vencimento: {{ formatarData(parc.dataVencimento) }}</span>
+                  </div>
+                  <strong class="font-body-xs text-success">{{ formatarMoeda(parc.valor) }}</strong>
+                </div>
+              </div>
+
+              <div *ngIf="recebiveisSemana.length === 0" class="mini-empty-finance font-body-xs text-on-surface-variant p-sm text-center">
+                Nenhuma parcela com vencimento programado para esta semana.
+              </div>
+
+              <div class="margin-top-auto pt-xs border-top d-flex justify-content-end">
+                <a routerLink="/financeiro" class="link-action font-label-sm d-flex align-items-center gap-xs">
+                  <span>Ver todas as parcelas</span>
+                  <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+          </app-card>
+        </div>
       </div>
 
-      <div *ngIf="widget.id === 'grafico_projetos_status' && widget.visivel" class="widget-wrapper col-half">
-        <app-projetos-status-chart [dados]="metricas.projetosPorStatus"></app-projetos-status-chart>
+      <div *ngIf="widget.id === 'projetos_por_fase' && widget.visivel" class="widget-wrapper col-half">
+        <app-card>
+          <div class="p-lg d-flex flex-direction-column gap-md h-full">
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-xs">
+              <div class="d-flex align-items-center gap-xs">
+                <span class="material-symbols-outlined text-primary">assignment</span>
+                <h3 class="font-headline-sm m-0">Projetos por Fase</h3>
+              </div>
+              <span class="badge-count font-label-xs">{{ metricas.kpis.totalProjetosAtivos }} ativo(s)</span>
+            </div>
+
+            <div class="phases-list d-flex flex-direction-column gap-sm">
+              <div *ngFor="let item of metricas.projetosPorStatus" class="phase-row">
+                <div class="d-flex justify-content-between font-label-sm margin-bottom-xs">
+                  <span class="text-on-surface font-weight-medium">{{ item.nomeStatus }}</span>
+                  <span class="text-on-surface-variant font-weight-bold">{{ item.quantidade }} projeto(s)</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-bar" [style.width.%]="item.percentual || (item.quantidade * 20)"></div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="metricas.projetosRecentes?.length" class="recent-projects-block margin-top-xs">
+              <span class="font-label-xs text-on-surface-variant d-block margin-bottom-xs">Últimos Projetos em Andamento:</span>
+              <div class="d-flex flex-wrap gap-xs">
+                <a *ngFor="let p of metricas.projetosRecentes.slice(0, 4)" [routerLink]="['/projetos', p.id]" class="project-pill-link font-body-xs">
+                  <span class="material-symbols-outlined icon-inline-sm">folder</span>
+                  <span>{{ p.nome }}</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="margin-top-auto pt-xs border-top d-flex justify-content-end">
+              <a routerLink="/projetos" class="link-action font-label-sm d-flex align-items-center gap-xs">
+                <span>Ir para lista de projetos</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        </app-card>
       </div>
 
-      <div *ngIf="widget.id === 'grafico_projetos_tipo' && widget.visivel" class="widget-wrapper col-half">
-        <app-projetos-tipo-chart [dados]="metricas.projetosPorTipo"></app-projetos-tipo-chart>
-      </div>
+      <div *ngIf="widget.id === 'crm_leads' && widget.visivel" class="widget-wrapper col-half">
+        <app-card>
+          <div class="p-lg d-flex flex-direction-column gap-md h-full">
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-xs">
+              <div class="d-flex align-items-center gap-xs">
+                <span class="material-symbols-outlined text-primary">contacts</span>
+                <h3 class="font-headline-sm m-0">CRM & Oportunidades</h3>
+              </div>
+              <span class="badge-count font-label-xs">{{ metricas.kpis.totalLeadsAtivos }} em contato</span>
+            </div>
 
-      <div *ngIf="widget.id === 'grafico_funil_leads' && widget.visivel" class="widget-wrapper col-half">
-        <app-leads-funil-chart [dados]="metricas.leadsPorStatus"></app-leads-funil-chart>
-      </div>
+            <div class="crm-funnel-pills d-flex align-items-center gap-xs flex-wrap">
+              <div *ngFor="let st of metricas.leadsPorStatus" class="funnel-pill d-flex align-items-center gap-xs p-xs">
+                <span class="funnel-badge font-label-xs">{{ st.quantidade }}</span>
+                <span class="font-label-xs">{{ st.nomeStatus }}</span>
+              </div>
+            </div>
 
-      <div *ngIf="widget.id === 'grafico_origens_lead' && widget.visivel" class="widget-wrapper col-half">
-        <app-leads-origem-chart [dados]="metricas.leadsPorOrigem"></app-leads-origem-chart>
-      </div>
+            <div class="margin-top-xs">
+              <span class="font-label-xs text-on-surface-variant d-block margin-bottom-xs">Contatos Comerciais Recentes:</span>
+              <div *ngIf="metricas.leadsRecentes?.length" class="mini-finance-list d-flex flex-direction-column gap-xs">
+                <div *ngFor="let lead of metricas.leadsRecentes.slice(0, 4)" class="mini-finance-item d-flex align-items-center justify-content-between p-xs">
+                  <div>
+                    <strong class="font-body-xs text-on-surface d-block">{{ lead.nome }}</strong>
+                    <span class="font-label-xs text-on-surface-variant">{{ lead.email }} • {{ lead.origemNome || 'Comercial' }}</span>
+                  </div>
+                  <span class="lead-status-pill font-label-xs">{{ lead.status }}</span>
+                </div>
+              </div>
+            </div>
 
-      <div *ngIf="widget.id === 'grafico_propostas_mensal' && widget.visivel" class="widget-wrapper col-full">
-        <app-propostas-mensais-chart [dados]="metricas.propostasMensais" [pipelineTotal]="metricas.kpis.valorTotalPropostas"></app-propostas-mensais-chart>
-      </div>
+            <div class="margin-top-auto pt-xs border-top d-flex align-items-center justify-content-between flex-wrap gap-xs">
+              <app-button variant="outline" size="sm" (btnClick)="abrirModalCriarLead()">
+                <span class="material-symbols-outlined">person_add</span>
+                Novo Lead
+              </app-button>
 
-      <div *ngIf="widget.id === 'tabela_projetos_recentes' && widget.visivel" class="widget-wrapper col-full">
-        <app-projetos-recentes [projetos]="metricas.projetosRecentes"></app-projetos-recentes>
-      </div>
-
-      <div *ngIf="widget.id === 'lista_leads_recentes' && widget.visivel" class="widget-wrapper col-half">
-        <app-leads-recentes [leads]="metricas.leadsRecentes"></app-leads-recentes>
-      </div>
-
-      <div *ngIf="widget.id === 'lista_propostas_recentes' && widget.visivel" class="widget-wrapper col-half">
-        <app-propostas-recentes [propostas]="metricas.propostasRecentes"></app-propostas-recentes>
+              <a routerLink="/leads" class="link-action font-label-sm d-flex align-items-center gap-xs">
+                <span>Ver funil completo no CRM</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        </app-card>
       </div>
 
     </ng-container>

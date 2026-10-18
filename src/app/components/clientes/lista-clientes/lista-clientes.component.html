@@ -112,6 +112,14 @@
                     <span class="client-name font-body-md font-weight-semibold">{{ cliente.nome }}</span>
                     <span class="client-sub font-label-sm text-on-surface-variant" *ngIf="cliente.cpfCnpj">{{ cliente.cpfCnpj }}</span>
                     <span class="client-sub placeholder font-label-sm text-on-surface-variant" *ngIf="!cliente.cpfCnpj">Pessoa Física / Jurídica</span>
+                    <div class="client-mobile-badges">
+                      <span class="project-pill-sm font-label-xs" [class.has-projects]="cliente.projetosAtivosCount > 0">
+                        {{ cliente.projetosAtivosCount }} {{ cliente.projetosAtivosCount === 1 ? 'proj.' : 'projs.' }}
+                      </span>
+                      <span class="portal-badge-sm font-label-xs" [class.active]="cliente.ativo">
+                        {{ cliente.ativo ? 'Portal Ativo' : 'Portal Inativo' }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </td>

@@ -191,4 +191,27 @@ describe('ProjetoService', () => {
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });
+
+  it('should fetch representatives by project (obterRepresentantes)', () => {
+    service.obterRepresentantes('proj-1').subscribe(res => {
+      expect(res.length).toBe(1);
+      expect(res[0].nome).toBe('João');
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/proj-1/representantes`);
+    expect(req.request.method).toBe('GET');
+    req.flush([{ id: 'rep-1', nome: 'João', email: 'joao@teste.com' }]);
+  });
+
+  it('should invite representative by project (convidarRepresentante)', () => {
+    const cmd = { nome: 'João', email: 'joao@teste.com', enviarEmailConvite: true };
+    service.convidarRepresentante('proj-1', cmd).subscribe(res => {
+      expect(res.nome).toBe('João');
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/proj-1/representantes`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(cmd);
+    req.flush({ id: 'rep-1', nome: 'João', email: 'joao@teste.com' });
+  });
 });

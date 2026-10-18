@@ -1,0 +1,223 @@
+<div class="perfil-container p-xl">
+  <div class="header-section margin-bottom-xl">
+    <h1 class="page-title">Meu Perfil</h1>
+    <p class="page-subtitle text-secondary">
+      Gerencie suas informações pessoais, foto de exibição e credenciais de acesso.
+    </p>
+  </div>
+
+  @if (carregando) {
+    <div class="loading-state d-flex justify-content-center p-xxl">
+      <app-spinner size="lg"></app-spinner>
+    </div>
+  } @else {
+    <div class="profile-grid">
+      <div class="left-col">
+        <app-card>
+          <div class="photo-card-content text-center p-lg">
+            <div class="avatar-wrapper margin-bottom-md">
+              @if (perfil?.fotoUrl) {
+                <img [src]="perfil?.fotoUrl" alt="Foto de perfil" class="avatar-img" />
+              } @else {
+                <div class="avatar-placeholder">
+                  <span>{{ userInitials }}</span>
+                </div>
+              }
+            </div>
+
+            <h3 class="user-display-name margin-bottom-xs">{{ perfil?.nome }}</h3>
+            <p class="user-email text-secondary font-body-sm margin-bottom-md">{{ perfil?.email }}</p>
+
+            <div class="badge-row d-flex justify-content-center gap-xs margin-bottom-lg">
+              <span class="role-badge">{{ perfil?.role }}</span>
+            </div>
+
+            <div class="photo-actions d-flex flex-direction-column gap-xs">
+              <label class="btn-upload">
+                <input type="file" (change)="onFotoSelecionada($event)" accept="image/*" class="d-none" [disabled]="enviandoFoto" />
+                <span class="material-symbols-outlined icon">photo_camera</span>
+                {{ enviandoFoto ? 'Enviando...' : (perfil?.fotoUrl ? 'Trocar foto' : 'Enviar foto') }}
+              </label>
+
+              @if (perfil?.fotoUrl) {
+                <button type="button" class="btn-remove-photo" (click)="removerFoto()" [disabled]="enviandoFoto">
+                  <span class="material-symbols-outlined icon">delete</span>
+                  Remover foto
+                </button>
+              }
+            </div>
+
+            @if (perfil?.modulosPermitidos && perfil!.modulosPermitidos.length > 0) {
+              <div class="modules-section margin-top-xl text-left border-top pt-md">
+                <span class="section-label font-label-sm text-secondary">Módulos Liberados</span>
+                <div class="modules-chips d-flex flex-wrap gap-xs margin-top-xs">
+                  @for (mod of perfil!.modulosPermitidos; track mod) {
+                    <span class="module-chip">{{ mod }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </app-card>
+      </div>
+
+      <div class="right-col d-flex flex-direction-column gap-xl">
+        <app-card>
+          <div class="p-lg">
+            <div class="card-title-row margin-bottom-lg">
+              <h3 class="card-title">Informações Pessoais</h3>
+              <p class="card-subtitle text-secondary font-body-sm">
+                Atualize seu nome completo, cargo de atuação e telefone para contato.
+              </p>
+            </div>
+
+            @if (perfilSucesso) {
+              <div class="alert-success margin-bottom-md animate-fade-in-up">
+                <span class="material-symbols-outlined icon">check_circle</span>
+                <span>{{ perfilSucesso }}</span>
+              </div>
+            }
+
+            @if (perfilErro) {
+              <div class="alert-error margin-bottom-md animate-fade-in-up">
+                <span class="material-symbols-outlined icon">error</span>
+                <span>{{ perfilErro }}</span>
+              </div>
+            }
+
+            <form [formGroup]="perfilForm" (ngSubmit)="salvarDadosPerfil()" class="d-flex flex-direction-column gap-md">
+              <div class="form-row d-flex gap-md flex-wrap">
+                <div class="flex-1">
+                  <app-input
+                    id="nome"
+                    type="text"
+                    label="Nome completo"
+                    placeholder="Seu nome"
+                    icon="person"
+                    formControlName="nome"
+                    [error]="pf['nome'].errors && pf['nome'].touched ? 'Nome é obrigatório.' : undefined">
+                  </app-input>
+                </div>
+
+                <div class="flex-1">
+                  <app-input
+                    id="email"
+                    type="email"
+                    label="E-mail de acesso (não alterável)"
+                    icon="mail"
+                    formControlName="email">
+                  </app-input>
+                </div>
+              </div>
+
+              <div class="form-row d-flex gap-md flex-wrap">
+                <div class="flex-1">
+                  <app-input
+                    id="cargo"
+                    type="text"
+                    label="Cargo / Especialidade"
+                    placeholder="Ex: Arquiteto Sênior"
+                    icon="badge"
+                    formControlName="cargo">
+                  </app-input>
+                </div>
+
+                <div class="flex-1">
+                  <app-input
+                    id="telefone"
+                    type="tel"
+                    label="Telefone / WhatsApp"
+                    placeholder="(00) 00000-0000"
+                    icon="call"
+                    formControlName="telefone">
+                  </app-input>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end margin-top-sm">
+                <app-button type="submit" [loading]="salvandoPerfil">
+                  Salvar Alterações
+                </app-button>
+              </div>
+            </form>
+          </div>
+        </app-card>
+
+        <app-card>
+          <div class="p-lg">
+            <div class="card-title-row margin-bottom-lg">
+              <h3 class="card-title">Segurança da Conta</h3>
+              <p class="card-subtitle text-secondary font-body-sm">
+                Altere sua senha de acesso periodicamente para manter sua conta segura.
+              </p>
+            </div>
+
+            @if (senhaSucesso) {
+              <div class="alert-success margin-bottom-md animate-fade-in-up">
+                <span class="material-symbols-outlined icon">check_circle</span>
+                <span>{{ senhaSucesso }}</span>
+              </div>
+            }
+
+            @if (senhaErro) {
+              <div class="alert-error margin-bottom-md animate-fade-in-up">
+                <span class="material-symbols-outlined icon">error</span>
+                <span>{{ senhaErro }}</span>
+              </div>
+            }
+
+            <form [formGroup]="senhaForm" (ngSubmit)="salvarNovaSenha()" class="d-flex flex-direction-column gap-md">
+              <input type="text" name="username" [value]="perfil?.email || ''" autocomplete="username" style="display:none" aria-hidden="true" tabindex="-1" />
+              <div class="w-full">
+                <app-input
+                  id="senhaAtual"
+                  type="password"
+                  label="Senha Atual"
+                  placeholder="Informe sua senha atual"
+                  icon="key"
+                  autocomplete="current-password"
+                  formControlName="senhaAtual"
+                  [error]="sf['senhaAtual'].errors && sf['senhaAtual'].touched ? 'A senha atual é necessária.' : undefined">
+                </app-input>
+              </div>
+
+              <div class="form-row d-flex gap-md flex-wrap">
+                <div class="flex-1">
+                  <app-input
+                    id="novaSenha"
+                    type="password"
+                    label="Nova Senha"
+                    placeholder="Mínimo 6 caracteres"
+                    icon="lock"
+                    autocomplete="new-password"
+                    formControlName="novaSenha"
+                    [error]="sf['novaSenha'].touched && sf['novaSenha'].errors ? (sf['novaSenha'].errors['required'] ? 'Nova senha é obrigatória.' : 'Mínimo de 6 caracteres.') : undefined">
+                  </app-input>
+                </div>
+
+                <div class="flex-1">
+                  <app-input
+                    id="confirmacaoNovaSenha"
+                    type="password"
+                    label="Confirmar Nova Senha"
+                    placeholder="Repita a nova senha"
+                    icon="lock_reset"
+                    autocomplete="new-password"
+                    formControlName="confirmacaoNovaSenha"
+                    [error]="sf['confirmacaoNovaSenha'].touched ? (sf['confirmacaoNovaSenha'].errors?.['required'] ? 'Confirmação é obrigatória.' : (senhaForm.errors?.['senhasDiferentes'] ? 'As senhas não coincidem.' : undefined)) : undefined">
+                  </app-input>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end margin-top-sm">
+                <app-button type="submit" [loading]="salvandoSenha">
+                  Atualizar Senha
+                </app-button>
+              </div>
+            </form>
+          </div>
+        </app-card>
+      </div>
+    </div>
+  }
+</div>

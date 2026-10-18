@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
@@ -9,6 +9,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { DialogService } from '../../../core/services/dialog.service';
 import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TipoProjeto, TarefaEtapa } from '../../../models/projeto.model';
 import { Arquivo } from '../../../models/arquivo.model';
+import { RepresentanteCliente } from '../../../models/cliente.model';
 import { SelectOption } from '../../../shared/components/select/select.component';
 import { EditarProjetoModalComponent } from '../../../dialogs/projetos/editar-projeto-modal/editar-projeto-modal.component';
 import { NovaEtapaModalComponent } from '../../../dialogs/projetos/nova-etapa-modal/nova-etapa-modal.component';
@@ -18,6 +19,7 @@ import { ProjetoEtapasComponent } from './components/projeto-etapas/projeto-etap
 import { ProjetoArquivosComponent } from './components/projeto-arquivos/projeto-arquivos.component';
 import { ProjetoSidebarComponent } from './components/projeto-sidebar/projeto-sidebar.component';
 import { ProjetoFornecedoresComponent } from './components/projeto-fornecedores/projeto-fornecedores.component';
+import { ProjetoPortalComponent } from './components/projeto-portal/projeto-portal.component';
 import { FornecedorService } from '../../../core/api/fornecedores/fornecedor.service';
 import { ProjetoFornecedor } from '../../../models/fornecedor.model';
 
@@ -35,7 +37,8 @@ import { ProjetoFornecedor } from '../../../models/fornecedor.model';
     ProjetoEtapasComponent,
     ProjetoArquivosComponent,
     ProjetoSidebarComponent,
-    ProjetoFornecedoresComponent
+    ProjetoFornecedoresComponent,
+    ProjetoPortalComponent
   ],
   templateUrl: './detalhes-projeto.component.html',
   styleUrl: './detalhes-projeto.component.scss'
@@ -54,8 +57,11 @@ export class DetalhesProjetoComponent implements OnInit {
   projeto: Projeto | null = null;
   arquivos: Arquivo[] = [];
   fornecedoresProjeto: ProjetoFornecedor[] = [];
+  representantes: RepresentanteCliente[] = [];
   loading = true;
-  activeTab: 'etapas' | 'arquivos' | 'fornecedores' = 'etapas';
+  activeTab: 'etapas' | 'arquivos' | 'fornecedores' | 'portal' = 'etapas';
+
+  @ViewChild(ProjetoPortalComponent) portalComponent?: ProjetoPortalComponent;
 
   uploadingArquivo = false;
   novoArquivoVisivelCliente = true;
@@ -96,6 +102,7 @@ export class DetalhesProjetoComponent implements OnInit {
       this.carregarProjeto();
       this.carregarArquivos();
       this.carregarFornecedoresDoProjeto();
+      this.carregarRepresentantes();
     } else {
       this.router.navigate(['/projetos']);
     }
@@ -108,7 +115,6 @@ export class DetalhesProjetoComponent implements OnInit {
         this.fornecedoresProjeto = dados;
       },
       error: () => {
-        // Silencioso se não houver vínculos
       }
     });
   }
@@ -176,8 +182,27 @@ export class DetalhesProjetoComponent implements OnInit {
     });
   }
 
-  setTab(tab: 'etapas' | 'arquivos' | 'fornecedores'): void {
+  carregarRepresentantes(): void {
+    if (!this.projetoId) return;
+    this.projetoService.obterRepresentantes(this.projetoId).subscribe({
+      next: (reps) => {
+        this.representantes = reps || [];
+      },
+      error: () => {
+        this.representantes = [];
+      }
+    });
+  }
+
+  setTab(tab: 'etapas' | 'arquivos' | 'fornecedores' | 'portal'): void {
     this.activeTab = tab;
+  }
+
+  abrirModalConvidarRepresentante(): void {
+    this.activeTab = 'portal';
+    setTimeout(() => {
+      this.portalComponent?.abrirModalConvidar();
+    }, 50);
   }
 
   alterarStatusProjeto(novoStatus: any): void {

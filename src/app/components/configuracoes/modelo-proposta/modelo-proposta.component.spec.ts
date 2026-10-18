@@ -1,9 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { ModeloPropostaComponent } from './modelo-proposta.component';
 import { ConfiguracaoPropostaService } from '../../../core/services/configuracao-proposta.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
+
+import { EmpresaService } from '../../../core/api/empresa/empresa.service';
 
 describe('ModeloPropostaComponent', () => {
   let component: ModeloPropostaComponent;
@@ -46,18 +49,29 @@ describe('ModeloPropostaComponent', () => {
       'gerarMensagemWhatsapp'
     ]);
     const notifSpy = jasmine.createSpyObj('NotificationService', ['success', 'warning', 'info']);
+    const empresaSpy = jasmine.createSpyObj('EmpresaService', ['obterDadosEmpresa']);
 
     configSpy.getConfiguracao.and.returnValue(mockConfig);
     configSpy.carregarDoServidor.and.returnValue(of(mockConfig));
     configSpy.salvarConfiguracao.and.returnValue(of(mockConfig));
     configSpy.formatarMoeda.and.callFake((val: number) => `R$ ${val.toFixed(2)}`);
     configSpy.gerarMensagemWhatsapp.and.returnValue('Mensagem gerada');
+    empresaSpy.obterDadosEmpresa.and.returnValue(of({
+      nome: 'Studio Teste Arquitetura',
+      slogan: 'Arquitetura com propósito',
+      registroProfissional: 'CAU A12345',
+      email: 'contato@studioteste.com',
+      telefone: '47999466073',
+      endereco: 'Centro'
+    }));
 
     await TestBed.configureTestingModule({
       imports: [ModeloPropostaComponent, ReactiveFormsModule],
       providers: [
+        provideRouter([]),
         { provide: ConfiguracaoPropostaService, useValue: configSpy },
-        { provide: NotificationService, useValue: notifSpy }
+        { provide: NotificationService, useValue: notifSpy },
+        { provide: EmpresaService, useValue: empresaSpy }
       ]
     }).compileComponents();
 

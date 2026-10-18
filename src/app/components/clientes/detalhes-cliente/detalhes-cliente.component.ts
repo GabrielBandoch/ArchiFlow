@@ -12,10 +12,13 @@ import { DialogService } from '../../../core/services/dialog.service';
 import { EditarClienteModalComponent } from '../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component';
 import { ClienteHeroCardComponent } from './components/cliente-hero-card/cliente-hero-card.component';
 
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RepresentanteCliente } from '../../../models/cliente.model';
+
 @Component({
   selector: 'app-detalhes-cliente',
   standalone: true,
-  imports: [CORE_IMPORTS, DESIGN_SYSTEM, ClienteHeroCardComponent],
+  imports: [CORE_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule, FormsModule, ClienteHeroCardComponent],
   templateUrl: './detalhes-cliente.component.html',
   styleUrl: './detalhes-cliente.component.scss'
 })
@@ -28,12 +31,23 @@ export class DetalhesClienteComponent implements OnInit {
   private honorarioService = inject(HonorarioService);
   private notificationService = inject(NotificationService);
   private dialogService = inject(DialogService);
+  private fb = inject(FormBuilder);
 
   cliente?: Cliente;
   lead?: Lead;
   projetos: Projeto[] = [];
   historico: HistoricoContatoLead[] = [];
   propostas: PropostaHonorario[] = [];
+  representantes: RepresentanteCliente[] = [];
+  modalConvidarRepAberto = false;
+  salvandoRep = false;
+  conviteRepForm: FormGroup = this.fb.group({
+    nome: ['', [Validators.required, Validators.maxLength(150)]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(256)]],
+    cargo: ['', [Validators.maxLength(100)]],
+    telefone: ['', [Validators.maxLength(50)]],
+    enviarEmailAgora: [false]
+  });
   loading = true;
 
   get totalInvestidoPropostas(): number {
@@ -73,6 +87,7 @@ export class DetalhesClienteComponent implements OnInit {
         this.cliente = clienteData;
         this.carregarProjetosCliente(id);
         this.carregarPropostasCliente(id);
+        this.carregarRepresentantes(id);
 
         if (clienteData.leadId) {
           this.carregarHistoricoLead(clienteData.leadId);
@@ -85,6 +100,93 @@ export class DetalhesClienteComponent implements OnInit {
         this.notificationService.error('Erro ao obter dados do cliente.');
         this.router.navigate(['/clientes']);
         this.loading = false;
+      }
+    });
+  }
+
+  carregarRepresentantes(clienteId: string): void {
+    this.clienteService.obterRepresentantes(clienteId).subscribe({
+      next: (reps) => {
+        this.representantes = reps || [];
+      },
+      error: (err) => {
+        console.error('Erro ao carregar representantes', err);
+      }
+    });
+  }
+
+  abrirModalConvidarRep(): void {
+    this.conviteRepForm.reset();
+    this.modalConvidarRepAberto = true;
+  }
+
+  fecharModalConvidarRep(): void {
+    this.modalConvidarRepAberto = false;
+  }
+
+  enviarConviteRepresentante(): void {
+    if (this.conviteRepForm.invalid || !this.cliente) return;
+    this.salvandoRep = true;
+    const enviarEmail = !!this.conviteRepForm.value.enviarEmailAgora;
+    const command = {
+      nome: this.conviteRepForm.value.nome,
+      email: this.conviteRepForm.value.email,
+      cargo: this.conviteRepForm.value.cargo || null,
+      telefone: this.conviteRepForm.value.telefone || null,
+      enviarEmailConvite: enviarEmail
+    };
+    this.clienteService.convidarRepresentante(this.cliente.id, command).subscribe({
+      next: (rep) => {
+        this.salvandoRep = false;
+        this.representantes.unshift(rep);
+        this.fecharModalConvidarRep();
+        if (enviarEmail) {
+          this.notificationService.success(`Representante cadastrado e convite de acesso enviado para ${rep.nome}!`);
+        } else {
+          this.notificationService.success(`Representante ${rep.nome} cadastrado com sucesso! Use o botão "Enviar Convite" quando desejar liberar o acesso.`);
+        }
+      },
+      error: (err: any) => {
+        this.salvandoRep = false;
+        this.notificationService.error(err.error?.message || 'Erro ao cadastrar representante.');
+      }
+    });
+  }
+
+  reenviarConviteRepresentante(rep: RepresentanteCliente): void {
+    this.clienteService.reenviarConvite(rep.id).subscribe({
+      next: () => {
+        rep.statusConvite = 'Convite Enviado';
+        this.notificationService.success(`Convite de acesso enviado com sucesso para ${rep.email}!`);
+      },
+      error: (err: any) => {
+        this.notificationService.error(err.error?.message || 'Erro ao enviar convite.');
+      }
+    });
+  }
+
+  alternarStatusRepresentante(rep: RepresentanteCliente): void {
+    const novoStatus = !rep.ativo;
+    this.clienteService.alterarStatusRepresentante(rep.id, novoStatus).subscribe({
+      next: (atualizado) => {
+        rep.ativo = atualizado.ativo;
+        this.notificationService.success(`Status de ${rep.nome} atualizado para ${rep.ativo ? 'Ativo' : 'Inativo'}.`);
+      },
+      error: () => {
+        this.notificationService.error('Erro ao alterar status do representante.');
+      }
+    });
+  }
+
+  removerRepresentante(rep: RepresentanteCliente): void {
+    if (!confirm(`Deseja remover o representante ${rep.nome}?`)) return;
+    this.clienteService.removerRepresentante(rep.id).subscribe({
+      next: () => {
+        this.representantes = this.representantes.filter(r => r.id !== rep.id);
+        this.notificationService.success('Representante removido.');
+      },
+      error: () => {
+        this.notificationService.error('Erro ao remover representante.');
       }
     });
   }

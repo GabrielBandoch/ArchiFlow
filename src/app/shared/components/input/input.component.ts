@@ -33,7 +33,7 @@ export class InputComponent implements ControlValueAccessor {
   @Input() rows = 3;
   @Input() autocomplete?: string;
   @Input() customClass = '';
-  @Input() mask?: 'phone' | 'cpf' | 'cnpj' | 'cep';
+  @Input() mask?: 'phone' | 'cpf' | 'cnpj' | 'cep' | 'cpf-cnpj';
 
   get effectiveMaxLength(): number | string | null {
     if (this.maxlength !== undefined && this.maxlength !== null && this.maxlength !== '') {
@@ -42,6 +42,7 @@ export class InputComponent implements ControlValueAccessor {
     if (this.mask === 'phone' || this.type === 'tel') return 15;
     if (this.mask === 'cpf') return 14;
     if (this.mask === 'cnpj') return 18;
+    if (this.mask === 'cpf-cnpj') return 18;
     if (this.mask === 'cep') return 9;
     return null;
   }
@@ -64,6 +65,8 @@ export class InputComponent implements ControlValueAccessor {
         this.value = MaskUtils.formatCpf(value);
       } else if (this.mask === 'cnpj' && typeof value === 'string') {
         this.value = MaskUtils.formatCnpj(value);
+      } else if (this.mask === 'cpf-cnpj' && typeof value === 'string') {
+        this.value = MaskUtils.formatCpfCnpj(value);
       } else if (this.mask === 'cep' && typeof value === 'string') {
         this.value = MaskUtils.formatCep(value);
       } else {
@@ -100,6 +103,9 @@ export class InputComponent implements ControlValueAccessor {
         element.value = rawVal;
       } else if (this.mask === 'cnpj') {
         rawVal = MaskUtils.formatCnpj(rawVal);
+        element.value = rawVal;
+      } else if (this.mask === 'cpf-cnpj') {
+        rawVal = MaskUtils.formatCpfCnpj(rawVal);
         element.value = rawVal;
       } else if (this.mask === 'cep') {
         rawVal = MaskUtils.formatCep(rawVal);

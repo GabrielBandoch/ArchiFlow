@@ -57,7 +57,7 @@
     </div>
   </div>
 
-  <div class="table-responsive">
+  <div class="table-responsive" *ngIf="parcelasFiltradas.length > 0">
     <table class="data-table w-full">
       <thead>
         <tr>
@@ -129,21 +129,19 @@
             </div>
           </td>
         </tr>
-
-        <tr *ngIf="parcelasFiltradas.length === 0">
-          <td colspan="7" class="p-xl">
-            <app-empty-state
-              icon="receipt_long"
-              title="Nenhuma parcela encontrada"
-              description="Não há honorários correspondentes aos filtros selecionados."
-              actionLabel="Nova Receita / Parcela"
-              actionIcon="add"
-              (actionClick)="onNovaParcela()">
-            </app-empty-state>
-          </td>
-        </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="p-xl" *ngIf="parcelasFiltradas.length === 0">
+    <app-empty-state
+      icon="receipt_long"
+      title="Nenhuma parcela encontrada"
+      description="Não há honorários correspondentes aos filtros selecionados."
+      actionLabel="Nova Receita / Parcela"
+      actionIcon="add"
+      (actionClick)="onNovaParcela()">
+    </app-empty-state>
   </div>
 
   <div class="table-footer d-flex justify-content-between align-items-center" *ngIf="parcelasFiltradas.length > 0">

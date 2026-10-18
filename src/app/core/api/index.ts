@@ -9,3 +9,5 @@ export * from './financeiro/financeiro.service';
 export * from './usuarios/usuario.service';
 export * from './agenda/agenda.service';
 export * from './propostas/configuracao-proposta-api.service';
+export * from './empresa/empresa.service';
+export * from './configuracoes/configuracao-sistema.service';

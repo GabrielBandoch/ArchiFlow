@@ -169,7 +169,7 @@ export class ConversaoLeadModalComponent implements OnInit {
         this.clienteId = res.cliente.id;
         this.clienteNome = res.cliente.nome;
         this.clienteEmail = res.cliente.email;
-        this.notificationService.success(`Lead convertido em cliente com sucesso! Credenciais enviadas.`);
+        this.notificationService.success('Lead convertido em cliente com sucesso!');
         this.convertedSuccess.emit();
       },
       error: (err) => {

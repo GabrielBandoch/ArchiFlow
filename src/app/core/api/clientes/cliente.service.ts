@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Cliente, ConversaoClienteResponse } from '../../../models/cliente.model';
+import { Cliente, ConversaoClienteResponse, RepresentanteCliente } from '../../../models/cliente.model';
 import { 
   ConvertLeadToClienteCommand, 
   AtualizarClienteCommand, 
-  AtualizarPortalAccessCommand 
+  AtualizarPortalAccessCommand,
+  ConvidarRepresentanteCommand
 } from '../../../commands/cliente.commands';
 import { UrlBuilder } from '../../utils/url-builder';
 
@@ -52,5 +53,52 @@ export class ClienteService {
       .segment('portal-access')
       .build();
     return this.http.patch<Cliente>(url, command);
+  }
+
+  obterRepresentantes(clienteId: string): Observable<RepresentanteCliente[]> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('clientes')
+      .segment(clienteId)
+      .segment('representantes')
+      .build();
+    return this.http.get<RepresentanteCliente[]>(url);
+  }
+
+  convidarRepresentante(clienteId: string, command: ConvidarRepresentanteCommand): Observable<RepresentanteCliente> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('clientes')
+      .segment(clienteId)
+      .segment('representantes')
+      .build();
+    return this.http.post<RepresentanteCliente>(url, command);
+  }
+
+  reenviarConvite(representanteId: string): Observable<void> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('clientes')
+      .segment('representantes')
+      .segment(representanteId)
+      .segment('reenviar-convite')
+      .build();
+    return this.http.post<void>(url, {});
+  }
+
+  alterarStatusRepresentante(representanteId: string, ativo: boolean): Observable<RepresentanteCliente> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('clientes')
+      .segment('representantes')
+      .segment(representanteId)
+      .segment('status')
+      .build();
+    return this.http.patch<RepresentanteCliente>(url, { ativo });
+  }
+
+  removerRepresentante(representanteId: string): Observable<void> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('clientes')
+      .segment('representantes')
+      .segment(representanteId)
+      .build();
+    return this.http.delete<void>(url);
   }
 }

@@ -414,3 +414,91 @@
     }
   }
 }
+
+.client-mobile-badges {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .clientes-page-container {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 12px;
+
+    .header-actions {
+      width: 100%;
+      app-button {
+        width: 100%;
+        display: block;
+      }
+    }
+  }
+
+  .filters-card {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 12px;
+
+    .search-box {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .filter-chips {
+      overflow-x: auto;
+      padding-bottom: 4px;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  .client-mobile-badges {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+
+    .project-pill-sm {
+      padding: 2px 6px;
+      border-radius: 8px;
+      background-color: var(--af-surface-container-high);
+      color: var(--af-on-surface-variant);
+      font-size: 10.5px;
+      font-weight: 600;
+
+      &.has-projects {
+        background-color: rgba(2, 136, 209, 0.12);
+        color: #0288d1;
+      }
+    }
+
+    .portal-badge-sm {
+      padding: 2px 6px;
+      border-radius: 8px;
+      background-color: var(--af-surface-container-high);
+      color: var(--af-on-surface-variant);
+      font-size: 10.5px;
+      font-weight: 600;
+
+      &.active {
+        background-color: rgba(46, 125, 50, 0.12);
+        color: #2e7d32;
+      }
+    }
+  }
+
+  .crm-table {
+    th, td {
+      padding: 12px 10px;
+    }
+
+    .th-projects, .td-projects,
+    .th-portal, .td-portal {
+      display: none;
+    }
+  }
+}
