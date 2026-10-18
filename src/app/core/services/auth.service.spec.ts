@@ -122,4 +122,101 @@ describe('AuthService', () => {
     expect(service.isAuthenticated).toBeFalse();
     expect(localStorage.getItem('currentUser')).toBeNull();
   });
+
+  it('deve permitir acesso a todos os modulos para administradores', () => {
+    const validToken = createMockJwt(3600);
+    const mockAdmin: Usuario = {
+      id: 'usr-admin',
+      nome: 'Admin',
+      email: 'admin@cotu.com',
+      token: validToken,
+      perfil: 'Administrador'
+    };
+    localStorage.setItem('currentUser', JSON.stringify(mockAdmin));
+    service = TestBed.inject(AuthService);
+
+    expect(service.isAdmin).toBeTrue();
+    expect(service.hasModulePermission('financeiro')).toBeTrue();
+    expect(service.hasModulePermission('qualquer-modulo')).toBeTrue();
+    expect(service.getFirstAllowedRoute()).toBe('/dashboard');
+  });
+
+  it('deve permitir acesso aos modulos autorizados para colaboradores', () => {
+    const validToken = createMockJwt(3600);
+    const mockStaff: Usuario = {
+      id: 'usr-colab',
+      nome: 'Colaborador',
+      email: 'colab@cotu.com',
+      token: validToken,
+      perfil: 'Colaborador',
+      modulosPermitidos: ['Projetos', 'Agenda']
+    };
+    localStorage.setItem('currentUser', JSON.stringify(mockStaff));
+    service = TestBed.inject(AuthService);
+
+    expect(service.isAdmin).toBeFalse();
+    expect(service.hasModulePermission('projetos')).toBeTrue();
+    expect(service.hasModulePermission('agenda')).toBeTrue();
+    expect(service.hasModulePermission('financeiro')).toBeFalse();
+    expect(service.getFirstAllowedRoute()).toBe('/projetos');
+  });
+
+  it('deve negar acesso para colaborador com lista de modulos vazia', () => {
+    const validToken = createMockJwt(3600);
+    const mockStaff: Usuario = {
+      id: 'usr-vazio',
+      nome: 'Sem Modulos',
+      email: 'vazio@cotu.com',
+      token: validToken,
+      perfil: 'Colaborador',
+      modulosPermitidos: []
+    };
+    localStorage.setItem('currentUser', JSON.stringify(mockStaff));
+    service = TestBed.inject(AuthService);
+
+    expect(service.hasModulePermission('dashboard')).toBeFalse();
+    expect(service.hasModulePermission('projetos')).toBeFalse();
+    expect(service.getFirstAllowedRoute()).toBe('/perfil');
+  });
+
+  it('deve negar acesso para colaborador com modulos nao definidos', () => {
+    const validToken = createMockJwt(3600);
+    const mockStaff: Usuario = {
+      id: 'usr-sem-def',
+      nome: 'Sem Definicao',
+      email: 'semdef@cotu.com',
+      token: validToken,
+      perfil: 'Colaborador'
+    };
+    localStorage.setItem('currentUser', JSON.stringify(mockStaff));
+    service = TestBed.inject(AuthService);
+
+    expect(service.hasModulePermission('dashboard')).toBeFalse();
+    expect(service.getFirstAllowedRoute()).toBe('/perfil');
+  });
+
+  it('deve negar modulos internos para conta de cliente e direcionar para portal', () => {
+    const validToken = createMockJwt(3600);
+    const mockCliente: Usuario = {
+      id: 'usr-cli',
+      nome: 'Cliente Portal',
+      email: 'cliente@externo.com',
+      token: validToken,
+      perfil: 'Cliente'
+    };
+    localStorage.setItem('currentUser', JSON.stringify(mockCliente));
+    service = TestBed.inject(AuthService);
+
+    expect(service.isCliente).toBeTrue();
+    expect(service.hasModulePermission('dashboard')).toBeFalse();
+    expect(service.hasModulePermission('projetos')).toBeFalse();
+    expect(service.getFirstAllowedRoute()).toBe('/portal');
+  });
+
+  it('deve negar modulos quando o usuario nao estiver autenticado', () => {
+    service = TestBed.inject(AuthService);
+
+    expect(service.isAuthenticated).toBeFalse();
+    expect(service.hasModulePermission('dashboard')).toBeFalse();
+  });
 });

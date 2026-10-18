@@ -1,9 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { UsuarioService } from '../../../core/api/usuarios/usuario.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { PerfilUsuarioDto } from '../../../commands/usuario.commands';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
+import { MeuPerfilForm } from './meu-perfil.form';
 
 @Component({
   selector: 'app-meu-perfil',
@@ -23,29 +25,13 @@ export class MeuPerfilComponent implements OnInit {
   salvandoSenha = false;
   enviandoFoto = false;
 
-  perfilForm: FormGroup = this.fb.group({
-    nome: ['', [Validators.required, Validators.maxLength(150)]],
-    email: [{ value: '', disabled: true }],
-    cargo: ['', [Validators.maxLength(100)]],
-    telefone: ['', [Validators.maxLength(50)]]
-  });
-
-  senhaForm: FormGroup = this.fb.group({
-    senhaAtual: ['', [Validators.required]],
-    novaSenha: ['', [Validators.required, Validators.minLength(6)]],
-    confirmacaoNovaSenha: ['', [Validators.required]]
-  }, { validators: this.senhasIguaisValidator });
+  perfilForm: FormGroup = MeuPerfilForm.createPerfilForm(this.fb);
+  senhaForm: FormGroup = MeuPerfilForm.createSenhaForm(this.fb);
 
   perfilSucesso = '';
   perfilErro = '';
   senhaSucesso = '';
   senhaErro = '';
-
-  senhasIguaisValidator(group: FormGroup) {
-    const n = group.get('novaSenha')?.value;
-    const c = group.get('confirmacaoNovaSenha')?.value;
-    return n === c ? null : { senhasDiferentes: true };
-  }
 
   get pf() {
     return this.perfilForm.controls;
@@ -109,7 +95,7 @@ export class MeuPerfilComponent implements OnInit {
         this.perfilSucesso = 'Perfil atualizado com sucesso!';
         setTimeout(() => this.perfilSucesso = '', 4000);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.salvandoPerfil = false;
         this.perfilErro = err.error?.message || 'Erro ao atualizar perfil.';
       }
@@ -139,7 +125,7 @@ export class MeuPerfilComponent implements OnInit {
         this.perfilSucesso = 'Foto de perfil atualizada!';
         setTimeout(() => this.perfilSucesso = '', 4000);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.enviandoFoto = false;
         this.perfilErro = err.error?.message || 'Erro ao enviar foto de perfil.';
       }
@@ -185,7 +171,7 @@ export class MeuPerfilComponent implements OnInit {
         this.senhaForm.reset();
         setTimeout(() => this.senhaSucesso = '', 4000);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.salvandoSenha = false;
         this.senhaErro = err.error?.message || 'Erro ao alterar senha. Verifique sua senha atual.';
       }

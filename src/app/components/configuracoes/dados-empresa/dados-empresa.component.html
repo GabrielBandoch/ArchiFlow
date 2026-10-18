@@ -1,7 +1,7 @@
 <div class="empresa-container p-xl">
   <div class="header-section margin-bottom-xl">
     <div class="d-flex align-items-center gap-sm">
-      <a routerLink="/configuracoes" class="back-link">
+      <a routerLink="/configuracoes" class="back-link" aria-label="Voltar para configurações" title="Voltar para configurações">
         <span class="material-symbols-outlined">arrow_back</span>
       </a>
       <div>
@@ -39,17 +39,23 @@
             </div>
 
             <div class="logo-actions d-flex flex-direction-column gap-xs">
-              <label class="btn-upload">
-                <input type="file" (change)="onLogoSelecionado($event)" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="d-none" [disabled]="enviandoLogo" />
+              <label 
+                class="btn-upload" 
+                tabindex="0" 
+                role="button" 
+                aria-label="Selecionar logotipo da empresa"
+                (keydown.enter)="logoInput.click()" 
+                (keydown.space)="logoInput.click(); $event.preventDefault()">
+                <input #logoInput type="file" (change)="onLogoSelecionado($event)" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="d-none" [disabled]="enviandoLogo" />
                 <span class="material-symbols-outlined icon">upload</span>
                 {{ enviandoLogo ? 'Enviando logotipo...' : (empresa?.logoUrl ? 'Substituir logotipo' : 'Enviar logotipo') }}
               </label>
 
               @if (empresa?.logoUrl) {
-                <button type="button" class="btn-remove-logo" (click)="removerLogo()" [disabled]="enviandoLogo">
+                <app-button variant="danger" size="sm" (btnClick)="removerLogo()" [disabled]="enviandoLogo">
                   <span class="material-symbols-outlined icon">delete</span>
                   Remover logotipo
-                </button>
+                </app-button>
               }
             </div>
             <p class="font-label-xs text-secondary margin-top-sm">Formatos: PNG, JPG, WEBP, SVG (máx. 5MB)</p>
@@ -60,7 +66,7 @@
           <div class="p-lg">
             <div class="d-flex justify-content-between align-items-center margin-bottom-xs">
               <h3 class="card-title m-0">Identidade Visual</h3>
-              <span class="badge-db font-label-xs">Persistido no Banco</span>
+              <app-badge variant="info" size="sm" [pill]="true" text="Persistido no Banco"></app-badge>
             </div>
             <p class="card-subtitle text-secondary font-body-sm margin-bottom-md">
               Cor primária aplicada a relatórios, cabeçalhos, propostas comerciais e destaques do sistema.
@@ -74,6 +80,7 @@
                 [style.background-color]="cor"
                 [class.active]="empresaForm.get('corPrimaria')?.value === cor"
                 [title]="cor"
+                [attr.aria-label]="'Selecionar cor ' + cor"
                 (click)="selecionarCorPredefinida(cor)">
                 <span class="material-symbols-outlined check-icon" *ngIf="empresaForm.get('corPrimaria')?.value === cor">check</span>
               </button>
@@ -83,16 +90,20 @@
               <input 
                 type="color" 
                 class="color-input" 
+                aria-label="Selecionar cor primária"
                 [value]="empresaForm.get('corPrimaria')?.value || '#765538'"
                 (input)="empresaForm.get('corPrimaria')?.setValue($any($event.target).value)" />
               
               <div class="flex-1">
-                <span class="font-label-xs text-secondary d-block">Código Hexadecimal</span>
-                <input 
+                <app-input 
+                  id="corPrimaria"
                   type="text" 
-                  class="hex-text-input"
+                  label="Código Hexadecimal" 
+                  icon="palette" 
                   [formControl]="$any(empresaForm.get('corPrimaria'))" 
-                  placeholder="#765538" />
+                  placeholder="#765538" 
+                  maxlength="7">
+                </app-input>
               </div>
             </div>
 

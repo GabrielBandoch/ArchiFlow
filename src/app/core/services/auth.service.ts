@@ -85,7 +85,7 @@ export class AuthService {
 
   public get isAdmin(): boolean {
     const perfil = this.currentUserValue?.perfil;
-    return perfil === 'Administrador' || perfil === 'ArquitetoAdmin';
+    return perfil === 'Administrador' || perfil === 'ArquitetoAdmin' || perfil === 'AdministradorGeral';
   }
 
   public hasModulePermission(modulo: string): boolean {
@@ -95,7 +95,7 @@ export class AuthService {
 
     const modulos = this.currentUserValue?.modulosPermitidos;
     if (!modulos || modulos.length === 0) {
-      return true;
+      return false;
     }
     return modulos.some(m => m.toLowerCase() === modulo.toLowerCase());
   }

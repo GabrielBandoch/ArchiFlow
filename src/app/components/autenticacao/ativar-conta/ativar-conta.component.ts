@@ -1,9 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AutenticacaoService } from '../../../core/api/auth/autenticacao.service';
 import { CotuLogoComponent } from '../../../shared/components/cotu-logo/cotu-logo.component';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
+import { AtivarContaForm } from './ativar-conta.form';
 
 @Component({
   selector: 'app-ativar-conta',
@@ -23,24 +25,12 @@ export class AtivarContaComponent implements OnInit {
   conviteValido = false;
   mensagemConviteInvalido = '';
 
-  ativarForm: FormGroup = this.fb.group({
-    nome: ['', [Validators.required, Validators.maxLength(150)]],
-    email: [{ value: '', disabled: true }],
-    telefone: [''],
-    senha: ['', [Validators.required, Validators.minLength(6)]],
-    confirmarSenha: ['', [Validators.required]]
-  }, { validators: this.senhasIguaisValidator });
+  ativarForm: FormGroup = AtivarContaForm.create(this.fb);
 
   loading = false;
   submitted = false;
   sucesso = false;
   errorMessage = '';
-
-  senhasIguaisValidator(group: FormGroup) {
-    const s = group.get('senha')?.value;
-    const c = group.get('confirmarSenha')?.value;
-    return s === c ? null : { senhasDiferentes: true };
-  }
 
   get f() {
     return this.ativarForm.controls;
@@ -77,6 +67,9 @@ export class AtivarContaComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.loading || !this.conviteValido) {
+      return;
+    }
     this.submitted = true;
     this.errorMessage = '';
 
@@ -97,9 +90,9 @@ export class AtivarContaComponent implements OnInit {
         this.loading = false;
         this.sucesso = true;
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.errorMessage = err.error?.message || 'Erro ao ativar conta. Tente novamente.';
+        this.errorMessage = err.error?.mensagem || err.error?.message || 'Erro ao ativar conta. Tente novamente.';
       }
     });
   }

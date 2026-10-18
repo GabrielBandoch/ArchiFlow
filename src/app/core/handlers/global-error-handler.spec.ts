@@ -32,11 +32,12 @@ describe('GlobalErrorHandler', () => {
     handler.handleError(chunkError);
 
     expect(handler.reloadPage).toHaveBeenCalled();
-    expect(sessionStorage.getItem('archiflow_chunk_reload')).toBeTruthy();
+    expect(sessionStorage.getItem('archiflow_chunk_reload_count')).toBe('1');
   });
 
-  it('should not reload repeatedly within 15 seconds', () => {
-    sessionStorage.setItem('archiflow_chunk_reload', String(Date.now()));
+  it('should not reload repeatedly after 1 attempt within debounce window', () => {
+    sessionStorage.setItem('archiflow_chunk_reload_ts', String(Date.now()));
+    sessionStorage.setItem('archiflow_chunk_reload_count', '1');
     spyOn(handler, 'reloadPage');
     spyOn(console, 'error');
 
@@ -45,5 +46,27 @@ describe('GlobalErrorHandler', () => {
 
     expect(handler.reloadPage).not.toHaveBeenCalled();
     expect(console.error).toHaveBeenCalledWith(chunkError);
+  });
+
+  it('should handle chunk error wrapped in promise rejection object', () => {
+    spyOn(handler, 'reloadPage');
+
+    const rejectionWrapper = {
+      rejection: new Error('Failed to load module script: https://staging.cotu.com.br/chunk-abc.js')
+    };
+
+    handler.handleError(rejectionWrapper);
+
+    expect(handler.reloadPage).toHaveBeenCalled();
+  });
+
+  it('should not throw when sessionStorage access throws exception', () => {
+    spyOn(sessionStorage, 'getItem').and.throwError(new DOMException('Storage access denied', 'SecurityError'));
+    spyOn(handler, 'reloadPage');
+
+    const chunkError = new Error('Loading chunk 123 failed');
+
+    expect(() => handler.handleError(chunkError)).not.toThrow();
+    expect(handler.reloadPage).toHaveBeenCalled();
   });
 });

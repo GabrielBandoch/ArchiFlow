@@ -58,6 +58,7 @@
               label="Nome completo" 
               placeholder="Seu nome" 
               icon="person" 
+              autocomplete="name"
               formControlName="nome"
               [error]="submitted && f['nome'].errors ? 'O nome é obrigatório.' : undefined">
             </app-input>
@@ -69,6 +70,7 @@
               type="email" 
               label="E-mail" 
               icon="mail" 
+              autocomplete="email"
               formControlName="email">
             </app-input>
           </div>
@@ -80,6 +82,7 @@
               label="Telefone / WhatsApp (opcional)" 
               placeholder="(00) 00000-0000" 
               icon="call" 
+              autocomplete="tel"
               formControlName="telefone">
             </app-input>
           </div>
@@ -133,7 +136,7 @@
             Sua conta foi ativada. Você já pode fazer login para acessar seus projetos no Portal do Cliente.
           </p>
 
-          <app-button (click)="irParaLogin()">
+          <app-button (btnClick)="irParaLogin()">
             Fazer Login Agora
           </app-button>
         </div>

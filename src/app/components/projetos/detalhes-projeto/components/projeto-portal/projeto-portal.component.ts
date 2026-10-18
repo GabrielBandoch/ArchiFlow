@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { ProjetoPortalForm } from './projeto-portal.form';
 import { RepresentanteCliente } from '../../../../../models/cliente.model';
 import { ProjetoService } from '../../../../../core/api/projetos/projeto.service';
 import { ClienteService } from '../../../../../core/api/clientes/cliente.service';
@@ -9,6 +10,7 @@ import { ButtonComponent } from '../../../../../shared/components/button/button.
 import { InputComponent } from '../../../../../shared/components/input/input.component';
 import { DialogComponent } from '../../../../../shared/components/dialog/dialog.component';
 import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
+import { BadgeComponent } from '../../../../../shared/components/badge/badge.component';
 
 @Component({
   selector: 'app-projeto-portal',
@@ -20,7 +22,8 @@ import { EmptyStateComponent } from '../../../../../shared/components/empty-stat
     ButtonComponent,
     InputComponent,
     DialogComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
+    BadgeComponent
   ],
   templateUrl: './projeto-portal.component.html',
   styleUrls: ['./projeto-portal.component.scss']
@@ -49,13 +52,7 @@ export class ProjetoPortalComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.form = this.fb.group({
-      nome: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      cargo: [''],
-      telefone: [''],
-      enviarEmailAgora: [false]
-    });
+    this.form = ProjetoPortalForm.create(this.fb);
   }
 
   abrirModalConvidar(): void {

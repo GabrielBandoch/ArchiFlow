@@ -15,8 +15,8 @@
       (click)="selecionarProjeto(proj)">
       <div>
         <div class="d-flex align-items-center justify-content-between margin-bottom-sm">
-          <span class="badge-tipo-projeto font-label-xs">Projeto</span>
-          <span class="badge-status font-label-xs">{{ proj.status || 'Em Andamento' }}</span>
+          <app-badge variant="neutral" size="sm" text="Projeto"></app-badge>
+          <app-badge variant="success" size="sm" [text]="obterStatusProjetoLabel(proj.status)"></app-badge>
         </div>
         <h3 class="proj-title font-title-lg margin-bottom-xs">{{ proj.nome }}</h3>
         <p class="proj-desc font-body-sm text-secondary" *ngIf="proj.descricao">
@@ -48,7 +48,7 @@
 <div *ngIf="!loading && projeto" class="portal-dashboard">
   
   <div *ngIf="listaProjetosCliente.length > 1" class="portal-back-bar margin-bottom-md">
-    <button type="button" class="btn-back-projects d-inline-flex align-items-center gap-xs" (click)="voltarParaSelecao()">
+    <button type="button" class="btn-back-projects d-inline-flex align-items-center gap-xs" (click)="voltarParaSelecao()" aria-label="Ver todos os meus projetos">
       <span class="material-symbols-outlined">arrow_back</span>
       <span>Ver todos os meus projetos</span>
     </button>

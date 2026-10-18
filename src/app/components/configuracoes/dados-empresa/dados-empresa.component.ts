@@ -1,28 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { EmpresaService } from '../../../core/api/empresa/empresa.service';
 import { ViaCepService } from '../../../core/services/via-cep.service';
 import { DadosEmpresa, SalvarDadosEmpresaCommand } from '../../../models/empresa.model';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
 import { NotificationService } from '../../../core/services/notification.service';
 import { MaskUtils } from '../../../core/utils/mask-utils';
-
-function cpfCnpjValidator(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-  if (!value || !value.toString().trim()) {
-    return null;
-  }
-  return MaskUtils.isValidCpfCnpj(value.toString()) ? null : { cpfCnpjInvalido: true };
-}
-
-function websiteValidator(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-  if (!value || !value.toString().trim()) {
-    return null;
-  }
-  const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/.*)?$/;
-  return urlPattern.test(value.toString().trim()) ? null : { websiteInvalido: true };
-}
+import { DadosEmpresaForm } from './dados-empresa.form';
 
 @Component({
   selector: 'app-dados-empresa',
@@ -46,21 +30,7 @@ export class DadosEmpresaComponent implements OnInit {
 
   paletaCores: string[] = ['#765538', '#1E3A5F', '#3E5C46', '#5C2434', '#2C3539', '#8C6D3B'];
 
-  empresaForm: FormGroup = this.fb.group({
-    nomeEmpresa: ['', [Validators.required, Validators.maxLength(200)]],
-    razaoSocial: ['', [Validators.maxLength(200)]],
-    cnpj: ['', [cpfCnpjValidator, Validators.maxLength(30)]],
-    registroProfissional: ['', [Validators.maxLength(150)]],
-    slogan: ['', [Validators.maxLength(300)]],
-    email: ['', [Validators.email, Validators.maxLength(150)]],
-    telefone: ['', [Validators.maxLength(50)]],
-    endereco: ['', [Validators.minLength(3), Validators.maxLength(300)]],
-    cidade: ['', [Validators.minLength(2), Validators.maxLength(100)]],
-    estado: ['', [Validators.minLength(2), Validators.maxLength(50)]],
-    cep: ['', [Validators.maxLength(20)]],
-    website: ['', [websiteValidator, Validators.maxLength(200)]],
-    corPrimaria: ['#765538', [Validators.pattern(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)]]
-  });
+  empresaForm: FormGroup = DadosEmpresaForm.create(this.fb);
 
   get f() {
     return this.empresaForm.controls;

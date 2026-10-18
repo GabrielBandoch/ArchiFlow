@@ -39,7 +39,7 @@
           </p>
 
           <div class="d-flex flex-direction-column gap-md">
-            <app-button routerLink="/recuperar-senha">
+            <app-button (btnClick)="solicitarNovoLink()">
               Solicitar Novo Link
             </app-button>
             <a routerLink="/login" class="link-voltar font-label-md text-center">
@@ -109,7 +109,7 @@
             Sua senha foi atualizada com sucesso. Você já pode fazer login com suas novas credenciais.
           </p>
 
-          <app-button (click)="irParaLogin()">
+          <app-button (btnClick)="irParaLogin()">
             Acessar Workspace
           </app-button>
         </div>

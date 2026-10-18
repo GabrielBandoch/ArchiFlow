@@ -296,12 +296,16 @@ export class PortalClienteComponent implements OnInit {
     return 'Geral';
   }
 
-  get statusProjetoLabel(): string {
+  obterStatusProjetoLabel(status?: number | StatusProjeto): string {
     const labels = ['Briefing', 'Desenvolvimento', 'Revisão', 'Aprovação', 'Execução', 'Concluído', 'Cancelado'];
-    if (this.projeto && this.projeto.status !== undefined && this.projeto.status !== null) {
-      return labels[this.projeto.status] || 'Em Andamento';
+    if (status !== undefined && status !== null) {
+      return labels[Number(status)] || 'Em Andamento';
     }
     return 'Em Andamento';
+  }
+
+  get statusProjetoLabel(): string {
+    return this.obterStatusProjetoLabel(this.projeto?.status);
   }
 
   get arquivosFiltrados(): Arquivo[] {

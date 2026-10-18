@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AutenticacaoService } from '../../../core/api/auth/autenticacao.service';
 import { CotuLogoComponent } from '../../../shared/components/cotu-logo/cotu-logo.component';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
+import { RecuperarSenhaForm } from './recuperar-senha.form';
 
 @Component({
   selector: 'app-recuperar-senha',
@@ -17,9 +18,7 @@ export class RecuperarSenhaComponent {
   private authApi = inject(AutenticacaoService);
   private router = inject(Router);
 
-  recuperarForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]]
-  });
+  recuperarForm: FormGroup = RecuperarSenhaForm.create(this.fb);
 
   loading = false;
   submitted = false;
@@ -31,6 +30,9 @@ export class RecuperarSenhaComponent {
   }
 
   onSubmit(): void {
+    if (this.loading) {
+      return;
+    }
     this.submitted = true;
     this.errorMessage = '';
 

@@ -12,8 +12,10 @@ import { DialogService } from '../../../core/services/dialog.service';
 import { EditarClienteModalComponent } from '../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component';
 import { ClienteHeroCardComponent } from './components/cliente-hero-card/cliente-hero-card.component';
 
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RepresentanteCliente } from '../../../models/cliente.model';
+import { DetalhesClienteForm } from './detalhes-cliente.form';
 
 @Component({
   selector: 'app-detalhes-cliente',
@@ -41,13 +43,7 @@ export class DetalhesClienteComponent implements OnInit {
   representantes: RepresentanteCliente[] = [];
   modalConvidarRepAberto = false;
   salvandoRep = false;
-  conviteRepForm: FormGroup = this.fb.group({
-    nome: ['', [Validators.required, Validators.maxLength(150)]],
-    email: ['', [Validators.required, Validators.email, Validators.maxLength(256)]],
-    cargo: ['', [Validators.maxLength(100)]],
-    telefone: ['', [Validators.maxLength(50)]],
-    enviarEmailAgora: [false]
-  });
+  conviteRepForm: FormGroup = DetalhesClienteForm.createConviteRepForm(this.fb);
   loading = true;
 
   get totalInvestidoPropostas(): number {
@@ -146,7 +142,7 @@ export class DetalhesClienteComponent implements OnInit {
           this.notificationService.success(`Representante ${rep.nome} cadastrado com sucesso! Use o botão "Enviar Convite" quando desejar liberar o acesso.`);
         }
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.salvandoRep = false;
         this.notificationService.error(err.error?.message || 'Erro ao cadastrar representante.');
       }
@@ -159,7 +155,7 @@ export class DetalhesClienteComponent implements OnInit {
         rep.statusConvite = 'Convite Enviado';
         this.notificationService.success(`Convite de acesso enviado com sucesso para ${rep.email}!`);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.notificationService.error(err.error?.message || 'Erro ao enviar convite.');
       }
     });

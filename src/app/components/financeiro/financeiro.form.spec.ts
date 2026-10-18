@@ -40,7 +40,7 @@ describe('FinanceiroForm', () => {
       expect(form.get('projetoId')?.value).toBe('proj-456');
       expect(form.get('numeroParcelas')?.value).toBe(3);
       expect(form.get('intervaloDias')?.value).toBe(30);
-      expect(form.valid).toBeFalse(); // falta valorTotal
+      expect(form.valid).toBeFalse();
 
       form.patchValue({ valorTotal: 12000 });
       expect(form.valid).toBeTrue();

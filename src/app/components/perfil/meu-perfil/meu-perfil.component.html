@@ -29,21 +29,27 @@
             <p class="user-email text-secondary font-body-sm margin-bottom-md">{{ perfil?.email }}</p>
 
             <div class="badge-row d-flex justify-content-center gap-xs margin-bottom-lg">
-              <span class="role-badge">{{ perfil?.role }}</span>
+              <app-badge variant="primary" [pill]="true" [text]="perfil?.role"></app-badge>
             </div>
 
             <div class="photo-actions d-flex flex-direction-column gap-xs">
-              <label class="btn-upload">
-                <input type="file" (change)="onFotoSelecionada($event)" accept="image/*" class="d-none" [disabled]="enviandoFoto" />
+              <label 
+                class="btn-upload" 
+                tabindex="0" 
+                role="button" 
+                aria-label="Selecionar foto de perfil"
+                (keydown.enter)="fotoInput.click()" 
+                (keydown.space)="fotoInput.click(); $event.preventDefault()">
+                <input #fotoInput type="file" (change)="onFotoSelecionada($event)" accept="image/*" class="d-none" [disabled]="enviandoFoto" />
                 <span class="material-symbols-outlined icon">photo_camera</span>
                 {{ enviandoFoto ? 'Enviando...' : (perfil?.fotoUrl ? 'Trocar foto' : 'Enviar foto') }}
               </label>
 
               @if (perfil?.fotoUrl) {
-                <button type="button" class="btn-remove-photo" (click)="removerFoto()" [disabled]="enviandoFoto">
+                <app-button variant="danger" size="sm" (btnClick)="removerFoto()" [disabled]="enviandoFoto">
                   <span class="material-symbols-outlined icon">delete</span>
                   Remover foto
-                </button>
+                </app-button>
               }
             </div>
 
@@ -52,7 +58,7 @@
                 <span class="section-label font-label-sm text-secondary">Módulos Liberados</span>
                 <div class="modules-chips d-flex flex-wrap gap-xs margin-top-xs">
                   @for (mod of perfil!.modulosPermitidos; track mod) {
-                    <span class="module-chip">{{ mod }}</span>
+                    <app-badge variant="neutral" size="sm" [text]="mod"></app-badge>
                   }
                 </div>
               </div>

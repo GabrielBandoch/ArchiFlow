@@ -1,9 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AutenticacaoService } from '../../../core/api/auth/autenticacao.service';
 import { CotuLogoComponent } from '../../../shared/components/cotu-logo/cotu-logo.component';
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
+import { RedefinirSenhaForm } from './redefinir-senha.form';
 
 @Component({
   selector: 'app-redefinir-senha',
@@ -24,21 +26,12 @@ export class RedefinirSenhaComponent implements OnInit {
   emailUsuario = '';
   mensagemTokenInvalido = '';
 
-  redefinirForm: FormGroup = this.fb.group({
-    novaSenha: ['', [Validators.required, Validators.minLength(6)]],
-    confirmarSenha: ['', [Validators.required]]
-  }, { validators: this.senhasIguaisValidator });
+  redefinirForm: FormGroup = RedefinirSenhaForm.create(this.fb);
 
   loading = false;
   submitted = false;
   sucesso = false;
   errorMessage = '';
-
-  senhasIguaisValidator(group: FormGroup) {
-    const nova = group.get('novaSenha')?.value;
-    const confirm = group.get('confirmarSenha')?.value;
-    return nova === confirm ? null : { senhasDiferentes: true };
-  }
 
   get f() {
     return this.redefinirForm.controls;
@@ -71,6 +64,9 @@ export class RedefinirSenhaComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.loading || !this.tokenValido) {
+      return;
+    }
     this.submitted = true;
     this.errorMessage = '';
 
@@ -86,14 +82,18 @@ export class RedefinirSenhaComponent implements OnInit {
         this.loading = false;
         this.sucesso = true;
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.errorMessage = err.error?.message || 'Erro ao redefinir senha. O link pode ter expirado.';
+        this.errorMessage = err.error?.mensagem || err.error?.message || 'Erro ao redefinir senha. O link pode ter expirado.';
       }
     });
   }
 
   irParaLogin(): void {
     this.router.navigate(['/login']);
+  }
+
+  solicitarNovoLink(): void {
+    this.router.navigate(['/recuperar-senha']);
   }
 }
