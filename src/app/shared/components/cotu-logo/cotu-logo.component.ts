@@ -36,7 +36,7 @@ import { Component, Input } from '@angular/core';
       font-weight: 800;
       letter-spacing: 0.2em;
       line-height: 1;
-      color: #ffffff;
+      color: currentColor;
     }
   `]
 })

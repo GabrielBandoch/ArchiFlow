@@ -164,4 +164,24 @@ describe('UsuarioService', () => {
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });
+
+  it('deve fazer upload de foto de perfil enviando apenas o campo "file" no FormData', () => {
+    const fakeFile = new File(['conteudo-imagem'], 'avatar.png', { type: 'image/png' });
+    const mockResponse = { fotoUrl: 'https://cdn.archiflow.com/fotos/avatar.png' };
+
+    service.uploadFotoPerfil(fakeFile).subscribe((res) => {
+      expect(res.fotoUrl).toBe(mockResponse.fotoUrl);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/usuarios/me/foto`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body instanceof FormData).toBeTrue();
+
+    const body = req.request.body as FormData;
+    expect(body.has('file')).toBeTrue();
+    expect(body.get('file')).toBe(fakeFile);
+    expect(body.has('arquivo')).toBeFalse();
+
+    req.flush(mockResponse);
+  });
 });

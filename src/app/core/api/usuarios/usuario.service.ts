@@ -109,7 +109,6 @@ export class UsuarioService {
       .build();
     const formData = new FormData();
     formData.append('file', arquivo);
-    formData.append('arquivo', arquivo);
     return this.http.post<{ fotoUrl: string }>(url, formData);
   }
 
