@@ -124,7 +124,7 @@
         </div>
       </div>
 
-      <div class="table-responsive">
+      <div class="table-responsive" *ngIf="propostasFiltradas.length > 0">
         <table class="data-table w-full">
           <thead>
             <tr>
@@ -213,21 +213,19 @@
                 </div>
               </td>
             </tr>
-
-            <tr *ngIf="propostasFiltradas.length === 0">
-              <td colspan="7" class="p-xl">
-                <app-empty-state
-                  icon="request_quote"
-                  title="Nenhuma proposta comercial encontrada"
-                  description="Realize uma simulação e salve sua primeira proposta para acompanhar aqui."
-                  actionLabel="Nova Simulação"
-                  actionIcon="add"
-                  (actionClick)="setAba('calculadora')">
-                </app-empty-state>
-              </td>
-            </tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="p-xl" *ngIf="propostasFiltradas.length === 0">
+        <app-empty-state
+          icon="request_quote"
+          title="Nenhuma proposta comercial encontrada"
+          description="Realize uma simulação e salve sua primeira proposta para acompanhar aqui."
+          actionLabel="Nova Simulação"
+          actionIcon="add"
+          (actionClick)="setAba('calculadora')">
+        </app-empty-state>
       </div>
     </div>
   </div>

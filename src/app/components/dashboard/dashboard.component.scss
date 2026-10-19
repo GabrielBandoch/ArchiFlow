@@ -60,6 +60,218 @@
   }
 }
 
+.badge-count {
+  background-color: var(--af-surface-container-high);
+  color: var(--af-on-surface);
+  padding: 3px 8px;
+  border-radius: var(--af-radius-full);
+  font-weight: 600;
+}
+
+.today-tasks-list {
+  border-radius: var(--af-radius-default);
+  overflow: hidden;
+}
+
+.today-task-row {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-surface-container);
+  border-radius: var(--af-radius-default);
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: var(--af-surface-container-low);
+  }
+}
+
+.time-pill {
+  min-width: 58px;
+  padding: 6px 8px;
+  background-color: var(--af-surface-container-high);
+  color: var(--af-primary);
+  border-radius: var(--af-radius-default);
+  text-align: center;
+}
+
+.task-type-badge {
+  background-color: var(--af-surface-container-high);
+  color: var(--af-on-surface-variant);
+  padding: 2px 8px;
+  border-radius: var(--af-radius-full);
+}
+
+.task-status-badge {
+  background-color: #fff3e0;
+  color: #e65100;
+  padding: 2px 8px;
+  border-radius: var(--af-radius-full);
+  font-weight: 600;
+
+  &.badge-done {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+}
+
+.section-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--af-radius-default);
+  background-color: var(--af-surface-container-low);
+  border: 1px solid var(--af-surface-container);
+  flex-shrink: 0;
+
+  .material-symbols-outlined {
+    font-size: 22px;
+  }
+}
+
+.empty-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--af-surface-container-high);
+  flex-shrink: 0;
+
+  .material-symbols-outlined {
+    font-size: 24px;
+  }
+}
+
+.icon-inline-sm {
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.today-empty-state {
+  background-color: var(--af-surface-container-low);
+  border: 1px dashed var(--af-surface-container-highest);
+  border-radius: var(--af-radius-default);
+}
+
+.financeiro-semana-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--af-space-md);
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.badge-danger {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 2px 8px;
+  border-radius: var(--af-radius-full);
+  font-weight: 600;
+}
+
+.badge-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 2px 8px;
+  border-radius: var(--af-radius-full);
+  font-weight: 600;
+}
+
+.alert-overdue-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fff3e0;
+  color: #e65100;
+  padding: 3px 8px;
+  border-radius: var(--af-radius-full);
+  font-weight: 600;
+}
+
+.mini-finance-list {
+  border-radius: var(--af-radius-default);
+}
+
+.mini-finance-item {
+  background-color: var(--af-surface-container-lowest);
+  border: 1px solid var(--af-surface-container);
+  border-radius: var(--af-radius-default);
+}
+
+.mini-empty-finance {
+  background-color: var(--af-surface-container-low);
+  border-radius: var(--af-radius-default);
+}
+
+.link-action {
+  color: var(--af-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  span:last-child {
+    font-size: 16px;
+  }
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: var(--af-surface-container-high);
+  border-radius: var(--af-radius-full);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--af-primary);
+  border-radius: var(--af-radius-full);
+  transition: width 0.3s ease;
+}
+
+.project-pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background-color: var(--af-surface-container);
+  color: var(--af-on-surface);
+  text-decoration: none;
+  border-radius: var(--af-radius-full);
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--af-surface-container-high);
+  }
+}
+
+.crm-funnel-pills {
+  .funnel-pill {
+    background-color: var(--af-surface-container-low);
+    border: 1px solid var(--af-surface-container);
+    border-radius: var(--af-radius-default);
+
+    .funnel-badge {
+      background-color: var(--af-primary);
+      color: #ffffff;
+      padding: 1px 6px;
+      border-radius: var(--af-radius-full);
+      font-weight: 700;
+    }
+  }
+}
+
+.lead-status-pill {
+  background-color: var(--af-surface-container-high);
+  color: var(--af-on-surface-variant);
+  padding: 2px 8px;
+  border-radius: var(--af-radius-full);
+}
+
 @media (max-width: 900px) {
   .dashboard-grid {
     grid-template-columns: 1fr;

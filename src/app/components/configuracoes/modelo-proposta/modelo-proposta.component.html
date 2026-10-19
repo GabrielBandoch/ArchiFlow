@@ -81,37 +81,41 @@
         <!-- ABA 1: IDENTIDADE VISUAL & CONTATOS -->
         <div class="tab-pane" *ngIf="abaAtiva === 'identidade'">
           
-          <!-- Seção: Dados Institucionais -->
-          <div class="form-section-block">
-            <div class="section-title-row d-flex align-items-center gap-xs mb-sm">
-              <span class="material-symbols-outlined section-icon">badge</span>
-              <h3 class="section-heading font-headline-sm m-0">Marca & Registro Profissional</h3>
+          <div class="centralized-notice-box p-md mb-lg">
+            <div class="d-flex align-items-start gap-md">
+              <span class="material-symbols-outlined notice-icon">corporate_fare</span>
+              <div class="flex-1">
+                <h4 class="font-label-md font-weight-bold m-0 text-on-surface">Marca & Registro Profissional Centralizados</h4>
+                <p class="font-body-xs text-on-surface-variant mt-xxs mb-sm">
+                  O logotipo oficial, dados cadastrais, registro profissional (CAU/CREA) e contatos da sua empresa agora são gerenciados centralmente na página dedicada de <strong>Dados da Empresa</strong>, garantindo consistência em todas as propostas e relatórios.
+                </p>
+                <a routerLink="/configuracoes/empresa" class="btn-centralized-link d-inline-flex align-items-center gap-xs">
+                  <span class="material-symbols-outlined icon-xs">tune</span>
+                  Gerenciar Dados da Empresa & Logotipo
+                </a>
+              </div>
             </div>
-            <p class="section-subheading font-body-xs text-on-surface-variant mb-md">
-              Esses dados compõem o cabeçalho timbrado oficial impresso no topo de todas as páginas da proposta.
-            </p>
+          </div>
 
-            <div class="form-grid">
-              <div class="form-group col-span-2">
-                <label class="form-label">Nome do Escritório / Razão Social *</label>
-                <div class="input-with-icon">
-                  <span class="material-symbols-outlined input-icon">business</span>
-                  <input type="text" class="af-input" formControlName="nomeEscritorio" placeholder="Ex: Studio Arquitetura & Interiores">
+          <div class="form-section-block mb-md">
+            <div class="brand-summary-card p-md d-flex align-items-center justify-content-between gap-md">
+              <div class="d-flex align-items-center gap-md">
+                <div class="brand-summary-logo d-flex align-items-center justify-content-center">
+                  <img *ngIf="form.get('logoUrl')?.value; else noLogoPreview" [src]="form.get('logoUrl')?.value" alt="Logo" class="summary-logo-img">
+                  <ng-template #noLogoPreview>
+                    <span class="material-symbols-outlined text-secondary">business</span>
+                  </ng-template>
+                </div>
+                <div>
+                  <h4 class="font-label-md font-weight-bold m-0">{{ form.get('nomeEscritorio')?.value || 'Nome do Escritório' }}</h4>
+                  <p class="font-body-xs text-on-surface-variant m-0" *ngIf="form.get('registroProfissional')?.value">{{ form.get('registroProfissional')?.value }}</p>
+                  <p class="font-body-xs text-on-surface-variant m-0" *ngIf="form.get('email')?.value">{{ form.get('email')?.value }} • {{ form.get('telefone')?.value }}</p>
                 </div>
               </div>
-
-              <div class="form-group col-span-2">
-                <label class="form-label">Slogan ou Subtítulo Conceitual</label>
-                <input type="text" class="af-input" formControlName="slogan" placeholder="Ex: Arquitetura contemporânea, projetos executivos e interiores exclusivos">
-              </div>
-
-              <div class="form-group col-span-2">
-                <label class="form-label">Registro Profissional & Fiscal (CAU / CREA / CNPJ)</label>
-                <div class="input-with-icon">
-                  <span class="material-symbols-outlined input-icon">verified</span>
-                  <input type="text" class="af-input" formControlName="registroProfissional" placeholder="Ex: CAU/BR A000000-0 • CNPJ 00.000.000/0001-00">
-                </div>
-              </div>
+              <a routerLink="/configuracoes/empresa" class="btn-subtle-action">
+                <span class="material-symbols-outlined icon-sm">edit</span>
+                Editar
+              </a>
             </div>
           </div>
 
@@ -148,98 +152,6 @@
                   <input type="text" class="af-input font-mono color-hex-input" formControlName="corPrimaria" placeholder="#765538">
                 </div>
               </div>
-            </div>
-          </div>
-
-          <hr class="form-divider">
-
-          <!-- Seção: Contatos & Localização -->
-          <div class="form-section-block">
-            <div class="section-title-row d-flex align-items-center gap-xs mb-sm">
-              <span class="material-symbols-outlined section-icon">contact_phone</span>
-              <h3 class="section-heading font-headline-sm m-0">Contatos Oficiais & Endereço</h3>
-            </div>
-
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label">E-mail Comercial *</label>
-                <div class="input-with-icon">
-                  <span class="material-symbols-outlined input-icon">mail</span>
-                  <input type="email" class="af-input" formControlName="email" placeholder="contato@seuescritorio.com.br">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Telefone / WhatsApp Comercial *</label>
-                <div class="input-with-icon">
-                  <span class="material-symbols-outlined input-icon">call</span>
-                  <input type="text" class="af-input" formControlName="telefone" placeholder="(11) 98765-4321">
-                </div>
-              </div>
-
-              <div class="form-group col-span-2">
-                <label class="form-label">Endereço Comercial / Sede</label>
-                <div class="input-with-icon">
-                  <span class="material-symbols-outlined input-icon">location_on</span>
-                  <input type="text" class="af-input" formControlName="endereco" placeholder="Ex: Av. Paulista, 1000 - Sala 802, Bela Vista - São Paulo/SP">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <hr class="form-divider">
-
-          <!-- Seção: Logotipo Oficial -->
-          <div class="form-section-block">
-            <div class="section-title-row d-flex align-items-center gap-xs mb-sm">
-              <span class="material-symbols-outlined section-icon">image</span>
-              <h3 class="section-heading font-headline-sm m-0">Logotipo Oficial do Escritório</h3>
-            </div>
-            <p class="section-subheading font-body-xs text-on-surface-variant mb-sm">
-              Recomendamos o envio de imagem com fundo transparente em PNG ou SVG de alta resolução.
-            </p>
-
-            <div class="logo-upload-container">
-              <input #fileInput type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp" (change)="onFileSelected($event)" style="display: none">
-              
-              <div class="logo-active-card d-flex align-items-center justify-content-between p-md" *ngIf="form.get('logoUrl')?.value; else noLogoTpl">
-                <div class="d-flex align-items-center gap-md">
-                  <div class="logo-thumb-box d-flex align-items-center justify-content-center">
-                    <img [src]="form.get('logoUrl')?.value" alt="Logo preview" class="logo-thumb-img">
-                  </div>
-                  <div class="d-flex flex-direction-column">
-                    <div class="d-flex align-items-center gap-xs">
-                      <span class="font-label-md font-weight-bold">Logotipo Ativo</span>
-                      <span class="badge-status-ok font-label-xs">Vetorizado / HD</span>
-                    </div>
-                    <span class="font-body-xs text-on-surface-variant mt-xxs">Aplicado automaticamente no topo da folha timbrada</span>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center gap-xs">
-                  <button type="button" class="btn-subtle-action" (click)="fileInput.click()">
-                    <span class="material-symbols-outlined icon-sm">sync</span>
-                    Substituir
-                  </button>
-                  <button type="button" class="btn-subtle-action btn-danger-action" (click)="removerLogotipo()">
-                    <span class="material-symbols-outlined icon-sm">delete</span>
-                    Remover
-                  </button>
-                </div>
-              </div>
-
-              <ng-template #noLogoTpl>
-                <div class="logo-dropzone-luxury d-flex flex-direction-column align-items-center justify-content-center p-lg" (click)="fileInput.click()">
-                  <div class="dropzone-icon-circle d-flex align-items-center justify-content-center mb-sm">
-                    <span class="material-symbols-outlined">cloud_upload</span>
-                  </div>
-                  <span class="font-label-md font-weight-bold text-on-surface">Clique para carregar o logotipo da sua marca</span>
-                  <span class="font-body-xs text-on-surface-variant mt-xxs">Formatos aceitos: PNG transparente, SVG vetorial ou JPG (máx. 2MB)</span>
-                  <button type="button" class="btn-browse-file font-label-sm mt-md">
-                    <span class="material-symbols-outlined icon-sm">add_photo_alternate</span>
-                    Procurar no Computador
-                  </button>
-                </div>
-              </ng-template>
             </div>
           </div>
 
@@ -581,28 +493,30 @@
               <h4 class="m-0" [style.color]="configAtual.corPrimaria">ESCOPO DO PROJETO & ETAPAS CONTRATADAS</h4>
             </div>
 
-            <table class="a4-table w-full">
-              <thead>
-                <tr [style.background-color]="configAtual.corPrimaria + '14'">
-                  <th class="text-left col-etapa">Etapa & Entregáveis</th>
-                  <th class="text-center col-pct">%</th>
-                  <th class="text-right col-valor">Investimento</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let e of previewData.etapas">
-                  <td class="col-etapa">
-                    <div class="d-flex align-items-center gap-xs flex-wrap">
-                      <span class="etapa-nome">{{ e.nome }}</span>
-                      <span class="badge-prazo font-mono" *ngIf="e.prazo">{{ e.prazo }}</span>
-                    </div>
-                    <span class="etapa-desc" *ngIf="e.descricao">{{ e.descricao }}</span>
-                  </td>
-                  <td class="text-center col-pct font-mono font-weight-bold">{{ e.percentual }}%</td>
-                  <td class="text-right col-valor font-weight-bold font-mono">{{ formatarMoeda(e.valor) }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="a4-table-wrap">
+              <table class="a4-table w-full">
+                <thead>
+                  <tr [style.background-color]="configAtual.corPrimaria + '14'">
+                    <th class="text-left col-etapa">Etapa & Entregáveis</th>
+                    <th class="text-center col-pct">%</th>
+                    <th class="text-right col-valor">Investimento</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let e of previewData.etapas">
+                    <td class="col-etapa">
+                      <div class="d-flex align-items-center gap-xs flex-wrap">
+                        <span class="etapa-nome">{{ e.nome }}</span>
+                        <span class="badge-prazo font-mono" *ngIf="e.prazo">{{ e.prazo }}</span>
+                      </div>
+                      <span class="etapa-desc" *ngIf="e.descricao">{{ e.descricao }}</span>
+                    </td>
+                    <td class="text-center col-pct font-mono font-weight-bold">{{ e.percentual }}%</td>
+                    <td class="text-right col-valor font-weight-bold font-mono">{{ formatarMoeda(e.valor) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
             <!-- TOTAL BAR -->
             <div class="a4-total-bar d-flex justify-content-between align-items-center" 

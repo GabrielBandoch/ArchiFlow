@@ -7,10 +7,15 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 import { NotificationService } from '../../../core/services/notification.service';
 import { ModalPropostaPdfComponent, PropostaVisualizacaoData } from '../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component';
 
+import { RouterLink } from '@angular/router';
+import { EmpresaService } from '../../../core/api/empresa/empresa.service';
+import { DadosEmpresa } from '../../../models/empresa.model';
+import { ModeloPropostaForm } from './modelo-proposta.form';
+
 @Component({
   selector: 'app-modelo-proposta',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, ModalPropostaPdfComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonComponent, ModalPropostaPdfComponent],
   templateUrl: './modelo-proposta.component.html',
   styleUrls: ['./modelo-proposta.component.scss']
 })
@@ -18,6 +23,7 @@ export class ModeloPropostaComponent implements OnInit {
   public form!: FormGroup;
   public abaAtiva: 'identidade' | 'secoes' | 'textos' | 'whatsapp' = 'identidade';
   public modalPdfAberto = false;
+  public empresa: DadosEmpresa | null = null;
 
   public previewData: PropostaVisualizacaoData = {
     codigo: 'PROP-2026-084',
@@ -50,11 +56,13 @@ export class ModeloPropostaComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private configService: ConfiguracaoPropostaService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private empresaService: EmpresaService
   ) {}
 
   ngOnInit(): void {
     this.initForm(this.configService.getConfiguracao());
+    this.carregarDadosEmpresa();
     this.configService.carregarDoServidor().subscribe({
       next: (config) => {
         if (config) {
@@ -64,33 +72,29 @@ export class ModeloPropostaComponent implements OnInit {
     });
   }
 
-  private initForm(config: ConfiguracaoProposta): void {
-    this.form = this.fb.group({
-      nomeEscritorio: [config.nomeEscritorio, [Validators.required]],
-      slogan: [config.slogan],
-      registroProfissional: [config.registroProfissional],
-      email: [config.email, [Validators.required, Validators.email]],
-      telefone: [config.telefone, [Validators.required]],
-      endereco: [config.endereco],
-      logoUrl: [config.logoUrl || ''],
-      corPrimaria: [config.corPrimaria || '#765538', [Validators.required]],
-
-      exibirCabecalho: [config.exibirCabecalho],
-      exibirResumo: [config.exibirResumo],
-      exibirTabelaEtapas: [config.exibirTabelaEtapas],
-      exibirMemoriaCalculo: [config.exibirMemoriaCalculo],
-      exibirCondicoesPagamento: [config.exibirCondicoesPagamento],
-      exibirTermosGerais: [config.exibirTermosGerais],
-      exibirAssinaturas: [config.exibirAssinaturas],
-
-      textoApresentacao: [config.textoApresentacao, [Validators.required]],
-      validadeDias: [config.validadeDias, [Validators.required, Validators.min(1)]],
-      condicoesPagamentoPadrao: [config.condicoesPagamentoPadrao, [Validators.required]],
-      chavePix: [config.chavePix],
-      dadosBancarios: [config.dadosBancarios],
-      termosGerais: [config.termosGerais, [Validators.required]],
-      templateMensagemWhatsapp: [config.templateMensagemWhatsapp, [Validators.required]]
+  public carregarDadosEmpresa(): void {
+    this.empresaService.obterDadosEmpresa().subscribe({
+      next: (emp) => {
+        this.empresa = emp;
+        if (emp) {
+          this.form.patchValue({
+            nomeEscritorio: emp.nomeEmpresa,
+            slogan: emp.slogan,
+            registroProfissional: emp.registroProfissional,
+            email: emp.email || this.form.get('email')?.value,
+            telefone: emp.telefone || this.form.get('telefone')?.value,
+            endereco: emp.endereco || this.form.get('endereco')?.value,
+            logoUrl: emp.logoUrl || this.form.get('logoUrl')?.value,
+            corPrimaria: emp.corPrimaria || this.form.get('corPrimaria')?.value
+          });
+        }
+      },
+      error: () => {}
     });
+  }
+
+  private initForm(config: ConfiguracaoProposta): void {
+    this.form = ModeloPropostaForm.create(this.fb, config);
   }
 
   public setAba(aba: 'identidade' | 'secoes' | 'textos' | 'whatsapp'): void {

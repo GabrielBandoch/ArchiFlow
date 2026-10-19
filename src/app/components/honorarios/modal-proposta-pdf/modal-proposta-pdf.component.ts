@@ -54,7 +54,7 @@ export class ModalPropostaPdfComponent implements OnInit, OnChanges {
 
   public irParaConfiguracoes(): void {
     this.fechar();
-    this.router.navigate(['/configuracoes/modelo-proposta']);
+    this.router.navigate(['/configuracoes/empresa']);
   }
 
   public imprimir(): void {

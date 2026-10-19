@@ -83,8 +83,53 @@ export class AuthService {
     return !!user && !this.isCliente;
   }
 
-  public get projetoId(): string | null | undefined {
-    return this.currentUserValue?.projetoId;
+  public get isAdmin(): boolean {
+    const perfil = this.currentUserValue?.perfil;
+    return perfil === 'Administrador' || perfil === 'ArquitetoAdmin' || perfil === 'AdministradorGeral';
+  }
+
+  public hasModulePermission(modulo: string): boolean {
+    if (!this.isAuthenticated) return false;
+    if (this.isCliente) return false;
+    if (this.isAdmin) return true;
+
+    const modulos = this.currentUserValue?.modulosPermitidos;
+    if (!modulos || modulos.length === 0) {
+      return false;
+    }
+    return modulos.some(m => m.toLowerCase() === modulo.toLowerCase());
+  }
+
+  public getFirstAllowedRoute(): string {
+    if (this.isCliente) {
+      return '/portal';
+    }
+    const candidateRoutes: { modulo: string; route: string }[] = [
+      { modulo: 'dashboard', route: '/dashboard' },
+      { modulo: 'projetos', route: '/projetos' },
+      { modulo: 'clientes', route: '/clientes' },
+      { modulo: 'leads', route: '/leads' },
+      { modulo: 'fornecedores', route: '/fornecedores' },
+      { modulo: 'agenda', route: '/agenda' },
+      { modulo: 'financeiro', route: '/financeiro' },
+      { modulo: 'simulador', route: '/simulador' },
+      { modulo: 'configuracoes', route: '/configuracoes' }
+    ];
+
+    for (const item of candidateRoutes) {
+      if (this.hasModulePermission(item.modulo)) {
+        return item.route;
+      }
+    }
+    return '/perfil';
+  }
+
+  public updateCurrentUser(partial: Partial<Usuario>): void {
+    const current = this.currentUserValue;
+    if (!current) return;
+    const updated = { ...current, ...partial };
+    localStorage.setItem('currentUser', JSON.stringify(updated));
+    this.currentUserSubject.next(updated);
   }
 
   login(command: LoginCommand): Observable<Usuario> {

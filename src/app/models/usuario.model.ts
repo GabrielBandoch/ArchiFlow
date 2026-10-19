@@ -17,6 +17,8 @@ export interface Usuario {
   token?: string;
   perfil: PerfilUsuario | string;
   projetoId?: string | null;
+  modulosPermitidos?: string[];
+  fotoUrl?: string | null;
 }
 
 export interface MembroEquipe {
@@ -27,6 +29,8 @@ export interface MembroEquipe {
   role: PerfilUsuario | string;
   cargo?: string | null;
   telefone?: string | null;
+  fotoUrl?: string | null;
+  modulosPermitidos?: string[];
   ativo: boolean;
   criadoEm: string;
   atualizadoEm?: string | null;

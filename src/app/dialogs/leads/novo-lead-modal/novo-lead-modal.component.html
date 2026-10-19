@@ -1,4 +1,4 @@
-<app-dialog [show]="show" dialogTitle="Novo Lead" size="sm" [overflowVisible]="true" (close)="onClose()">
+<app-dialog [show]="show" dialogTitle="Novo Lead" size="sm" (close)="onClose()">
   <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
     
     <app-input 

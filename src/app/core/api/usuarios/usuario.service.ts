@@ -7,7 +7,10 @@ import {
   ConvidarMembroEquipeCommand,
   AtualizarMembroEquipeCommand,
   AlterarStatusMembroCommand,
-  RedefinirSenhaMembroCommand
+  RedefinirSenhaMembroCommand,
+  PerfilUsuarioDto,
+  AtualizarPerfilCommand,
+  AlterarSenhaCommand
 } from '../../../commands/usuario.commands';
 import { UrlBuilder } from '../../utils/url-builder';
 
@@ -80,5 +83,50 @@ export class UsuarioService {
       .segment(id)
       .build();
     return this.http.delete<void>(url);
+  }
+
+  obterMeuPerfil(): Observable<PerfilUsuarioDto> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('usuarios')
+      .segment('me')
+      .build();
+    return this.http.get<PerfilUsuarioDto>(url);
+  }
+
+  atualizarMeuPerfil(command: AtualizarPerfilCommand): Observable<PerfilUsuarioDto> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('usuarios')
+      .segment('me')
+      .build();
+    return this.http.put<PerfilUsuarioDto>(url, command);
+  }
+
+  uploadFotoPerfil(arquivo: File): Observable<{ fotoUrl: string }> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('usuarios')
+      .segment('me')
+      .segment('foto')
+      .build();
+    const formData = new FormData();
+    formData.append('file', arquivo);
+    return this.http.post<{ fotoUrl: string }>(url, formData);
+  }
+
+  removerFotoPerfil(): Observable<void> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('usuarios')
+      .segment('me')
+      .segment('foto')
+      .build();
+    return this.http.delete<void>(url);
+  }
+
+  alterarSenha(command: AlterarSenhaCommand): Observable<{ message: string }> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('usuarios')
+      .segment('me')
+      .segment('senha')
+      .build();
+    return this.http.put<{ message: string }>(url, command);
   }
 }

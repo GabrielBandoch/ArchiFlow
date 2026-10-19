@@ -1,0 +1,191 @@
+<div class="projeto-portal-container d-flex flex-direction-column gap-md">
+  
+  <div class="portal-header-card d-flex align-items-center justify-content-between flex-wrap gap-sm">
+    <div class="portal-header-info d-flex align-items-center gap-sm">
+      <div class="portal-header-icon-box d-flex align-items-center justify-content-center">
+        <span class="material-symbols-outlined">badge</span>
+      </div>
+      <div>
+        <h3 class="portal-header-title font-headline-md m-0">Portal do Cliente & Representantes</h3>
+        <p class="portal-header-sub font-body-sm text-on-surface-variant m-0">
+          Gerencie os contatos de <strong>{{ clienteNome || 'Cliente' }}</strong> que têm permissão de acesso a este projeto no Portal.
+        </p>
+      </div>
+    </div>
+
+    <app-button 
+      *ngIf="clienteId" 
+      variant="primary" 
+      size="md" 
+      (btnClick)="abrirModalConvidar()" 
+      title="Cadastrar representante para acessar o projeto no portal">
+      <span class="material-symbols-outlined icon-btn-inline">person_add</span>
+      Cadastrar Representante
+    </app-button>
+  </div>
+
+  <div *ngIf="!clienteId" class="warning-banner d-flex align-items-center gap-sm">
+    <span class="material-symbols-outlined warning-icon">warning</span>
+    <div class="font-body-sm">
+      <strong>Projeto sem cliente vinculado:</strong> Para liberar o acesso ao Portal do Cliente, associe um cliente na edição dos dados do projeto.
+    </div>
+  </div>
+
+  <div *ngIf="clienteId" class="portal-info-box d-flex align-items-center gap-sm">
+    <span class="material-symbols-outlined info-icon">info</span>
+    <span class="font-body-sm text-on-surface-variant">
+      Representantes cadastrados recebem credenciais individuais para visualizar o progresso das etapas, consultar pranchas e arquivos autorizados, e interagir pelo chat integrado.
+    </span>
+  </div>
+
+  <div *ngIf="clienteId && representantes.length > 0" class="representantes-list d-flex flex-direction-column gap-sm">
+    <div *ngFor="let rep of representantes" class="rep-card d-flex justify-content-between align-items-center p-md flex-wrap gap-sm">
+      
+      <div class="rep-info-col d-flex align-items-center gap-md">
+        <div class="rep-avatar-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <div class="d-flex flex-direction-column">
+          <div class="d-flex align-items-center gap-xs flex-wrap">
+            <h4 class="rep-name font-label-md font-weight-bold m-0">{{ rep.nome }}</h4>
+            <app-badge *ngIf="rep.cargo" variant="neutral" size="sm" [text]="rep.cargo"></app-badge>
+          </div>
+          <div class="d-flex align-items-center gap-sm font-body-xs text-on-surface-variant margin-top-xxs flex-wrap">
+            <span>{{ rep.email }}</span>
+            <span *ngIf="rep.telefone">• {{ rep.telefone }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-actions-col d-flex align-items-center gap-sm flex-wrap">
+        <app-badge [variant]="rep.ativo ? 'success' : 'neutral'" size="sm" [pill]="true" [text]="rep.ativo ? 'Ativo' : 'Inativo'"></app-badge>
+
+        <app-badge 
+          [variant]="(rep.statusConvite === 'Ativo' || rep.conviteAceito) ? 'success' : (rep.statusConvite === 'Convite Enviado' ? 'info' : (rep.statusConvite === 'Expirado' ? 'danger' : 'warning'))" 
+          size="sm" 
+          [pill]="true" 
+          [text]="(rep.statusConvite === 'Ativo' || rep.conviteAceito) ? 'Conta Ativada' : (rep.statusConvite === 'Convite Enviado' ? 'Convite Enviado' : (rep.statusConvite === 'Expirado' ? 'Convite Expirado' : 'Acesso Pendente'))">
+        </app-badge>
+
+        <div class="d-flex align-items-center gap-xxs">
+          <app-button 
+            *ngIf="!rep.conviteAceito && rep.statusConvite !== 'Ativo'" 
+            variant="outline" 
+            size="sm" 
+            (btnClick)="reenviarConvite(rep)" 
+            [title]="rep.statusConvite === 'Convite Enviado' ? 'Reenviar link de acesso ao portal' : 'Enviar e-mail com link de ativação de acesso ao portal'">
+            <span class="material-symbols-outlined icon-btn-inline">send</span>
+            {{ rep.statusConvite === 'Convite Enviado' ? 'Reenviar' : 'Enviar Convite' }}
+          </app-button>
+
+          <app-button 
+            variant="ghost" 
+            size="sm" 
+            (btnClick)="alternarStatus(rep)" 
+            [title]="rep.ativo ? 'Desativar acesso ao portal' : 'Reativar acesso ao portal'">
+            <span class="material-symbols-outlined">{{ rep.ativo ? 'block' : 'check_circle' }}</span>
+          </app-button>
+
+          <app-button 
+            variant="ghost" 
+            size="sm" 
+            (btnClick)="removerRepresentante(rep)" 
+            title="Remover representante deste cliente">
+            <span class="material-symbols-outlined text-error">delete</span>
+          </app-button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <ng-container *ngIf="clienteId && representantes.length === 0">
+    <app-empty-state
+      icon="group_add"
+      title="Nenhum representante cadastrado"
+      description="Cadastre os contatos da empresa cliente para que possam receber o convite e acompanhar as entregas deste projeto diretamente no Portal do Cliente."
+      actionLabel="Cadastrar Representante"
+      actionIcon="person_add"
+      (actionClick)="abrirModalConvidar()">
+    </app-empty-state>
+  </ng-container>
+
+</div>
+
+<app-dialog
+  [show]="modalConvidarAberto"
+  dialogTitle="Cadastrar Representante do Projeto"
+  size="md"
+  (close)="fecharModalConvidar()">
+
+  <form [formGroup]="form" (ngSubmit)="salvarRepresentante()" class="d-flex flex-direction-column gap-md p-sm">
+    <p class="font-body-sm text-on-surface-variant m-0">
+      Cadastre os dados do contato de <strong>{{ clienteNome }}</strong> com acesso a este projeto. Você pode optar por enviar o e-mail de acesso agora ou posteriormente através do botão <strong>Enviar Convite</strong>.
+    </p>
+
+    <app-input
+      id="repProjNome"
+      type="text"
+      label="Nome Completo *"
+      placeholder="Ex: Carlos Eduardo"
+      icon="person"
+      formControlName="nome"
+      [error]="submitted && form.get('nome')?.invalid ? 'Nome completo é obrigatório (mínimo 2 letras).' : undefined">
+    </app-input>
+
+    <app-input
+      id="repProjEmail"
+      type="email"
+      label="E-mail Corporativo *"
+      placeholder="carlos@empresa.com.br"
+      icon="mail"
+      formControlName="email"
+      [error]="submitted && form.get('email')?.invalid ? 'E-mail corporativo válido é obrigatório.' : undefined">
+    </app-input>
+
+    <div class="d-flex gap-md flex-wrap">
+      <div class="flex-1">
+        <app-input
+          id="repProjCargo"
+          type="text"
+          label="Cargo / Função"
+          placeholder="Ex: Diretor de Engenharia"
+          icon="badge"
+          formControlName="cargo">
+        </app-input>
+      </div>
+
+      <div class="flex-1">
+        <app-input
+          id="repProjTelefone"
+          type="tel"
+          label="Telefone / WhatsApp"
+          placeholder="(11) 98765-4321"
+          icon="call"
+          formControlName="telefone">
+        </app-input>
+      </div>
+    </div>
+
+    <div class="email-toggle-box d-flex align-items-center gap-xs">
+      <input 
+        type="checkbox" 
+        id="repEnviarEmailAgora" 
+        formControlName="enviarEmailAgora" 
+        class="checkbox-input" />
+      <label for="repEnviarEmailAgora" class="font-body-sm cursor-pointer email-toggle-label">
+        Enviar e-mail com link de acesso ao Portal agora
+      </label>
+    </div>
+
+    <div class="d-flex justify-content-end gap-sm margin-top-md">
+      <app-button variant="ghost" type="button" (btnClick)="fecharModalConvidar()" [disabled]="salvando">
+        Cancelar
+      </app-button>
+      <app-button type="submit" [loading]="salvando">
+        {{ form.value.enviarEmailAgora ? 'Cadastrar e Enviar E-mail' : 'Cadastrar Representante' }}
+        <span class="material-symbols-outlined icon-btn-inline">{{ form.value.enviarEmailAgora ? 'send' : 'person_add' }}</span>
+      </app-button>
+    </div>
+  </form>
+</app-dialog>

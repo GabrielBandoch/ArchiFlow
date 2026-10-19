@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TarefaEtapa } from '../../../models/projeto.model';
 import { CriarProjetoCommand, AtualizarProjetoCommand, AtualizarStatusProjetoCommand, CriarEtapaCommand, AtualizarStatusEtapaCommand } from '../../../commands/projeto.commands';
+import { RepresentanteCliente } from '../../../models/cliente.model';
+import { ConvidarRepresentanteCommand } from '../../../commands/cliente.commands';
 import { UrlBuilder } from '../../utils/url-builder';
 
 @Injectable({
@@ -109,5 +111,31 @@ export class ProjetoService {
       .segment(id)
       .build();
     return this.http.delete<void>(url);
+  }
+
+  obterMeusProjetos(): Observable<Projeto[]> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('projetos')
+      .segment('meus-projetos')
+      .build();
+    return this.http.get<Projeto[]>(url);
+  }
+
+  obterRepresentantes(projetoId: string): Observable<RepresentanteCliente[]> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('projetos')
+      .segment(projetoId)
+      .segment('representantes')
+      .build();
+    return this.http.get<RepresentanteCliente[]>(url);
+  }
+
+  convidarRepresentante(projetoId: string, command: ConvidarRepresentanteCommand): Observable<RepresentanteCliente> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('projetos')
+      .segment(projetoId)
+      .segment('representantes')
+      .build();
+    return this.http.post<RepresentanteCliente>(url, command);
   }
 }

@@ -66,5 +66,35 @@
         }
       }
     }
+
+    .side-rep-item {
+      padding: 6px 8px;
+      border-radius: var(--radius-xs, 4px);
+      background: var(--color-surface-container-low, #faf8f5);
+
+      .side-rep-icon {
+        color: var(--color-primary, #765538);
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+    }
+
+    .btn-side-action {
+      margin-top: 4px;
+      padding: 8px 12px;
+      border: 1px dashed var(--color-border-subtle, #d3c4b9);
+      border-radius: var(--radius-md, 8px);
+      background: transparent;
+      color: var(--color-primary, #765538);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        background: var(--color-surface-container-low, #faf8f5);
+        border-color: var(--color-primary, #765538);
+      }
+    }
   }
 }
+

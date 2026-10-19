@@ -1,0 +1,88 @@
+<div class="recovery-page d-flex w-full h-full overflow-hidden">
+  <div class="image-side position-relative h-full">
+    <img 
+      alt="Modern architectural interior" 
+      class="bg-image w-full h-full" 
+      src="assets/images/login-architecture.png"
+    />
+    <div class="dark-overlay position-absolute"></div>
+    <div class="image-text-content position-absolute z-10">
+      <h1 class="image-title">
+        Recuperação de Acesso Segura
+      </h1>
+      <p class="image-desc text-white-80 margin-top-sm">
+        Protegemos seus dados e projetos com os mais altos padrões de segurança.
+      </p>
+      <div class="indicator-bar"></div>
+    </div>
+  </div>
+
+  <div class="form-side d-flex flex-direction-column justify-content-between position-relative overflow-y-auto h-full">
+    <div class="logo-header d-flex align-items-center gap-sm animate-fade-in-up">
+      <app-cotu-logo [showText]="false" [size]="40"></app-cotu-logo>
+    </div>
+
+    <div class="form-container w-full">
+      @if (!sucesso) {
+        <div class="form-intro margin-bottom-xl animate-fade-in-up delay-100">
+          <h2 class="intro-title">Recuperar Senha</h2>
+          <p class="intro-subtitle font-body-md margin-top-xs">
+            Informe seu e-mail cadastrado para receber instruções seguras de redefinição de senha.
+          </p>
+        </div>
+
+        <form [formGroup]="recuperarForm" (ngSubmit)="onSubmit()" class="auth-form d-flex flex-direction-column gap-lg">
+          <div class="animate-fade-in-up delay-200">
+            <app-input 
+              id="email" 
+              type="email" 
+              label="E-mail cadastrado" 
+              placeholder="seu.email@empresa.com.br" 
+              icon="mail" 
+              autocomplete="email"
+              formControlName="email"
+              [error]="submitted && f['email'].errors ? (f['email'].errors['required'] ? 'O e-mail é obrigatório.' : 'Insira um e-mail válido.') : undefined">
+            </app-input>
+          </div>
+
+          @if (errorMessage) {
+            <div class="alert-error animate-fade-in-up">
+              {{ errorMessage }}
+            </div>
+          }
+
+          <div class="d-flex flex-direction-column gap-md animate-fade-in-up delay-300">
+            <app-button type="submit" [loading]="loading">
+              Enviar Link de Recuperação
+              <span class="material-symbols-outlined btn-arrow-icon">send</span>
+            </app-button>
+
+            <a routerLink="/login" class="link-voltar font-label-md text-center">
+              Voltar para o Login
+            </a>
+          </div>
+        </form>
+      } @else {
+        <div class="success-card text-center animate-fade-in-up">
+          <div class="success-icon-wrapper margin-bottom-lg">
+            <span class="material-symbols-outlined success-icon">mark_email_read</span>
+          </div>
+          <h2 class="intro-title margin-bottom-sm">Instruções Enviadas!</h2>
+          <p class="intro-subtitle font-body-md margin-bottom-xl">
+            Se o e-mail informado estiver cadastrado, as instruções para redefinição de senha foram enviadas.
+            Verifique sua caixa de entrada e pasta de spam.
+          </p>
+
+          <app-button (btnClick)="voltarLogin()">
+            Voltar para o Login
+          </app-button>
+        </div>
+      }
+    </div>
+
+    <div class="footer-area d-flex justify-content-between align-items-center gap-md margin-top-xl animate-fade-in-up delay-400">
+      <span class="footer-copy font-label-sm">© 2026 COTU Technologies</span>
+      <span class="footer-version font-label-sm">Segurança & Conformidade</span>
+    </div>
+  </div>
+</div>

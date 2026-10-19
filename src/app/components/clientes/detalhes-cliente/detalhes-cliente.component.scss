@@ -274,3 +274,82 @@
     transform: rotate(360deg);
   }
 }
+
+.col-span-2 {
+  grid-column: span 2;
+
+  @media (max-width: 900px) {
+    grid-column: span 1;
+  }
+}
+
+.rep-card-clean {
+  background-color: var(--af-surface-container-lowest, #ffffff);
+  border: 1px solid var(--af-outline-variant, #e5e2e1);
+  border-radius: 8px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--af-primary, #765538);
+    background-color: var(--af-surface-container-low, #fcfbfb);
+  }
+}
+
+.rep-avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--af-surface-container, #f0eded);
+  color: var(--af-primary, #765538);
+}
+
+.badge-role {
+  padding: 2px 8px;
+  background-color: var(--af-surface-container, #f0eded);
+  color: var(--af-on-surface-variant);
+  border-radius: 4px;
+}
+
+.rep-status-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+
+  &.ativo {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.inativo {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}
+
+.rep-invite-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+
+  &.aceito {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.enviado {
+    background-color: #e3f2fd;
+    color: #1565c0;
+  }
+
+  &.pendente {
+    background-color: #f5f5f5;
+    color: #616161;
+  }
+
+  &.expirado {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}

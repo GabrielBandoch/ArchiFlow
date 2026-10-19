@@ -37,6 +37,13 @@
       (click)="setTab('fornecedores')">
       Parceiros & Especialistas ({{ fornecedoresProjeto.length }})
     </button>
+    <button 
+      type="button" 
+      class="nav-tab-btn font-label-md" 
+      [class.active]="activeTab === 'portal'" 
+      (click)="setTab('portal')">
+      Portal do Cliente ({{ representantes.length }})
+    </button>
   </div>
 
   <div class="dossier-bento-grid">
@@ -68,13 +75,26 @@
         [fornecedoresVinculados]="fornecedoresProjeto"
         (vinculoAlterado)="carregarFornecedoresDoProjeto()">
       </app-projeto-fornecedores>
+
+      <app-projeto-portal
+        *ngIf="activeTab === 'portal'"
+        [projetoId]="projeto.id"
+        [projetoNome]="projeto.nome"
+        [clienteId]="projeto.clienteId"
+        [clienteNome]="projeto.clienteNome"
+        [representantes]="representantes"
+        (representantesAlterados)="carregarRepresentantes()">
+      </app-projeto-portal>
     </div>
 
     <app-projeto-sidebar
       [projeto]="projeto"
       [arquivos]="arquivos"
       [totalConcluidas]="totalConcluidas"
-      (verTodosArquivos)="setTab('arquivos')">
+      [representantes]="representantes"
+      (verTodosArquivos)="setTab('arquivos')"
+      (verPortal)="setTab('portal')"
+      (convidarRepresentante)="abrirModalConvidarRepresentante()">
     </app-projeto-sidebar>
   </div>
 

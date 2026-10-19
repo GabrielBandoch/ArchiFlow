@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { staffGuard, portalGuard } from './core/guards/role.guard';
+import { moduleGuard } from './core/guards/module.guard';
 
 export const appRoutes: Routes = [
   {
@@ -13,6 +14,36 @@ export const appRoutes: Routes = [
       {
         path: '',
         loadComponent: () => import('./components/autenticacao/login/login.component').then(m => m.LoginComponent)
+      }
+    ]
+  },
+  {
+    path: 'recuperar-senha',
+    loadComponent: () => import('./layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/autenticacao/recuperar-senha/recuperar-senha.component').then(m => m.RecuperarSenhaComponent)
+      }
+    ]
+  },
+  {
+    path: 'redefinir-senha',
+    loadComponent: () => import('./layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/autenticacao/redefinir-senha/redefinir-senha.component').then(m => m.RedefinirSenhaComponent)
+      }
+    ]
+  },
+  {
+    path: 'ativar-conta',
+    loadComponent: () => import('./layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/autenticacao/ativar-conta/ativar-conta.component').then(m => m.AtivarContaComponent)
       }
     ]
   },
@@ -32,8 +63,30 @@ export const appRoutes: Routes = [
     ]
   },
   {
-    path: 'projetos',
+    path: 'perfil',
     canActivate: [staffGuard],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/perfil/meu-perfil/meu-perfil.component').then(m => m.MeuPerfilComponent)
+      }
+    ]
+  },
+  {
+    path: 'dashboard',
+    canActivate: [staffGuard, moduleGuard('dashboard')],
+    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      }
+    ]
+  },
+  {
+    path: 'projetos',
+    canActivate: [staffGuard, moduleGuard('projetos')],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -48,7 +101,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'agenda',
-    canActivate: [staffGuard],
+    canActivate: [staffGuard, moduleGuard('agenda')],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -59,7 +112,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'leads',
-    canActivate: [staffGuard],
+    canActivate: [staffGuard, moduleGuard('leads')],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -74,7 +127,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'clientes',
-    canActivate: [staffGuard],
+    canActivate: [staffGuard, moduleGuard('clientes')],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -89,7 +142,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'fornecedores',
-    canActivate: [staffGuard],
+    canActivate: [staffGuard, moduleGuard('fornecedores')],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -104,13 +157,17 @@ export const appRoutes: Routes = [
   },
   {
     path: 'configuracoes',
-    canActivate: [staffGuard],
+    canActivate: [staffGuard, moduleGuard('configuracoes')],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
         path: '',
-        redirectTo: 'templates-projeto',
+        redirectTo: 'empresa',
         pathMatch: 'full'
+      },
+      {
+        path: 'empresa',
+        loadComponent: () => import('./components/configuracoes/dados-empresa/dados-empresa.component').then(m => m.DadosEmpresaComponent)
       },
       {
         path: 'templates-projeto',
@@ -131,19 +188,8 @@ export const appRoutes: Routes = [
     ]
   },
   {
-    path: 'dashboard',
-    canActivate: [staffGuard],
-    loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent)
-      }
-    ]
-  },
-  {
     path: 'financeiro',
-    canActivate: [staffGuard],
+    canActivate: [staffGuard, moduleGuard('financeiro')],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -154,7 +200,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'simulador',
-    canActivate: [staffGuard],
+    canActivate: [staffGuard, moduleGuard('simulador')],
     loadComponent: () => import('./layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {

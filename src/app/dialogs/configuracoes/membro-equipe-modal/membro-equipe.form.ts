@@ -9,7 +9,8 @@ export class MembroEquipeForm {
       role: [membro?.role || 'ArquitetoColaborador', Validators.required],
       cargo: [membro?.cargo || '', [Validators.maxLength(100)]],
       telefone: [membro?.telefone || '', [Validators.maxLength(30)]],
-      senhaTemporaria: ['']
+      senhaTemporaria: [''],
+      modulosPermitidos: [membro?.modulosPermitidos || []]
     });
   }
 }

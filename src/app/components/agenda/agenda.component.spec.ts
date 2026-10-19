@@ -199,8 +199,21 @@ describe('AgendaComponent', () => {
   });
 
   it('deve baixar o arquivo de calendário .ics', () => {
+    spyOn(window.URL, 'createObjectURL').and.returnValue('blob:fake');
+    spyOn(window.URL, 'revokeObjectURL');
+    const fakeAnchor = document.createElement('a');
+    spyOn(fakeAnchor, 'click');
+    const originalCreateElement = document.createElement.bind(document);
+    spyOn(document, 'createElement').and.callFake((tagName: string) => {
+      if (tagName === 'a') {
+        return fakeAnchor;
+      }
+      return originalCreateElement(tagName);
+    });
+
     component.baixarIcs();
     expect(agendaServiceSpy.baixarIcs).toHaveBeenCalled();
+    expect(fakeAnchor.click).toHaveBeenCalled();
   });
 
   it('deve carregar configuracao da agenda da empresa e abrir modal de configuracao', () => {

@@ -1,0 +1,151 @@
+<div class="activation-page d-flex w-full h-full overflow-hidden">
+  <div class="image-side position-relative h-full">
+    <img 
+      alt="Modern architectural interior" 
+      class="bg-image w-full h-full" 
+      src="assets/images/login-architecture.png"
+    />
+    <div class="dark-overlay position-absolute"></div>
+    <div class="image-text-content position-absolute z-10">
+      <h1 class="image-title">
+        Bem-vindo ao Portal do Cliente
+      </h1>
+      <p class="image-desc text-white-80 margin-top-sm">
+        Acompanhe o cronograma, finanças, etapas e arquivos do seu projeto com total transparência.
+      </p>
+      <div class="indicator-bar"></div>
+    </div>
+  </div>
+
+  <div class="form-side d-flex flex-direction-column justify-content-between position-relative overflow-y-auto h-full">
+    <div class="logo-header d-flex align-items-center gap-sm animate-fade-in-up">
+      <app-cotu-logo [showText]="false" [size]="40"></app-cotu-logo>
+    </div>
+
+    <div class="form-container w-full">
+      @if (validandoConvite) {
+        <div class="text-center animate-fade-in-up">
+          <app-spinner size="lg"></app-spinner>
+          <p class="font-body-md margin-top-md text-secondary">Validando seu convite...</p>
+        </div>
+      } @else if (!conviteValido) {
+        <div class="error-card text-center animate-fade-in-up">
+          <div class="error-icon-wrapper margin-bottom-lg">
+            <span class="material-symbols-outlined error-icon">person_off</span>
+          </div>
+          <h2 class="intro-title margin-bottom-sm">Convite Inválido ou Expirado</h2>
+          <p class="intro-subtitle font-body-md margin-bottom-xl">
+            {{ mensagemConviteInvalido }}
+          </p>
+
+          <a routerLink="/login" class="link-voltar font-label-md text-center">
+            Ir para a página de Login
+          </a>
+        </div>
+      } @else if (!sucesso) {
+        <div class="form-intro margin-bottom-xl animate-fade-in-up delay-100">
+          <h2 class="intro-title">Ativar Conta</h2>
+          <p class="intro-subtitle font-body-md margin-top-xs">
+            Complete seus dados e crie sua senha para acessar o portal do seu projeto.
+          </p>
+        </div>
+
+        <form [formGroup]="ativarForm" (ngSubmit)="onSubmit()" class="auth-form d-flex flex-direction-column gap-md">
+          <div class="animate-fade-in-up delay-200">
+            <app-input 
+              id="nome" 
+              type="text" 
+              label="Nome completo" 
+              placeholder="Seu nome" 
+              icon="person" 
+              autocomplete="name"
+              formControlName="nome"
+              [error]="submitted && f['nome'].errors ? 'O nome é obrigatório.' : undefined">
+            </app-input>
+          </div>
+
+          <div class="animate-fade-in-up delay-200">
+            <app-input 
+              id="email" 
+              type="email" 
+              label="E-mail" 
+              icon="mail" 
+              autocomplete="email"
+              formControlName="email">
+            </app-input>
+          </div>
+
+          <div class="animate-fade-in-up delay-250">
+            <app-input 
+              id="telefone" 
+              type="tel" 
+              label="Telefone / WhatsApp (opcional)" 
+              placeholder="(00) 00000-0000" 
+              icon="call" 
+              autocomplete="tel"
+              formControlName="telefone">
+            </app-input>
+          </div>
+
+          <div class="animate-fade-in-up delay-300">
+            <app-input 
+              id="senha" 
+              type="password" 
+              label="Crie sua Senha" 
+              placeholder="Mínimo de 6 caracteres" 
+              icon="lock" 
+              autocomplete="new-password"
+              formControlName="senha"
+              [error]="submitted && f['senha'].errors ? (f['senha'].errors['required'] ? 'A senha é obrigatória.' : 'Mínimo de 6 caracteres.') : undefined">
+            </app-input>
+          </div>
+
+          <div class="animate-fade-in-up delay-350">
+            <app-input 
+              id="confirmarSenha" 
+              type="password" 
+              label="Confirmar Senha" 
+              placeholder="Digite a senha novamente" 
+              icon="lock_reset" 
+              autocomplete="new-password"
+              formControlName="confirmarSenha"
+              [error]="submitted ? (f['confirmarSenha'].errors?.['required'] ? 'A confirmação é obrigatória.' : (ativarForm.errors?.['senhasDiferentes'] ? 'As senhas não coincidem.' : undefined)) : undefined">
+            </app-input>
+          </div>
+
+          @if (errorMessage) {
+            <div class="alert-error animate-fade-in-up">
+              {{ errorMessage }}
+            </div>
+          }
+
+          <div class="animate-fade-in-up delay-400 margin-top-sm">
+            <app-button type="submit" [loading]="loading">
+              Ativar Minha Conta
+              <span class="material-symbols-outlined btn-arrow-icon">check_circle</span>
+            </app-button>
+          </div>
+        </form>
+      } @else {
+        <div class="success-card text-center animate-fade-in-up">
+          <div class="success-icon-wrapper margin-bottom-lg">
+            <span class="material-symbols-outlined success-icon">verified_user</span>
+          </div>
+          <h2 class="intro-title margin-bottom-sm">Conta Ativada com Sucesso!</h2>
+          <p class="intro-subtitle font-body-md margin-bottom-xl">
+            Sua conta foi ativada. Você já pode fazer login para acessar seus projetos no Portal do Cliente.
+          </p>
+
+          <app-button (btnClick)="irParaLogin()">
+            Fazer Login Agora
+          </app-button>
+        </div>
+      }
+    </div>
+
+    <div class="footer-area d-flex justify-content-between align-items-center gap-md margin-top-xl animate-fade-in-up delay-400">
+      <span class="footer-copy font-label-sm">© 2026 COTU Technologies</span>
+      <span class="footer-version font-label-sm">Portal do Cliente</span>
+    </div>
+  </div>
+</div>

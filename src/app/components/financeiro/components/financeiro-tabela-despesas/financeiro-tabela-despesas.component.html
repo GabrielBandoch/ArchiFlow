@@ -60,7 +60,7 @@
     </div>
   </div>
 
-  <div class="table-responsive">
+  <div class="table-responsive" *ngIf="despesasFiltradas.length > 0">
     <table class="data-table w-full">
       <thead>
         <tr>
@@ -114,21 +114,19 @@
             </button>
           </td>
         </tr>
-
-        <tr *ngIf="despesasFiltradas.length === 0">
-          <td colspan="7" class="p-xl">
-            <app-empty-state
-              icon="receipt"
-              title="Nenhuma saída ou despesa"
-              description="Não há despesas cadastradas nos filtros atuais."
-              actionLabel="Nova Despesa"
-              actionIcon="trending_down"
-              (actionClick)="onNovaDespesa()">
-            </app-empty-state>
-          </td>
-        </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="p-xl" *ngIf="despesasFiltradas.length === 0">
+    <app-empty-state
+      icon="receipt"
+      title="Nenhuma saída ou despesa"
+      description="Não há despesas cadastradas nos filtros atuais."
+      actionLabel="Nova Despesa"
+      actionIcon="trending_down"
+      (actionClick)="onNovaDespesa()">
+    </app-empty-state>
   </div>
 
   <div class="table-footer d-flex justify-content-between align-items-center" *ngIf="despesasFiltradas.length > 0">

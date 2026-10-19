@@ -20,6 +20,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  vertical-align: middle;
+  -webkit-font-smoothing: antialiased;
+}
+
 h1,
 h2,
 h3,
@@ -212,13 +227,11 @@ a {
    GLOBAL PRINT STYLES - CLEAN ISOLATED A4 ARCHITECTURAL PROPOSAL
    ========================================================================== */
 @media print {
-  // Suppress browser injected header (date/title) and footer (URL/pages)
   @page {
     size: A4 portrait;
     margin: 8mm 10mm 8mm 10mm !important;
   }
 
-  // 1. Hide all application layout, navigation, sidebars, headers, footers, toolbars, buttons, and app content
   .sidebar,
   .footer,
   .main-section > .footer,
@@ -242,7 +255,6 @@ a {
     visibility: hidden !important;
   }
 
-  // 2. ONLY make the PDF document sheet visible and clean
   .modal-backdrop,
   .modal-dialog-pdf,
   .modal-document-container,
@@ -306,7 +318,7 @@ a {
     max-width: 100% !important;
     min-height: auto !important;
     box-sizing: border-box !important;
-    padding: 2mm 0 2mm 0 !important; // Compact, perfectly balanced padding
+    padding: 2mm 0 2mm 0 !important;
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
@@ -315,3 +327,34 @@ a {
     break-after: avoid !important;
   }
 }
+
+/* --- Global Custom Slim Scrollbars (Elimina as barras grossas de rolagem) --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(118, 85, 56, 0.22);
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--af-primary, #765538);
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(118, 85, 56, 0.25) transparent;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

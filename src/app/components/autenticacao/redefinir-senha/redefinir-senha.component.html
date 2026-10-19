@@ -1,0 +1,124 @@
+<div class="reset-page d-flex w-full h-full overflow-hidden">
+  <div class="image-side position-relative h-full">
+    <img 
+      alt="Modern architectural interior" 
+      class="bg-image w-full h-full" 
+      src="assets/images/login-architecture.png"
+    />
+    <div class="dark-overlay position-absolute"></div>
+    <div class="image-text-content position-absolute z-10">
+      <h1 class="image-title">
+        Segurança em Primeiro Lugar
+      </h1>
+      <p class="image-desc text-white-80 margin-top-sm">
+        Crie uma nova senha forte para manter seu acesso seguro e protegido.
+      </p>
+      <div class="indicator-bar"></div>
+    </div>
+  </div>
+
+  <div class="form-side d-flex flex-direction-column justify-content-between position-relative overflow-y-auto h-full">
+    <div class="logo-header d-flex align-items-center gap-sm animate-fade-in-up">
+      <app-cotu-logo [showText]="false" [size]="40"></app-cotu-logo>
+    </div>
+
+    <div class="form-container w-full">
+      @if (validandoToken) {
+        <div class="text-center animate-fade-in-up">
+          <app-spinner size="lg"></app-spinner>
+          <p class="font-body-md margin-top-md text-secondary">Validando link de recuperação...</p>
+        </div>
+      } @else if (!tokenValido) {
+        <div class="error-card text-center animate-fade-in-up">
+          <div class="error-icon-wrapper margin-bottom-lg">
+            <span class="material-symbols-outlined error-icon">link_off</span>
+          </div>
+          <h2 class="intro-title margin-bottom-sm">Link Inválido ou Expirado</h2>
+          <p class="intro-subtitle font-body-md margin-bottom-xl">
+            {{ mensagemTokenInvalido }}
+          </p>
+
+          <div class="d-flex flex-direction-column gap-md">
+            <app-button (btnClick)="solicitarNovoLink()">
+              Solicitar Novo Link
+            </app-button>
+            <a routerLink="/login" class="link-voltar font-label-md text-center">
+              Voltar para o Login
+            </a>
+          </div>
+        </div>
+      } @else if (!sucesso) {
+        <div class="form-intro margin-bottom-xl animate-fade-in-up delay-100">
+          <h2 class="intro-title">Criar Nova Senha</h2>
+          <p class="intro-subtitle font-body-md margin-top-xs">
+            @if (emailUsuario) {
+              Redefinindo senha para <strong>{{ emailUsuario }}</strong>.
+            } @else {
+              Defina sua nova credencial de acesso.
+            }
+          </p>
+        </div>
+
+        <form [formGroup]="redefinirForm" (ngSubmit)="onSubmit()" class="auth-form d-flex flex-direction-column gap-lg">
+          <div class="animate-fade-in-up delay-200">
+            <app-input 
+              id="novaSenha" 
+              type="password" 
+              label="Nova Senha" 
+              placeholder="Mínimo de 6 caracteres" 
+              icon="lock" 
+              autocomplete="new-password"
+              formControlName="novaSenha"
+              [error]="submitted && f['novaSenha'].errors ? (f['novaSenha'].errors['required'] ? 'A nova senha é obrigatória.' : 'A senha deve ter no mínimo 6 caracteres.') : undefined">
+            </app-input>
+          </div>
+
+          <div class="animate-fade-in-up delay-300">
+            <app-input 
+              id="confirmarSenha" 
+              type="password" 
+              label="Confirmar Nova Senha" 
+              placeholder="Digite a senha novamente" 
+              icon="lock_reset" 
+              autocomplete="new-password"
+              formControlName="confirmarSenha"
+              [error]="submitted ? (f['confirmarSenha'].errors?.['required'] ? 'A confirmação é obrigatória.' : (redefinirForm.errors?.['senhasDiferentes'] ? 'As senhas não coincidem.' : undefined)) : undefined">
+            </app-input>
+          </div>
+
+          @if (errorMessage) {
+            <div class="alert-error animate-fade-in-up">
+              {{ errorMessage }}
+            </div>
+          }
+
+          <div class="animate-fade-in-up delay-400">
+            <app-button type="submit" [loading]="loading">
+              Redefinir Senha
+              <span class="material-symbols-outlined btn-arrow-icon">check</span>
+            </app-button>
+          </div>
+        </form>
+      } @else {
+        <div class="success-card text-center animate-fade-in-up">
+          <div class="success-icon-wrapper margin-bottom-lg">
+            <span class="material-symbols-outlined success-icon">task_alt</span>
+          </div>
+          <h2 class="intro-title margin-bottom-sm">Senha Redefinida!</h2>
+          <p class="intro-subtitle font-body-md margin-bottom-xl">
+            Sua senha foi atualizada com sucesso. Você já pode fazer login com suas novas credenciais.
+          </p>
+
+          <app-button (btnClick)="irParaLogin()">
+            Acessar Workspace
+          </app-button>
+        </div>
+      }
+    </div>
+
+    <div class="footer-area d-flex justify-content-between align-items-center gap-md margin-top-xl animate-fade-in-up delay-400">
+      <span class="footer-copy font-label-sm">© 2026 COTU Technologies</span>
+      <span class="footer-version font-label-sm">Segurança & Conformidade</span>
+    </div>
+  </div>
+</div>

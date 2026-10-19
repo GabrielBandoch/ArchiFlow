@@ -27,6 +27,34 @@
 
   <div class="side-card d-flex flex-direction-column gap-sm">
     <div class="side-card-header-row d-flex justify-content-between align-items-center">
+      <h3 class="side-card-title font-headline-md m-0">Portal do Cliente</h3>
+      <button type="button" class="btn-link-action font-label-sm" (click)="onVerPortal()">Ver todos</button>
+    </div>
+
+    <div class="side-portal-list d-flex flex-direction-column gap-xs" *ngIf="representantes.length > 0">
+      <div *ngFor="let rep of representantes.slice(0, 3)" class="side-rep-item d-flex align-items-center gap-xs">
+        <span class="material-symbols-outlined side-rep-icon">person</span>
+        <div class="side-rep-meta d-flex flex-direction-column flex-grow-1 overflow-hidden">
+          <span class="side-rep-name font-body-sm font-weight-medium text-truncate" [title]="rep.nome">{{ rep.nome }}</span>
+          <span class="side-rep-sub font-label-xs text-on-surface-variant">
+            {{ (rep.statusConvite === 'Ativo' || rep.conviteAceito) ? 'Conta Ativada' : (rep.statusConvite === 'Convite Enviado' ? 'Convite Enviado' : 'Acesso Pendente') }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="representantes.length === 0" class="side-empty-note padding-sm text-center">
+      <span class="font-label-sm text-on-surface-variant">Nenhum representante convidado.</span>
+    </div>
+
+    <button type="button" class="btn-side-action d-flex align-items-center justify-content-center gap-xs font-label-sm" (click)="onConvidarRepresentante()">
+      <span class="material-symbols-outlined" style="font-size: 16px;">person_add</span>
+      <span>Convidar Representante</span>
+    </button>
+  </div>
+
+  <div class="side-card d-flex flex-direction-column gap-sm">
+    <div class="side-card-header-row d-flex justify-content-between align-items-center">
       <h3 class="side-card-title font-headline-md m-0">Arquivos Recentes</h3>
       <button type="button" class="btn-link-action font-label-sm" (click)="onVerTodos()">Ver todos</button>
     </div>
