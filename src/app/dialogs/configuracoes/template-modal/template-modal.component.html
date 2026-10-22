@@ -2,9 +2,10 @@
   [show]="show" 
   [dialogTitle]="isEditing ? 'Editar Modelo de Workflow' : 'Novo Modelo de Workflow'" 
   size="lg" 
+  [closeOnBackdrop]="false"
   (close)="onClose()">
   
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.enter)="onFormKeyDownEnter($event)" class="d-flex flex-direction-column gap-md">
     
     <div class="form-section-header">
       <span class="section-badge-title">Informações Gerais do Modelo</span>

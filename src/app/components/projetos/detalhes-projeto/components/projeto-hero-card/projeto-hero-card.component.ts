@@ -20,6 +20,7 @@ export class ProjetoHeroCardComponent {
 
   @Output() statusAlterado = new EventEmitter<any>();
   @Output() editarSolicitado = new EventEmitter<void>();
+  @Output() excluirSolicitado = new EventEmitter<void>();
 
   onStatusChange(novoStatus: any): void {
     this.statusAlterado.emit(novoStatus);
@@ -27,5 +28,9 @@ export class ProjetoHeroCardComponent {
 
   onEditar(): void {
     this.editarSolicitado.emit();
+  }
+
+  onExcluir(): void {
+    this.excluirSolicitado.emit();
   }
 }

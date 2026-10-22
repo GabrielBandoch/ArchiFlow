@@ -124,6 +124,27 @@ export class ListaProjetosComponent implements OnInit {
     });
   }
 
+  confirmarExclusaoProjeto(projeto: Projeto, event: MouseEvent): void {
+    event.stopPropagation();
+    this.dialogService.confirm({
+      title: 'Excluir Projeto',
+      message: `Tem certeza de que deseja excluir o projeto "${projeto.nome}"? Esta ação removerá permanentemente todas as etapas, tarefas e vínculos associados e não poderá ser desfeita.`
+    }).subscribe((confirmado) => {
+      if (confirmado) {
+        this.projetoService.excluir(projeto.id).subscribe({
+          next: () => {
+            this.notificationService.success('Projeto excluído com sucesso.');
+            this.carregarProjetos();
+          },
+          error: (err) => {
+            console.error('Erro ao excluir projeto', err);
+            this.notificationService.error('Erro ao excluir projeto.');
+          }
+        });
+      }
+    });
+  }
+
   verDetalhes(id: string): void {
     this.router.navigate(['/projetos', id]);
   }

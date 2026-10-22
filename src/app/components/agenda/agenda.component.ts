@@ -169,8 +169,8 @@ export class AgendaComponent implements OnInit {
     // Obter primeiro e último dia do mês corrente na visão
     const ano = this.dataReferencia.getFullYear();
     const mes = this.dataReferencia.getMonth();
-    const inicio = new Date(ano, mes, 1, 0, 0, 0).toISOString();
-    const fim = new Date(ano, mes + 1, 0, 23, 59, 59).toISOString();
+    const inicio = new Date(ano, mes - 1, 20, 0, 0, 0).toISOString();
+    const fim = new Date(ano, mes + 1, 15, 23, 59, 59).toISOString();
 
     this.agendaService.listar(inicio, fim).subscribe({
       next: (dados) => {
@@ -275,7 +275,8 @@ export class AgendaComponent implements OnInit {
       const dia = String(data.getDate()).padStart(2, '0');
       dataInicial = `${ano}-${mes}-${dia}`;
     } else {
-      dataInicial = new Date().toISOString().substring(0, 10);
+      const hoje = new Date();
+      dataInicial = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
     }
 
     const ref = this.dialogService.open(CompromissoModalComponent, {
@@ -359,8 +360,8 @@ export class AgendaComponent implements OnInit {
   baixarIcs(): void {
     const ano = this.dataReferencia.getFullYear();
     const mes = this.dataReferencia.getMonth();
-    const inicio = new Date(ano, mes, 1, 0, 0, 0).toISOString();
-    const fim = new Date(ano, mes + 1, 0, 23, 59, 59).toISOString();
+    const inicio = new Date(ano, mes - 1, 20, 0, 0, 0).toISOString();
+    const fim = new Date(ano, mes + 1, 15, 23, 59, 59).toISOString();
 
     this.agendaService.baixarIcs(inicio, fim).subscribe({
       next: (blob) => {

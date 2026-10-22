@@ -397,6 +397,30 @@ export class DetalhesProjetoComponent implements OnInit {
     });
   }
 
+  confirmarExclusaoProjeto(): void {
+    if (!this.projeto) return;
+    const nomeProjeto = this.projeto.nome;
+    const idProjeto = this.projeto.id;
+
+    this.dialogService.confirm({
+      title: 'Excluir Projeto',
+      message: `Tem certeza de que deseja excluir o projeto "${nomeProjeto}"? Esta ação removerá permanentemente todas as etapas, tarefas, arquivos e vínculos associados e não poderá ser desfeita.`
+    }).subscribe((confirmado) => {
+      if (confirmado) {
+        this.projetoService.excluir(idProjeto).subscribe({
+          next: () => {
+            this.notificationService.success('Projeto excluído com sucesso.');
+            this.router.navigate(['/projetos']);
+          },
+          error: (err) => {
+            console.error('Erro ao excluir projeto', err);
+            this.notificationService.error('Erro ao excluir projeto.');
+          }
+        });
+      }
+    });
+  }
+
   abrirModalEdicao(): void {
     if (!this.projeto) return;
     const ref = this.dialogService.open(EditarProjetoModalComponent, {

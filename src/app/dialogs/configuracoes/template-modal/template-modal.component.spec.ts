@@ -93,4 +93,33 @@ describe('TemplateModalComponent', () => {
     expect(notificationServiceSpy.success).toHaveBeenCalled();
     expect(component.saved.emit).toHaveBeenCalledWith(mockResponse);
   });
+
+  it('deve prevenir o comportamento padrao ao pressionar enter em inputs comuns para nao fechar modal', () => {
+    const inputEvent = {
+      target: document.createElement('input'),
+      preventDefault: jasmine.createSpy('preventDefault')
+    } as unknown as KeyboardEvent;
+
+    component.onFormKeyDownEnter(inputEvent);
+    expect(inputEvent.preventDefault).toHaveBeenCalled();
+
+    const textarea = document.createElement('textarea');
+    const textareaEvent = {
+      target: textarea,
+      preventDefault: jasmine.createSpy('preventDefault')
+    } as unknown as KeyboardEvent;
+
+    component.onFormKeyDownEnter(textareaEvent);
+    expect(textareaEvent.preventDefault).not.toHaveBeenCalled();
+
+    const tarefaInput = document.createElement('input');
+    tarefaInput.classList.add('form-tarefa-input');
+    const tarefaEvent = {
+      target: tarefaInput,
+      preventDefault: jasmine.createSpy('preventDefault')
+    } as unknown as KeyboardEvent;
+
+    component.onFormKeyDownEnter(tarefaEvent);
+    expect(tarefaEvent.preventDefault).not.toHaveBeenCalled();
+  });
 });

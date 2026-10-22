@@ -79,15 +79,29 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    this.agendaService.obterProximos(15).subscribe({
-      next: (proximos) => {
+    const agora = new Date();
+    const ano = agora.getFullYear();
+    const mes = agora.getMonth();
+    const dia = agora.getDate();
+    const inicioHoje = new Date(ano, mes, dia, 0, 0, 0).toISOString();
+    const fimHoje = new Date(ano, mes, dia, 23, 59, 59, 999).toISOString();
+
+    const agendaReq$ = this.agendaService.obterPorPeriodo
+      ? this.agendaService.obterPorPeriodo(inicioHoje, fimHoje)
+      : this.agendaService.obterProximos(15);
+
+    agendaReq$.subscribe({
+      next: (itens) => {
         this.carregandoAgenda = false;
-        const hojeStr = new Date().toISOString().split('T')[0];
-        const itemsHoje = proximos.filter(c => c.dataHoraInicio?.startsWith(hojeStr));
-        this.compromissosHoje = itemsHoje.length > 0 ? itemsHoje : proximos.slice(0, 5);
+        this.compromissosHoje = (itens || []).filter(c => {
+          if (c.status === 'Cancelado') return false;
+          const dt = new Date(c.dataHoraInicio);
+          return dt.getFullYear() === ano && dt.getMonth() === mes && dt.getDate() === dia;
+        });
       },
       error: () => {
         this.carregandoAgenda = false;
+        this.compromissosHoje = [];
       }
     });
 
@@ -280,7 +294,7 @@ export class DashboardComponent implements OnInit {
     const ref = this.dialogService.open(CompromissoModalComponent, {
       data: {
         show: true,
-        dataInicial: new Date().toISOString().split('T')[0]
+        dataInicial: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
       }
     });
     ref.instance.saved.subscribe(() => {

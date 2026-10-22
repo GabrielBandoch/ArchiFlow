@@ -12,7 +12,8 @@
     [projeto]="projeto"
     [statusProjetoOptions]="statusProjetoOptions"
     (statusAlterado)="alterarStatusProjeto($event)"
-    (editarSolicitado)="abrirModalEdicao()">
+    (editarSolicitado)="abrirModalEdicao()"
+    (excluirSolicitado)="confirmarExclusaoProjeto()">
   </app-projeto-hero-card>
 
   <div class="dossier-nav-tabs d-flex align-items-center gap-lg">

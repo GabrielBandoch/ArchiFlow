@@ -116,6 +116,18 @@ export class TemplateModalComponent implements OnInit {
     this.etapas[etapaIndex].tarefas.splice(tarefaIndex, 1);
   }
 
+  onFormKeyDownEnter(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent;
+    const target = keyboardEvent.target as HTMLElement;
+    if (target && target.tagName === 'TEXTAREA') {
+      return;
+    }
+    if (target && target.classList && target.classList.contains('form-tarefa-input')) {
+      return;
+    }
+    keyboardEvent.preventDefault();
+  }
+
   onSubmit(): void {
     this.submitted = true;
     if (this.form.invalid) return;
@@ -125,11 +137,13 @@ export class TemplateModalComponent implements OnInit {
       return;
     }
 
+    const rawVal = this.form.getRawValue();
+    const codigo = rawVal.codigo || this.templateParaEdicao?.codigo || this.templateParaEdicao?.id || '';
     const payload = {
-      nome: this.form.value.nome,
-      codigo: this.form.value.codigo,
-      descricao: this.form.value.descricao,
-      icone: this.form.value.icone,
+      nome: rawVal.nome,
+      codigo: codigo,
+      descricao: rawVal.descricao,
+      icone: rawVal.icone,
       etapas: this.etapas.map(e => ({
         nome: e.nome,
         descricao: e.descricao,

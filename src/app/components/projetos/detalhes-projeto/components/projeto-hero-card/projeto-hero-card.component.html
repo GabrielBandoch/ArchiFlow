@@ -48,7 +48,7 @@
       </span>
     </div>
 
-    <div class="hero-actions-bottom d-flex align-items-center gap-xs margin-top-xs">
+    <div class="hero-actions-bottom d-flex align-items-center gap-xs margin-top-xs flex-wrap">
       <div class="status-select-wrap flex-grow-1">
         <app-select 
           id="statusHero"
@@ -65,6 +65,15 @@
         title="Editar dados cadastrais do projeto">
         <span class="material-symbols-outlined">edit</span>
         Editar
+      </app-button>
+
+      <app-button 
+        variant="outline" 
+        size="md" 
+        (btnClick)="onExcluir()" 
+        title="Excluir projeto">
+        <span class="material-symbols-outlined text-error">delete</span>
+        <span class="text-error">Excluir</span>
       </app-button>
     </div>
   </div>

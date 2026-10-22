@@ -14,12 +14,15 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() overflowVisible = false;
   @Input() zIndex?: number;
+  @Input() closeOnBackdrop = false;
+  @Input() closeOnEscape = true;
   
   @Output() close = new EventEmitter<void>();
 
   private elementRef = inject(ElementRef);
   private renderer = inject(Renderer2);
   private isMovedToBody = false;
+  private isMouseDownOnBackdrop = false;
 
   ngOnInit(): void {
     if (this.show) {
@@ -52,13 +55,21 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
     this.close.emit();
   }
 
+  onBackdropMouseDown(event: MouseEvent): void {
+    this.isMouseDownOnBackdrop = (event.target === event.currentTarget);
+  }
+
   onBackdropClick(event: MouseEvent): void {
-    this.close.emit();
+    if (!this.closeOnBackdrop) return;
+    if (this.isMouseDownOnBackdrop && event.target === event.currentTarget) {
+      this.close.emit();
+    }
+    this.isMouseDownOnBackdrop = false;
   }
 
   @HostListener('document:keydown.escape', ['$event'])
   onEscapeHandler(event: KeyboardEvent): void {
-    if (this.show) {
+    if (this.show && this.closeOnEscape) {
       this.close.emit();
     }
   }

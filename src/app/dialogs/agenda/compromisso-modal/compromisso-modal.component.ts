@@ -219,7 +219,11 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
       });
     } else {
       this.tipoVinculo = 'nenhum';
-      const dataStr = this.dataInicial || new Date().toISOString().substring(0, 10);
+      const hoje = new Date();
+      const anoHoje = hoje.getFullYear();
+      const mesHoje = String(hoje.getMonth() + 1).padStart(2, '0');
+      const diaHoje = String(hoje.getDate()).padStart(2, '0');
+      const dataStr = this.dataInicial || `${anoHoje}-${mesHoje}-${diaHoje}`;
       this.form.reset({
         titulo: '',
         tipo: TiposCompromisso.ReuniaoCliente,
@@ -335,14 +339,21 @@ export class CompromissoModalComponent implements OnInit, OnChanges {
 
     const val = this.form.value;
 
-    const dataHoraInicio = `${val.data}T${val.horaInicio}:00`;
-    const dataHoraFim = `${val.data}T${val.horaFim}:00`;
+    const [ano, mes, dia] = val.data.split('-').map(Number);
+    const [hIni, mIni] = val.horaInicio.split(':').map(Number);
+    const [hFim, mFim] = val.horaFim.split(':').map(Number);
 
-    if (new Date(dataHoraFim) <= new Date(dataHoraInicio)) {
+    const inicioLocal = new Date(ano, mes - 1, dia, hIni, mIni, 0);
+    const fimLocal = new Date(ano, mes - 1, dia, hFim, mFim, 0);
+
+    if (fimLocal <= inicioLocal) {
       this.errorMessage = 'O horário de término deve ser posterior ao horário de início.';
       this.notificationService.warning('O horário de término deve ser posterior ao horário de início.');
       return;
     }
+
+    const dataHoraInicio = inicioLocal.toISOString();
+    const dataHoraFim = fimLocal.toISOString();
 
     this.saving = true;
 

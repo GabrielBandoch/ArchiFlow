@@ -56,7 +56,7 @@ export class CriarProjetoModalComponent implements OnInit {
   templateOptions: SelectOption[] = [];
 
   get selectedTemplate(): ProjectTemplate | undefined {
-    return this.templates.find(t => t.id === this.selectedTemplateId);
+    return this.templates.find(t => t.id === this.selectedTemplateId || t.codigo === this.selectedTemplateId);
   }
 
   get f() {

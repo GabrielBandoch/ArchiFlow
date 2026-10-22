@@ -124,6 +124,30 @@
     border-radius: var(--af-radius-full);
   }
 
+  .btn-delete-proj {
+    background: transparent;
+    border: none;
+    color: var(--af-on-surface-variant);
+    opacity: 0.6;
+    padding: 4px;
+    border-radius: var(--af-radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      color: var(--af-error);
+      background-color: var(--af-error-container);
+    }
+
+    span {
+      font-size: 18px;
+    }
+  }
+
   .status-badge {
     padding: 2px 8px;
     border-radius: var(--af-radius-full);

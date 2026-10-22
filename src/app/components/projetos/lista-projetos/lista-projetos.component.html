@@ -110,10 +110,19 @@
         (click)="verDetalhes(proj.id)">
         
         <div class="d-flex justify-content-between align-items-center">
-          <span class="type-pill font-label-sm font-weight-medium">{{ proj.tipoLabel }}</span>
-          <span class="status-badge font-label-sm" [class]="'status-' + proj.statusLabel.toLowerCase()">
-            {{ proj.statusLabel }}
-          </span>
+          <div class="d-flex align-items-center gap-xs">
+            <span class="type-pill font-label-sm font-weight-medium">{{ proj.tipoLabel }}</span>
+            <span class="status-badge font-label-sm" [class]="'status-' + proj.statusLabel.toLowerCase()">
+              {{ proj.statusLabel }}
+            </span>
+          </div>
+          <button 
+            type="button" 
+            class="btn-delete-proj" 
+            (click)="confirmarExclusaoProjeto(proj, $event)" 
+            title="Excluir projeto">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
         </div>
 
         <h3 class="proj-title font-title-lg font-weight-bold text-on-surface m-0">{{ proj.nome }}</h3>
