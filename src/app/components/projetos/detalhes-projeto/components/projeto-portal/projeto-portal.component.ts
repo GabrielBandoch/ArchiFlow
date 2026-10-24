@@ -14,7 +14,7 @@ import {
   FormGroup,
 } from "@angular/forms";
 import { ProjetoPortalForm } from "./projeto-portal.form";
-import { RepresentanteCliente } from "../../../../../models/cliente.model";
+import { RepresentanteCliente } from "../../../../../core/models/cliente.model";
 import { ProjetoService } from "../../../../../core/api/projetos/projeto.service";
 import { ClienteService } from "../../../../../core/api/clientes/cliente.service";
 import { NotificationService } from "../../../../../core/services/notification.service";

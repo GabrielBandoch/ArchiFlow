@@ -10,7 +10,7 @@ import {
   AdicionarAvaliacaoCommand,
   ProjetoFornecedor,
   VincularProjetoCommand,
-} from "../../../models/fornecedor.model";
+} from "../../models/fornecedor.model";
 import { UrlBuilder } from "../../utils/url-builder";
 
 @Injectable({

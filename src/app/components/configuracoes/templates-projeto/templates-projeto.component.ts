@@ -3,7 +3,7 @@ import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { ProjectTemplateService } from "../../../core/services/project-template.service";
 import { DialogService } from "../../../core/services/dialog.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { ProjectTemplate } from "../../../models/project-template.model";
+import { ProjectTemplate } from "../../../core/models/project-template.model";
 import { TemplateModalComponent } from "../../../dialogs/configuracoes/template-modal/template-modal.component";
 import { ConfirmDialogComponent } from "../../../shared/components/confirm-dialog/confirm-dialog.component";
 

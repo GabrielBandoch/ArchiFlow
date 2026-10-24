@@ -7,7 +7,7 @@ import {
   TiposCompromisso,
   TipoCompromisso,
   StatusCompromissoType,
-} from "../../models/agenda.model";
+} from "../../core/models/agenda.model";
 import { CompromissoModalComponent } from "../../dialogs/agenda/compromisso-modal/compromisso-modal.component";
 import { ConfigurarAgendaModalComponent } from "../../dialogs/agenda/configurar-agenda-modal/configurar-agenda-modal.component";
 import { ButtonComponent } from "../../shared/components/button/button.component";
@@ -18,7 +18,7 @@ import {
 import { BadgeComponent } from "../../shared/components/badge/badge.component";
 import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 import { ConfirmDialogComponent } from "../../shared/components/confirm-dialog/confirm-dialog.component";
-import { ConfiguracaoAgendaEmpresa } from "../../models/agenda.model";
+import { ConfiguracaoAgendaEmpresa } from "../../core/models/agenda.model";
 import { AuthService } from "../../core/services/auth.service";
 import { DialogService } from "../../core/services/dialog.service";
 import { NotificationService } from "../../core/services/notification.service";

@@ -6,7 +6,7 @@ import {
   Cliente,
   ConversaoClienteResponse,
   RepresentanteCliente,
-} from "../../../models/cliente.model";
+} from "../../models/cliente.model";
 import {
   ConvertLeadToClienteCommand,
   AtualizarClienteCommand,

@@ -9,7 +9,7 @@ import {
   FormaPagamento,
   PainelFinanceiro,
   StatusParcela,
-} from "../../../models/financeiro.model";
+} from "../../models/financeiro.model";
 import {
   CriarContratoCommand,
   CriarParcelaCommand,

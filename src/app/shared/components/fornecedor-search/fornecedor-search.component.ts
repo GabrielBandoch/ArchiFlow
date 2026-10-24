@@ -17,7 +17,7 @@ import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
 } from "@angular/forms";
-import { Fornecedor } from "../../../models/fornecedor.model";
+import { Fornecedor } from "../../../core/models/fornecedor.model";
 import { ButtonComponent } from "../button/button.component";
 import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
 import { NotificationService } from "../../../core/services/notification.service";

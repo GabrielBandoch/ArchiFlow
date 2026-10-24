@@ -18,7 +18,7 @@ import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { FinanceiroService } from "../../../core/api/financeiro/financeiro.service";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { Projeto } from "../../../models/projeto.model";
+import { Projeto } from "../../../core/models/projeto.model";
 import { SelectOption } from "../../../shared/components/select/select.component";
 import {
   CriarContratoCommand,

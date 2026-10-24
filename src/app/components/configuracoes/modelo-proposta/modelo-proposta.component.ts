@@ -20,7 +20,7 @@ import {
 
 import { RouterLink } from "@angular/router";
 import { EmpresaService } from "../../../core/api/empresa/empresa.service";
-import { DadosEmpresa } from "../../../models/empresa.model";
+import { DadosEmpresa } from "../../../core/models/empresa.model";
 import { ModeloPropostaForm } from "./modelo-proposta.form";
 
 @Component({

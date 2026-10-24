@@ -5,7 +5,7 @@ import { environment } from "../../../../environments/environment";
 import {
   DadosEmpresa,
   SalvarDadosEmpresaCommand,
-} from "../../../models/empresa.model";
+} from "../../models/empresa.model";
 import { UrlBuilder } from "../../utils/url-builder";
 
 @Injectable({

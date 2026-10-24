@@ -6,7 +6,7 @@ import { TemplatesProjetoComponent } from "./templates-projeto.component";
 import { ProjectTemplateService } from "../../../core/services/project-template.service";
 import { DialogService } from "../../../core/services/dialog.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { ProjectTemplate } from "../../../models/project-template.model";
+import { ProjectTemplate } from "../../../core/models/project-template.model";
 
 describe("TemplatesProjetoComponent", () => {
   let component: TemplatesProjetoComponent;

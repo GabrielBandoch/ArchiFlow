@@ -5,7 +5,7 @@ import { UsuarioService } from "../../../core/api/usuarios/usuario.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { DialogService } from "../../../core/services/dialog.service";
-import { MembroEquipe } from "../../../models/usuario.model";
+import { MembroEquipe } from "../../../core/models/usuario.model";
 import { MembroEquipeModalComponent } from "../../../dialogs/configuracoes/membro-equipe-modal/membro-equipe-modal.component";
 
 @Component({

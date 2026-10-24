@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Arquivo } from "../../../models/arquivo.model";
+import { Arquivo } from "../../../core/models/arquivo.model";
 
 @Component({
   selector: "app-portal-documentos",

@@ -14,7 +14,7 @@ import {
   Projeto,
   TipoProjeto,
   StatusProjeto,
-} from "../../../models/projeto.model";
+} from "../../../core/models/projeto.model";
 import { AtualizarProjetoCommand } from "../../../commands/projeto.commands";
 import { ProjetoForm } from "../../../components/projetos/projeto.form";
 import { SelectOption } from "../../../shared/components/select/select.component";

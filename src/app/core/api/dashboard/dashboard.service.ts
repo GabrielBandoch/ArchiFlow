@@ -5,7 +5,7 @@ import { environment } from "../../../../environments/environment";
 import {
   DashboardMetricas,
   PreferenciaDashboard,
-} from "../../../models/dashboard.model";
+} from "../../models/dashboard.model";
 import { UrlBuilder } from "../../utils/url-builder";
 
 @Injectable({

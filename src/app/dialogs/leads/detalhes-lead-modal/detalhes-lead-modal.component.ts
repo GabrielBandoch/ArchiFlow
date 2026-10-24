@@ -15,7 +15,7 @@ import {
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { LeadService } from "../../../core/api";
 import { NotificationService } from "../../../core/services/notification.service";
-import { Lead, StatusLead } from "../../../models/lead.model";
+import { Lead, StatusLead } from "../../../core/models/lead.model";
 import { LeadForm } from "../../../components/leads/lead.form";
 import { SelectOption } from "../../../shared/components/select/select.component";
 import { DialogService } from "../../../core/services/dialog.service";

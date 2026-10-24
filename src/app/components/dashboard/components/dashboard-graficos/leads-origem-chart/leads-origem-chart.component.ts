@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { LeadsPorOrigem } from "../../../../../models/dashboard.model";
+import { LeadsPorOrigem } from "../../../../../core/models/dashboard.model";
 import { DashboardWidgetHeaderComponent } from "../../dashboard-widget-header/dashboard-widget-header.component";
 import { DASHBOARD_COLORS } from "../../../dashboard-colors";
 

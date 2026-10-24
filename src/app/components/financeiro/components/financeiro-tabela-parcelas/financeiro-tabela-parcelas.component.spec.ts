@@ -6,7 +6,7 @@ import { FinanceiroTabelaParcelasComponent } from "./financeiro-tabela-parcelas.
 import {
   ParcelaFinanceira,
   StatusParcela,
-} from "../../../../models/financeiro.model";
+} from "../../../../core/models/financeiro.model";
 
 registerLocaleData(localePt);
 

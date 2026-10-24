@@ -20,15 +20,15 @@ import { NotificationService } from "../../../core/services/notification.service
 import {
   CategoriaDespesa,
   DespesaProjeto,
-} from "../../../models/financeiro.model";
-import { Projeto } from "../../../models/projeto.model";
+} from "../../../core/models/financeiro.model";
+import { Projeto } from "../../../core/models/projeto.model";
 import { SelectOption } from "../../../shared/components/select/select.component";
 import { CriarDespesaCommand } from "../../../commands/financeiro.commands";
 import { FinanceiroForm } from "../../../components/financeiro/financeiro.form";
 
 import { ProjectSearchComponent } from "../../../shared/components/project-search/project-search.component";
 import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
-import { Fornecedor } from "../../../models/fornecedor.model";
+import { Fornecedor } from "../../../core/models/fornecedor.model";
 
 @Component({
   selector: "app-criar-despesa-modal",

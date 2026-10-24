@@ -4,7 +4,7 @@ import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../shared";
 import { LeadService } from "../../core/api";
 import { NotificationService } from "../../core/services/notification.service";
 import { DialogService } from "../../core/services/dialog.service";
-import { Lead, StatusLead, KanbanColumn } from "../../models/lead.model";
+import { Lead, StatusLead, KanbanColumn } from "../../core/models/lead.model";
 import { AtualizarStatusLeadCommand } from "../../commands/lead.commands";
 import { NovoLeadModalComponent } from "../../dialogs/leads/novo-lead-modal/novo-lead-modal.component";
 import { DetalhesLeadModalComponent } from "../../dialogs/leads/detalhes-lead-modal/detalhes-lead-modal.component";

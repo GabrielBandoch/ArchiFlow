@@ -12,7 +12,7 @@ import { of, throwError } from "rxjs";
 import {
   SimulacaoResultado,
   PropostaHonorario,
-} from "../../../models/honorario.model";
+} from "../../../core/models/honorario.model";
 import { CONFIGURACAO_PROPOSTA_PADRAO } from "../../../core/models/configuracao-proposta.model";
 
 describe("SimuladorComponent", () => {

@@ -11,7 +11,7 @@ import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { LeadService, OrigemLeadService } from "../../../core/api";
 import { NotificationService } from "../../../core/services/notification.service";
 import { LeadForm } from "../../../components/leads/lead.form";
-import { OrigemLead } from "../../../models/origem-lead.model";
+import { OrigemLead } from "../../../core/models/origem-lead.model";
 import { SelectOption } from "../../../shared/components/select/select.component";
 
 @Component({

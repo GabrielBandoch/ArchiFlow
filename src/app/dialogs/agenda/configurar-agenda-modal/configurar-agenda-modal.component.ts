@@ -20,7 +20,7 @@ import { DialogService } from "../../../core/services/dialog.service";
 import {
   ConfiguracaoAgendaEmpresa,
   SalvarConfiguracaoAgendaCommand,
-} from "../../../models/agenda.model";
+} from "../../../core/models/agenda.model";
 import { AgendaForm } from "../../../components/agenda/agenda.form";
 import { DialogComponent } from "../../../shared/components/dialog/dialog.component";
 import { InputComponent } from "../../../shared/components/input/input.component";

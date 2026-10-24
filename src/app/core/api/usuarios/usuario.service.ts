@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
-import { MembroEquipe } from "../../../models/usuario.model";
+import { MembroEquipe } from "../../models/usuario.model";
 import {
   ConvidarMembroEquipeCommand,
   AtualizarMembroEquipeCommand,

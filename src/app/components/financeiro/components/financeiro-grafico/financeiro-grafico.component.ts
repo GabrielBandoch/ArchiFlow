@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../../shared";
-import { ReceitaMes } from "../../../../models/financeiro.model";
+import { ReceitaMes } from "../../../../core/models/financeiro.model";
 
 @Component({
   selector: "app-financeiro-grafico",

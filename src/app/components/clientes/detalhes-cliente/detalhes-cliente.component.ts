@@ -4,10 +4,10 @@ import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { ClienteService, LeadService, ProjetoService } from "../../../core/api";
 import { HonorarioService } from "../../../core/api/honorarios/honorario.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { Cliente } from "../../../models/cliente.model";
-import { Lead, HistoricoContatoLead } from "../../../models/lead.model";
-import { Projeto } from "../../../models/projeto.model";
-import { PropostaHonorario } from "../../../models/honorario.model";
+import { Cliente } from "../../../core/models/cliente.model";
+import { Lead, HistoricoContatoLead } from "../../../core/models/lead.model";
+import { Projeto } from "../../../core/models/projeto.model";
+import { PropostaHonorario } from "../../../core/models/honorario.model";
 import { DialogService } from "../../../core/services/dialog.service";
 import { EditarClienteModalComponent } from "../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component";
 import { ClienteHeroCardComponent } from "./components/cliente-hero-card/cliente-hero-card.component";
@@ -19,7 +19,7 @@ import {
   ReactiveFormsModule,
   FormsModule,
 } from "@angular/forms";
-import { RepresentanteCliente } from "../../../models/cliente.model";
+import { RepresentanteCliente } from "../../../core/models/cliente.model";
 import { DetalhesClienteForm } from "./detalhes-cliente.form";
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ProjetosPorStatus } from "../../../../../models/dashboard.model";
+import { ProjetosPorStatus } from "../../../../../core/models/dashboard.model";
 import { DashboardWidgetHeaderComponent } from "../../dashboard-widget-header/dashboard-widget-header.component";
 import { DASHBOARD_COLORS } from "../../../dashboard-colors";
 

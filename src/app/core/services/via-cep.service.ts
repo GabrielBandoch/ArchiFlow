@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { map, catchError } from "rxjs/operators";
 import { UrlBuilder } from "../utils/url-builder";
-import { ViaCepResponse } from "../../models/via-cep.model";
+import { ViaCepResponse } from "../models/via-cep.model";
 
 @Injectable({
   providedIn: "root",

@@ -7,7 +7,7 @@ import { ListaProjetosComponent } from "./lista-projetos.component";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { DialogService } from "../../../core/services/dialog.service";
-import { StatusProjeto, TipoProjeto } from "../../../models/projeto.model";
+import { StatusProjeto, TipoProjeto } from "../../../core/models/projeto.model";
 
 describe("ListaProjetosComponent", () => {
   let component: ListaProjetosComponent;

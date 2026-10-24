@@ -17,7 +17,7 @@ import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { SelectOption } from "../../../shared/components/select/select.component";
 import { UsuarioService } from "../../../core/api/usuarios/usuario.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { MembroEquipe, PerfilUsuario } from "../../../models/usuario.model";
+import { MembroEquipe, PerfilUsuario } from "../../../core/models/usuario.model";
 import {
   ConvidarMembroEquipeCommand,
   AtualizarMembroEquipeCommand,

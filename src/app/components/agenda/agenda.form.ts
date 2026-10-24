@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { TiposCompromisso } from "../../models/agenda.model";
+import { TiposCompromisso } from "../../core/models/agenda.model";
 
 export class AgendaForm {
   static createCompromisso(fb: FormBuilder): FormGroup {

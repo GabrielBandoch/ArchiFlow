@@ -5,7 +5,7 @@ import {
   EtapaProjeto,
   StatusEtapa,
   TarefaEtapa,
-} from "../../../../../models/projeto.model";
+} from "../../../../../core/models/projeto.model";
 import { EmptyStateComponent } from "../../../../../shared/components/empty-state/empty-state.component";
 import { ButtonComponent } from "../../../../../shared/components/button/button.component";
 

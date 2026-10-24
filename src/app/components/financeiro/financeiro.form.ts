@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CategoriaDespesa } from "../../models/financeiro.model";
+import { CategoriaDespesa } from "../../core/models/financeiro.model";
 
 export class FinanceiroForm {
   static createParcelaAvulsa(

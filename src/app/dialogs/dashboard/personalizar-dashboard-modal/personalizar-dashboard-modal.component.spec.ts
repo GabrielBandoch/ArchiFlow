@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { PersonalizarDashboardModalComponent } from "./personalizar-dashboard-modal.component";
-import { WIDGETS_DEFAULT } from "../../../models/dashboard.model";
+import { WIDGETS_DEFAULT } from "../../../core/models/dashboard.model";
 
 describe("PersonalizarDashboardModalComponent", () => {
   let component: PersonalizarDashboardModalComponent;

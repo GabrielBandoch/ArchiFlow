@@ -10,7 +10,7 @@ import {
   SimulacaoResultado,
   CriarPropostaCommand,
   PropostaHonorario,
-} from "../../models/honorario.model";
+} from "../models/honorario.model";
 
 describe("HonorarioService", () => {
   let service: HonorarioService;

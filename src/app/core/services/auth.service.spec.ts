@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
 import { AuthService } from "./auth.service";
 import { AutenticacaoService } from "../api";
-import { Usuario } from "../../models/usuario.model";
+import { Usuario } from "../models/usuario.model";
 
 describe("AuthService", () => {
   let service: AuthService;

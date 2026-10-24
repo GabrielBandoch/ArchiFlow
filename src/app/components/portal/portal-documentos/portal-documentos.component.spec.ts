@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { PortalDocumentosComponent } from "./portal-documentos.component";
-import { Arquivo } from "../../../models/arquivo.model";
+import { Arquivo } from "../../../core/models/arquivo.model";
 
 describe("PortalDocumentosComponent", () => {
   let component: PortalDocumentosComponent;

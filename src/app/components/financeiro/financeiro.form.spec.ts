@@ -1,6 +1,6 @@
 import { FormBuilder } from "@angular/forms";
 import { FinanceiroForm } from "./financeiro.form";
-import { CategoriaDespesa } from "../../models/financeiro.model";
+import { CategoriaDespesa } from "../../core/models/financeiro.model";
 
 describe("FinanceiroForm", () => {
   let fb: FormBuilder;

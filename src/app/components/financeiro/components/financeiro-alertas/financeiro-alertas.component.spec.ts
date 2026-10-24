@@ -6,7 +6,7 @@ import { FinanceiroAlertasComponent } from "./financeiro-alertas.component";
 import {
   AlertaFinanceiro,
   StatusParcela,
-} from "../../../../models/financeiro.model";
+} from "../../../../core/models/financeiro.model";
 
 registerLocaleData(localePt);
 

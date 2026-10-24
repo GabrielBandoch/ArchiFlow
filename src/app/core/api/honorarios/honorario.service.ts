@@ -9,7 +9,7 @@ import {
   CriarPropostaCommand,
   AtualizarStatusPropostaCommand,
   AjustarValorPropostaCommand,
-} from "../../../models/honorario.model";
+} from "../../models/honorario.model";
 import { UrlBuilder } from "../../utils/url-builder";
 
 @Injectable({

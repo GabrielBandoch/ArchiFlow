@@ -3,7 +3,7 @@ import { LOCALE_ID } from "@angular/core";
 import { registerLocaleData } from "@angular/common";
 import localePt from "@angular/common/locales/pt";
 import { FinanceiroGraficoComponent } from "./financeiro-grafico.component";
-import { ReceitaMes } from "../../../../models/financeiro.model";
+import { ReceitaMes } from "../../../../core/models/financeiro.model";
 
 registerLocaleData(localePt);
 

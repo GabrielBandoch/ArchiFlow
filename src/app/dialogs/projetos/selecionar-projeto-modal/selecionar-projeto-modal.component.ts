@@ -10,7 +10,7 @@ import {
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { Projeto } from "../../../models/projeto.model";
+import { Projeto } from "../../../core/models/projeto.model";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { DialogComponent } from "../../../shared/components/dialog/dialog.component";
 import { ButtonComponent } from "../../../shared/components/button/button.component";

@@ -5,7 +5,7 @@ import {
 } from "@angular/common/http/testing";
 import { ArquivoService } from "./arquivo.service";
 import { environment } from "../../../../environments/environment";
-import { Arquivo } from "../../../models/arquivo.model";
+import { Arquivo } from "../../models/arquivo.model";
 
 describe("ArquivoService", () => {
   let service: ArquivoService;

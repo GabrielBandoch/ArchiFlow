@@ -6,7 +6,7 @@ import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { DialogService } from "../../../core/services/dialog.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { of } from "rxjs";
-import { Fornecedor } from "../../../models/fornecedor.model";
+import { Fornecedor } from "../../../core/models/fornecedor.model";
 
 describe("DetalhesFornecedorComponent", () => {
   let component: DetalhesFornecedorComponent;

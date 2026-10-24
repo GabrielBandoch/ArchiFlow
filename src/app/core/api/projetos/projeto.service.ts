@@ -8,7 +8,7 @@ import {
   StatusProjeto,
   StatusEtapa,
   TarefaEtapa,
-} from "../../../models/projeto.model";
+} from "../../models/projeto.model";
 import {
   CriarProjetoCommand,
   AtualizarProjetoCommand,
@@ -19,7 +19,7 @@ import {
   AdicionarTarefaCommand,
   AtualizarPrazoTarefaCommand,
 } from "../../../commands/projeto.commands";
-import { RepresentanteCliente } from "../../../models/cliente.model";
+import { RepresentanteCliente } from "../../models/cliente.model";
 import { ConvidarRepresentanteCommand } from "../../../commands/cliente.commands";
 import { UrlBuilder } from "../../utils/url-builder";
 

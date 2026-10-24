@@ -10,7 +10,7 @@ import {
   PainelFinanceiro,
   ParcelaFinanceira,
   StatusParcela,
-} from "../../../models/financeiro.model";
+} from "../../models/financeiro.model";
 import {
   AtualizarDespesaCommand,
   AtualizarParcelaCommand,

@@ -13,7 +13,7 @@ import {
   AdicionarAvaliacaoCommand,
   ProjetoFornecedor,
   VincularProjetoCommand,
-} from "../../../models/fornecedor.model";
+} from "../../models/fornecedor.model";
 
 describe("FornecedorService", () => {
   let service: FornecedorService;

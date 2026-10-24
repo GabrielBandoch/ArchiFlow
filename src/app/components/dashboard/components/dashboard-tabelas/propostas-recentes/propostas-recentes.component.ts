@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
-import { PropostaResumoDashboard } from "../../../../../models/dashboard.model";
+import { PropostaResumoDashboard } from "../../../../../core/models/dashboard.model";
 import { DashboardWidgetHeaderComponent } from "../../dashboard-widget-header/dashboard-widget-header.component";
 import { formatarMoeda } from "../../../dashboard.utils";
 

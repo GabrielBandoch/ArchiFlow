@@ -6,7 +6,7 @@ import { FinanceiroTabelaDespesasComponent } from "./financeiro-tabela-despesas.
 import {
   CategoriaDespesa,
   DespesaProjeto,
-} from "../../../../models/financeiro.model";
+} from "../../../../core/models/financeiro.model";
 
 registerLocaleData(localePt);
 

@@ -15,11 +15,11 @@ import {
   CriarCompromissoCommand,
   AtualizarCompromissoCommand,
   TiposCompromisso,
-} from "../../../models/agenda.model";
+} from "../../../core/models/agenda.model";
 import { AgendaForm } from "../../../components/agenda/agenda.form";
-import { Projeto } from "../../../models/projeto.model";
-import { Cliente } from "../../../models/cliente.model";
-import { Lead } from "../../../models/lead.model";
+import { Projeto } from "../../../core/models/projeto.model";
+import { Cliente } from "../../../core/models/cliente.model";
+import { Lead } from "../../../core/models/lead.model";
 import { AgendaService } from "../../../core/api/agenda/agenda.service";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
@@ -37,7 +37,7 @@ import { ProjectSearchComponent } from "../../../shared/components/project-searc
 import { LeadSearchComponent } from "../../../shared/components/lead-search/lead-search.component";
 
 import { UsuarioService } from "../../../core/api/usuarios/usuario.service";
-import { MembroEquipe } from "../../../models/usuario.model";
+import { MembroEquipe } from "../../../core/models/usuario.model";
 
 @Component({
   selector: "app-compromisso-modal",

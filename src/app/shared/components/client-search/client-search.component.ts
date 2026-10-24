@@ -17,7 +17,7 @@ import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
 } from "@angular/forms";
-import { Cliente } from "../../../models/cliente.model";
+import { Cliente } from "../../../core/models/cliente.model";
 import { ButtonComponent } from "../button/button.component";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
 import { NotificationService } from "../../../core/services/notification.service";

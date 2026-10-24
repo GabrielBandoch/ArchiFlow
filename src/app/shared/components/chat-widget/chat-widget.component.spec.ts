@@ -9,7 +9,7 @@ import { of, BehaviorSubject } from "rxjs";
 import { ChatWidgetComponent } from "./chat-widget.component";
 import { ChatService } from "../../../core/services/chat.service";
 import { AuthService } from "../../../core/services/auth.service";
-import { MensagemChat } from "../../../models/mensagem-chat.model";
+import { MensagemChat } from "../../../core/models/mensagem-chat.model";
 
 describe("ChatWidgetComponent", () => {
   let component: ChatWidgetComponent;

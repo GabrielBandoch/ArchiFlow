@@ -9,7 +9,7 @@ import {
   Projeto,
   StatusProjeto,
   TipoProjeto,
-} from "../../../models/projeto.model";
+} from "../../../core/models/projeto.model";
 import { CriarProjetoModalComponent } from "../../../dialogs/projetos/criar-projeto-modal/criar-projeto-modal.component";
 
 @Component({

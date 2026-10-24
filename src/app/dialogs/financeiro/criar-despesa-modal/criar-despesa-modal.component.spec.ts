@@ -5,7 +5,7 @@ import { FinanceiroService } from "../../../core/api/financeiro/financeiro.servi
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { CategoriaDespesa } from "../../../models/financeiro.model";
+import { CategoriaDespesa } from "../../../core/models/financeiro.model";
 
 describe("CriarDespesaModalComponent", () => {
   let component: CriarDespesaModalComponent;

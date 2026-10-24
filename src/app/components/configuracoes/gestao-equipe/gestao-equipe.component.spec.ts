@@ -7,7 +7,7 @@ import { UsuarioService } from "../../../core/api/usuarios/usuario.service";
 import { AuthService } from "../../../core/services/auth.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { DialogService } from "../../../core/services/dialog.service";
-import { MembroEquipe, Usuario } from "../../../models/usuario.model";
+import { MembroEquipe, Usuario } from "../../../core/models/usuario.model";
 
 describe("GestaoEquipeComponent", () => {
   let component: GestaoEquipeComponent;

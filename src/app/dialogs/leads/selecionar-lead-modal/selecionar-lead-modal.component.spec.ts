@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SelecionarLeadModalComponent } from "./selecionar-lead-modal.component";
-import { Lead, StatusLead } from "../../../models/lead.model";
+import { Lead, StatusLead } from "../../../core/models/lead.model";
 import { LeadService } from "../../../core/api/leads/lead.service";
 import { of } from "rxjs";
 

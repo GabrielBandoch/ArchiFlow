@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
-import { ProjetoResumoDashboard } from "../../../../../models/dashboard.model";
+import { ProjetoResumoDashboard } from "../../../../../core/models/dashboard.model";
 import { DashboardWidgetHeaderComponent } from "../../dashboard-widget-header/dashboard-widget-header.component";
 
 @Component({

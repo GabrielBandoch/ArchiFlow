@@ -1,6 +1,6 @@
 import { FormBuilder } from "@angular/forms";
 import { ProjetoForm } from "./projeto.form";
-import { TipoProjeto, StatusProjeto } from "../../models/projeto.model";
+import { TipoProjeto, StatusProjeto } from "../../core/models/projeto.model";
 
 describe("ProjetoForm", () => {
   let fb: FormBuilder;

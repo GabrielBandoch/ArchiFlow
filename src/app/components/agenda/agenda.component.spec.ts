@@ -6,7 +6,7 @@ import { DialogService } from "../../core/services/dialog.service";
 import { NotificationService } from "../../core/services/notification.service";
 import { EventEmitter } from "@angular/core";
 import { of } from "rxjs";
-import { Compromisso, TiposCompromisso } from "../../models/agenda.model";
+import { Compromisso, TiposCompromisso } from "../../core/models/agenda.model";
 
 describe("AgendaComponent", () => {
   let component: AgendaComponent;

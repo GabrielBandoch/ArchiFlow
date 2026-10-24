@@ -5,7 +5,7 @@ import {
 } from "@angular/common/http/testing";
 import { AgendaService } from "./agenda.service";
 import { environment } from "../../../../environments/environment";
-import { Compromisso } from "../../../models/agenda.model";
+import { Compromisso } from "../../models/agenda.model";
 
 describe("AgendaService", () => {
   let service: AgendaService;

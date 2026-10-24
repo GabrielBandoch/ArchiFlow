@@ -2,7 +2,7 @@ import {
   StatusProjeto,
   TipoProjeto,
   StatusEtapa,
-} from "../models/projeto.model";
+} from "../core/models/projeto.model";
 
 export interface CriarProjetoCommand {
   nome: string;

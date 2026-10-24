@@ -5,7 +5,7 @@ import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import {
   DashboardWidgetConfig,
   WIDGETS_DEFAULT,
-} from "../../../models/dashboard.model";
+} from "../../../core/models/dashboard.model";
 
 @Component({
   selector: "app-personalizar-dashboard-modal",

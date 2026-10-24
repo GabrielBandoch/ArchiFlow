@@ -11,7 +11,7 @@ import {
   TipoProjeto,
   EtapaProjeto,
   StatusEtapa,
-} from "../../../models/projeto.model";
+} from "../../models/projeto.model";
 import {
   CriarProjetoCommand,
   AtualizarProjetoCommand,

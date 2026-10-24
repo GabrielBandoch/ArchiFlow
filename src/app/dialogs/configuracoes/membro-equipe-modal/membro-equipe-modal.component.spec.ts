@@ -5,7 +5,7 @@ import { of } from "rxjs";
 import { MembroEquipeModalComponent } from "./membro-equipe-modal.component";
 import { UsuarioService } from "../../../core/api/usuarios/usuario.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { MembroEquipe } from "../../../models/usuario.model";
+import { MembroEquipe } from "../../../core/models/usuario.model";
 
 describe("MembroEquipeModalComponent", () => {
   let component: MembroEquipeModalComponent;

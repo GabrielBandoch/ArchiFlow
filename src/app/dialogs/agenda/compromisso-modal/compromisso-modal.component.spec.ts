@@ -6,7 +6,7 @@ import { ClienteService } from "../../../core/api/clientes/cliente.service";
 import { LeadService } from "../../../core/api/leads/lead.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { of, throwError } from "rxjs";
-import { Compromisso, TiposCompromisso } from "../../../models/agenda.model";
+import { Compromisso, TiposCompromisso } from "../../../core/models/agenda.model";
 
 import { UsuarioService } from "../../../core/api/usuarios/usuario.service";
 

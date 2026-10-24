@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { MemoriaCalculo } from "../../../../../models/honorario.model";
+import { MemoriaCalculo } from "../../../../../core/models/honorario.model";
 
 @Component({
   selector: "app-memoria-calculo",

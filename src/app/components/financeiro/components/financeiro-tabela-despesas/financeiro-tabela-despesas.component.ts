@@ -5,7 +5,7 @@ import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../../shared";
 import {
   CategoriaDespesa,
   DespesaProjeto,
-} from "../../../../models/financeiro.model";
+} from "../../../../core/models/financeiro.model";
 
 @Component({
   selector: "app-financeiro-tabela-despesas",

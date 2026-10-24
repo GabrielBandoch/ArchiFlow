@@ -11,7 +11,7 @@ import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
 import { ViaCepService } from "../../../core/services/via-cep.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { Cliente } from "../../../models/cliente.model";
+import { Cliente } from "../../../core/models/cliente.model";
 import { AtualizarClienteCommand } from "../../../commands/cliente.commands";
 import { MaskUtils } from "../../../core/utils/mask-utils";
 import { ClienteForm } from "../../../components/clientes/cliente.form";

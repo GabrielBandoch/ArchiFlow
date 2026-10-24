@@ -10,7 +10,7 @@ import {
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { Cliente } from "../../../models/cliente.model";
+import { Cliente } from "../../../core/models/cliente.model";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
 import { DialogComponent } from "../../../shared/components/dialog/dialog.component";
 import { ButtonComponent } from "../../../shared/components/button/button.component";

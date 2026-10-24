@@ -6,7 +6,7 @@ import {
   Projeto,
   StatusProjeto,
   TipoProjeto,
-} from "../../../models/projeto.model";
+} from "../../../core/models/projeto.model";
 
 describe("ProjectSearchComponent", () => {
   let component: ProjectSearchComponent;

@@ -2,7 +2,7 @@ import {
   CategoriaDespesa,
   FormaPagamento,
   StatusParcela,
-} from "../models/financeiro.model";
+} from "../core/models/financeiro.model";
 
 export interface CriarContratoCommand {
   projetoId?: string;

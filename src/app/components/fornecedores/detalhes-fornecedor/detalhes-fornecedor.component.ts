@@ -12,10 +12,10 @@ import {
   AvaliacaoFornecedor,
   ProjetoFornecedor,
   VincularProjetoCommand,
-} from "../../../models/fornecedor.model";
+} from "../../../core/models/fornecedor.model";
 import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
-import { Projeto } from "../../../models/projeto.model";
+import { Projeto } from "../../../core/models/projeto.model";
 import { DialogService } from "../../../core/services/dialog.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { ButtonComponent } from "../../../shared/components/button/button.component";

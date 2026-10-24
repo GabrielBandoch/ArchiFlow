@@ -5,7 +5,7 @@ import {
 } from "@angular/common/http/testing";
 import { UsuarioService } from "./usuario.service";
 import { environment } from "../../../../environments/environment";
-import { MembroEquipe } from "../../../models/usuario.model";
+import { MembroEquipe } from "../../models/usuario.model";
 import {
   ConvidarMembroEquipeCommand,
   AtualizarMembroEquipeCommand,

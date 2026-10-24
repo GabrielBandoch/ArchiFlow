@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, tap } from "rxjs";
 import * as signalR from "@microsoft/signalr";
 import { AuthService } from "./auth.service";
-import { MensagemChat } from "../../models/mensagem-chat.model";
+import { MensagemChat } from "../models/mensagem-chat.model";
 import { environment } from "../../../environments/environment";
 
 @Injectable({

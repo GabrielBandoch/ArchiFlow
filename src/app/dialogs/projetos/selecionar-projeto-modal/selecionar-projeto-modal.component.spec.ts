@@ -4,7 +4,7 @@ import {
   Projeto,
   StatusProjeto,
   TipoProjeto,
-} from "../../../models/projeto.model";
+} from "../../../core/models/projeto.model";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { of } from "rxjs";
 

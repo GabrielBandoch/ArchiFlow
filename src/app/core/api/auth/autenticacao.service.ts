@@ -11,7 +11,7 @@ import {
   AtivarContaCommand,
   ResultadoValidacaoConviteDto,
 } from "../../../commands/autenticacao.commands";
-import { Usuario } from "../../../models/usuario.model";
+import { Usuario } from "../../models/usuario.model";
 import { UrlBuilder } from "../../utils/url-builder";
 
 @Injectable({

@@ -12,7 +12,7 @@ import {
   PainelFinanceiro,
   ParcelaFinanceira,
   ReceitaMes,
-} from "../../models/financeiro.model";
+} from "../../core/models/financeiro.model";
 import { FinanceiroKpisComponent } from "./components/financeiro-kpis/financeiro-kpis.component";
 import { FinanceiroGraficoComponent } from "./components/financeiro-grafico/financeiro-grafico.component";
 import { FinanceiroAlertasComponent } from "./components/financeiro-alertas/financeiro-alertas.component";

@@ -18,8 +18,8 @@ import {
 } from "../../../core/models/configuracao-proposta.model";
 import { NotificationService } from "../../../core/services/notification.service";
 
-import { PropostaVisualizacaoData } from "../../../models/proposta-pdf.types";
-export { PropostaVisualizacaoData } from "../../../models/proposta-pdf.types";
+import { PropostaVisualizacaoData } from "../../../core/models/proposta-pdf.types";
+export { PropostaVisualizacaoData } from "../../../core/models/proposta-pdf.types";
 
 @Component({
   selector: "app-modal-proposta-pdf",

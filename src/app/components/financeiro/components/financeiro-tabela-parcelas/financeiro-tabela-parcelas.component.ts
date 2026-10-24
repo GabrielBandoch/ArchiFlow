@@ -5,7 +5,7 @@ import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../../shared";
 import {
   ParcelaFinanceira,
   StatusParcela,
-} from "../../../../models/financeiro.model";
+} from "../../../../core/models/financeiro.model";
 
 @Component({
   selector: "app-financeiro-tabela-parcelas",

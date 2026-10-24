@@ -12,7 +12,7 @@ import { FormsModule } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { ChatService } from "../../../core/services/chat.service";
 import { AuthService } from "../../../core/services/auth.service";
-import { MensagemChat } from "../../../models/mensagem-chat.model";
+import { MensagemChat } from "../../../core/models/mensagem-chat.model";
 
 @Component({
   selector: "app-chat-widget",

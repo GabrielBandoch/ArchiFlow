@@ -8,7 +8,7 @@ import { ActivatedRoute, provideRouter } from "@angular/router";
 import {
   Fornecedor,
   ProjetoFornecedor,
-} from "../../../../../models/fornecedor.model";
+} from "../../../../../core/models/fornecedor.model";
 
 describe("ProjetoFornecedoresComponent", () => {
   let component: ProjetoFornecedoresComponent;

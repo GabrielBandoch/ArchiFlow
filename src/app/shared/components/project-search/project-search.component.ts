@@ -17,7 +17,7 @@ import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
 } from "@angular/forms";
-import { Projeto } from "../../../models/projeto.model";
+import { Projeto } from "../../../core/models/projeto.model";
 import { ButtonComponent } from "../button/button.component";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { NotificationService } from "../../../core/services/notification.service";

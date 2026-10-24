@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../../shared";
-import { AlertaFinanceiro } from "../../../../models/financeiro.model";
+import { AlertaFinanceiro } from "../../../../core/models/financeiro.model";
 
 @Component({
   selector: "app-financeiro-alertas",

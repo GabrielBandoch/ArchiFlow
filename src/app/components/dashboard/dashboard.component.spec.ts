@@ -11,7 +11,7 @@ import {
   DashboardMetricas,
   DashboardWidgetConfig,
   WIDGETS_DEFAULT,
-} from "../../models/dashboard.model";
+} from "../../core/models/dashboard.model";
 import { AgendaService } from "../../core/api/agenda/agenda.service";
 import { FinanceiroService } from "../../core/api/financeiro/financeiro.service";
 

@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { EtapaProjeto } from "../../../models/projeto.model";
+import { EtapaProjeto } from "../../../core/models/projeto.model";
 import { CriarEtapaCommand } from "../../../commands/projeto.commands";
 import { ProjetoForm } from "../../../components/projetos/projeto.form";
 

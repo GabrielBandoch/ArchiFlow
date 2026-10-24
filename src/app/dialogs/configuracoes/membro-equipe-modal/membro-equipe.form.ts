@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MembroEquipe } from "../../../models/usuario.model";
+import { MembroEquipe } from "../../../core/models/usuario.model";
 
 export class MembroEquipeForm {
   static create(fb: FormBuilder, membro?: MembroEquipe): FormGroup {

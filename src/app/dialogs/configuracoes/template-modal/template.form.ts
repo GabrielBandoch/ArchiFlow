@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ProjectTemplate } from "../../../models/project-template.model";
+import { ProjectTemplate } from "../../../core/models/project-template.model";
 
 export class TemplateForm {
   static create(fb: FormBuilder, template?: ProjectTemplate): FormGroup {

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { LeadSearchComponent } from "./lead-search.component";
 import { LeadService } from "../../../core/api/leads/lead.service";
 import { of } from "rxjs";
-import { Lead, StatusLead } from "../../../models/lead.model";
+import { Lead, StatusLead } from "../../../core/models/lead.model";
 
 describe("LeadSearchComponent", () => {
   let component: LeadSearchComponent;

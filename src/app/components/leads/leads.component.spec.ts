@@ -5,7 +5,7 @@ import { LeadsComponent } from "./leads.component";
 import { LeadService } from "../../core/api";
 import { NotificationService } from "../../core/services/notification.service";
 import { DialogService } from "../../core/services/dialog.service";
-import { Lead, StatusLead } from "../../models/lead.model";
+import { Lead, StatusLead } from "../../core/models/lead.model";
 
 describe("LeadsComponent", () => {
   let component: LeadsComponent;

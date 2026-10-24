@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { Projeto } from "../../../../../models/projeto.model";
+import { Projeto } from "../../../../../core/models/projeto.model";
 import { SelectOption } from "../../../../../shared/components/select/select.component";
 import { SelectComponent } from "../../../../../shared/components/select/select.component";
 import { ButtonComponent } from "../../../../../shared/components/button/button.component";

@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Projeto } from "../../../models/projeto.model";
+import { Projeto } from "../../../core/models/projeto.model";
 
 @Component({
   selector: "app-portal-hero",

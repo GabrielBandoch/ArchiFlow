@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { PortalHeroComponent } from "./portal-hero.component";
-import { StatusProjeto, TipoProjeto } from "../../../models/projeto.model";
+import { StatusProjeto, TipoProjeto } from "../../../core/models/projeto.model";
 
 describe("PortalHeroComponent", () => {
   let component: PortalHeroComponent;

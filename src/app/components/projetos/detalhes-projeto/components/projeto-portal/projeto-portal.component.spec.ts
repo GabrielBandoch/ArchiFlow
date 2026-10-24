@@ -4,7 +4,7 @@ import { ProjetoService } from "../../../../../core/api/projetos/projeto.service
 import { ClienteService } from "../../../../../core/api/clientes/cliente.service";
 import { NotificationService } from "../../../../../core/services/notification.service";
 import { of } from "rxjs";
-import { RepresentanteCliente } from "../../../../../models/cliente.model";
+import { RepresentanteCliente } from "../../../../../core/models/cliente.model";
 
 describe("ProjetoPortalComponent", () => {
   let component: ProjetoPortalComponent;

@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Projeto } from "../../../../../models/projeto.model";
-import { Arquivo } from "../../../../../models/arquivo.model";
-import { RepresentanteCliente } from "../../../../../models/cliente.model";
+import { Projeto } from "../../../../../core/models/projeto.model";
+import { Arquivo } from "../../../../../core/models/arquivo.model";
+import { RepresentanteCliente } from "../../../../../core/models/cliente.model";
 
 @Component({
   selector: "app-projeto-sidebar",

@@ -5,7 +5,7 @@ import {
 } from "@angular/common/http/testing";
 import { ClienteService } from "./cliente.service";
 import { environment } from "../../../../environments/environment";
-import { Cliente } from "../../../models/cliente.model";
+import { Cliente } from "../../models/cliente.model";
 
 describe("ClienteService", () => {
   let service: ClienteService;

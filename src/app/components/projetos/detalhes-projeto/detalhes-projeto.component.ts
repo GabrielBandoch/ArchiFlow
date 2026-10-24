@@ -14,9 +14,9 @@ import {
   StatusEtapa,
   TipoProjeto,
   TarefaEtapa,
-} from "../../../models/projeto.model";
-import { Arquivo } from "../../../models/arquivo.model";
-import { RepresentanteCliente } from "../../../models/cliente.model";
+} from "../../../core/models/projeto.model";
+import { Arquivo } from "../../../core/models/arquivo.model";
+import { RepresentanteCliente } from "../../../core/models/cliente.model";
 import { SelectOption } from "../../../shared/components/select/select.component";
 import { EditarProjetoModalComponent } from "../../../dialogs/projetos/editar-projeto-modal/editar-projeto-modal.component";
 import { NovaEtapaModalComponent } from "../../../dialogs/projetos/nova-etapa-modal/nova-etapa-modal.component";
@@ -28,7 +28,7 @@ import { ProjetoSidebarComponent } from "./components/projeto-sidebar/projeto-si
 import { ProjetoFornecedoresComponent } from "./components/projeto-fornecedores/projeto-fornecedores.component";
 import { ProjetoPortalComponent } from "./components/projeto-portal/projeto-portal.component";
 import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
-import { ProjetoFornecedor } from "../../../models/fornecedor.model";
+import { ProjetoFornecedor } from "../../../core/models/fornecedor.model";
 
 @Component({
   selector: "app-detalhes-projeto",

@@ -2,9 +2,9 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { DESIGN_SYSTEM } from "../../../../../shared";
-import { Cliente } from "../../../../../models/cliente.model";
-import { Lead } from "../../../../../models/lead.model";
-import { SimulacaoResultado } from "../../../../../models/honorario.model";
+import { Cliente } from "../../../../../core/models/cliente.model";
+import { Lead } from "../../../../../core/models/lead.model";
+import { SimulacaoResultado } from "../../../../../core/models/honorario.model";
 
 @Component({
   selector: "app-modal-salvar-proposta",

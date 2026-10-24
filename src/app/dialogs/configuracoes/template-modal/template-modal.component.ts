@@ -19,7 +19,7 @@ import { NotificationService } from "../../../core/services/notification.service
 import {
   ProjectTemplate,
   TemplateEtapaItem,
-} from "../../../models/project-template.model";
+} from "../../../core/models/project-template.model";
 import { TemplateForm } from "./template.form";
 
 @Component({

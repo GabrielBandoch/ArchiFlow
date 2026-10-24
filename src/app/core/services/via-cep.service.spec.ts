@@ -4,7 +4,7 @@ import {
   HttpTestingController,
 } from "@angular/common/http/testing";
 import { ViaCepService } from "./via-cep.service";
-import { ViaCepResponse } from "../../models/via-cep.model";
+import { ViaCepResponse } from "../models/via-cep.model";
 
 describe("ViaCepService", () => {
   let service: ViaCepService;

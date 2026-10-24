@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { DashboardKpis } from "../../../../models/dashboard.model";
+import { DashboardKpis } from "../../../../core/models/dashboard.model";
 import { formatarMoeda } from "../../dashboard.utils";
 
 @Component({

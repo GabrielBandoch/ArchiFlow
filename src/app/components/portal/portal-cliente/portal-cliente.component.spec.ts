@@ -13,7 +13,7 @@ import {
   StatusProjeto,
   StatusEtapa,
   TipoProjeto,
-} from "../../../models/projeto.model";
+} from "../../../core/models/projeto.model";
 import { CONFIGURACAO_PROPOSTA_PADRAO } from "../../../core/models/configuracao-proposta.model";
 import { DialogService } from "../../../core/services/dialog.service";
 

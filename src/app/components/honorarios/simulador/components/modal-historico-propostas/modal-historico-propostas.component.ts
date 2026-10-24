@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { DESIGN_SYSTEM } from "../../../../../shared";
-import { PropostaHonorario } from "../../../../../models/honorario.model";
+import { PropostaHonorario } from "../../../../../core/models/honorario.model";
 
 @Component({
   selector: "app-modal-historico-propostas",

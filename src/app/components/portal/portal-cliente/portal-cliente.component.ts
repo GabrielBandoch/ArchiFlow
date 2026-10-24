@@ -15,9 +15,9 @@ import {
   StatusEtapa,
   TipoProjeto,
   TarefaEtapa,
-} from "../../../models/projeto.model";
-import { Arquivo } from "../../../models/arquivo.model";
-import { PropostaHonorario } from "../../../models/honorario.model";
+} from "../../../core/models/projeto.model";
+import { Arquivo } from "../../../core/models/arquivo.model";
+import { PropostaHonorario } from "../../../core/models/honorario.model";
 import { DESIGN_SYSTEM, ChatWidgetComponent } from "../../../shared";
 import { PortalHeroComponent } from "../portal-hero/portal-hero.component";
 import { PortalTimelineComponent } from "../portal-timeline/portal-timeline.component";
@@ -25,7 +25,7 @@ import { PortalDocumentosComponent } from "../portal-documentos/portal-documento
 import { PortalSuporteComponent } from "../portal-suporte/portal-suporte.component";
 import { DialogService } from "../../../core/services/dialog.service";
 import { ModalPropostaPdfComponent } from "../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component";
-import { PropostaVisualizacaoData } from "../../../models/proposta-pdf.types";
+import { PropostaVisualizacaoData } from "../../../core/models/proposta-pdf.types";
 
 @Component({
   selector: "app-portal-cliente",

@@ -19,7 +19,7 @@ import { NotificationService } from "../../../core/services/notification.service
 import {
   FormaPagamento,
   ParcelaFinanceira,
-} from "../../../models/financeiro.model";
+} from "../../../core/models/financeiro.model";
 import { DarBaixaParcelaCommand } from "../../../commands/financeiro.commands";
 import { SelectOption } from "../../../shared/components/select/select.component";
 

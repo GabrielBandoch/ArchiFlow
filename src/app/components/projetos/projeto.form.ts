@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { TipoProjeto, StatusProjeto } from "../../models/projeto.model";
+import { TipoProjeto, StatusProjeto } from "../../core/models/projeto.model";
 
 export class ProjetoForm {
   static create(fb: FormBuilder): FormGroup {

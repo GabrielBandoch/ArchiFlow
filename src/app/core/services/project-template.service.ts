@@ -3,8 +3,8 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { environment } from "../../../environments/environment";
-import { ProjectTemplate } from "../../models/project-template.model";
-import { TarefaEtapa } from "../../models/projeto.model";
+import { ProjectTemplate } from "../models/project-template.model";
+import { TarefaEtapa } from "../models/projeto.model";
 import { UrlBuilder } from "../utils/url-builder";
 
 @Injectable({

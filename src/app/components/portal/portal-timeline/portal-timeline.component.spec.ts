@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { PortalTimelineComponent } from "./portal-timeline.component";
-import { StatusEtapa } from "../../../models/projeto.model";
+import { StatusEtapa } from "../../../core/models/projeto.model";
 
 describe("PortalTimelineComponent", () => {
   let component: PortalTimelineComponent;

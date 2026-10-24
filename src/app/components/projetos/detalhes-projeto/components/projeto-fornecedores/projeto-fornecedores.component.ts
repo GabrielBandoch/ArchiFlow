@@ -18,7 +18,7 @@ import {
   ProjetoFornecedor,
   Fornecedor,
   VincularProjetoCommand,
-} from "../../../../../models/fornecedor.model";
+} from "../../../../../core/models/fornecedor.model";
 import { FornecedorService } from "../../../../../core/api/fornecedores/fornecedor.service";
 import { DialogService } from "../../../../../core/services/dialog.service";
 import { NotificationService } from "../../../../../core/services/notification.service";

@@ -17,7 +17,7 @@ import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
 } from "@angular/forms";
-import { Lead } from "../../../models/lead.model";
+import { Lead } from "../../../core/models/lead.model";
 import { ButtonComponent } from "../button/button.component";
 import { LeadService } from "../../../core/api/leads/lead.service";
 import { NotificationService } from "../../../core/services/notification.service";

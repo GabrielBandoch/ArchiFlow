@@ -5,7 +5,7 @@ import { ViaCepService } from "../../../core/services/via-cep.service";
 import {
   DadosEmpresa,
   SalvarDadosEmpresaCommand,
-} from "../../../models/empresa.model";
+} from "../../../core/models/empresa.model";
 import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { NotificationService } from "../../../core/services/notification.service";
 import { MaskUtils } from "../../../core/utils/mask-utils";

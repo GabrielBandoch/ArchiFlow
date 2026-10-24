@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
-import { Arquivo } from "../../../../../models/arquivo.model";
+import { Arquivo } from "../../../../../core/models/arquivo.model";
 import { EmptyStateComponent } from "../../../../../shared/components/empty-state/empty-state.component";
 import { ButtonComponent } from "../../../../../shared/components/button/button.component";
 import { DialogComponent } from "../../../../../shared/components/dialog/dialog.component";

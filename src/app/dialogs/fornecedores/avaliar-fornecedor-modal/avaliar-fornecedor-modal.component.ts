@@ -12,7 +12,7 @@ import {
   Fornecedor,
   AvaliacaoFornecedor,
   AdicionarAvaliacaoCommand,
-} from "../../../models/fornecedor.model";
+} from "../../../core/models/fornecedor.model";
 import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { FornecedorForm } from "../../../components/fornecedores/fornecedor.form";

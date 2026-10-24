@@ -10,7 +10,7 @@ import {
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { Lead } from "../../../models/lead.model";
+import { Lead } from "../../../core/models/lead.model";
 import { LeadService } from "../../../core/api/leads/lead.service";
 import { DialogComponent } from "../../../shared/components/dialog/dialog.component";
 import { ButtonComponent } from "../../../shared/components/button/button.component";

@@ -5,7 +5,7 @@ import {
 } from "@angular/common/http/testing";
 import { ChatService } from "./chat.service";
 import { AuthService } from "./auth.service";
-import { MensagemChat } from "../../models/mensagem-chat.model";
+import { MensagemChat } from "../models/mensagem-chat.model";
 import { environment } from "../../../environments/environment";
 
 describe("ChatService", () => {

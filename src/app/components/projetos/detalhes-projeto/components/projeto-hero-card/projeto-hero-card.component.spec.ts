@@ -5,7 +5,7 @@ import {
   StatusProjeto,
   TipoProjeto,
   Projeto,
-} from "../../../../../models/projeto.model";
+} from "../../../../../core/models/projeto.model";
 
 describe("ProjetoHeroCardComponent", () => {
   let component: ProjetoHeroCardComponent;

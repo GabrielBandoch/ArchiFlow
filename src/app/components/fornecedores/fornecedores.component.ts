@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Fornecedor } from "../../models/fornecedor.model";
+import { Fornecedor } from "../../core/models/fornecedor.model";
 import { FornecedorService } from "../../core/api/fornecedores/fornecedor.service";
 import { DialogService } from "../../core/services/dialog.service";
 import { NotificationService } from "../../core/services/notification.service";

@@ -5,7 +5,7 @@ import { FornecedoresComponent } from "./fornecedores.component";
 import { FornecedorService } from "../../core/api/fornecedores/fornecedor.service";
 import { DialogService } from "../../core/services/dialog.service";
 import { NotificationService } from "../../core/services/notification.service";
-import { Fornecedor } from "../../models/fornecedor.model";
+import { Fornecedor } from "../../core/models/fornecedor.model";
 
 describe("FornecedoresComponent", () => {
   let component: FornecedoresComponent;

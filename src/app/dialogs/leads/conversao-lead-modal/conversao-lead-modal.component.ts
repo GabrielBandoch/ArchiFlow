@@ -17,7 +17,7 @@ import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { ClienteService } from "../../../core/api";
 import { ViaCepService } from "../../../core/services/via-cep.service";
 import { NotificationService } from "../../../core/services/notification.service";
-import { Lead } from "../../../models/lead.model";
+import { Lead } from "../../../core/models/lead.model";
 import { ConvertLeadToClienteCommand } from "../../../commands/cliente.commands";
 import { MaskUtils } from "../../../core/utils/mask-utils";
 import { LeadForm } from "../../../components/leads/lead.form";

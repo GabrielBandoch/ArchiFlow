@@ -10,13 +10,13 @@ import {
   DashboardMetricas,
   DashboardWidgetConfig,
   WIDGETS_DEFAULT,
-} from "../../models/dashboard.model";
-import { Compromisso } from "../../models/agenda.model";
+} from "../../core/models/dashboard.model";
+import { Compromisso } from "../../core/models/agenda.model";
 import { AgendaService } from "../../core/api/agenda/agenda.service";
 import {
   DespesaProjeto,
   ParcelaFinanceira,
-} from "../../models/financeiro.model";
+} from "../../core/models/financeiro.model";
 import { FinanceiroService } from "../../core/api/financeiro/financeiro.service";
 import { PersonalizarDashboardModalComponent } from "../../dialogs/dashboard/personalizar-dashboard-modal/personalizar-dashboard-modal.component";
 import { CriarProjetoModalComponent } from "../../dialogs/projetos/criar-projeto-modal/criar-projeto-modal.component";

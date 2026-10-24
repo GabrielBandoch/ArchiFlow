@@ -16,13 +16,13 @@ import { DialogService } from "../../../core/services/dialog.service";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
 import { LeadService } from "../../../core/api/leads/lead.service";
 import { ConfiguracaoPropostaService } from "../../../core/services/configuracao-proposta.service";
-import { Cliente } from "../../../models/cliente.model";
-import { Lead } from "../../../models/lead.model";
+import { Cliente } from "../../../core/models/cliente.model";
+import { Lead } from "../../../core/models/lead.model";
 import {
   SimulacaoResultado,
   PropostaHonorario,
   CriarPropostaCommand,
-} from "../../../models/honorario.model";
+} from "../../../core/models/honorario.model";
 
 import { DESIGN_SYSTEM } from "../../../shared";
 import { ConfirmDialogComponent } from "../../../shared/components/confirm-dialog/confirm-dialog.component";

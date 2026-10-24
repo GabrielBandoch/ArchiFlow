@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { EtapaProjeto, StatusEtapa } from "../../../models/projeto.model";
+import { EtapaProjeto, StatusEtapa } from "../../../core/models/projeto.model";
 
 @Component({
   selector: "app-portal-timeline",

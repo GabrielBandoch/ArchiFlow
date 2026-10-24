@@ -6,8 +6,8 @@ import { ClienteService, LeadService, ProjetoService } from "../../../core/api";
 import { HonorarioService } from "../../../core/api/honorarios/honorario.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { DialogService } from "../../../core/services/dialog.service";
-import { Cliente } from "../../../models/cliente.model";
-import { PropostaHonorario } from "../../../models/honorario.model";
+import { Cliente } from "../../../core/models/cliente.model";
+import { PropostaHonorario } from "../../../core/models/honorario.model";
 
 describe("DetalhesClienteComponent", () => {
   let component: DetalhesClienteComponent;

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SelecionarFornecedorModalComponent } from "./selecionar-fornecedor-modal.component";
 import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
 import { of } from "rxjs";
-import { Fornecedor } from "../../../models/fornecedor.model";
+import { Fornecedor } from "../../../core/models/fornecedor.model";
 
 describe("SelecionarFornecedorModalComponent", () => {
   let component: SelecionarFornecedorModalComponent;

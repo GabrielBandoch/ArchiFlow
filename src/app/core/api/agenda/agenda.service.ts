@@ -11,7 +11,7 @@ import {
   SalvarConfiguracaoAgendaCommand,
   ConectarGoogleOAuthCommand,
   OAuthUrlResponse,
-} from "../../../models/agenda.model";
+} from "../../models/agenda.model";
 import { UrlBuilder } from "../../utils/url-builder";
 
 @Injectable({
