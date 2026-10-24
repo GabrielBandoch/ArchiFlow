@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { UrlBuilder } from '../../utils/url-builder';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "../../../../environments/environment";
+import { UrlBuilder } from "../../utils/url-builder";
 
 export interface OpcaoConfiguracao {
   id: string;
@@ -19,15 +19,15 @@ export interface OpcaoConfiguracao {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ConfiguracaoSistemaService {
   constructor(private http: HttpClient) {}
 
   obterOpcoesPorCategoria(categoria: string): Observable<OpcaoConfiguracao[]> {
     const url = new UrlBuilder(environment.apiUrl)
-      .segment('configuracoes')
-      .segment('opcoes')
+      .segment("configuracoes")
+      .segment("opcoes")
       .segment(categoria)
       .build();
     return this.http.get<OpcaoConfiguracao[]>(url);
@@ -35,8 +35,8 @@ export class ConfiguracaoSistemaService {
 
   obterTodasOpcoes(): Observable<{ [categoria: string]: OpcaoConfiguracao[] }> {
     const url = new UrlBuilder(environment.apiUrl)
-      .segment('configuracoes')
-      .segment('opcoes')
+      .segment("configuracoes")
+      .segment("opcoes")
       .build();
     return this.http.get<{ [categoria: string]: OpcaoConfiguracao[] }>(url);
   }

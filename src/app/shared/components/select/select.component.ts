@@ -1,6 +1,13 @@
-import { Component, Input, OnInit, OnDestroy, forwardRef, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  forwardRef,
+  ElementRef,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 export interface SelectOption {
   value: any;
@@ -10,22 +17,24 @@ export interface SelectOption {
 }
 
 @Component({
-  selector: 'app-select',
+  selector: "app-select",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './select.component.html',
-  styleUrl: './select.component.scss',
+  templateUrl: "./select.component.html",
+  styleUrl: "./select.component.scss",
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => SelectComponent),
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
-export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
-  @Input() id = '';
-  @Input() placeholder = 'Selecione...';
+export class SelectComponent
+  implements ControlValueAccessor, OnInit, OnDestroy
+{
+  @Input() id = "";
+  @Input() placeholder = "Selecione...";
   @Input() label?: string;
   @Input() options: SelectOption[] = [];
   @Input() required = false;
@@ -44,20 +53,23 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy 
 
   ngOnInit(): void {
     this.listener = (event: Event) => {
-      if (this.isOpen && !this.elementRef.nativeElement.contains(event.target as Node)) {
+      if (
+        this.isOpen &&
+        !this.elementRef.nativeElement.contains(event.target as Node)
+      ) {
         this.isOpen = false;
         this.onTouched();
       }
     };
-    // Usa capture phase para interceptar cliques e foco mesmo se houver stopPropagation em modais
-    window.addEventListener('click', this.listener, true);
-    window.addEventListener('focusin', this.listener, true);
+
+    window.addEventListener("click", this.listener, true);
+    window.addEventListener("focusin", this.listener, true);
   }
 
   ngOnDestroy(): void {
     if (this.listener) {
-      window.removeEventListener('click', this.listener, true);
-      window.removeEventListener('focusin', this.listener, true);
+      window.removeEventListener("click", this.listener, true);
+      window.removeEventListener("focusin", this.listener, true);
     }
   }
 
@@ -94,6 +106,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy 
   }
 
   getSelectedOption(): SelectOption | undefined {
-    return this.options.find(opt => String(opt.value) === String(this.value));
+    return this.options.find((opt) => String(opt.value) === String(this.value));
   }
 }

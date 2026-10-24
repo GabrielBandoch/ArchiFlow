@@ -1,13 +1,13 @@
-import { Component, Output, EventEmitter, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { LeadForm } from '../../../components/leads/lead.form';
+import { Component, Output, EventEmitter, inject } from "@angular/core";
+import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { LeadForm } from "../../../components/leads/lead.form";
 
 @Component({
-  selector: 'app-motivo-perda-modal',
+  selector: "app-motivo-perda-modal",
   standalone: true,
   imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule],
-  templateUrl: './motivo-perda-modal.component.html'
+  templateUrl: "./motivo-perda-modal.component.html",
 })
 export class MotivoPerdaModalComponent {
   private fb = inject(FormBuilder);
@@ -22,7 +22,9 @@ export class MotivoPerdaModalComponent {
     this.form = LeadForm.createMotivoPerda(this.fb);
   }
 
-  get f() { return this.form.controls; }
+  get f() {
+    return this.form.controls;
+  }
 
   onCancel(): void {
     this.close.emit();

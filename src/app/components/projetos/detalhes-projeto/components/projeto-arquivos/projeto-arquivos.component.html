@@ -1,22 +1,46 @@
 <section class="panel-card d-flex flex-direction-column gap-md">
-  <div class="panel-top-bar d-flex justify-content-between align-items-center flex-wrap gap-sm">
+  <div
+    class="panel-top-bar d-flex justify-content-between align-items-center flex-wrap gap-sm"
+  >
     <div>
-      <h2 class="panel-heading font-headline-md m-0">Repositório de Pranchas e Documentos</h2>
-      <p class="panel-subheading font-label-sm text-on-surface-variant margin-top-xs m-0">Plantas, memoriais, modelos 3D e contratos com controle de visualização do cliente.</p>
+      <h2 class="panel-heading font-headline-md m-0">
+        Repositório de Pranchas e Documentos
+      </h2>
+      <p
+        class="panel-subheading font-label-sm text-on-surface-variant margin-top-xs m-0"
+      >
+        Plantas, memoriais, modelos 3D e contratos com controle de visualização
+        do cliente.
+      </p>
     </div>
   </div>
 
-  <div class="upload-action-box d-flex align-items-center justify-content-between flex-wrap gap-md">
-    <label class="checkbox-custom-label d-inline-flex align-items-center gap-xs font-label-md">
+  <div
+    class="upload-action-box d-flex align-items-center justify-content-between flex-wrap gap-md"
+  >
+    <label
+      class="checkbox-custom-label d-inline-flex align-items-center gap-xs font-label-md"
+    >
       <input type="checkbox" [(ngModel)]="novoArquivoVisivelCliente" />
       <span>Disponibilizar no Portal do Cliente</span>
     </label>
 
-    <app-button variant="primary" (btnClick)="fileUploadInput.click()" [disabled]="uploadingArquivo">
+    <app-button
+      variant="primary"
+      (btnClick)="fileUploadInput.click()"
+      [disabled]="uploadingArquivo"
+    >
       <span class="material-symbols-outlined">cloud_upload</span>
-      <span>{{ uploadingArquivo ? 'Enviando...' : 'Fazer Upload de Prancha/Arquivo' }}</span>
+      <span>{{
+        uploadingArquivo ? "Enviando..." : "Fazer Upload de Prancha/Arquivo"
+      }}</span>
     </app-button>
-    <input type="file" #fileUploadInput (change)="onFileSelected($event)" class="d-none" />
+    <input
+      type="file"
+      #fileUploadInput
+      (change)="onFileSelected($event)"
+      class="d-none"
+    />
   </div>
 
   <div class="files-table-container w-full" *ngIf="arquivos.length > 0">
@@ -25,36 +49,71 @@
         <tr>
           <th class="font-label-sm text-on-surface-variant">Documento</th>
           <th class="font-label-sm text-on-surface-variant">Enviado em</th>
-          <th class="font-label-sm text-on-surface-variant text-center">Portal Cliente</th>
-          <th class="font-label-sm text-on-surface-variant text-right">Ações</th>
+          <th class="font-label-sm text-on-surface-variant text-center">
+            Portal Cliente
+          </th>
+          <th class="font-label-sm text-on-surface-variant text-right">
+            Ações
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let arq of arquivos" class="file-row">
           <td>
-            <div class="file-cell-main d-flex align-items-center gap-xs font-body-md">
-              <span class="material-symbols-outlined file-type-icon">{{ getFileIcon(arq.nome) }}</span>
-              <span class="file-name-text font-weight-medium">{{ arq.nome }}</span>
+            <div
+              class="file-cell-main d-flex align-items-center gap-xs font-body-md"
+            >
+              <span class="material-symbols-outlined file-type-icon">{{
+                getFileIcon(arq.nome)
+              }}</span>
+              <span class="file-name-text font-weight-medium">{{
+                arq.nome
+              }}</span>
             </div>
           </td>
           <td>
-            <span class="file-date-text font-label-md text-on-surface-variant">{{ arq.criadoEm | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span
+              class="file-date-text font-label-md text-on-surface-variant"
+              >{{ arq.criadoEm | date: "dd/MM/yyyy HH:mm" }}</span
+            >
           </td>
           <td class="text-center">
-            <span class="visibility-tag d-inline-flex align-items-center gap-xs font-label-sm" [class.visible]="arq.visivelCliente">
-              <span class="material-symbols-outlined">{{ arq.visivelCliente ? 'visibility' : 'visibility_off' }}</span>
-              {{ arq.visivelCliente ? 'Visível' : 'Oculto' }}
+            <span
+              class="visibility-tag d-inline-flex align-items-center gap-xs font-label-sm"
+              [class.visible]="arq.visivelCliente"
+            >
+              <span class="material-symbols-outlined">{{
+                arq.visivelCliente ? "visibility" : "visibility_off"
+              }}</span>
+              {{ arq.visivelCliente ? "Visível" : "Oculto" }}
             </span>
           </td>
           <td class="text-right">
-            <div class="file-row-actions d-inline-flex align-items-center gap-xs">
-              <button type="button" class="btn-file-action d-inline-flex align-items-center justify-content-center" (click)="visualizarArquivo(arq)" title="Visualizar arquivo">
+            <div
+              class="file-row-actions d-inline-flex align-items-center gap-xs"
+            >
+              <button
+                type="button"
+                class="btn-file-action d-inline-flex align-items-center justify-content-center"
+                (click)="visualizarArquivo(arq)"
+                title="Visualizar arquivo"
+              >
                 <span class="material-symbols-outlined">visibility</span>
               </button>
-              <a [href]="arq.urlStorage" target="_blank" class="btn-file-action d-inline-flex align-items-center justify-content-center" title="Baixar documento">
+              <a
+                [href]="arq.urlStorage"
+                target="_blank"
+                class="btn-file-action d-inline-flex align-items-center justify-content-center"
+                title="Baixar documento"
+              >
                 <span class="material-symbols-outlined">download</span>
               </a>
-              <button type="button" class="btn-file-action btn-file-delete d-inline-flex align-items-center justify-content-center" (click)="onExcluir(arq)" title="Excluir arquivo">
+              <button
+                type="button"
+                class="btn-file-action btn-file-delete d-inline-flex align-items-center justify-content-center"
+                (click)="onExcluir(arq)"
+                title="Excluir arquivo"
+              >
                 <span class="material-symbols-outlined">delete</span>
               </button>
             </div>
@@ -66,25 +125,61 @@
 
   <app-dialog
     [show]="!!arquivoParaVisualizar"
-    [dialogTitle]="arquivoParaVisualizar ? arquivoParaVisualizar.nome : 'Visualizar Arquivo'"
+    [dialogTitle]="
+      arquivoParaVisualizar ? arquivoParaVisualizar.nome : 'Visualizar Arquivo'
+    "
     (close)="fecharModalVisualizacao()"
-    size="lg">
-    <div class="preview-container d-flex flex-direction-column align-items-center justify-content-center" *ngIf="arquivoParaVisualizar">
-      <div *ngIf="tipoVisualizacao === 'imagem'" class="preview-media preview-image-wrapper">
-        <img [src]="safeUrl" [alt]="arquivoParaVisualizar.nome" class="preview-image" />
+    size="lg"
+  >
+    <div
+      class="preview-container d-flex flex-direction-column align-items-center justify-content-center"
+      *ngIf="arquivoParaVisualizar"
+    >
+      <div
+        *ngIf="tipoVisualizacao === 'imagem'"
+        class="preview-media preview-image-wrapper"
+      >
+        <img
+          [src]="safeUrl"
+          [alt]="arquivoParaVisualizar.nome"
+          class="preview-image"
+        />
       </div>
 
-      <div *ngIf="tipoVisualizacao === 'pdf'" class="preview-media preview-pdf-wrapper w-full">
-        <iframe [src]="safeUrl" class="preview-iframe w-full" frameborder="0"></iframe>
+      <div
+        *ngIf="tipoVisualizacao === 'pdf'"
+        class="preview-media preview-pdf-wrapper w-full"
+      >
+        <iframe
+          [src]="safeUrl"
+          class="preview-iframe w-full"
+          frameborder="0"
+        ></iframe>
       </div>
 
-      <div *ngIf="tipoVisualizacao === 'video'" class="preview-media preview-video-wrapper w-full">
-        <video [src]="arquivoParaVisualizar.urlStorage" controls class="preview-video w-full" autoplay></video>
+      <div
+        *ngIf="tipoVisualizacao === 'video'"
+        class="preview-media preview-video-wrapper w-full"
+      >
+        <video
+          [src]="arquivoParaVisualizar.urlStorage"
+          controls
+          class="preview-video w-full"
+          autoplay
+        ></video>
       </div>
     </div>
 
-    <div dialog-footer class="preview-dialog-footer d-flex justify-content-between align-items-center w-full" *ngIf="arquivoParaVisualizar">
-      <button type="button" class="btn-secondary-link font-label-md d-inline-flex align-items-center gap-xs" (click)="abrirEmNovaAba(arquivoParaVisualizar.urlStorage)">
+    <div
+      dialog-footer
+      class="preview-dialog-footer d-flex justify-content-between align-items-center w-full"
+      *ngIf="arquivoParaVisualizar"
+    >
+      <button
+        type="button"
+        class="btn-secondary-link font-label-md d-inline-flex align-items-center gap-xs"
+        (click)="abrirEmNovaAba(arquivoParaVisualizar.urlStorage)"
+      >
         <span class="material-symbols-outlined font-sm">open_in_new</span>
         <span>Abrir em nova aba</span>
       </button>
@@ -95,10 +190,11 @@
     </div>
   </app-dialog>
 
-  <app-empty-state 
+  <app-empty-state
     *ngIf="arquivos.length === 0"
     icon="folder_open"
     title="Nenhum arquivo enviado"
-    message="Faça upload de plantas em PDF, arquivos CAD, renders ou contratos para centralizar a documentação.">
+    message="Faça upload de plantas em PDF, arquivos CAD, renders ou contratos para centralizar a documentação."
+  >
   </app-empty-state>
 </section>

@@ -1,7 +1,11 @@
-import { CategoriaDespesa, FormaPagamento, StatusParcela } from '../models/financeiro.model';
+import {
+  CategoriaDespesa,
+  FormaPagamento,
+  StatusParcela,
+} from "../core/models/financeiro.model";
 
 export interface CriarContratoCommand {
-  projetoId: string;
+  projetoId?: string;
   valorTotal: number;
   numeroParcelas: number;
   dataPrimeiroVencimento: string;
@@ -11,7 +15,7 @@ export interface CriarContratoCommand {
 }
 
 export interface CriarParcelaCommand {
-  projetoId: string;
+  projetoId?: string;
   contratoFinanceiroId?: string;
   numeroParcela: number;
   totalParcelas: number;
@@ -48,6 +52,8 @@ export interface CriarDespesaCommand {
   categoria: CategoriaDespesa | string;
   observacoes?: string;
   comprovanteUrl?: string;
+  pago?: boolean;
+  dataPagamento?: string;
 }
 
 export interface AtualizarDespesaCommand {
@@ -57,4 +63,11 @@ export interface AtualizarDespesaCommand {
   categoria: CategoriaDespesa | string;
   observacoes?: string;
   comprovanteUrl?: string;
+  pago?: boolean;
+  dataPagamento?: string;
+}
+
+export interface AlternarPagamentoDespesaCommand {
+  pago?: boolean;
+  dataPagamento?: string;
 }

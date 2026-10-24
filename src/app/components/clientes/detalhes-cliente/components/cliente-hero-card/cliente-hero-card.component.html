@@ -1,15 +1,32 @@
 <section class="profile-unified-card" *ngIf="cliente">
-  <div class="profile-top-row d-flex justify-content-between align-items-center flex-wrap gap-md">
+  <div
+    class="profile-top-row d-flex justify-content-between align-items-center flex-wrap gap-md"
+  >
     <div class="profile-identity d-flex align-items-center gap-lg">
-      <div class="profile-avatar-wrap" (click)="fileInput.click()" title="Clique para alterar foto de perfil">
-        <img *ngIf="cliente.fotoUrl" [src]="cliente.fotoUrl" class="avatar-photo" [alt]="cliente.nome" />
+      <div
+        class="profile-avatar-wrap"
+        (click)="fileInput.click()"
+        title="Clique para alterar foto de perfil"
+      >
+        <img
+          *ngIf="cliente.fotoUrl"
+          [src]="cliente.fotoUrl"
+          class="avatar-photo"
+          [alt]="cliente.nome"
+        />
         <div *ngIf="!cliente.fotoUrl" class="profile-avatar">
           {{ cliente.nome.substring(0, 2).toUpperCase() }}
         </div>
         <div class="avatar-overlay">
           <span class="material-symbols-outlined">photo_camera</span>
         </div>
-        <input type="file" #fileInput (change)="onFileChange($event)" accept="image/*" class="d-none" />
+        <input
+          type="file"
+          #fileInput
+          (change)="onFileChange($event)"
+          accept="image/*"
+          class="d-none"
+        />
       </div>
 
       <div class="profile-titles d-flex flex-direction-column gap-xs">
@@ -17,19 +34,33 @@
           <h1 class="client-fullname m-0">{{ cliente.nome }}</h1>
           <span class="portal-badge" [class.active]="cliente.ativo">
             <span class="status-dot"></span>
-            {{ cliente.ativo ? 'Portal Liberado' : 'Portal Suspenso' }}
+            {{ cliente.ativo ? "Portal Liberado" : "Portal Suspenso" }}
           </span>
         </div>
-        <div class="avatar-actions-sub d-flex align-items-center gap-md font-label-sm text-on-surface-variant flex-wrap">
+        <div
+          class="avatar-actions-sub d-flex align-items-center gap-md font-label-sm text-on-surface-variant flex-wrap"
+        >
           <span class="d-inline-flex align-items-center gap-xxs">
-            <span class="material-symbols-outlined icon-xs text-primary">calendar_month</span>
+            <span class="material-symbols-outlined icon-xs text-primary"
+              >calendar_month</span
+            >
             Cliente do escritório desde 2026
           </span>
-          <span class="d-inline-flex align-items-center gap-xxs" *ngIf="lead?.origem">
-            <span class="material-symbols-outlined icon-xs text-primary">campaign</span>
+          <span
+            class="d-inline-flex align-items-center gap-xxs"
+            *ngIf="lead?.origem"
+          >
+            <span class="material-symbols-outlined icon-xs text-primary"
+              >campaign</span
+            >
             Origem: {{ lead?.origem }}
           </span>
-          <button *ngIf="cliente.fotoUrl" type="button" class="btn-remove-photo" (click)="onRemovePhoto()">
+          <button
+            *ngIf="cliente.fotoUrl"
+            type="button"
+            class="btn-remove-photo"
+            (click)="onRemovePhoto()"
+          >
             Remover foto
           </button>
         </div>
@@ -37,22 +68,36 @@
     </div>
 
     <div class="profile-actions d-flex align-items-center gap-sm flex-wrap">
-      <app-button variant="outline" (btnClick)="onWhatsApp()" *ngIf="cliente.telefone" title="Iniciar conversa no WhatsApp">
+      <app-button
+        variant="outline"
+        (btnClick)="onWhatsApp()"
+        *ngIf="cliente.telefone"
+        title="Iniciar conversa no WhatsApp"
+      >
         <span class="material-symbols-outlined text-success">chat</span>
         WhatsApp
       </app-button>
-      <app-button variant="secondary" (btnClick)="onEdit()" title="Editar dados cadastrais">
+      <app-button
+        variant="secondary"
+        (btnClick)="onEdit()"
+        title="Editar dados cadastrais"
+      >
         <span class="material-symbols-outlined">edit</span>
         Editar Ficha
       </app-button>
-      <app-button 
-        [variant]="cliente.ativo ? 'secondary' : 'primary'" 
+      <app-button
+        [variant]="cliente.ativo ? 'secondary' : 'primary'"
         (btnClick)="onTogglePortal()"
-        [title]="cliente.ativo ? 'Suspender acesso ao portal' : 'Liberar acesso ao portal'">
+        [title]="
+          cliente.ativo
+            ? 'Suspender acesso ao portal'
+            : 'Liberar acesso ao portal'
+        "
+      >
         <span class="material-symbols-outlined">
-          {{ cliente.ativo ? 'lock' : 'lock_open' }}
+          {{ cliente.ativo ? "lock" : "lock_open" }}
         </span>
-        {{ cliente.ativo ? 'Suspender Portal' : 'Liberar Portal' }}
+        {{ cliente.ativo ? "Suspender Portal" : "Liberar Portal" }}
       </app-button>
     </div>
   </div>
@@ -64,7 +109,10 @@
       </div>
       <div class="d-flex flex-direction-column">
         <span class="stat-lbl font-label-xs">PROJETOS VINCULADOS</span>
-        <span class="stat-val font-headline-sm">{{ projetos.length }} {{ projetos.length === 1 ? 'Projeto' : 'Projetos' }}</span>
+        <span class="stat-val font-headline-sm"
+          >{{ projetos.length }}
+          {{ projetos.length === 1 ? "Projeto" : "Projetos" }}</span
+        >
       </div>
     </div>
 
@@ -74,7 +122,9 @@
       </div>
       <div class="d-flex flex-direction-column">
         <span class="stat-lbl font-label-xs">METRAGEM TOTAL</span>
-        <span class="stat-val font-headline-sm">{{ totalMetragem > 0 ? (totalMetragem + ' m²') : 'Sob Consulta' }}</span>
+        <span class="stat-val font-headline-sm">{{
+          totalMetragem > 0 ? totalMetragem + " m²" : "Sob Consulta"
+        }}</span>
       </div>
     </div>
 
@@ -84,7 +134,9 @@
       </div>
       <div class="d-flex flex-direction-column">
         <span class="stat-lbl font-label-xs">VOLUME EM PROPOSTAS</span>
-        <span class="stat-val font-headline-sm font-mono text-primary">{{ totalInvestidoPropostas | currency:'BRL':'symbol':'1.2-2' }}</span>
+        <span class="stat-val font-headline-sm font-mono text-primary">{{
+          totalInvestidoPropostas | currency: "BRL" : "symbol" : "1.2-2"
+        }}</span>
       </div>
     </div>
 
@@ -94,7 +146,13 @@
       </div>
       <div class="d-flex flex-direction-column">
         <span class="stat-lbl font-label-xs">ORÇAMENTOS EMITIDOS</span>
-        <span class="stat-val font-headline-sm">{{ propostas.length }} {{ propostas.length === 1 ? 'Emitido' : 'Emitidos' }} ({{ propostasAprovadasCount }} ok)</span>
+        <span class="stat-val font-headline-sm"
+          >{{ propostas.length }}
+          {{ propostas.length === 1 ? "Emitido" : "Emitidos" }} ({{
+            propostasAprovadasCount
+          }}
+          ok)</span
+        >
       </div>
     </div>
   </div>
@@ -109,10 +167,19 @@
       <div class="detail-content-wrap">
         <span class="detail-label">E-MAIL PRINCIPAL</span>
         <div class="d-flex align-items-center gap-xs">
-          <a class="detail-value link truncate" [href]="'mailto:' + cliente.email" [title]="cliente.email">
+          <a
+            class="detail-value link truncate"
+            [href]="'mailto:' + cliente.email"
+            [title]="cliente.email"
+          >
             {{ cliente.email }}
           </a>
-          <button type="button" class="btn-copy-chip" (click)="onCopy(cliente.email, 'E-mail')" title="Copiar e-mail">
+          <button
+            type="button"
+            class="btn-copy-chip"
+            (click)="onCopy(cliente.email, 'E-mail')"
+            title="Copiar e-mail"
+          >
             <span class="material-symbols-outlined">content_copy</span>
           </button>
         </div>
@@ -125,17 +192,34 @@
       </div>
       <div class="detail-content-wrap">
         <span class="detail-label">TELEFONE / WHATSAPP</span>
-        <div class="d-flex align-items-center gap-xs" *ngIf="cliente.telefone; else noPhoneTpl">
+        <div
+          class="d-flex align-items-center gap-xs"
+          *ngIf="cliente.telefone; else noPhoneTpl"
+        >
           <span class="detail-value font-weight-bold">
             {{ cliente.telefone | phoneMask }}
           </span>
-          <app-whatsapp-button [telefone]="cliente.telefone" [mensagem]="'Olá ' + cliente.nome + '! Entro em contato sobre o seu projeto no COTU.'"></app-whatsapp-button>
-          <button type="button" class="btn-copy-chip" (click)="onCopy(cliente.telefone, 'Telefone')" title="Copiar telefone">
+          <app-whatsapp-button
+            [telefone]="cliente.telefone"
+            [mensagem]="
+              'Olá ' +
+              cliente.nome +
+              '! Entro em contato sobre o seu projeto no COTU.'
+            "
+          ></app-whatsapp-button>
+          <button
+            type="button"
+            class="btn-copy-chip"
+            (click)="onCopy(cliente.telefone, 'Telefone')"
+            title="Copiar telefone"
+          >
             <span class="material-symbols-outlined">content_copy</span>
           </button>
         </div>
         <ng-template #noPhoneTpl>
-          <span class="detail-value text-muted font-body-sm">Não informado</span>
+          <span class="detail-value text-muted font-body-sm"
+            >Não informado</span
+          >
         </ng-template>
       </div>
     </div>
@@ -146,14 +230,26 @@
       </div>
       <div class="detail-content-wrap">
         <span class="detail-label">DOCUMENTO (CPF / CNPJ)</span>
-        <div class="d-flex align-items-center gap-xs" *ngIf="cliente.cpfCnpj; else noDocTpl">
-          <span class="detail-value font-mono font-weight-bold">{{ cliente.cpfCnpj }}</span>
-          <button type="button" class="btn-copy-chip" (click)="onCopy(cliente.cpfCnpj, 'Documento')" title="Copiar documento">
+        <div
+          class="d-flex align-items-center gap-xs"
+          *ngIf="cliente.cpfCnpj; else noDocTpl"
+        >
+          <span class="detail-value font-mono font-weight-bold">{{
+            cliente.cpfCnpj
+          }}</span>
+          <button
+            type="button"
+            class="btn-copy-chip"
+            (click)="onCopy(cliente.cpfCnpj, 'Documento')"
+            title="Copiar documento"
+          >
             <span class="material-symbols-outlined">content_copy</span>
           </button>
         </div>
         <ng-template #noDocTpl>
-          <span class="detail-value text-muted font-body-sm">Não informado</span>
+          <span class="detail-value text-muted font-body-sm"
+            >Não informado</span
+          >
         </ng-template>
       </div>
     </div>
@@ -164,14 +260,24 @@
       </div>
       <div class="detail-content-wrap">
         <span class="detail-label">ENDEREÇO DO IMÓVEL / LOCAL DA OBRA</span>
-        <div class="d-flex align-items-center gap-xs" *ngIf="cliente.endereco; else noAddressTpl">
+        <div
+          class="d-flex align-items-center gap-xs"
+          *ngIf="cliente.endereco; else noAddressTpl"
+        >
           <span class="detail-value address-text">{{ cliente.endereco }}</span>
-          <button type="button" class="btn-copy-chip" (click)="onCopy(cliente.endereco, 'Endereço')" title="Copiar endereço completo">
+          <button
+            type="button"
+            class="btn-copy-chip"
+            (click)="onCopy(cliente.endereco, 'Endereço')"
+            title="Copiar endereço completo"
+          >
             <span class="material-symbols-outlined">content_copy</span>
           </button>
         </div>
         <ng-template #noAddressTpl>
-          <span class="detail-value text-muted font-body-sm">Endereço ainda não cadastrado na ficha</span>
+          <span class="detail-value text-muted font-body-sm"
+            >Endereço ainda não cadastrado na ficha</span
+          >
         </ng-template>
       </div>
     </div>

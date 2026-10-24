@@ -1,28 +1,39 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { ClienteService, LeadService, ProjetoService } from '../../../core/api';
-import { HonorarioService } from '../../../core/api/honorarios/honorario.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { Cliente } from '../../../models/cliente.model';
-import { Lead, HistoricoContatoLead } from '../../../models/lead.model';
-import { Projeto } from '../../../models/projeto.model';
-import { PropostaHonorario } from '../../../models/honorario.model';
-import { DialogService } from '../../../core/services/dialog.service';
-import { EditarClienteModalComponent } from '../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component';
-import { ClienteHeroCardComponent } from './components/cliente-hero-card/cliente-hero-card.component';
+import { Component, OnInit, inject } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { ClienteService, LeadService, ProjetoService } from "../../../core/api";
+import { HonorarioService } from "../../../core/api/honorarios/honorario.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import { Cliente } from "../../../core/models/cliente.model";
+import { Lead, HistoricoContatoLead } from "../../../core/models/lead.model";
+import { Projeto } from "../../../core/models/projeto.model";
+import { PropostaHonorario } from "../../../core/models/honorario.model";
+import { DialogService } from "../../../core/services/dialog.service";
+import { EditarClienteModalComponent } from "../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component";
+import { ClienteHeroCardComponent } from "./components/cliente-hero-card/cliente-hero-card.component";
 
-import { HttpErrorResponse } from '@angular/common/http';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { RepresentanteCliente } from '../../../models/cliente.model';
-import { DetalhesClienteForm } from './detalhes-cliente.form';
+import { HttpErrorResponse } from "@angular/common/http";
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  FormsModule,
+} from "@angular/forms";
+import { RepresentanteCliente } from "../../../core/models/cliente.model";
+import { DetalhesClienteForm } from "./detalhes-cliente.form";
 
 @Component({
-  selector: 'app-detalhes-cliente',
+  selector: "app-detalhes-cliente",
   standalone: true,
-  imports: [CORE_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule, FormsModule, ClienteHeroCardComponent],
-  templateUrl: './detalhes-cliente.component.html',
-  styleUrl: './detalhes-cliente.component.scss'
+  imports: [
+    CORE_IMPORTS,
+    DESIGN_SYSTEM,
+    ReactiveFormsModule,
+    FormsModule,
+    ClienteHeroCardComponent,
+  ],
+  templateUrl: "./detalhes-cliente.component.html",
+  styleUrl: "./detalhes-cliente.component.scss",
 })
 export class DetalhesClienteComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -47,32 +58,41 @@ export class DetalhesClienteComponent implements OnInit {
   loading = true;
 
   get totalInvestidoPropostas(): number {
-    return this.propostas.reduce((acc, p) => acc + (p.valorFinalAjustado || 0), 0);
+    return this.propostas.reduce(
+      (acc, p) => acc + (p.valorFinalAjustado || 0),
+      0,
+    );
   }
 
   get totalMetragem(): number {
-    const metragemProj = this.projetos.reduce((acc, p) => acc + (p.metragemTotal || 0), 0);
+    const metragemProj = this.projetos.reduce(
+      (acc, p) => acc + (p.metragemTotal || 0),
+      0,
+    );
     if (metragemProj > 0) return metragemProj;
-    return this.propostas.reduce((acc, p) => acc + (p.metragemQuadrada || 0), 0);
+    return this.propostas.reduce(
+      (acc, p) => acc + (p.metragemQuadrada || 0),
+      0,
+    );
   }
 
   get propostasAprovadasCount(): number {
-    return this.propostas.filter(p => p.status === 2).length;
+    return this.propostas.filter((p) => p.status === 2).length;
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get("id");
     if (id) {
       this.carregarDadosCliente(id);
     } else {
-      this.notificationService.error('ID do cliente não fornecido.');
-      this.router.navigate(['/clientes']);
+      this.notificationService.error("ID do cliente não fornecido.");
+      this.router.navigate(["/clientes"]);
     }
   }
 
   abrirProjeto(projetoId: string): void {
     if (projetoId) {
-      this.router.navigate(['/projetos', projetoId]);
+      this.router.navigate(["/projetos", projetoId]);
     }
   }
 
@@ -92,11 +112,11 @@ export class DetalhesClienteComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Erro ao carregar detalhes do cliente', err);
-        this.notificationService.error('Erro ao obter dados do cliente.');
-        this.router.navigate(['/clientes']);
+        console.error("Erro ao carregar detalhes do cliente", err);
+        this.notificationService.error("Erro ao obter dados do cliente.");
+        this.router.navigate(["/clientes"]);
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -106,8 +126,8 @@ export class DetalhesClienteComponent implements OnInit {
         this.representantes = reps || [];
       },
       error: (err) => {
-        console.error('Erro ao carregar representantes', err);
-      }
+        console.error("Erro ao carregar representantes", err);
+      },
     });
   }
 
@@ -129,61 +149,81 @@ export class DetalhesClienteComponent implements OnInit {
       email: this.conviteRepForm.value.email,
       cargo: this.conviteRepForm.value.cargo || null,
       telefone: this.conviteRepForm.value.telefone || null,
-      enviarEmailConvite: enviarEmail
+      enviarEmailConvite: enviarEmail,
     };
-    this.clienteService.convidarRepresentante(this.cliente.id, command).subscribe({
-      next: (rep) => {
-        this.salvandoRep = false;
-        this.representantes.unshift(rep);
-        this.fecharModalConvidarRep();
-        if (enviarEmail) {
-          this.notificationService.success(`Representante cadastrado e convite de acesso enviado para ${rep.nome}!`);
-        } else {
-          this.notificationService.success(`Representante ${rep.nome} cadastrado com sucesso! Use o botão "Enviar Convite" quando desejar liberar o acesso.`);
-        }
-      },
-      error: (err: HttpErrorResponse) => {
-        this.salvandoRep = false;
-        this.notificationService.error(err.error?.message || 'Erro ao cadastrar representante.');
-      }
-    });
+    this.clienteService
+      .convidarRepresentante(this.cliente.id, command)
+      .subscribe({
+        next: (rep) => {
+          this.salvandoRep = false;
+          this.representantes.unshift(rep);
+          this.fecharModalConvidarRep();
+          if (enviarEmail) {
+            this.notificationService.success(
+              `Representante cadastrado e convite de acesso enviado para ${rep.nome}!`,
+            );
+          } else {
+            this.notificationService.success(
+              `Representante ${rep.nome} cadastrado com sucesso! Use o botão "Enviar Convite" quando desejar liberar o acesso.`,
+            );
+          }
+        },
+        error: (err: HttpErrorResponse) => {
+          this.salvandoRep = false;
+          this.notificationService.error(
+            err.error?.message || "Erro ao cadastrar representante.",
+          );
+        },
+      });
   }
 
   reenviarConviteRepresentante(rep: RepresentanteCliente): void {
     this.clienteService.reenviarConvite(rep.id).subscribe({
       next: () => {
-        rep.statusConvite = 'Convite Enviado';
-        this.notificationService.success(`Convite de acesso enviado com sucesso para ${rep.email}!`);
+        rep.statusConvite = "Convite Enviado";
+        this.notificationService.success(
+          `Convite de acesso enviado com sucesso para ${rep.email}!`,
+        );
       },
       error: (err: HttpErrorResponse) => {
-        this.notificationService.error(err.error?.message || 'Erro ao enviar convite.');
-      }
+        this.notificationService.error(
+          err.error?.message || "Erro ao enviar convite.",
+        );
+      },
     });
   }
 
   alternarStatusRepresentante(rep: RepresentanteCliente): void {
     const novoStatus = !rep.ativo;
-    this.clienteService.alterarStatusRepresentante(rep.id, novoStatus).subscribe({
-      next: (atualizado) => {
-        rep.ativo = atualizado.ativo;
-        this.notificationService.success(`Status de ${rep.nome} atualizado para ${rep.ativo ? 'Ativo' : 'Inativo'}.`);
-      },
-      error: () => {
-        this.notificationService.error('Erro ao alterar status do representante.');
-      }
-    });
+    this.clienteService
+      .alterarStatusRepresentante(rep.id, novoStatus)
+      .subscribe({
+        next: (atualizado) => {
+          rep.ativo = atualizado.ativo;
+          this.notificationService.success(
+            `Status de ${rep.nome} atualizado para ${rep.ativo ? "Ativo" : "Inativo"}.`,
+          );
+        },
+        error: () => {
+          this.notificationService.error(
+            "Erro ao alterar status do representante.",
+          );
+        },
+      });
   }
 
   removerRepresentante(rep: RepresentanteCliente): void {
     if (!confirm(`Deseja remover o representante ${rep.nome}?`)) return;
     this.clienteService.removerRepresentante(rep.id).subscribe({
       next: () => {
-        this.representantes = this.representantes.filter(r => r.id !== rep.id);
-        this.notificationService.success('Representante removido.');
+        this.representantes = this.representantes.filter(
+          (r) => r.id !== rep.id,
+        );
+        this.notificationService.success("Representante removido.");
       },
       error: () => {
-        this.notificationService.error('Erro ao remover representante.');
-      }
+        this.notificationService.error("Erro ao remover representante.");
+      },
     });
   }
 
@@ -193,15 +233,15 @@ export class DetalhesClienteComponent implements OnInit {
         this.propostas = propostasData || [];
       },
       error: (err) => {
-        console.error('Erro ao carregar propostas do cliente', err);
-      }
+        console.error("Erro ao carregar propostas do cliente", err);
+      },
     });
   }
 
   simularNovaProposta(): void {
     if (this.cliente) {
-      this.router.navigate(['/simulador'], {
-        queryParams: { clienteId: this.cliente.id }
+      this.router.navigate(["/simulador"], {
+        queryParams: { clienteId: this.cliente.id },
       });
     }
   }
@@ -209,11 +249,11 @@ export class DetalhesClienteComponent implements OnInit {
   carregarProjetosCliente(clienteId: string): void {
     this.projetoService.obterTodos().subscribe({
       next: (projetosData) => {
-        this.projetos = projetosData.filter(p => p.clienteId === clienteId);
+        this.projetos = projetosData.filter((p) => p.clienteId === clienteId);
       },
       error: (err) => {
-        console.error('Erro ao carregar projetos do cliente', err);
-      }
+        console.error("Erro ao carregar projetos do cliente", err);
+      },
     });
   }
 
@@ -225,9 +265,9 @@ export class DetalhesClienteComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erro ao carregar histórico do lead', err);
+        console.error("Erro ao carregar histórico do lead", err);
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -237,78 +277,88 @@ export class DetalhesClienteComponent implements OnInit {
 
     const file = input.files[0];
     if (file.size > 2 * 1024 * 1024) {
-      this.notificationService.error('A imagem deve ter no máximo 2MB.');
-      input.value = '';
+      this.notificationService.error("A imagem deve ter no máximo 2MB.");
+      input.value = "";
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
       const base64Url = reader.result as string;
-      this.clienteService.atualizar({
-        id: this.cliente!.id,
-        nome: this.cliente!.nome,
-        email: this.cliente!.email,
-        telefone: this.cliente!.telefone,
-        cpfCnpj: this.cliente!.cpfCnpj,
-        endereco: this.cliente!.endereco,
-        fotoUrl: base64Url
-      }).subscribe({
-        next: (cliAtualizado) => {
-          this.cliente = cliAtualizado;
-          this.notificationService.success('Foto de perfil atualizada com sucesso!');
-        },
-        error: () => {
-          this.notificationService.error('Erro ao atualizar foto de perfil.');
-        }
-      });
+      this.clienteService
+        .atualizar({
+          id: this.cliente!.id,
+          nome: this.cliente!.nome,
+          email: this.cliente!.email,
+          telefone: this.cliente!.telefone,
+          cpfCnpj: this.cliente!.cpfCnpj,
+          endereco: this.cliente!.endereco,
+          fotoUrl: base64Url,
+        })
+        .subscribe({
+          next: (cliAtualizado) => {
+            this.cliente = cliAtualizado;
+            this.notificationService.success(
+              "Foto de perfil atualizada com sucesso!",
+            );
+          },
+          error: () => {
+            this.notificationService.error("Erro ao atualizar foto de perfil.");
+          },
+        });
     };
     reader.readAsDataURL(file);
-    input.value = '';
+    input.value = "";
   }
 
   removerFoto(): void {
     if (!this.cliente || !this.cliente.fotoUrl) return;
-    this.clienteService.atualizar({
-      id: this.cliente.id,
-      nome: this.cliente.nome,
-      email: this.cliente.email,
-      telefone: this.cliente.telefone,
-      cpfCnpj: this.cliente.cpfCnpj,
-      endereco: this.cliente.endereco,
-      fotoUrl: 'DELETE'
-    }).subscribe({
-      next: (cliAtualizado) => {
-        this.cliente = cliAtualizado;
-        this.notificationService.success('Foto de perfil removida.');
-      },
-      error: () => {
-        this.notificationService.error('Erro ao remover foto.');
-      }
-    });
+    this.clienteService
+      .atualizar({
+        id: this.cliente.id,
+        nome: this.cliente.nome,
+        email: this.cliente.email,
+        telefone: this.cliente.telefone,
+        cpfCnpj: this.cliente.cpfCnpj,
+        endereco: this.cliente.endereco,
+        fotoUrl: "DELETE",
+      })
+      .subscribe({
+        next: (cliAtualizado) => {
+          this.cliente = cliAtualizado;
+          this.notificationService.success("Foto de perfil removida.");
+        },
+        error: () => {
+          this.notificationService.error("Erro ao remover foto.");
+        },
+      });
   }
 
   toggleAcessoPortal(): void {
     if (!this.cliente) return;
     const novoStatus = !this.cliente.ativo;
-    this.clienteService.atualizarAcessoPortal({ id: this.cliente.id, ativo: novoStatus }).subscribe({
-      next: (data) => {
-        this.cliente!.ativo = data.ativo;
-        this.notificationService.success(
-          `Acesso ao portal de "${this.cliente!.nome}" foi ${this.cliente!.ativo ? 'ativado' : 'desativado'}.`
-        );
-      },
-      error: (err) => {
-        console.error('Erro ao atualizar acesso ao portal', err);
-        this.notificationService.error('Não foi possível alterar o acesso ao portal.');
-      }
-    });
+    this.clienteService
+      .atualizarAcessoPortal({ id: this.cliente.id, ativo: novoStatus })
+      .subscribe({
+        next: (data) => {
+          this.cliente!.ativo = data.ativo;
+          this.notificationService.success(
+            `Acesso ao portal de "${this.cliente!.nome}" foi ${this.cliente!.ativo ? "ativado" : "desativado"}.`,
+          );
+        },
+        error: (err) => {
+          console.error("Erro ao atualizar acesso ao portal", err);
+          this.notificationService.error(
+            "Não foi possível alterar o acesso ao portal.",
+          );
+        },
+      });
   }
 
   abrirModalEdicao(): void {
     if (!this.cliente) return;
     const ref = this.dialogService.open(EditarClienteModalComponent, {
-      data: { cliente: this.cliente }
+      data: { cliente: this.cliente },
     });
     ref.instance.saved.subscribe((clienteAtualizado: Cliente) => {
       this.cliente = clienteAtualizado;
@@ -318,16 +368,18 @@ export class DetalhesClienteComponent implements OnInit {
   copiarTexto(texto: string, label: string): void {
     if (!texto) return;
     navigator.clipboard.writeText(texto);
-    this.notificationService.success(`${label} copiado para a área de transferência!`);
+    this.notificationService.success(
+      `${label} copiado para a área de transferência!`,
+    );
   }
 
   abrirWhatsApp(): void {
     if (!this.cliente?.telefone) return;
-    const numLimpo = this.cliente.telefone.replace(/\D/g, '');
-    window.open(`https://wa.me/55${numLimpo}`, '_blank');
+    const numLimpo = this.cliente.telefone.replace(/\D/g, "");
+    window.open(`https://wa.me/55${numLimpo}`, "_blank");
   }
 
   voltar(): void {
-    this.router.navigate(['/clientes']);
+    this.router.navigate(["/clientes"]);
   }
 }

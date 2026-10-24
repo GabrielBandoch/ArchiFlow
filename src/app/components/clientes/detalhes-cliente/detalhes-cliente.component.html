@@ -5,7 +5,9 @@
       <span>Voltar para Clientes</span>
     </button>
     <div class="dossier-badge-wrap d-flex align-items-center gap-xs">
-      <span class="dossier-code-chip font-mono">CADASTRO #{{ cliente.id.substring(0, 8) }}</span>
+      <span class="dossier-code-chip font-mono"
+        >CADASTRO #{{ cliente.id.substring(0, 8) }}</span
+      >
     </div>
   </nav>
 
@@ -22,22 +24,37 @@
     (openWhatsApp)="abrirWhatsApp()"
     (openEditModal)="abrirModalEdicao()"
     (togglePortal)="toggleAcessoPortal()"
-    (copyText)="copiarTexto($event.text, $event.label)">
+    (copyText)="copiarTexto($event.text, $event.label)"
+  >
   </app-cliente-hero-card>
 
   <div class="bottom-dual-grid">
     <section class="studio-panel">
-      <div class="panel-header d-flex align-items-center justify-content-between">
+      <div
+        class="panel-header d-flex align-items-center justify-content-between"
+      >
         <div class="title-with-pill d-flex align-items-center gap-xs">
-          <span class="material-symbols-outlined panel-header-icon">apartment</span>
-          <h2 class="panel-heading font-headline-sm m-0">Projetos Vinculados</h2>
+          <span class="material-symbols-outlined panel-header-icon"
+            >apartment</span
+          >
+          <h2 class="panel-heading font-headline-sm m-0">
+            Projetos Vinculados
+          </h2>
           <span class="count-pill font-label-xs">{{ projetos.length }}</span>
         </div>
       </div>
 
       <div class="panel-content">
-        <div class="projects-list d-flex flex-direction-column gap-sm" *ngIf="projetos.length > 0; else emptyProjectsTpl">
-          <div *ngFor="let proj of projetos" class="project-card-clean clickable-project" (click)="abrirProjeto(proj.id)" title="Clique para abrir detalhes do projeto">
+        <div
+          class="projects-list d-flex flex-direction-column gap-sm"
+          *ngIf="projetos.length > 0; else emptyProjectsTpl"
+        >
+          <div
+            *ngFor="let proj of projetos"
+            class="project-card-clean clickable-project"
+            (click)="abrirProjeto(proj.id)"
+            title="Clique para abrir detalhes do projeto"
+          >
             <div class="d-flex justify-content-between align-items-start mb-xs">
               <div class="d-flex align-items-center gap-sm">
                 <div class="proj-icon-box">
@@ -45,14 +62,21 @@
                 </div>
                 <div>
                   <h4 class="proj-name m-0">{{ proj.nome }}</h4>
-                  <span class="proj-status-chip font-label-xs">{{ proj.statusLabel || 'Em Andamento' }}</span>
+                  <span class="proj-status-chip font-label-xs">{{
+                    proj.statusLabel || "Em Andamento"
+                  }}</span>
                 </div>
               </div>
-              <span class="proj-percent font-mono font-weight-bold">{{ proj.progressoPercentual || 0 }}%</span>
+              <span class="proj-percent font-mono font-weight-bold"
+                >{{ proj.progressoPercentual || 0 }}%</span
+              >
             </div>
-            
+
             <div class="proj-progress-bg w-full">
-              <div class="proj-progress-bar" [style.width.%]="proj.progressoPercentual || 0"></div>
+              <div
+                class="proj-progress-bar"
+                [style.width.%]="proj.progressoPercentual || 0"
+              ></div>
             </div>
           </div>
         </div>
@@ -61,50 +85,80 @@
           <app-empty-state
             icon="folder_open"
             title="Nenhum projeto vinculado"
-            description="Cadastre projetos vinculando este cliente para acompanhar o progresso executivo.">
+            description="Cadastre projetos vinculando este cliente para acompanhar o progresso executivo."
+          >
           </app-empty-state>
         </ng-template>
       </div>
     </section>
 
     <section class="studio-panel">
-      <div class="panel-header d-flex align-items-center justify-content-between">
+      <div
+        class="panel-header d-flex align-items-center justify-content-between"
+      >
         <div class="title-with-pill d-flex align-items-center gap-xs">
-          <span class="material-symbols-outlined panel-header-icon">description</span>
-          <h2 class="panel-heading font-headline-sm m-0">Propostas & Orçamentos</h2>
+          <span class="material-symbols-outlined panel-header-icon"
+            >description</span
+          >
+          <h2 class="panel-heading font-headline-sm m-0">
+            Propostas & Orçamentos
+          </h2>
           <span class="count-pill font-label-xs">{{ propostas.length }}</span>
         </div>
-        <app-button variant="outline" size="sm" (btnClick)="simularNovaProposta()" title="Calcular nova proposta no simulador">
+        <app-button
+          variant="outline"
+          size="sm"
+          (btnClick)="simularNovaProposta()"
+          title="Calcular nova proposta no simulador"
+        >
           <span class="material-symbols-outlined">add</span>
           Nova Proposta
         </app-button>
       </div>
 
       <div class="panel-content">
-        <div class="propostas-list d-flex flex-direction-column gap-sm" *ngIf="propostas.length > 0; else emptyProposalsTpl">
-          <div *ngFor="let prop of propostas" class="proposal-card-clean d-flex justify-content-between align-items-center p-md">
+        <div
+          class="propostas-list d-flex flex-direction-column gap-sm"
+          *ngIf="propostas.length > 0; else emptyProposalsTpl"
+        >
+          <div
+            *ngFor="let prop of propostas"
+            class="proposal-card-clean d-flex justify-content-between align-items-center p-md"
+          >
             <div class="d-flex flex-direction-column gap-xs min-w-0">
               <div class="d-flex align-items-center gap-xs flex-wrap">
                 <span class="prop-code-badge font-mono">{{ prop.codigo }}</span>
-                <span class="prop-title font-body-md font-weight-bold text-on-surface truncate">{{ prop.titulo }}</span>
+                <span
+                  class="prop-title font-body-md font-weight-bold text-on-surface truncate"
+                  >{{ prop.titulo }}</span
+                >
               </div>
-              <span class="font-body-xs text-on-surface-variant d-inline-flex align-items-center gap-xxs">
-                <span class="material-symbols-outlined icon-xxs">straighten</span>
+              <span
+                class="font-body-xs text-on-surface-variant d-inline-flex align-items-center gap-xxs"
+              >
+                <span class="material-symbols-outlined icon-xxs"
+                  >straighten</span
+                >
                 {{ prop.metragemQuadrada }} m²
                 <span class="bullet-sep">•</span>
                 <span class="material-symbols-outlined icon-xxs">event</span>
-                {{ prop.criadoEm | date:'dd/MM/yyyy' }}
+                {{ prop.criadoEm | date: "dd/MM/yyyy" }}
               </span>
             </div>
-            
-            <div class="d-flex align-items-end flex-direction-column gap-xxs flex-shrink-0">
-              <span class="prop-amount font-mono font-weight-bold">{{ prop.valorFinalAjustado | currency:'BRL':'symbol':'1.2-2' }}</span>
-              <span 
+
+            <div
+              class="d-flex align-items-end flex-direction-column gap-xxs flex-shrink-0"
+            >
+              <span class="prop-amount font-mono font-weight-bold">{{
+                prop.valorFinalAjustado | currency: "BRL" : "symbol" : "1.2-2"
+              }}</span>
+              <span
                 class="status-badge font-label-xs"
                 [class.status-aprovada]="prop.status === 2"
                 [class.status-enviada]="prop.status === 1"
                 [class.status-rascunho]="prop.status === 0"
-                [class.status-recusada]="prop.status === 3">
+                [class.status-recusada]="prop.status === 3"
+              >
                 {{ prop.statusNome }}
               </span>
             </div>
@@ -118,35 +172,58 @@
             description="Gere propostas de honorários com precificação inteligente e emissão de PDF."
             actionLabel="Calcular Orçamento"
             actionIcon="calculate"
-            (actionClick)="simularNovaProposta()">
+            (actionClick)="simularNovaProposta()"
+          >
           </app-empty-state>
         </ng-template>
       </div>
     </section>
 
     <section class="studio-panel">
-      <div class="panel-header d-flex align-items-center justify-content-between">
+      <div
+        class="panel-header d-flex align-items-center justify-content-between"
+      >
         <div class="title-with-pill d-flex align-items-center gap-xs">
           <span class="material-symbols-outlined panel-header-icon">forum</span>
-          <h2 class="panel-heading font-headline-sm m-0">Histórico de Interações</h2>
+          <h2 class="panel-heading font-headline-sm m-0">
+            Histórico de Interações
+          </h2>
           <span class="count-pill font-label-xs">{{ historico.length }}</span>
         </div>
       </div>
 
       <div class="panel-content">
-        <div class="timeline-list d-flex flex-direction-column gap-md" *ngIf="historico.length > 0; else emptyTimelineTpl">
-          <div *ngFor="let item of historico" class="timeline-item-clean d-flex gap-sm">
-            <div class="timeline-bullet-col d-flex flex-direction-column align-items-center">
+        <div
+          class="timeline-list d-flex flex-direction-column gap-md"
+          *ngIf="historico.length > 0; else emptyTimelineTpl"
+        >
+          <div
+            *ngFor="let item of historico"
+            class="timeline-item-clean d-flex gap-sm"
+          >
+            <div
+              class="timeline-bullet-col d-flex flex-direction-column align-items-center"
+            >
               <div class="bullet-dot"></div>
               <div class="bullet-line flex-grow-1"></div>
             </div>
-            
-            <div class="timeline-bubble d-flex flex-direction-column gap-xs flex-grow-1 p-sm">
-              <div class="bubble-header d-flex justify-content-between align-items-center">
-                <span class="channel-tag font-label-xs font-weight-bold">{{ item.canal }}</span>
-                <span class="timestamp font-label-xs text-on-surface-variant">{{ item.dataContato | date:"dd/MM/yyyy 'às' HH:mm" }}</span>
+
+            <div
+              class="timeline-bubble d-flex flex-direction-column gap-xs flex-grow-1 p-sm"
+            >
+              <div
+                class="bubble-header d-flex justify-content-between align-items-center"
+              >
+                <span class="channel-tag font-label-xs font-weight-bold">{{
+                  item.canal
+                }}</span>
+                <span class="timestamp font-label-xs text-on-surface-variant">{{
+                  item.dataContato | date: "dd/MM/yyyy 'às' HH:mm"
+                }}</span>
               </div>
-              <p class="bubble-text font-body-sm text-on-surface m-0">{{ item.resumo }}</p>
+              <p class="bubble-text font-body-sm text-on-surface m-0">
+                {{ item.resumo }}
+              </p>
             </div>
           </div>
         </div>
@@ -155,7 +232,8 @@
           <app-empty-state
             icon="chat_bubble_outline"
             title="Nenhum contato registrado"
-            description="Interações e anotações deste cliente registradas no CRM ou Portal aparecerão aqui.">
+            description="Interações e anotações deste cliente registradas no CRM ou Portal aparecerão aqui."
+          >
           </app-empty-state>
         </ng-template>
       </div>
@@ -163,7 +241,14 @@
   </div>
 </div>
 
-<div *ngIf="loading" class="dossier-loading d-flex flex-direction-column align-items-center justify-content-center p-xl">
-  <span class="material-symbols-outlined spinner-icon mb-sm">progress_activity</span>
-  <p class="font-body-md font-weight-semibold text-on-surface m-0">Carregando ficha e histórico do cliente...</p>
+<div
+  *ngIf="loading"
+  class="dossier-loading d-flex flex-direction-column align-items-center justify-content-center p-xl"
+>
+  <span class="material-symbols-outlined spinner-icon mb-sm"
+    >progress_activity</span
+  >
+  <p class="font-body-md font-weight-semibold text-on-surface m-0">
+    Carregando ficha e histórico do cliente...
+  </p>
 </div>

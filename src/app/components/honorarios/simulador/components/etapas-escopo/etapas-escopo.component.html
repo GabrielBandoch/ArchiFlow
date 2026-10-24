@@ -1,6 +1,8 @@
 <div class="card etapas-card shadow-sm">
   <div class="card-header-clean">
-    <span class="material-symbols-outlined section-icon" aria-hidden="true">tune</span>
+    <span class="material-symbols-outlined section-icon" aria-hidden="true"
+      >tune</span
+    >
     <h2 class="section-title">Etapas Inclusas no Escopo</h2>
   </div>
 
@@ -12,7 +14,9 @@
       (click)="toggle(i)"
     >
       <div class="checkbox-box" aria-hidden="true">
-        <span class="material-symbols-outlined check-icon">{{ etapa.checked ? 'check_box' : 'check_box_outline_blank' }}</span>
+        <span class="material-symbols-outlined check-icon">{{
+          etapa.checked ? "check_box" : "check_box_outline_blank"
+        }}</span>
       </div>
       <div class="etapa-info">
         <h4 class="etapa-nome">{{ etapa.nome }}</h4>

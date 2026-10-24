@@ -1,17 +1,31 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Fornecedor, CriarFornecedorCommand, AtualizarFornecedorCommand } from '../../../models/fornecedor.model';
-import { FornecedorService } from '../../../core/api/fornecedores/fornecedor.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { FornecedorForm } from '../../../components/fornecedores/fornecedor.form';
-import { DialogComponent } from '../../../shared/components/dialog/dialog.component';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
-import { SelectComponent, SelectOption } from '../../../shared/components/select/select.component';
-import { InputComponent } from '../../../shared/components/input/input.component';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  inject,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import {
+  Fornecedor,
+  CriarFornecedorCommand,
+  AtualizarFornecedorCommand,
+} from "../../../core/models/fornecedor.model";
+import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import { FornecedorForm } from "../../../components/fornecedores/fornecedor.form";
+import { DialogComponent } from "../../../shared/components/dialog/dialog.component";
+import { ButtonComponent } from "../../../shared/components/button/button.component";
+import {
+  SelectComponent,
+  SelectOption,
+} from "../../../shared/components/select/select.component";
+import { InputComponent } from "../../../shared/components/input/input.component";
 
 @Component({
-  selector: 'app-fornecedor-modal',
+  selector: "app-fornecedor-modal",
   standalone: true,
   imports: [
     CommonModule,
@@ -19,10 +33,10 @@ import { InputComponent } from '../../../shared/components/input/input.component
     DialogComponent,
     ButtonComponent,
     SelectComponent,
-    InputComponent
+    InputComponent,
   ],
-  templateUrl: './fornecedor-modal.component.html',
-  styleUrls: ['./fornecedor-modal.component.scss']
+  templateUrl: "./fornecedor-modal.component.html",
+  styleUrls: ["./fornecedor-modal.component.scss"],
 })
 export class FornecedorModalComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -43,15 +57,15 @@ export class FornecedorModalComponent implements OnInit {
   }
 
   readonly especialidadeOptions: SelectOption[] = [
-    { value: 'Iluminação', label: 'Iluminação & Luminotécnica' },
-    { value: 'Pisos', label: 'Pisos & Revestimentos' },
-    { value: 'Estrutural', label: 'Estruturas & Aço' },
-    { value: 'Marcenaria', label: 'Marcenaria & Mobiliário' },
-    { value: 'Vidraçaria', label: 'Vidraçaria & Esquadrias' },
-    { value: 'Marmoraria', label: 'Marmoraria & Pedras' },
-    { value: 'Paisagismo', label: 'Paisagismo & Áreas Verdes' },
-    { value: 'Gesso', label: 'Gesso & Drywall' },
-    { value: 'Outro', label: 'Outra Especialidade' }
+    { value: "Iluminação", label: "Iluminação & Luminotécnica" },
+    { value: "Pisos", label: "Pisos & Revestimentos" },
+    { value: "Estrutural", label: "Estruturas & Aço" },
+    { value: "Marcenaria", label: "Marcenaria & Mobiliário" },
+    { value: "Vidraçaria", label: "Vidraçaria & Esquadrias" },
+    { value: "Marmoraria", label: "Marmoraria & Pedras" },
+    { value: "Paisagismo", label: "Paisagismo & Áreas Verdes" },
+    { value: "Gesso", label: "Gesso & Drywall" },
+    { value: "Outro", label: "Outra Especialidade" },
   ];
 
   ngOnInit(): void {
@@ -62,10 +76,10 @@ export class FornecedorModalComponent implements OnInit {
         nome: this.fornecedor.nome,
         especialidade: this.fornecedor.especialidade,
         email: this.fornecedor.email,
-        telefone: this.fornecedor.telefone || '',
-        cidade: this.fornecedor.cidade || '',
-        estado: this.fornecedor.estado || 'SC',
-        descricao: this.fornecedor.descricao || ''
+        telefone: this.fornecedor.telefone || "",
+        cidade: this.fornecedor.cidade || "",
+        estado: this.fornecedor.estado || "SC",
+        descricao: this.fornecedor.descricao || "",
       });
     }
   }
@@ -78,7 +92,9 @@ export class FornecedorModalComponent implements OnInit {
     this.submitted = true;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.notificationService.warning('Preencha os campos obrigatórios corretamente.');
+      this.notificationService.warning(
+        "Preencha os campos obrigatórios corretamente.",
+      );
       return;
     }
 
@@ -89,20 +105,20 @@ export class FornecedorModalComponent implements OnInit {
       const command: AtualizarFornecedorCommand = {
         id: this.fornecedor.id,
         ativo: this.fornecedor.ativo,
-        ...formVal
+        ...formVal,
       };
 
       this.fornecedorService.atualizar(this.fornecedor.id, command).subscribe({
         next: (res) => {
           this.salvando = false;
-          this.notificationService.success('Parceiro atualizado com sucesso!');
+          this.notificationService.success("Parceiro atualizado com sucesso!");
           this.salvo.emit(res);
           this.fechar();
         },
         error: () => {
           this.salvando = false;
-          this.notificationService.error('Erro ao atualizar parceiro.');
-        }
+          this.notificationService.error("Erro ao atualizar parceiro.");
+        },
       });
     } else {
       const command: CriarFornecedorCommand = { ...formVal };
@@ -110,14 +126,16 @@ export class FornecedorModalComponent implements OnInit {
       this.fornecedorService.criar(command).subscribe({
         next: (res) => {
           this.salvando = false;
-          this.notificationService.success('Novo parceiro cadastrado com sucesso!');
+          this.notificationService.success(
+            "Novo parceiro cadastrado com sucesso!",
+          );
           this.salvo.emit(res);
           this.fechar();
         },
         error: () => {
           this.salvando = false;
-          this.notificationService.error('Erro ao cadastrar parceiro.');
-        }
+          this.notificationService.error("Erro ao cadastrar parceiro.");
+        },
       });
     }
   }

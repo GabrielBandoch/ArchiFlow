@@ -4,13 +4,13 @@ export class UrlBuilder {
 
   constructor(private baseUrl: string) {
     if (baseUrl) {
-      this.baseUrl = baseUrl.replace(/\/$/, '');
+      this.baseUrl = baseUrl.replace(/\/$/, "");
     }
   }
 
   segment(path: string | number): UrlBuilder {
-    if (path !== undefined && path !== null && path !== '') {
-      const sanitized = path.toString().replace(/^\/|\/$/g, '');
+    if (path !== undefined && path !== null && path !== "") {
+      const sanitized = path.toString().replace(/^\/|\/$/g, "");
       if (sanitized) {
         this.segments.push(sanitized);
       }
@@ -19,7 +19,7 @@ export class UrlBuilder {
   }
 
   queryParam(key: string, value: any): UrlBuilder {
-    if (value !== undefined && value !== null && value !== '') {
+    if (value !== undefined && value !== null && value !== "") {
       this.queryParams[key] = value.toString();
     }
     return this;
@@ -27,17 +27,20 @@ export class UrlBuilder {
 
   build(): string {
     let url = this.baseUrl;
-    
+
     if (this.segments.length > 0) {
-      url += '/' + this.segments.join('/');
+      url += "/" + this.segments.join("/");
     }
 
     const queryKeys = Object.keys(this.queryParams);
     if (queryKeys.length > 0) {
       const queryString = queryKeys
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(this.queryParams[key])}`)
-        .join('&');
-      url += '?' + queryString;
+        .map(
+          (key) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(this.queryParams[key])}`,
+        )
+        .join("&");
+      url += "?" + queryString;
     }
 
     return url;

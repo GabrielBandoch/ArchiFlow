@@ -1,6 +1,13 @@
 <div class="layout-container">
-  <header class="mobile-top-bar align-items-center justify-content-between p-md">
-    <button type="button" class="btn-hamburger" (click)="toggleSidebar()" aria-label="Abrir menu de navegação">
+  <header
+    class="mobile-top-bar align-items-center justify-content-between p-md"
+  >
+    <button
+      type="button"
+      class="btn-hamburger"
+      (click)="toggleSidebar()"
+      aria-label="Abrir menu de navegação"
+    >
       <span class="material-symbols-outlined">menu</span>
     </button>
     <app-cotu-logo [showText]="true" [size]="28"></app-cotu-logo>
@@ -9,82 +16,170 @@
     </a>
   </header>
 
-  <div class="sidebar-backdrop" *ngIf="sidebarAberta" (click)="fecharSidebar()"></div>
+  <div
+    class="sidebar-backdrop"
+    *ngIf="sidebarAberta"
+    (click)="fecharSidebar()"
+  ></div>
 
   <aside class="sidebar" [class.mobile-open]="sidebarAberta">
     <div class="logo-area d-flex align-items-center justify-content-between">
       <app-cotu-logo [showText]="true" [size]="34"></app-cotu-logo>
-      <button type="button" class="btn-close-sidebar" (click)="fecharSidebar()" aria-label="Fechar menu">
+      <button
+        type="button"
+        class="btn-close-sidebar"
+        (click)="fecharSidebar()"
+        aria-label="Fechar menu"
+      >
         <span class="material-symbols-outlined">close</span>
       </button>
     </div>
 
     <nav class="nav-menu">
-      <a *ngIf="authService.hasModulePermission('dashboard')" routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+      <a
+        *ngIf="authService.hasModulePermission('dashboard')"
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        class="nav-item"
+      >
         <span class="material-symbols-outlined nav-icon">dashboard</span>
         <span class="nav-label">Dashboard</span>
       </a>
 
-      <a *ngIf="authService.hasModulePermission('leads')" routerLink="/leads" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+      <a
+        *ngIf="authService.hasModulePermission('leads')"
+        routerLink="/leads"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+      >
         <span class="material-symbols-outlined nav-icon">person_search</span>
         <span class="nav-label">Leads</span>
       </a>
 
-      <a *ngIf="authService.hasModulePermission('clientes')" routerLink="/clientes" routerLinkActive="active" class="nav-item">
+      <a
+        *ngIf="authService.hasModulePermission('clientes')"
+        routerLink="/clientes"
+        routerLinkActive="active"
+        class="nav-item"
+      >
         <span class="material-symbols-outlined nav-icon">group</span>
         <span class="nav-label">Clientes</span>
       </a>
 
-      <a *ngIf="authService.hasModulePermission('fornecedores')" routerLink="/fornecedores" routerLinkActive="active" class="nav-item">
+      <a
+        *ngIf="authService.hasModulePermission('fornecedores')"
+        routerLink="/fornecedores"
+        routerLinkActive="active"
+        class="nav-item"
+      >
         <span class="material-symbols-outlined nav-icon">handshake</span>
         <span class="nav-label">Fornecedores</span>
       </a>
 
-      <a *ngIf="authService.hasModulePermission('projetos')" routerLink="/projetos" routerLinkActive="active" class="nav-item">
+      <a
+        *ngIf="authService.hasModulePermission('projetos')"
+        routerLink="/projetos"
+        routerLinkActive="active"
+        class="nav-item"
+      >
         <span class="material-symbols-outlined nav-icon">folder</span>
         <span class="nav-label">Projetos</span>
       </a>
 
-      <a *ngIf="authService.hasModulePermission('agenda')" routerLink="/agenda" routerLinkActive="active" class="nav-item">
+      <a
+        *ngIf="authService.hasModulePermission('agenda')"
+        routerLink="/agenda"
+        routerLinkActive="active"
+        class="nav-item"
+      >
         <span class="material-symbols-outlined nav-icon">calendar_month</span>
         <span class="nav-label">Agenda</span>
       </a>
 
-      <a *ngIf="authService.hasModulePermission('financeiro')" routerLink="/financeiro" routerLinkActive="active" class="nav-item">
+      <a
+        *ngIf="authService.hasModulePermission('financeiro')"
+        routerLink="/financeiro"
+        routerLinkActive="active"
+        class="nav-item"
+      >
         <span class="material-symbols-outlined nav-icon">payments</span>
         <span class="nav-label">Financeiro</span>
       </a>
 
-      <a *ngIf="authService.hasModulePermission('simulador')" routerLink="/simulador" routerLinkActive="active" class="nav-item">
+      <a
+        *ngIf="authService.hasModulePermission('simulador')"
+        routerLink="/simulador"
+        routerLinkActive="active"
+        class="nav-item"
+      >
         <span class="material-symbols-outlined nav-icon">calculate</span>
         <span class="nav-label">Simulador</span>
       </a>
 
-      <div class="nav-group-section" *ngIf="authService.hasModulePermission('configuracoes')">
-        <button type="button" class="nav-item nav-item-btn w-full" (click)="toggleConfiguracoes()" [class.active-parent]="router.url.includes('/configuracoes')">
+      <div
+        class="nav-group-section"
+        *ngIf="authService.hasModulePermission('configuracoes')"
+      >
+        <button
+          type="button"
+          class="nav-item nav-item-btn w-full"
+          (click)="toggleConfiguracoes()"
+          [class.active-parent]="router.url.includes('/configuracoes')"
+        >
           <span class="material-symbols-outlined nav-icon">settings</span>
           <span class="nav-label flex-grow-1 text-left">Configurações</span>
-          <span class="material-symbols-outlined nav-arrow" [class.rotated]="configuracoesAberto">expand_more</span>
+          <span
+            class="material-symbols-outlined nav-arrow"
+            [class.rotated]="configuracoesAberto"
+            >expand_more</span
+          >
         </button>
 
         <div class="nav-submenu" *ngIf="configuracoesAberto">
-          <a routerLink="/configuracoes/empresa" routerLinkActive="active" class="nav-subitem">
-            <span class="material-symbols-outlined nav-subicon">corporate_fare</span>
+          <a
+            routerLink="/configuracoes/empresa"
+            routerLinkActive="active"
+            class="nav-subitem"
+          >
+            <span class="material-symbols-outlined nav-subicon"
+              >corporate_fare</span
+            >
             <span class="nav-sublabel">Dados da Empresa & Marca</span>
           </a>
-          <a routerLink="/configuracoes/templates-projeto" routerLinkActive="active" class="nav-subitem">
-            <span class="material-symbols-outlined nav-subicon">account_tree</span>
+          <a
+            routerLink="/configuracoes/templates-projeto"
+            routerLinkActive="active"
+            class="nav-subitem"
+          >
+            <span class="material-symbols-outlined nav-subicon"
+              >account_tree</span
+            >
             <span class="nav-sublabel">Modelos de Projetos</span>
           </a>
-          <a routerLink="/configuracoes/modelo-proposta" routerLinkActive="active" class="nav-subitem">
-            <span class="material-symbols-outlined nav-subicon">picture_as_pdf</span>
+          <a
+            routerLink="/configuracoes/modelo-proposta"
+            routerLinkActive="active"
+            class="nav-subitem"
+          >
+            <span class="material-symbols-outlined nav-subicon"
+              >picture_as_pdf</span
+            >
             <span class="nav-sublabel">Modelo de Proposta (PDF)</span>
           </a>
-          <a routerLink="/configuracoes/origens-lead" routerLinkActive="active" class="nav-subitem">
+          <a
+            routerLink="/configuracoes/origens-lead"
+            routerLinkActive="active"
+            class="nav-subitem"
+          >
             <span class="material-symbols-outlined nav-subicon">hub</span>
             <span class="nav-sublabel">Origens de Leads</span>
           </a>
-          <a routerLink="/configuracoes/equipe" routerLinkActive="active" class="nav-subitem">
+          <a
+            routerLink="/configuracoes/equipe"
+            routerLinkActive="active"
+            class="nav-subitem"
+          >
             <span class="material-symbols-outlined nav-subicon">groups</span>
             <span class="nav-sublabel">Membros da Equipe</span>
           </a>
@@ -93,22 +188,40 @@
     </nav>
 
     <div class="user-profile" *ngIf="authService.currentUser$ | async as user">
-      <a routerLink="/perfil" class="user-profile-link d-flex align-items-center gap-xs" title="Visualizar Meu Perfil">
+      <a
+        routerLink="/perfil"
+        class="user-profile-link d-flex align-items-center gap-xs"
+        title="Visualizar Meu Perfil"
+      >
         <div class="user-avatar-mini">
-          <img *ngIf="user.fotoUrl; else avatarInitials" [src]="user.fotoUrl" alt="Foto" class="avatar-mini-img" />
+          <img
+            *ngIf="user.fotoUrl; else avatarInitials"
+            [src]="user.fotoUrl"
+            alt="Foto"
+            class="avatar-mini-img"
+          />
           <ng-template #avatarInitials>
-            <span class="avatar-initials">{{ user.nome ? user.nome.charAt(0).toUpperCase() : 'U' }}</span>
+            <span class="avatar-initials">{{
+              user.nome ? user.nome.charAt(0).toUpperCase() : "U"
+            }}</span>
           </ng-template>
         </div>
         <div class="user-info flex-1">
           <span class="user-name">{{ user.nome }}</span>
           <span class="user-email">{{ user.email }}</span>
         </div>
-        <span class="material-symbols-outlined user-edit-icon">chevron_right</span>
+        <span class="material-symbols-outlined user-edit-icon"
+          >chevron_right</span
+        >
       </a>
 
       <div class="d-flex justify-content-end margin-top-xs">
-        <app-button variant="ghost" size="sm" (btnClick)="onLogout()" title="Sair da conta">
+        <app-button
+          variant="ghost"
+          size="sm"
+          (btnClick)="onLogout()"
+          title="Sair da conta"
+        >
           <span class="material-symbols-outlined">logout</span>
           <span class="logout-label font-label-sm">Sair</span>
         </app-button>

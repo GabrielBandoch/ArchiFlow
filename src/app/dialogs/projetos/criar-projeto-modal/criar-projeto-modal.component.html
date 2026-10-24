@@ -1,25 +1,33 @@
-<app-dialog 
-  [show]="show" 
-  dialogTitle="Novo Projeto Arquitetônico" 
-  size="lg" 
-  (close)="onClose()">
-  
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="d-flex flex-direction-column gap-md">
-    
+<app-dialog
+  [show]="show"
+  dialogTitle="Novo Projeto Arquitetônico"
+  size="lg"
+  (close)="onClose()"
+>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="d-flex flex-direction-column gap-md"
+  >
     <div class="form-section-header">
       <span class="section-badge-title">Identificação e Cliente</span>
     </div>
 
     <div class="form-grid-2">
       <div class="field-item">
-        <app-input 
+        <app-input
           id="nomeProjeto"
-          type="text" 
-          label="Nome do Projeto" 
-          placeholder="Ex: Residência Alphaville - Bloco B" 
+          type="text"
+          label="Nome do Projeto"
+          placeholder="Ex: Residência Alphaville - Bloco B"
           formControlName="nome"
           [required]="true"
-          [error]="submitted && f['nome'].errors ? 'O nome do projeto é obrigatório.' : undefined">
+          [error]="
+            submitted && f['nome'].errors
+              ? 'O nome do projeto é obrigatório.'
+              : undefined
+          "
+        >
         </app-input>
       </div>
 
@@ -31,7 +39,12 @@
           [required]="true"
           [clientes]="clientes"
           formControlName="clienteId"
-          [error]="submitted && f['clienteId'].errors ? 'Selecione um cliente para vincular ao projeto.' : undefined">
+          [error]="
+            submitted && f['clienteId'].errors
+              ? 'Selecione um cliente para vincular ao projeto.'
+              : undefined
+          "
+        >
         </app-client-search>
       </div>
     </div>
@@ -49,38 +62,42 @@
           formControlName="tipo"
           [required]="true"
           (valueChange)="onTipoChange($event)"
-          [options]="tipoOptions">
+          [options]="tipoOptions"
+        >
         </app-select>
       </div>
 
       <div class="field-item">
-        <app-input 
+        <app-input
           id="metragemTotal"
-          type="number" 
-          label="Metragem Total (m²)" 
-          placeholder="Ex: 240.50" 
-          formControlName="metragemTotal">
+          type="number"
+          label="Metragem Total (m²)"
+          placeholder="Ex: 240.50"
+          formControlName="metragemTotal"
+        >
         </app-input>
       </div>
     </div>
 
     <div class="form-grid-2">
       <div class="field-item">
-        <app-input 
+        <app-input
           id="dataInicio"
-          type="date" 
-          label="Data de Início" 
+          type="date"
+          label="Data de Início"
           formControlName="dataInicio"
-          [required]="true">
+          [required]="true"
+        >
         </app-input>
       </div>
 
       <div class="field-item">
-        <app-input 
+        <app-input
           id="dataPrevistaEntrega"
-          type="date" 
-          label="Previsão de Entrega" 
-          formControlName="dataPrevistaEntrega">
+          type="date"
+          label="Previsão de Entrega"
+          formControlName="dataPrevistaEntrega"
+        >
         </app-input>
       </div>
     </div>
@@ -91,22 +108,33 @@
         label="Modelo de Etapas (Workflow)"
         placeholder="Selecione o fluxo padrão..."
         [(ngModel)]="selectedTemplateId"
-        [ngModelOptions]="{standalone: true}"
-        [options]="templateOptions">
+        [ngModelOptions]="{ standalone: true }"
+        [options]="templateOptions"
+      >
       </app-select>
     </div>
 
-    <div class="template-preview-box d-flex flex-direction-column gap-xs" *ngIf="selectedTemplate">
+    <div
+      class="template-preview-box d-flex flex-direction-column gap-xs"
+      *ngIf="selectedTemplate"
+    >
       <div class="d-flex align-items-center justify-content-between">
         <span class="template-title d-inline-flex align-items-center gap-xs">
-          <span class="material-symbols-outlined">{{ selectedTemplate.icone }}</span>
+          <span class="material-symbols-outlined">{{
+            selectedTemplate.icone
+          }}</span>
           {{ selectedTemplate.nome }}
         </span>
-        <span class="template-count-badge">{{ selectedTemplate.etapas.length }} etapas configuradas</span>
+        <span class="template-count-badge"
+          >{{ selectedTemplate.etapas.length }} etapas configuradas</span
+        >
       </div>
       <p class="template-desc">{{ selectedTemplate.descricao }}</p>
-      
-      <div class="template-stages-chips d-flex align-items-center gap-xs flex-wrap" *ngIf="selectedTemplate.etapas.length > 0">
+
+      <div
+        class="template-stages-chips d-flex align-items-center gap-xs flex-wrap"
+        *ngIf="selectedTemplate.etapas.length > 0"
+      >
         <span *ngFor="let e of selectedTemplate.etapas" class="stage-chip-pill">
           <strong>{{ e.ordem }}.</strong> {{ e.nome }}
         </span>
@@ -114,22 +142,24 @@
     </div>
 
     <div class="field-item w-full">
-      <app-input 
+      <app-input
         id="descricaoProjeto"
-        type="textarea" 
+        type="textarea"
         [rows]="3"
-        label="Escopo e Detalhes do Projeto" 
-        placeholder="Breve descrição dos requisitos arquitetônicos e objetivos do cliente..." 
-        formControlName="descricao">
+        label="Escopo e Detalhes do Projeto"
+        placeholder="Breve descrição dos requisitos arquitetônicos e objetivos do cliente..."
+        formControlName="descricao"
+      >
       </app-input>
     </div>
 
     <div dialog-footer class="d-flex justify-content-end gap-sm margin-top-md">
-      <app-button variant="secondary" (btnClick)="onClose()" [disabled]="saving">Cancelar</app-button>
+      <app-button variant="secondary" (btnClick)="onClose()" [disabled]="saving"
+        >Cancelar</app-button
+      >
       <app-button type="submit" variant="primary" [disabled]="saving">
-        {{ saving ? 'Criando Projeto e Etapas...' : 'Criar Projeto' }}
+        {{ saving ? "Criando Projeto e Etapas..." : "Criar Projeto" }}
       </app-button>
     </div>
-
   </form>
 </app-dialog>

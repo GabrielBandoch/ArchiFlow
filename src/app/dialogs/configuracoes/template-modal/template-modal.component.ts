@@ -1,17 +1,39 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { ProjectTemplateService } from '../../../core/services/project-template.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { ProjectTemplate, TemplateEtapaItem } from '../../../models/project-template.model';
-import { TemplateForm } from './template.form';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+} from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormsModule,
+} from "@angular/forms";
+import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { ProjectTemplateService } from "../../../core/services/project-template.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import {
+  ProjectTemplate,
+  TemplateEtapaItem,
+} from "../../../core/models/project-template.model";
+import { TemplateForm } from "./template.form";
 
 @Component({
-  selector: 'app-template-modal',
+  selector: "app-template-modal",
   standalone: true,
-  imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule, FormsModule],
-  templateUrl: './template-modal.component.html',
-  styleUrl: './template-modal.component.scss'
+  imports: [
+    CORE_IMPORTS,
+    FORM_IMPORTS,
+    DESIGN_SYSTEM,
+    ReactiveFormsModule,
+    FormsModule,
+  ],
+  templateUrl: "./template-modal.component.html",
+  styleUrl: "./template-modal.component.scss",
 })
 export class TemplateModalComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -33,14 +55,14 @@ export class TemplateModalComponent implements OnInit {
   novaTarefaInputs: { [key: number]: string } = {};
 
   readonly availableIcons = [
-    { name: 'home', label: 'Residencial' },
-    { name: 'chair', label: 'Interiores' },
-    { name: 'storefront', label: 'Comercial' },
-    { name: 'apartment', label: 'Edifícios' },
-    { name: 'yard', label: 'Paisagismo' },
-    { name: 'analytics', label: 'Consultoria' },
-    { name: 'architecture', label: 'Arquitetura' },
-    { name: 'tune', label: 'Geral' }
+    { name: "home", label: "Residencial" },
+    { name: "chair", label: "Interiores" },
+    { name: "storefront", label: "Comercial" },
+    { name: "apartment", label: "Edifícios" },
+    { name: "yard", label: "Paisagismo" },
+    { name: "analytics", label: "Consultoria" },
+    { name: "architecture", label: "Arquitetura" },
+    { name: "tune", label: "Geral" },
   ];
 
   ngOnInit(): void {
@@ -53,10 +75,13 @@ export class TemplateModalComponent implements OnInit {
       this.etapas = [
         {
           ordem: 1,
-          nome: 'Briefing e Estudo Preliminar',
-          descricao: 'Levantamento de dados e programa de necessidades',
-          tarefas: ['Briefing inicial com cliente', 'Levantamento métrico no local']
-        }
+          nome: "Briefing e Estudo Preliminar",
+          descricao: "Levantamento de dados e programa de necessidades",
+          tarefas: [
+            "Briefing inicial com cliente",
+            "Levantamento métrico no local",
+          ],
+        },
       ];
     }
   }
@@ -74,8 +99,8 @@ export class TemplateModalComponent implements OnInit {
     this.etapas.push({
       ordem: novaOrdem,
       nome: `Etapa ${novaOrdem}`,
-      descricao: '',
-      tarefas: []
+      descricao: "",
+      tarefas: [],
     });
   }
 
@@ -101,7 +126,7 @@ export class TemplateModalComponent implements OnInit {
   }
 
   adicionarTarefa(etapaIndex: number): void {
-    const texto = (this.novaTarefaInputs[etapaIndex] || '').trim();
+    const texto = (this.novaTarefaInputs[etapaIndex] || "").trim();
     if (!texto) return;
 
     if (!this.etapas[etapaIndex].tarefas) {
@@ -109,11 +134,27 @@ export class TemplateModalComponent implements OnInit {
     }
 
     this.etapas[etapaIndex].tarefas.push(texto);
-    this.novaTarefaInputs[etapaIndex] = '';
+    this.novaTarefaInputs[etapaIndex] = "";
   }
 
   removerTarefa(etapaIndex: number, tarefaIndex: number): void {
     this.etapas[etapaIndex].tarefas.splice(tarefaIndex, 1);
+  }
+
+  onFormKeyDownEnter(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent;
+    const target = keyboardEvent.target as HTMLElement;
+    if (target && target.tagName === "TEXTAREA") {
+      return;
+    }
+    if (
+      target &&
+      target.classList &&
+      target.classList.contains("form-tarefa-input")
+    ) {
+      return;
+    }
+    keyboardEvent.preventDefault();
   }
 
   onSubmit(): void {
@@ -121,52 +162,68 @@ export class TemplateModalComponent implements OnInit {
     if (this.form.invalid) return;
 
     if (this.etapas.length === 0) {
-      this.notificationService.error('O modelo precisa ter pelo menos uma etapa.');
+      this.notificationService.error(
+        "O modelo precisa ter pelo menos uma etapa.",
+      );
       return;
     }
 
+    const rawVal = this.form.getRawValue();
+    const codigo =
+      rawVal.codigo ||
+      this.templateParaEdicao?.codigo ||
+      this.templateParaEdicao?.id ||
+      "";
     const payload = {
-      nome: this.form.value.nome,
-      codigo: this.form.value.codigo,
-      descricao: this.form.value.descricao,
-      icone: this.form.value.icone,
-      etapas: this.etapas.map(e => ({
+      nome: rawVal.nome,
+      codigo: codigo,
+      descricao: rawVal.descricao,
+      icone: rawVal.icone,
+      etapas: this.etapas.map((e) => ({
         nome: e.nome,
         descricao: e.descricao,
         ordem: e.ordem,
-        tarefas: e.tarefas || []
-      }))
+        tarefas: e.tarefas || [],
+      })),
     };
 
     this.saving = true;
 
     if (this.isEditing && this.templateParaEdicao) {
-      this.templateService.atualizarTemplate(this.templateParaEdicao.id, payload).subscribe({
-        next: (res) => {
-          this.saving = false;
-          this.notificationService.success('Modelo de workflow atualizado com sucesso.');
-          this.saved.emit(res);
-          this.onClose();
-        },
-        error: (err) => {
-          this.saving = false;
-          console.error('Erro ao atualizar template', err);
-          this.notificationService.error('Erro ao atualizar o modelo de projeto.');
-        }
-      });
+      this.templateService
+        .atualizarTemplate(this.templateParaEdicao.id, payload)
+        .subscribe({
+          next: (res) => {
+            this.saving = false;
+            this.notificationService.success(
+              "Modelo de workflow atualizado com sucesso.",
+            );
+            this.saved.emit(res);
+            this.onClose();
+          },
+          error: (err) => {
+            this.saving = false;
+            console.error("Erro ao atualizar template", err);
+            this.notificationService.error(
+              "Erro ao atualizar o modelo de projeto.",
+            );
+          },
+        });
     } else {
       this.templateService.criarTemplate(payload).subscribe({
         next: (res) => {
           this.saving = false;
-          this.notificationService.success('Modelo de workflow criado com sucesso.');
+          this.notificationService.success(
+            "Modelo de workflow criado com sucesso.",
+          );
           this.saved.emit(res);
           this.onClose();
         },
         error: (err) => {
           this.saving = false;
-          console.error('Erro ao criar template', err);
-          this.notificationService.error('Erro ao criar o modelo de projeto.');
-        }
+          console.error("Erro ao criar template", err);
+          this.notificationService.error("Erro ao criar o modelo de projeto.");
+        },
       });
     }
   }

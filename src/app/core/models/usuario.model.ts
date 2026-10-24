@@ -1,14 +1,14 @@
 export type PerfilUsuario =
-  | 'Administrador'
-  | 'Arquiteto'
-  | 'Gerente'
-  | 'Colaborador'
-  | 'Cliente'
-  | 'ClienteFinal'
-  | 'ArquitetoAdmin'
-  | 'ArquitetoColaborador'
-  | 'Estagiario'
-  | 'Financeiro';
+  | "Administrador"
+  | "Arquiteto"
+  | "Gerente"
+  | "Colaborador"
+  | "Cliente"
+  | "ClienteFinal"
+  | "ArquitetoAdmin"
+  | "ArquitetoColaborador"
+  | "Estagiario"
+  | "Financeiro";
 
 export interface Usuario {
   id: string;
@@ -35,4 +35,3 @@ export interface MembroEquipe {
   criadoEm: string;
   atualizadoEm?: string | null;
 }
-

@@ -1,29 +1,29 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs';
-import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../shared';
-import { FinanceiroService } from '../../core/api/financeiro/financeiro.service';
-import { NotificationService } from '../../core/services/notification.service';
-import { DialogService } from '../../core/services/dialog.service';
+import { Component, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { forkJoin } from "rxjs";
+import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../shared";
+import { FinanceiroService } from "../../core/api/financeiro/financeiro.service";
+import { NotificationService } from "../../core/services/notification.service";
+import { DialogService } from "../../core/services/dialog.service";
 import {
   AlertaFinanceiro,
   DespesaProjeto,
   PainelFinanceiro,
   ParcelaFinanceira,
-  ReceitaMes
-} from '../../models/financeiro.model';
-import { FinanceiroKpisComponent } from './components/financeiro-kpis/financeiro-kpis.component';
-import { FinanceiroGraficoComponent } from './components/financeiro-grafico/financeiro-grafico.component';
-import { FinanceiroAlertasComponent } from './components/financeiro-alertas/financeiro-alertas.component';
-import { FinanceiroTabelaParcelasComponent } from './components/financeiro-tabela-parcelas/financeiro-tabela-parcelas.component';
-import { FinanceiroTabelaDespesasComponent } from './components/financeiro-tabela-despesas/financeiro-tabela-despesas.component';
-import { DarBaixaParcelaModalComponent } from '../../dialogs/financeiro/dar-baixa-parcela-modal/dar-baixa-parcela-modal.component';
-import { CriarParcelaModalComponent } from '../../dialogs/financeiro/criar-parcela-modal/criar-parcela-modal.component';
-import { CriarDespesaModalComponent } from '../../dialogs/financeiro/criar-despesa-modal/criar-despesa-modal.component';
+  ReceitaMes,
+} from "../../core/models/financeiro.model";
+import { FinanceiroKpisComponent } from "./components/financeiro-kpis/financeiro-kpis.component";
+import { FinanceiroGraficoComponent } from "./components/financeiro-grafico/financeiro-grafico.component";
+import { FinanceiroAlertasComponent } from "./components/financeiro-alertas/financeiro-alertas.component";
+import { FinanceiroTabelaParcelasComponent } from "./components/financeiro-tabela-parcelas/financeiro-tabela-parcelas.component";
+import { FinanceiroTabelaDespesasComponent } from "./components/financeiro-tabela-despesas/financeiro-tabela-despesas.component";
+import { DarBaixaParcelaModalComponent } from "../../dialogs/financeiro/dar-baixa-parcela-modal/dar-baixa-parcela-modal.component";
+import { CriarParcelaModalComponent } from "../../dialogs/financeiro/criar-parcela-modal/criar-parcela-modal.component";
+import { CriarDespesaModalComponent } from "../../dialogs/financeiro/criar-despesa-modal/criar-despesa-modal.component";
 
 @Component({
-  selector: 'app-financeiro',
+  selector: "app-financeiro",
   standalone: true,
   imports: [
     CommonModule,
@@ -34,10 +34,10 @@ import { CriarDespesaModalComponent } from '../../dialogs/financeiro/criar-despe
     FinanceiroGraficoComponent,
     FinanceiroAlertasComponent,
     FinanceiroTabelaParcelasComponent,
-    FinanceiroTabelaDespesasComponent
+    FinanceiroTabelaDespesasComponent,
   ],
-  templateUrl: './financeiro.component.html',
-  styleUrl: './financeiro.component.scss'
+  templateUrl: "./financeiro.component.html",
+  styleUrl: "./financeiro.component.scss",
 })
 export class FinanceiroComponent implements OnInit {
   private financeiroService = inject(FinanceiroService);
@@ -45,7 +45,7 @@ export class FinanceiroComponent implements OnInit {
   private dialogService = inject(DialogService);
 
   loading = true;
-  abaAtiva: 'geral' | 'despesas' = 'geral';
+  abaAtiva: "geral" | "despesas" = "geral";
 
   painel: PainelFinanceiro | null = null;
   parcelas: ParcelaFinanceira[] = [];
@@ -69,7 +69,7 @@ export class FinanceiroComponent implements OnInit {
     forkJoin({
       painel: this.financeiroService.obterPainel(this.anoSelecionado),
       parcelas: this.financeiroService.obterParcelas(),
-      despesas: this.financeiroService.obterDespesas()
+      despesas: this.financeiroService.obterDespesas(),
     }).subscribe({
       next: ({ painel, parcelas, despesas }) => {
         this.painel = painel;
@@ -81,9 +81,9 @@ export class FinanceiroComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        console.error('Erro ao carregar dados financeiros', err);
-        this.notificationService.error('Erro ao carregar dados financeiros.');
-      }
+        console.error("Erro ao carregar dados financeiros", err);
+        this.notificationService.error("Erro ao carregar dados financeiros.");
+      },
     });
   }
 
@@ -100,13 +100,15 @@ export class FinanceiroComponent implements OnInit {
         this.receitasPorMes = painel?.receitasPorMes || [];
       },
       error: (err) => {
-        console.error('Erro ao atualizar dados do painel financeiro', err);
-        this.notificationService.error('Erro ao atualizar dados do gráfico financeiro.');
-      }
+        console.error("Erro ao atualizar dados do painel financeiro", err);
+        this.notificationService.error(
+          "Erro ao atualizar dados do gráfico financeiro.",
+        );
+      },
     });
   }
 
-  setAba(aba: 'geral' | 'despesas'): void {
+  setAba(aba: "geral" | "despesas"): void {
     this.abaAtiva = aba;
   }
 
@@ -114,19 +116,19 @@ export class FinanceiroComponent implements OnInit {
     this.selectedParcelaParaBaixa = parcela;
     this.showBaixaModal = true;
     const ref = this.dialogService.open(DarBaixaParcelaModalComponent, {
-      data: { parcela }
+      data: { parcela },
     });
     ref.instance.baixada.subscribe(() => this.onParcelaBaixada());
   }
 
   abrirModalBaixaPorId(parcelaId: string): void {
-    const p = this.parcelas.find(item => item.id === parcelaId);
+    const p = this.parcelas.find((item) => item.id === parcelaId);
     if (p) {
       this.abrirModalBaixa(p);
     } else {
       this.financeiroService.obterParcelaPorId(parcelaId).subscribe({
         next: (parc) => this.abrirModalBaixa(parc),
-        error: () => this.notificationService.error('Parcela não encontrada.')
+        error: () => this.notificationService.error("Parcela não encontrada."),
       });
     }
   }
@@ -152,42 +154,70 @@ export class FinanceiroComponent implements OnInit {
   }
 
   excluirParcela(id: string): void {
-    this.dialogService.confirm({
-      title: 'Excluir Parcela',
-      message: 'Deseja realmente excluir este registro de parcela?'
-    }).subscribe((confirmado) => {
-      if (confirmado) {
-        this.financeiroService.excluirParcela(id).subscribe({
-          next: () => {
-            this.notificationService.success('Parcela excluída com sucesso!');
-            this.carregarDados();
-          },
-          error: (err) => {
-            console.error('Erro ao excluir parcela', err);
-            this.notificationService.error('Erro ao excluir parcela.');
-          }
-        });
-      }
-    });
+    this.dialogService
+      .confirm({
+        title: "Excluir Parcela",
+        message: "Deseja realmente excluir este registro de parcela?",
+      })
+      .subscribe((confirmado) => {
+        if (confirmado) {
+          this.financeiroService.excluirParcela(id).subscribe({
+            next: () => {
+              this.notificationService.success("Parcela excluída com sucesso!");
+              this.carregarDados();
+            },
+            error: (err) => {
+              console.error("Erro ao excluir parcela", err);
+              this.notificationService.error("Erro ao excluir parcela.");
+            },
+          });
+        }
+      });
+  }
+
+  alternarPagamentoDespesa(despesa: DespesaProjeto): void {
+    const novoStatus = !despesa.pago;
+    this.financeiroService
+      .alternarPagamentoDespesa(despesa.id, novoStatus)
+      .subscribe({
+        next: (atualizada) => {
+          despesa.pago = atualizada.pago;
+          despesa.dataPagamento = atualizada.dataPagamento;
+          this.notificationService.success(
+            atualizada.pago
+              ? "Despesa marcada como paga!"
+              : "Despesa marcada como pendente!",
+          );
+          this.carregarDados();
+        },
+        error: (err) => {
+          console.error("Erro ao alternar pagamento da despesa", err);
+          this.notificationService.error(
+            "Erro ao atualizar status de pagamento da despesa.",
+          );
+        },
+      });
   }
 
   excluirDespesa(id: string): void {
-    this.dialogService.confirm({
-      title: 'Excluir Despesa',
-      message: 'Deseja realmente excluir esta despesa?'
-    }).subscribe((confirmado) => {
-      if (confirmado) {
-        this.financeiroService.excluirDespesa(id).subscribe({
-          next: () => {
-            this.notificationService.success('Despesa excluída com sucesso!');
-            this.carregarDados();
-          },
-          error: (err) => {
-            console.error('Erro ao excluir despesa', err);
-            this.notificationService.error('Erro ao excluir despesa.');
-          }
-        });
-      }
-    });
+    this.dialogService
+      .confirm({
+        title: "Excluir Despesa",
+        message: "Deseja realmente excluir esta despesa?",
+      })
+      .subscribe((confirmado) => {
+        if (confirmado) {
+          this.financeiroService.excluirDespesa(id).subscribe({
+            next: () => {
+              this.notificationService.success("Despesa excluída com sucesso!");
+              this.carregarDados();
+            },
+            error: (err) => {
+              console.error("Erro ao excluir despesa", err);
+              this.notificationService.error("Erro ao excluir despesa.");
+            },
+          });
+        }
+      });
   }
 }

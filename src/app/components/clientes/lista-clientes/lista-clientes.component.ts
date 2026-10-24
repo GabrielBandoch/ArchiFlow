@@ -1,18 +1,18 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { ClienteService } from '../../../core/api';
-import { NotificationService } from '../../../core/services/notification.service';
-import { Cliente } from '../../../models/cliente.model';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
+import { Component, OnInit, inject } from "@angular/core";
+import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { ClienteService } from "../../../core/api";
+import { NotificationService } from "../../../core/services/notification.service";
+import { Cliente } from "../../../core/models/cliente.model";
+import { FormsModule } from "@angular/forms";
+import { Router } from "@angular/router";
+import { PhoneMaskPipe } from "../../../core/pipes/phone-mask.pipe";
 
 @Component({
-  selector: 'app-lista-clientes',
+  selector: "app-lista-clientes",
   standalone: true,
   imports: [CORE_IMPORTS, DESIGN_SYSTEM, FormsModule, PhoneMaskPipe],
-  templateUrl: './lista-clientes.component.html',
-  styleUrl: './lista-clientes.component.scss'
+  templateUrl: "./lista-clientes.component.html",
+  styleUrl: "./lista-clientes.component.scss",
 })
 export class ListaClientesComponent implements OnInit {
   private clienteService = inject(ClienteService);
@@ -21,19 +21,22 @@ export class ListaClientesComponent implements OnInit {
 
   clientes: Cliente[] = [];
   clientesFiltrados: Cliente[] = [];
-  searchQuery = '';
-  filtroStatus: 'todos' | 'ativos' | 'inativos' = 'todos';
+  searchQuery = "";
+  filtroStatus: "todos" | "ativos" | "inativos" = "todos";
 
   get totalClientes(): number {
     return this.clientes.length;
   }
 
   get totalAtivos(): number {
-    return this.clientes.filter(c => c.ativo).length;
+    return this.clientes.filter((c) => c.ativo).length;
   }
 
   get totalProjetos(): number {
-    return this.clientes.reduce((acc, c) => acc + (c.projetosAtivosCount || 0), 0);
+    return this.clientes.reduce(
+      (acc, c) => acc + (c.projetosAtivosCount || 0),
+      0,
+    );
   }
 
   ngOnInit(): void {
@@ -47,13 +50,13 @@ export class ListaClientesComponent implements OnInit {
         this.filtrarClientes();
       },
       error: (err) => {
-        console.error('Erro ao carregar clientes', err);
-        this.notificationService.error('Erro ao carregar a lista de clientes.');
-      }
+        console.error("Erro ao carregar clientes", err);
+        this.notificationService.error("Erro ao carregar a lista de clientes.");
+      },
     });
   }
 
-  setFiltro(status: 'todos' | 'ativos' | 'inativos'): void {
+  setFiltro(status: "todos" | "ativos" | "inativos"): void {
     this.filtroStatus = status;
     this.filtrarClientes();
   }
@@ -61,18 +64,19 @@ export class ListaClientesComponent implements OnInit {
   filtrarClientes(): void {
     let result = this.clientes;
 
-    if (this.filtroStatus === 'ativos') {
-      result = result.filter(c => c.ativo);
-    } else if (this.filtroStatus === 'inativos') {
-      result = result.filter(c => !c.ativo);
+    if (this.filtroStatus === "ativos") {
+      result = result.filter((c) => c.ativo);
+    } else if (this.filtroStatus === "inativos") {
+      result = result.filter((c) => !c.ativo);
     }
 
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
-      result = result.filter(c => 
-        c.nome.toLowerCase().includes(q) || 
-        c.email.toLowerCase().includes(q) || 
-        (c.cpfCnpj && c.cpfCnpj.toLowerCase().includes(q))
+      result = result.filter(
+        (c) =>
+          c.nome.toLowerCase().includes(q) ||
+          c.email.toLowerCase().includes(q) ||
+          (c.cpfCnpj && c.cpfCnpj.toLowerCase().includes(q)),
       );
     }
 
@@ -82,27 +86,33 @@ export class ListaClientesComponent implements OnInit {
   toggleAcessoPortal(cliente: Cliente, event: Event): void {
     event.preventDefault();
     const novoStatus = !cliente.ativo;
-    this.clienteService.atualizarAcessoPortal({ id: cliente.id, ativo: novoStatus }).subscribe({
-      next: (data) => {
-        cliente.ativo = data.ativo;
-        this.notificationService.success(
-          `Acesso ao portal de "${cliente.nome}" foi ${cliente.ativo ? 'ativado' : 'desativado'}.`
-        );
-        this.filtrarClientes();
-      },
-      error: (err) => {
-        console.error('Erro ao atualizar acesso ao portal', err);
-        this.notificationService.error('Não foi possível alterar o acesso ao portal.');
-      }
-    });
+    this.clienteService
+      .atualizarAcessoPortal({ id: cliente.id, ativo: novoStatus })
+      .subscribe({
+        next: (data) => {
+          cliente.ativo = data.ativo;
+          this.notificationService.success(
+            `Acesso ao portal de "${cliente.nome}" foi ${cliente.ativo ? "ativado" : "desativado"}.`,
+          );
+          this.filtrarClientes();
+        },
+        error: (err) => {
+          console.error("Erro ao atualizar acesso ao portal", err);
+          this.notificationService.error(
+            "Não foi possível alterar o acesso ao portal.",
+          );
+        },
+      });
   }
 
   verDetalhes(clienteId: string): void {
-    this.router.navigate(['/clientes', clienteId]);
+    this.router.navigate(["/clientes", clienteId]);
   }
 
   irParaLeads(): void {
-    this.notificationService.info('Para cadastrar um novo cliente, converta um Lead no Funil Comercial.');
-    this.router.navigate(['/leads']);
+    this.notificationService.info(
+      "Para cadastrar um novo cliente, converta um Lead no Funil Comercial.",
+    );
+    this.router.navigate(["/leads"]);
   }
 }

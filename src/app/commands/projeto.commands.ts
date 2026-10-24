@@ -1,4 +1,8 @@
-import { StatusProjeto, TipoProjeto, StatusEtapa } from '../models/projeto.model';
+import {
+  StatusProjeto,
+  TipoProjeto,
+  StatusEtapa,
+} from "../core/models/projeto.model";
 
 export interface CriarProjetoCommand {
   nome: string;
@@ -31,9 +35,30 @@ export interface CriarEtapaCommand {
   nome: string;
   descricao: string;
   ordem: number;
+  dataFimPrevista?: string;
 }
 
 export interface AtualizarStatusEtapaCommand {
   etapaId: string;
   status: StatusEtapa;
+  dataConclusao?: string;
+}
+
+export interface AtualizarDatasEtapaCommand {
+  etapaId: string;
+  dataFimPrevista?: string | null;
+  dataConclusao?: string | null;
+  limparDataFimPrevista?: boolean;
+  limparDataConclusao?: boolean;
+}
+
+export interface AdicionarTarefaCommand {
+  etapaId: string;
+  titulo: string;
+  dataLimite?: string | null;
+}
+
+export interface AtualizarPrazoTarefaCommand {
+  tarefaId: string;
+  dataLimite?: string | null;
 }

@@ -1,4 +1,4 @@
-﻿:host {
+:host {
   display: block;
 }
 
@@ -38,13 +38,34 @@
         background-color: var(--af-surface-container-high);
         color: var(--af-on-surface);
 
-        &.status-0 { background: #e3f2fd; color: #1565c0; }
-        &.status-1 { background: #fff3e0; color: #e65100; }
-        &.status-2 { background: #f3e5f5; color: #7b1fa2; }
-        &.status-3 { background: #e8f5e9; color: #2e7d32; }
-        &.status-4 { background: #fbe9e7; color: #d84315; }
-        &.status-5 { background: #e0f2f1; color: #00695c; }
-        &.status-6 { background: #ffebee; color: #c62828; }
+        &.status-0 {
+          background: #e3f2fd;
+          color: #1565c0;
+        }
+        &.status-1 {
+          background: #fff3e0;
+          color: #e65100;
+        }
+        &.status-2 {
+          background: #f3e5f5;
+          color: #7b1fa2;
+        }
+        &.status-3 {
+          background: #e8f5e9;
+          color: #2e7d32;
+        }
+        &.status-4 {
+          background: #fbe9e7;
+          color: #d84315;
+        }
+        &.status-5 {
+          background: #e0f2f1;
+          color: #00695c;
+        }
+        &.status-6 {
+          background: #ffebee;
+          color: #c62828;
+        }
       }
 
       .type-chip {
@@ -59,7 +80,9 @@
         color: var(--af-on-surface-variant);
         border: 1px solid var(--af-outline-variant);
 
-        span { font-size: 14px; }
+        span {
+          font-size: 14px;
+        }
       }
     }
 

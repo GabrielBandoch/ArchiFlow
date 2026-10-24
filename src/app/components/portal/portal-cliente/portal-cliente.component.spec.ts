@@ -1,19 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { of, throwError } from 'rxjs';
-import { PortalClienteComponent } from './portal-cliente.component';
-import { AuthService } from '../../../core/services/auth.service';
-import { ProjetoService } from '../../../core/api/projetos/projeto.service';
-import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
-import { ClienteService } from '../../../core/api/clientes/cliente.service';
-import { HonorarioService } from '../../../core/api/honorarios/honorario.service';
-import { ConfiguracaoPropostaService } from '../../../core/services/configuracao-proposta.service';
-import { ChatService } from '../../../core/services/chat.service';
-import { StatusProjeto, StatusEtapa, TipoProjeto } from '../../../models/projeto.model';
-import { CONFIGURACAO_PROPOSTA_PADRAO } from '../../../core/models/configuracao-proposta.model';
-import { DialogService } from '../../../core/services/dialog.service';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, Router, convertToParamMap } from "@angular/router";
+import { of, throwError } from "rxjs";
+import { PortalClienteComponent } from "./portal-cliente.component";
+import { AuthService } from "../../../core/services/auth.service";
+import { ProjetoService } from "../../../core/api/projetos/projeto.service";
+import { ArquivoService } from "../../../core/api/projetos/arquivo.service";
+import { ClienteService } from "../../../core/api/clientes/cliente.service";
+import { HonorarioService } from "../../../core/api/honorarios/honorario.service";
+import { ConfiguracaoPropostaService } from "../../../core/services/configuracao-proposta.service";
+import { ChatService } from "../../../core/services/chat.service";
+import {
+  StatusProjeto,
+  StatusEtapa,
+  TipoProjeto,
+} from "../../../core/models/projeto.model";
+import { CONFIGURACAO_PROPOSTA_PADRAO } from "../../../core/models/configuracao-proposta.model";
+import { DialogService } from "../../../core/services/dialog.service";
 
-describe('PortalClienteComponent', () => {
+describe("PortalClienteComponent", () => {
   let component: PortalClienteComponent;
   let fixture: ComponentFixture<PortalClienteComponent>;
 
@@ -27,129 +31,168 @@ describe('PortalClienteComponent', () => {
   let routerSpy: jasmine.SpyObj<Router>;
 
   const mockProjeto = {
-    id: 'proj-123',
-    nome: 'Casa das Palmeiras',
-    descricao: 'Projeto residencial moderno',
+    id: "proj-123",
+    nome: "Casa das Palmeiras",
+    descricao: "Projeto residencial moderno",
     status: StatusProjeto.Desenvolvimento,
     tipo: TipoProjeto.Residencial,
-    dataInicio: '2026-01-10T00:00:00Z',
-    dataPrevistaEntrega: '2026-06-30T00:00:00Z',
+    dataInicio: "2026-01-10T00:00:00Z",
+    dataPrevistaEntrega: "2026-06-30T00:00:00Z",
     metragemTotal: 250,
-    clienteId: 'cli-456',
+    clienteId: "cli-456",
     etapas: [
       {
-        id: 'et-1',
-        projetoId: 'proj-123',
-        nome: 'Estudo Preliminar',
-        descricao: 'Levantamento inicial e plantas conceituais',
+        id: "et-1",
+        projetoId: "proj-123",
+        nome: "Estudo Preliminar",
+        descricao: "Levantamento inicial e plantas conceituais",
         ordem: 1,
         status: StatusEtapa.Concluida,
-        dataConclusao: '2026-02-01T00:00:00Z',
+        dataConclusao: "2026-02-01T00:00:00Z",
         tarefas: [
-          { id: 't-1', etapaId: 'et-1', titulo: 'Plantas 2D', concluida: true, ordem: 1 }
-        ]
+          {
+            id: "t-1",
+            etapaId: "et-1",
+            titulo: "Plantas 2D",
+            concluida: true,
+            ordem: 1,
+          },
+        ],
       },
       {
-        id: 'et-2',
-        projetoId: 'proj-123',
-        nome: 'Anteprojeto',
-        descricao: 'Modelagem 3D e volumetria',
+        id: "et-2",
+        projetoId: "proj-123",
+        nome: "Anteprojeto",
+        descricao: "Modelagem 3D e volumetria",
         ordem: 2,
         status: StatusEtapa.EmAndamento,
-        dataFimPrevista: '2026-04-15T00:00:00Z',
+        dataFimPrevista: "2026-04-15T00:00:00Z",
         tarefas: [
-          { id: 't-2', etapaId: 'et-2', titulo: 'Modelagem 3D', concluida: false, ordem: 1 }
-        ]
+          {
+            id: "t-2",
+            etapaId: "et-2",
+            titulo: "Modelagem 3D",
+            concluida: false,
+            ordem: 1,
+          },
+        ],
       },
       {
-        id: 'et-3',
-        projetoId: 'proj-123',
-        nome: 'Projeto Executivo',
-        descricao: 'Detalhamento técnico',
+        id: "et-3",
+        projetoId: "proj-123",
+        nome: "Projeto Executivo",
+        descricao: "Detalhamento técnico",
         ordem: 3,
         status: StatusEtapa.Pendente,
-        dataFimPrevista: '2026-06-15T00:00:00Z',
-        tarefas: []
-      }
-    ]
+        dataFimPrevista: "2026-06-15T00:00:00Z",
+        tarefas: [],
+      },
+    ],
   };
 
   const mockArquivos = [
     {
-      id: 'arq-1',
-      projetoId: 'proj-123',
-      nome: 'Planta_Baixa.pdf',
-      urlStorage: 'https://storage/planta.pdf',
-      tipo: 'application/pdf',
+      id: "arq-1",
+      projetoId: "proj-123",
+      nome: "Planta_Baixa.pdf",
+      urlStorage: "https://storage/planta.pdf",
+      tipo: "application/pdf",
       visivelCliente: true,
-      criadoEm: '2026-02-01T00:00:00Z'
+      criadoEm: "2026-02-01T00:00:00Z",
     },
     {
-      id: 'arq-2',
-      projetoId: 'proj-123',
-      nome: 'fachada_3d.png',
-      urlStorage: 'https://storage/fachada.png',
-      tipo: 'image/png',
+      id: "arq-2",
+      projetoId: "proj-123",
+      nome: "fachada_3d.png",
+      urlStorage: "https://storage/fachada.png",
+      tipo: "image/png",
       visivelCliente: true,
-      criadoEm: '2026-02-15T00:00:00Z'
+      criadoEm: "2026-02-15T00:00:00Z",
     },
     {
-      id: 'arq-3',
-      projetoId: 'proj-123',
-      nome: 'projeto_estrutural.dwg',
-      urlStorage: 'https://storage/estrutural.dwg',
-      tipo: 'application/acad',
+      id: "arq-3",
+      projetoId: "proj-123",
+      nome: "projeto_estrutural.dwg",
+      urlStorage: "https://storage/estrutural.dwg",
+      tipo: "application/acad",
       visivelCliente: true,
-      criadoEm: '2026-02-20T00:00:00Z'
-    }
+      criadoEm: "2026-02-20T00:00:00Z",
+    },
   ];
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', [], {
-      currentUserValue: { id: 'usr-1', nome: 'Carlos Cliente', email: 'carlos@cliente.com', perfil: 'Cliente', projetoId: 'proj-123' }
+    authServiceSpy = jasmine.createSpyObj("AuthService", [], {
+      currentUserValue: {
+        id: "usr-1",
+        nome: "Carlos Cliente",
+        email: "carlos@cliente.com",
+        perfil: "Cliente",
+        projetoId: "proj-123",
+      },
     });
-    projetoServiceSpy = jasmine.createSpyObj('ProjetoService', ['obterPorId']);
-    arquivoServiceSpy = jasmine.createSpyObj('ArquivoService', ['obterPorProjeto']);
-    clienteServiceSpy = jasmine.createSpyObj('ClienteService', ['obterPorId']);
-    honorarioServiceSpy = jasmine.createSpyObj('HonorarioService', ['obterPropostas']);
-    configServiceSpy = jasmine.createSpyObj('ConfiguracaoPropostaService', ['getConfiguracao', 'formatarMoeda']);
-    chatServiceSpy = jasmine.createSpyObj('ChatService', [
-      'obterHistorico',
-      'iniciarConexao',
-      'enviarMensagem',
-      'desconectar'
-    ], {
-      mensagens$: of([]),
-      conectado$: of(true),
-      mensagens: []
-    });
-    routerSpy = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], {
-      events: of()
-    });
+    projetoServiceSpy = jasmine.createSpyObj("ProjetoService", ["obterPorId"]);
+    arquivoServiceSpy = jasmine.createSpyObj("ArquivoService", [
+      "obterPorProjeto",
+    ]);
+    clienteServiceSpy = jasmine.createSpyObj("ClienteService", ["obterPorId"]);
+    honorarioServiceSpy = jasmine.createSpyObj("HonorarioService", [
+      "obterPropostas",
+    ]);
+    configServiceSpy = jasmine.createSpyObj("ConfiguracaoPropostaService", [
+      "getConfiguracao",
+      "formatarMoeda",
+    ]);
+    chatServiceSpy = jasmine.createSpyObj(
+      "ChatService",
+      ["obterHistorico", "iniciarConexao", "enviarMensagem", "desconectar"],
+      {
+        mensagens$: of([]),
+        conectado$: of(true),
+        mensagens: [],
+      },
+    );
+    routerSpy = jasmine.createSpyObj(
+      "Router",
+      ["navigate", "createUrlTree", "serializeUrl"],
+      {
+        events: of(),
+      },
+    );
 
     projetoServiceSpy.obterPorId.and.returnValue(of(mockProjeto as any));
     arquivoServiceSpy.obterPorProjeto.and.returnValue(of(mockArquivos as any));
-    clienteServiceSpy.obterPorId.and.returnValue(of({ id: 'cli-456', nome: 'Carlos Cliente' } as any));
-    honorarioServiceSpy.obterPropostas.and.returnValue(of([
-      {
-        id: 'prop-1',
-        codigo: 'PROP-2026-01',
-        titulo: 'Proposta Residencial',
-        clienteId: 'cli-456',
-        valorFinalAjustado: 25000,
-        metragemQuadrada: 250,
-        itensEtapas: []
-      } as any
-    ]));
-    configServiceSpy.getConfiguracao.and.returnValue(CONFIGURACAO_PROPOSTA_PADRAO);
-    configServiceSpy.formatarMoeda.and.callFake((val: number) => `R$ ${val.toFixed(2)}`);
+    clienteServiceSpy.obterPorId.and.returnValue(
+      of({ id: "cli-456", nome: "Carlos Cliente" } as any),
+    );
+    honorarioServiceSpy.obterPropostas.and.returnValue(
+      of([
+        {
+          id: "prop-1",
+          codigo: "PROP-2026-01",
+          titulo: "Proposta Residencial",
+          clienteId: "cli-456",
+          valorFinalAjustado: 25000,
+          metragemQuadrada: 250,
+          itensEtapas: [],
+        } as any,
+      ]),
+    );
+    configServiceSpy.getConfiguracao.and.returnValue(
+      CONFIGURACAO_PROPOSTA_PADRAO,
+    );
+    configServiceSpy.formatarMoeda.and.callFake(
+      (val: number) => `R$ ${val.toFixed(2)}`,
+    );
 
     chatServiceSpy.obterHistorico.and.returnValue(of([]));
     chatServiceSpy.iniciarConexao.and.returnValue(Promise.resolve());
     chatServiceSpy.enviarMensagem.and.returnValue(Promise.resolve());
     chatServiceSpy.desconectar.and.returnValue(Promise.resolve());
 
-    const dialogSpy = jasmine.createSpyObj('DialogService', ['open', 'confirm']);
+    const dialogSpy = jasmine.createSpyObj("DialogService", [
+      "open",
+      "confirm",
+    ]);
     dialogSpy.open.and.returnValue({ instance: { close: of() } });
 
     await TestBed.configureTestingModule({
@@ -169,13 +212,13 @@ describe('PortalClienteComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: (key: string) => key === 'id' ? 'proj-123' : null
-              }
+                get: (key: string) => (key === "id" ? "proj-123" : null),
+              },
             },
-            paramMap: of(convertToParamMap({ id: 'proj-123' }))
-          }
-        }
-      ]
+            paramMap: of(convertToParamMap({ id: "proj-123" })),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PortalClienteComponent);
@@ -183,75 +226,82 @@ describe('PortalClienteComponent', () => {
     fixture.detectChanges();
   });
 
-  it('deve criar o componente e carregar projeto e arquivos', () => {
+  it("deve criar o componente e carregar projeto e arquivos", () => {
     expect(component).toBeTruthy();
-    expect(projetoServiceSpy.obterPorId).toHaveBeenCalledWith('proj-123');
-    expect(arquivoServiceSpy.obterPorProjeto).toHaveBeenCalledWith('proj-123');
+    expect(projetoServiceSpy.obterPorId).toHaveBeenCalledWith("proj-123");
+    expect(arquivoServiceSpy.obterPorProjeto).toHaveBeenCalledWith("proj-123");
     expect(component.projeto).toBeTruthy();
     expect(component.arquivos.length).toBe(3);
     expect(component.propostaVinculada).toBeTruthy();
   });
 
-  it('deve calcular corretamente o progresso do projeto', () => {
+  it("deve calcular corretamente o progresso do projeto", () => {
     expect(component.totalEtapas).toBe(3);
     expect(component.totalConcluidas).toBe(1);
     expect(component.percentualProgresso).toBe(33);
   });
 
-  it('deve identificar a etapa atual e os proximos passos', () => {
+  it("deve identificar a etapa atual e os proximos passos", () => {
     expect(component.etapaAtual).toBeDefined();
-    expect(component.etapaAtual?.nome).toBe('Anteprojeto');
+    expect(component.etapaAtual?.nome).toBe("Anteprojeto");
     expect(component.proximosPassos.length).toBe(1);
-    expect(component.proximosPassos[0].nome).toBe('Projeto Executivo');
+    expect(component.proximosPassos[0].nome).toBe("Projeto Executivo");
   });
 
-  it('deve formatar o tipo e status do projeto', () => {
-    expect(component.tipoProjetoFormatado).toBe('Residencial');
-    expect(component.statusProjetoLabel).toBe('Desenvolvimento');
+  it("deve formatar o tipo e status do projeto", () => {
+    expect(component.tipoProjetoFormatado).toBe("Residencial");
+    expect(component.statusProjetoLabel).toBe("Desenvolvimento");
   });
 
-  it('deve filtrar arquivos por categoria', () => {
-    component.setFiltroArquivo('todos');
+  it("deve filtrar arquivos por categoria", () => {
+    component.setFiltroArquivo("todos");
     expect(component.arquivosFiltrados.length).toBe(3);
 
-    component.setFiltroArquivo('plantas');
+    component.setFiltroArquivo("plantas");
     expect(component.arquivosFiltrados.length).toBe(1);
-    expect(component.arquivosFiltrados[0].nome).toBe('projeto_estrutural.dwg');
+    expect(component.arquivosFiltrados[0].nome).toBe("projeto_estrutural.dwg");
 
-    component.setFiltroArquivo('documentos');
+    component.setFiltroArquivo("documentos");
     expect(component.arquivosFiltrados.length).toBe(1);
-    expect(component.arquivosFiltrados[0].nome).toBe('Planta_Baixa.pdf');
+    expect(component.arquivosFiltrados[0].nome).toBe("Planta_Baixa.pdf");
 
-    component.setFiltroArquivo('imagens');
+    component.setFiltroArquivo("imagens");
     expect(component.arquivosFiltrados.length).toBe(1);
-    expect(component.arquivosFiltrados[0].nome).toBe('fachada_3d.png');
+    expect(component.arquivosFiltrados[0].nome).toBe("fachada_3d.png");
   });
 
-  it('deve abrir url para download do arquivo', () => {
-    spyOn(window, 'open');
+  it("deve abrir url para download do arquivo", () => {
+    spyOn(window, "open");
     component.baixarArquivo(mockArquivos[0] as any);
-    expect(window.open).toHaveBeenCalledWith('https://storage/planta.pdf', '_blank');
+    expect(window.open).toHaveBeenCalledWith(
+      "https://storage/planta.pdf",
+      "_blank",
+    );
   });
 
-  it('deve abrir e fechar o modal de PDF da proposta', () => {
+  it("deve abrir e fechar o modal de PDF da proposta", () => {
     component.abrirPdfProposta();
     expect(component.modalPdfAberto).toBeTrue();
     expect(component.propostaParaPdf).toBeTruthy();
-    expect(component.propostaParaPdf?.codigo).toBe('PROP-2026-01');
+    expect(component.propostaParaPdf?.codigo).toBe("PROP-2026-01");
 
     component.fecharModalPdf();
     expect(component.modalPdfAberto).toBeFalse();
     expect(component.propostaParaPdf).toBeNull();
   });
 
-  it('deve lidar com erro ao carregar projeto', () => {
-    projetoServiceSpy.obterPorId.and.returnValue(throwError(() => new Error('Erro API')));
+  it("deve lidar com erro ao carregar projeto", () => {
+    projetoServiceSpy.obterPorId.and.returnValue(
+      throwError(() => new Error("Erro API")),
+    );
     component.carregarDados();
     expect(component.loading).toBeFalse();
   });
 
-  it('deve lidar com erro ao carregar arquivos', () => {
-    arquivoServiceSpy.obterPorProjeto.and.returnValue(throwError(() => new Error('Erro API')));
+  it("deve lidar com erro ao carregar arquivos", () => {
+    arquivoServiceSpy.obterPorProjeto.and.returnValue(
+      throwError(() => new Error("Erro API")),
+    );
     component.carregarArquivos();
     expect(component.loading).toBeFalse();
   });

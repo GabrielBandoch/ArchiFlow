@@ -1,20 +1,32 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Cliente } from '../../../../../models/cliente.model';
-import { Lead } from '../../../../../models/lead.model';
-import { ClientSearchComponent, LeadSearchComponent } from '../../../../../shared';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { Cliente } from "../../../../../core/models/cliente.model";
+import { Lead } from "../../../../../core/models/lead.model";
+import {
+  ClientSearchComponent,
+  LeadSearchComponent,
+} from "../../../../../shared";
 
 @Component({
-  selector: 'app-parametros-projeto',
+  selector: "app-parametros-projeto",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ClientSearchComponent, LeadSearchComponent],
-  templateUrl: './parametros-projeto.component.html',
-  styleUrl: './parametros-projeto.component.scss'
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ClientSearchComponent,
+    LeadSearchComponent,
+  ],
+  templateUrl: "./parametros-projeto.component.html",
+  styleUrl: "./parametros-projeto.component.scss",
 })
 export class ParametrosProjetoComponent {
   @Input({ required: true }) form!: FormGroup;
-  @Input() padroesImovel: Array<{ valor: number; nome: string; fator: string }> = [];
+  @Input() padroesImovel: Array<{
+    valor: number;
+    nome: string;
+    fator: string;
+  }> = [];
   @Input() tiposProjeto: Array<{ valor: number; nome: string }> = [];
   @Input() clientes: Cliente[] = [];
   @Input() leads: Lead[] = [];
@@ -25,14 +37,14 @@ export class ParametrosProjetoComponent {
     this.padraoSelecionado.emit(valor);
   }
 
-  setTipoVinculo(tipo: 'nenhum' | 'lead' | 'cliente' | 'avulso'): void {
+  setTipoVinculo(tipo: "nenhum" | "lead" | "cliente" | "avulso"): void {
     this.form.patchValue({
       tipoVinculo: tipo,
-      clienteId: '',
-      leadId: '',
-      clienteNome: '',
-      clienteTelefone: '',
-      clienteEmail: ''
+      clienteId: "",
+      leadId: "",
+      clienteNome: "",
+      clienteTelefone: "",
+      clienteEmail: "",
     });
     this.vinculoAlterado.emit();
   }
@@ -42,15 +54,15 @@ export class ParametrosProjetoComponent {
       this.form.patchValue({
         leadId: lead.id,
         clienteNome: lead.nome,
-        clienteTelefone: lead.telefone || '',
-        clienteEmail: lead.email || ''
+        clienteTelefone: lead.telefone || "",
+        clienteEmail: lead.email || "",
       });
     } else {
       this.form.patchValue({
-        leadId: '',
-        clienteNome: '',
-        clienteTelefone: '',
-        clienteEmail: ''
+        leadId: "",
+        clienteNome: "",
+        clienteTelefone: "",
+        clienteEmail: "",
       });
     }
     this.vinculoAlterado.emit();
@@ -61,15 +73,15 @@ export class ParametrosProjetoComponent {
       this.form.patchValue({
         clienteId: cliente.id,
         clienteNome: cliente.nome,
-        clienteTelefone: cliente.telefone || '',
-        clienteEmail: cliente.email || ''
+        clienteTelefone: cliente.telefone || "",
+        clienteEmail: cliente.email || "",
       });
     } else {
       this.form.patchValue({
-        clienteId: '',
-        clienteNome: '',
-        clienteTelefone: '',
-        clienteEmail: ''
+        clienteId: "",
+        clienteNome: "",
+        clienteTelefone: "",
+        clienteEmail: "",
       });
     }
     this.vinculoAlterado.emit();
@@ -77,12 +89,12 @@ export class ParametrosProjetoComponent {
 
   onLeadChange(event: Event): void {
     const leadId = (event.target as HTMLSelectElement).value;
-    const lead = this.leads.find(l => l.id === leadId);
+    const lead = this.leads.find((l) => l.id === leadId);
     if (lead) {
       this.form.patchValue({
         clienteNome: lead.nome,
-        clienteTelefone: lead.telefone || '',
-        clienteEmail: lead.email || ''
+        clienteTelefone: lead.telefone || "",
+        clienteEmail: lead.email || "",
       });
     }
     this.vinculoAlterado.emit();
@@ -90,44 +102,52 @@ export class ParametrosProjetoComponent {
 
   onClienteChange(event: Event): void {
     const clienteId = (event.target as HTMLSelectElement).value;
-    const cliente = this.clientes.find(c => c.id === clienteId);
+    const cliente = this.clientes.find((c) => c.id === clienteId);
     if (cliente) {
       this.form.patchValue({
         clienteNome: cliente.nome,
-        clienteTelefone: cliente.telefone || '',
-        clienteEmail: cliente.email || ''
+        clienteTelefone: cliente.telefone || "",
+        clienteEmail: cliente.email || "",
       });
     }
     this.vinculoAlterado.emit();
   }
 
   get clienteSelecionadoInfo(): { nome: string; detalhes: string } | null {
-    const tipo = this.form.get('tipoVinculo')?.value;
-    if (tipo === 'lead') {
-      const leadId = this.form.get('leadId')?.value;
-      const lead = this.leads.find(l => l.id === leadId);
+    const tipo = this.form.get("tipoVinculo")?.value;
+    if (tipo === "lead") {
+      const leadId = this.form.get("leadId")?.value;
+      const lead = this.leads.find((l) => l.id === leadId);
       if (lead) {
         return {
           nome: lead.nome,
-          detalhes: lead.telefone ? `• Tel: ${lead.telefone}` : (lead.email ? `• ${lead.email}` : '')
+          detalhes: lead.telefone
+            ? `• Tel: ${lead.telefone}`
+            : lead.email
+              ? `• ${lead.email}`
+              : "",
         };
       }
-    } else if (tipo === 'cliente') {
-      const clienteId = this.form.get('clienteId')?.value;
-      const cli = this.clientes.find(c => c.id === clienteId);
+    } else if (tipo === "cliente") {
+      const clienteId = this.form.get("clienteId")?.value;
+      const cli = this.clientes.find((c) => c.id === clienteId);
       if (cli) {
         return {
           nome: cli.nome,
-          detalhes: cli.telefone ? `• Tel: ${cli.telefone}` : (cli.email ? `• ${cli.email}` : '')
+          detalhes: cli.telefone
+            ? `• Tel: ${cli.telefone}`
+            : cli.email
+              ? `• ${cli.email}`
+              : "",
         };
       }
-    } else if (tipo === 'avulso') {
-      const nome = this.form.get('clienteNome')?.value;
+    } else if (tipo === "avulso") {
+      const nome = this.form.get("clienteNome")?.value;
       if (nome) {
-        const tel = this.form.get('clienteTelefone')?.value;
+        const tel = this.form.get("clienteTelefone")?.value;
         return {
           nome: nome,
-          detalhes: tel ? `• Tel: ${tel}` : ''
+          detalhes: tel ? `• Tel: ${tel}` : "",
         };
       }
     }

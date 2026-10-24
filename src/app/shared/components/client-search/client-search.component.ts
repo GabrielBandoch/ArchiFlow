@@ -1,30 +1,53 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef, ElementRef, HostListener, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Cliente } from '../../../models/cliente.model';
-import { ButtonComponent } from '../button/button.component';
-import { ClienteService } from '../../../core/api/clientes/cliente.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { SelecionarClienteModalComponent } from '../../../dialogs/clientes/selecionar-cliente-modal/selecionar-cliente-modal.component';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  forwardRef,
+  ElementRef,
+  HostListener,
+  inject,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormsModule,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+} from "@angular/forms";
+import { Cliente } from "../../../core/models/cliente.model";
+import { ButtonComponent } from "../button/button.component";
+import { ClienteService } from "../../../core/api/clientes/cliente.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import { SelecionarClienteModalComponent } from "../../../dialogs/clientes/selecionar-cliente-modal/selecionar-cliente-modal.component";
 
 @Component({
-  selector: 'app-client-search',
+  selector: "app-client-search",
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, SelecionarClienteModalComponent],
-  templateUrl: './client-search.component.html',
-  styleUrl: './client-search.component.scss',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonComponent,
+    SelecionarClienteModalComponent,
+  ],
+  templateUrl: "./client-search.component.html",
+  styleUrl: "./client-search.component.scss",
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => ClientSearchComponent),
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
-export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnChanges {
-  @Input() id = '';
+export class ClientSearchComponent
+  implements ControlValueAccessor, OnInit, OnChanges
+{
+  @Input() id = "";
   @Input() label?: string;
-  @Input() placeholder = 'Digite ao menos 3 letras para pesquisar...';
+  @Input() placeholder = "Digite ao menos 3 letras para pesquisar...";
   @Input() required = false;
   @Input() error?: string;
   @Input() clientes: Cliente[] = [];
@@ -36,7 +59,7 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   private elementRef = inject(ElementRef);
 
   clienteSelecionado: Cliente | null = null;
-  searchText = '';
+  searchText = "";
   sugestoes: Cliente[] = [];
   showDropdown = false;
   showModal = false;
@@ -53,7 +76,7 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['clientes']) {
+    if (changes["clientes"]) {
       if (this.pendingValue) {
         this.writeValue(this.pendingValue);
       }
@@ -70,12 +93,14 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
         }
       },
       error: () => {
-        this.notificationService?.warning('Não foi possível carregar a lista de clientes.');
-      }
+        this.notificationService?.warning(
+          "Não foi possível carregar a lista de clientes.",
+        );
+      },
     });
   }
 
-  @HostListener('document:click', ['$event'])
+  @HostListener("document:click", ["$event"])
   onClickOutside(event: MouseEvent): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.showDropdown = false;
@@ -83,23 +108,23 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   }
 
   writeValue(value: unknown): void {
-    this.pendingValue = value as (string | Cliente | null);
+    this.pendingValue = value as string | Cliente | null;
     if (!value) {
       this.clienteSelecionado = null;
-      this.searchText = '';
+      this.searchText = "";
       return;
     }
 
-    if (typeof value === 'string') {
-      const cli = (this.clientes || []).find(c => c.id === value);
+    if (typeof value === "string") {
+      const cli = (this.clientes || []).find((c) => c.id === value);
       if (cli) {
         this.clienteSelecionado = cli;
         this.searchText = cli.nome;
       }
-    } else if (typeof value === 'object' && (value as Cliente).id) {
+    } else if (typeof value === "object" && (value as Cliente).id) {
       const cli = value as Cliente;
       this.clienteSelecionado = cli;
-      this.searchText = cli.nome || '';
+      this.searchText = cli.nome || "";
     }
   }
 
@@ -118,11 +143,12 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
   onInputSearch(): void {
     const q = this.searchText.trim().toLowerCase();
     if (q.length >= 3) {
-      this.sugestoes = (this.clientes || []).filter(c => 
-        c.nome.toLowerCase().includes(q) || 
-        c.email.toLowerCase().includes(q) ||
-        (c.cpfCnpj && c.cpfCnpj.toLowerCase().includes(q)) ||
-        (c.telefone && c.telefone.toLowerCase().includes(q))
+      this.sugestoes = (this.clientes || []).filter(
+        (c) =>
+          c.nome.toLowerCase().includes(q) ||
+          c.email.toLowerCase().includes(q) ||
+          (c.cpfCnpj && c.cpfCnpj.toLowerCase().includes(q)) ||
+          (c.telefone && c.telefone.toLowerCase().includes(q)),
       );
       this.showDropdown = true;
     } else {
@@ -143,7 +169,7 @@ export class ClientSearchComponent implements ControlValueAccessor, OnInit, OnCh
 
   limparSelecao(): void {
     this.clienteSelecionado = null;
-    this.searchText = '';
+    this.searchText = "";
     this.showDropdown = false;
     this.pendingValue = null;
     this.onChange(null);

@@ -326,7 +326,7 @@
 
       &:before {
         position: absolute;
-        content: '';
+        content: "";
         height: 16px;
         width: 16px;
         left: 3px;
@@ -492,12 +492,15 @@
   }
 
   .crm-table {
-    th, td {
+    th,
+    td {
       padding: 12px 10px;
     }
 
-    .th-projects, .td-projects,
-    .th-portal, .td-portal {
+    .th-projects,
+    .td-projects,
+    .th-portal,
+    .td-portal {
       display: none;
     }
   }

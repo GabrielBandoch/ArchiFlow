@@ -7,17 +7,18 @@
   line-height: 1;
   white-space: nowrap;
   letter-spacing: 0.02em;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   .af-badge-icon {
     font-size: 14px;
     line-height: 1;
   }
 
-  /* Sizes */
   &.af-badge-sm {
     padding: 3px 8px;
-    font-size: 0.75rem; /* 12px */
+    font-size: 0.75rem;
 
     .af-badge-icon {
       font-size: 13px;
@@ -26,14 +27,13 @@
 
   &.af-badge-md {
     padding: 5px 12px;
-    font-size: 0.8125rem; /* 13px */
+    font-size: 0.8125rem;
 
     .af-badge-icon {
       font-size: 15px;
     }
   }
 
-  /* Variants */
   &.af-badge-success {
     background-color: #e8f5e9;
     color: #2e7d32;

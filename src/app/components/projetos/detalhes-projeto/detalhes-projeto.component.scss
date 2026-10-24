@@ -17,11 +17,20 @@
     text-decoration: none;
     color: var(--af-on-surface-variant, #79747e);
     transition: color 0.15s ease;
-    .icon-home { font-size: 18px; }
-    &:hover { color: var(--af-primary, #765538); }
+    .icon-home {
+      font-size: 18px;
+    }
+    &:hover {
+      color: var(--af-primary, #765538);
+    }
   }
-  .breadcrumb-separator { color: var(--af-outline, #79747e); }
-  .breadcrumb-current { color: var(--af-on-surface, #1d1b20); font-weight: 600; }
+  .breadcrumb-separator {
+    color: var(--af-outline, #79747e);
+  }
+  .breadcrumb-current {
+    color: var(--af-on-surface, #1d1b20);
+    font-weight: 600;
+  }
 }
 
 .dossier-nav-tabs {

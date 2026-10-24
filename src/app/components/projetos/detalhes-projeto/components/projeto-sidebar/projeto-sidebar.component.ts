@@ -1,15 +1,15 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Projeto } from '../../../../../models/projeto.model';
-import { Arquivo } from '../../../../../models/arquivo.model';
-import { RepresentanteCliente } from '../../../../../models/cliente.model';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Projeto } from "../../../../../core/models/projeto.model";
+import { Arquivo } from "../../../../../core/models/arquivo.model";
+import { RepresentanteCliente } from "../../../../../core/models/cliente.model";
 
 @Component({
-  selector: 'app-projeto-sidebar',
+  selector: "app-projeto-sidebar",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './projeto-sidebar.component.html',
-  styleUrl: './projeto-sidebar.component.scss'
+  templateUrl: "./projeto-sidebar.component.html",
+  styleUrl: "./projeto-sidebar.component.scss",
 })
 export class ProjetoSidebarComponent {
   @Input({ required: true }) projeto!: Projeto;
@@ -34,10 +34,11 @@ export class ProjetoSidebarComponent {
   }
 
   getFileIcon(nome: string): string {
-    const ext = nome.split('.').pop()?.toLowerCase();
-    if (ext === 'pdf') return 'picture_as_pdf';
-    if (['jpg', 'jpeg', 'png', 'webp', 'svg'].includes(ext || '')) return 'image';
-    if (['dwg', 'dxf', 'rvt', 'skp'].includes(ext || '')) return 'architecture';
-    return 'description';
+    const ext = nome.split(".").pop()?.toLowerCase();
+    if (ext === "pdf") return "picture_as_pdf";
+    if (["jpg", "jpeg", "png", "webp", "svg"].includes(ext || ""))
+      return "image";
+    if (["dwg", "dxf", "rvt", "skp"].includes(ext || "")) return "architecture";
+    return "description";
   }
 }

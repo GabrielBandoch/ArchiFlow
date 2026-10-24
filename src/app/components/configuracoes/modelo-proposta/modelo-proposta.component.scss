@@ -1,8 +1,5 @@
-@use '../../../../styles/variables' as *;
+@use "../../../../styles/variables" as *;
 
-// -----------------------------------------------------------------------------
-// PÁGINA PRINCIPAL - MODELO DE PROPOSTA
-// -----------------------------------------------------------------------------
 .modelo-proposta-page {
   width: 100%;
   max-width: 1600px;
@@ -21,9 +18,6 @@
   }
 }
 
-// -----------------------------------------------------------------------------
-// CABEÇALHO DA PÁGINA
-// -----------------------------------------------------------------------------
 .page-header {
   padding-bottom: 24px;
   border-bottom: 1px solid var(--af-outline-variant, #d3c4b9);
@@ -84,9 +78,6 @@
   }
 }
 
-// -----------------------------------------------------------------------------
-// BARRA DE NAVEGAÇÃO DE ABAS
-// -----------------------------------------------------------------------------
 .nav-tabs-bar {
   display: flex;
   align-items: center;
@@ -147,9 +138,6 @@
   }
 }
 
-// -----------------------------------------------------------------------------
-// GRID PRINCIPAL DE DOIS PAINÉIS
-// -----------------------------------------------------------------------------
 .config-editor-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
@@ -193,9 +181,6 @@
   }
 }
 
-// -----------------------------------------------------------------------------
-// CONTEÚDO DAS ABAS (TAB PANES)
-// -----------------------------------------------------------------------------
 .tab-pane {
   display: flex;
   flex-direction: column;
@@ -224,9 +209,6 @@
   margin: 0;
 }
 
-// -----------------------------------------------------------------------------
-// SEÇÕES E BLOCOS DE FORMULÁRIO (COM ESPAÇAMENTO E HIERARQUIA CLARA)
-// -----------------------------------------------------------------------------
 .form-section-block {
   display: flex;
   flex-direction: column;
@@ -357,9 +339,6 @@
   letter-spacing: 0.02em;
 }
 
-// -----------------------------------------------------------------------------
-// PALETA CROMÁTICA DO DOCUMENTO
-// -----------------------------------------------------------------------------
 .palette-selector-card {
   background-color: var(--af-surface-container-low, #f6f3f2);
   border: 1px solid var(--af-surface-container, #e5e2e1);
@@ -453,9 +432,6 @@
   }
 }
 
-// -----------------------------------------------------------------------------
-// LOGOTIPO OFICIAL & DROPZONE LUXUOSO
-// -----------------------------------------------------------------------------
 .logo-upload-container {
   width: 100%;
 }
@@ -596,9 +572,6 @@
   }
 }
 
-// -----------------------------------------------------------------------------
-// FEATURE TOGGLES & SWITCHES IOS (ESPAÇOSO, CLARO E MODERNO)
-// -----------------------------------------------------------------------------
 .feature-toggles-list {
   display: flex;
   flex-direction: column;
@@ -690,9 +663,6 @@
   }
 }
 
-// -----------------------------------------------------------------------------
-// WHATSAPP INTEGRAÇÃO & SIMULADOR
-// -----------------------------------------------------------------------------
 .tags-helper-bar {
   background-color: var(--af-surface-container-low, #f6f3f2);
   border-radius: 8px;
@@ -778,9 +748,6 @@
   white-space: pre-line;
 }
 
-// -----------------------------------------------------------------------------
-// COLUNA DIREITA: PREVIEW EDITORIAL A4 (DESK CANVAS ESPAÇOSO)
-// -----------------------------------------------------------------------------
 .preview-column {
   position: sticky;
   top: 24px;
@@ -831,7 +798,7 @@
   overflow-x: auto;
   max-width: 100%;
   border-radius: 16px;
-  background-color: #242220; // Luxury dark desk background
+  background-color: #242220;
   padding: 36px 24px;
   display: flex;
   justify-content: center;
@@ -845,9 +812,6 @@
   }
 }
 
-// -----------------------------------------------------------------------------
-// FOLHA A4 TIMBRADA ARQUITETÔNICA (REFINADA, ELEGANTE E ESPAÇOSA)
-// -----------------------------------------------------------------------------
 .a4-sheet {
   background-color: #ffffff !important;
   border-radius: 4px;
@@ -858,7 +822,11 @@
   height: fit-content;
   min-height: 100%;
   flex-shrink: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   color: #1b1c1c;
   position: relative;
   box-sizing: border-box;
@@ -1058,7 +1026,8 @@
     gap: 8px;
     padding: 8px 10px;
 
-    .meta-cell strong, .meta-cell span {
+    .meta-cell strong,
+    .meta-cell span {
       white-space: normal !important;
       word-break: break-word;
     }
@@ -1077,7 +1046,8 @@
       letter-spacing: 0.05em;
     }
 
-    strong, span {
+    strong,
+    span {
       font-size: 11px;
       color: #1b1c1c;
       white-space: nowrap;

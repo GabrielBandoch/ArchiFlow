@@ -5,20 +5,20 @@ export enum StatusProjeto {
   Aprovacao = 3,
   Execucao = 4,
   Concluido = 5,
-  Cancelado = 6
+  Cancelado = 6,
 }
 
 export enum TipoProjeto {
   Residencial = 0,
   Comercial = 1,
   Corporativo = 2,
-  Interiores = 3
+  Interiores = 3,
 }
 
 export enum StatusEtapa {
   Pendente = 0,
   EmAndamento = 1,
-  Concluida = 2
+  Concluida = 2,
 }
 
 export interface TarefaEtapa {
@@ -26,6 +26,7 @@ export interface TarefaEtapa {
   etapaId: string;
   titulo: string;
   concluida: boolean;
+  dataLimite?: string;
 }
 
 export interface EtapaProjeto {

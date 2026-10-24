@@ -24,7 +24,6 @@
   }
 }
 
-// CLIENTE VINCULO SECTION
 .cliente-vinculo-section {
   background-color: #faf8f5;
   border: 1px solid #ebdcd0;
@@ -136,7 +135,9 @@
   background-color: #fcfbfa;
   font-size: 0.95rem;
   color: #111827;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
   &:focus {
     outline: none;

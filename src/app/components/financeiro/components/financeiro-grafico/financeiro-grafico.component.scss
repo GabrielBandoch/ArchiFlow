@@ -112,7 +112,9 @@
 }
 
 .svg-bar {
-  transition: opacity 0.2s, transform 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
   cursor: pointer;
 
   &:hover {
@@ -131,4 +133,3 @@
     fill: var(--af-error, #ba1a1a);
   }
 }
-

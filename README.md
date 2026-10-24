@@ -28,8 +28,8 @@ src/
 └── app/
     ├── core/
     │   ├── api/          # Services HTTP por módulo (um arquivo por módulo)
+    │   ├── models/       # Interfaces TypeScript espelhando o backend
     │   └── pipes/        # Pipes standalone reutilizáveis
-    ├── models/           # Interfaces TypeScript espelhando o backend
     ├── commands/         # Interfaces de entrada (POST/PUT/PATCH)
     └── components/
         ├── dashboard/

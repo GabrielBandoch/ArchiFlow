@@ -1,8 +1,8 @@
 <div class="login-page d-flex w-full h-full overflow-hidden">
   <div class="image-side position-relative h-full">
-    <img 
-      alt="Modern architectural interior" 
-      class="bg-image w-full h-full" 
+    <img
+      alt="Modern architectural interior"
+      class="bg-image w-full h-full"
       src="assets/images/login-architecture.png"
     />
     <div class="dark-overlay position-absolute"></div>
@@ -14,28 +14,45 @@
     </div>
   </div>
 
-  <div class="form-side d-flex flex-direction-column justify-content-between position-relative overflow-y-auto h-full">
-    <div class="logo-header d-flex align-items-center gap-sm animate-fade-in-up">
+  <div
+    class="form-side d-flex flex-direction-column justify-content-between position-relative overflow-y-auto h-full"
+  >
+    <div
+      class="logo-header d-flex align-items-center gap-sm animate-fade-in-up"
+    >
       <app-cotu-logo [showText]="false" [size]="40"></app-cotu-logo>
     </div>
 
     <div class="form-container w-full">
       <div class="form-intro margin-bottom-xl animate-fade-in-up delay-100">
         <h2 class="intro-title">Bem-vindo de volta</h2>
-        <p class="intro-subtitle font-body-md">Insira suas credenciais para acessar seu workspace.</p>
+        <p class="intro-subtitle font-body-md">
+          Insira suas credenciais para acessar seu workspace.
+        </p>
       </div>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form d-flex flex-direction-column gap-lg">
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()"
+        class="auth-form d-flex flex-direction-column gap-lg"
+      >
         <div class="animate-fade-in-up delay-200">
-          <app-input 
-            id="email" 
-            type="email" 
-            label="E-mail corporativo" 
-            placeholder="nome@estudio.com.br" 
-            icon="mail" 
+          <app-input
+            id="email"
+            type="email"
+            label="E-mail corporativo"
+            placeholder="nome@estudio.com.br"
+            icon="mail"
             autocomplete="username"
             formControlName="email"
-            [error]="submitted && f['email'].errors ? (f['email'].errors['required'] ? 'O e-mail é obrigatório.' : 'Insira um e-mail válido.') : undefined">
+            [error]="
+              submitted && f['email'].errors
+                ? f['email'].errors['required']
+                  ? 'O e-mail é obrigatório.'
+                  : 'Insira um e-mail válido.'
+                : undefined
+            "
+          >
           </app-input>
         </div>
 
@@ -45,19 +62,27 @@
               <a routerLink="/recuperar-senha">Esqueci a senha</a>
             </span>
           </div>
-          <app-input 
-            id="senha" 
-            type="password" 
-            label="Senha" 
-            placeholder="••••••••" 
-            icon="lock" 
+          <app-input
+            id="senha"
+            type="password"
+            label="Senha"
+            placeholder="••••••••"
+            icon="lock"
             autocomplete="current-password"
             formControlName="senha"
-            [error]="submitted && f['senha'].errors ? 'A senha é obrigatória.' : undefined">
+            [error]="
+              submitted && f['senha'].errors
+                ? 'A senha é obrigatória.'
+                : undefined
+            "
+          >
           </app-input>
         </div>
 
-        <div *ngIf="sessionExpired && !errorMessage" class="alert-info animate-fade-in-up">
+        <div
+          *ngIf="sessionExpired && !errorMessage"
+          class="alert-info animate-fade-in-up"
+        >
           <span class="material-symbols-outlined icon">info</span>
           <span>Sua sessão expirou. Por favor, faça login novamente.</span>
         </div>
@@ -69,13 +94,17 @@
         <div class="animate-fade-in-up delay-400">
           <app-button type="submit" [loading]="loading">
             Entrar
-            <span class="material-symbols-outlined btn-arrow-icon">arrow_forward</span>
+            <span class="material-symbols-outlined btn-arrow-icon"
+              >arrow_forward</span
+            >
           </app-button>
         </div>
       </form>
     </div>
 
-    <div class="footer-area d-flex justify-content-between align-items-center gap-md margin-top-xl animate-fade-in-up delay-400">
+    <div
+      class="footer-area d-flex justify-content-between align-items-center gap-md margin-top-xl animate-fade-in-up delay-400"
+    >
       <span class="footer-copy font-label-sm">© 2026 COTU Technologies</span>
       <span class="footer-version font-label-sm">Versão 3.2.0 (Studio)</span>
     </div>

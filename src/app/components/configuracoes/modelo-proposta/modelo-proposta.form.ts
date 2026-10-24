@@ -1,5 +1,5 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConfiguracaoProposta } from '../../../core/models/configuracao-proposta.model';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ConfiguracaoProposta } from "../../../core/models/configuracao-proposta.model";
 
 export class ModeloPropostaForm {
   static create(fb: FormBuilder, config: ConfiguracaoProposta): FormGroup {
@@ -10,8 +10,8 @@ export class ModeloPropostaForm {
       email: [config.email, [Validators.required, Validators.email]],
       telefone: [config.telefone, [Validators.required]],
       endereco: [config.endereco],
-      logoUrl: [config.logoUrl || ''],
-      corPrimaria: [config.corPrimaria || '#765538', [Validators.required]],
+      logoUrl: [config.logoUrl || ""],
+      corPrimaria: [config.corPrimaria || "#765538", [Validators.required]],
 
       exibirCabecalho: [config.exibirCabecalho],
       exibirResumo: [config.exibirResumo],
@@ -22,12 +22,21 @@ export class ModeloPropostaForm {
       exibirAssinaturas: [config.exibirAssinaturas],
 
       textoApresentacao: [config.textoApresentacao, [Validators.required]],
-      validadeDias: [config.validadeDias, [Validators.required, Validators.min(1)]],
-      condicoesPagamentoPadrao: [config.condicoesPagamentoPadrao, [Validators.required]],
+      validadeDias: [
+        config.validadeDias,
+        [Validators.required, Validators.min(1)],
+      ],
+      condicoesPagamentoPadrao: [
+        config.condicoesPagamentoPadrao,
+        [Validators.required],
+      ],
       chavePix: [config.chavePix],
       dadosBancarios: [config.dadosBancarios],
       termosGerais: [config.termosGerais, [Validators.required]],
-      templateMensagemWhatsapp: [config.templateMensagemWhatsapp, [Validators.required]]
+      templateMensagemWhatsapp: [
+        config.templateMensagemWhatsapp,
+        [Validators.required],
+      ],
     });
   }
 }

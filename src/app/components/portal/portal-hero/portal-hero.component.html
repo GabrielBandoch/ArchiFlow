@@ -1,4 +1,4 @@
-﻿<section class="project-hero" *ngIf="projeto">
+<section class="project-hero" *ngIf="projeto">
   <div class="hero-main">
     <div class="badge-group">
       <span class="status-chip status-{{ projeto.status }}">
@@ -10,22 +10,28 @@
       </span>
     </div>
 
-    <h1 class="project-title">{{ projeto.nome || 'Projeto Arquitetônico' }}</h1>
-    <p class="project-description" *ngIf="projeto.descricao">{{ projeto.descricao }}</p>
+    <h1 class="project-title">{{ projeto.nome || "Projeto Arquitet�nico" }}</h1>
+    <p class="project-description" *ngIf="projeto.descricao">
+      {{ projeto.descricao }}
+    </p>
 
     <div class="project-meta-grid">
       <div class="meta-item">
         <span class="material-symbols-outlined meta-icon">square_foot</span>
         <div class="meta-texts">
           <span class="meta-label">Metragem Total</span>
-          <span class="meta-value">{{ projeto.metragemTotal ? (projeto.metragemTotal + ' m²') : 'Não informada' }}</span>
+          <span class="meta-value">{{
+            projeto.metragemTotal
+              ? projeto.metragemTotal + " m�"
+              : "N�o informada"
+          }}</span>
         </div>
       </div>
 
       <div class="meta-item">
         <span class="material-symbols-outlined meta-icon">calendar_today</span>
         <div class="meta-texts">
-          <span class="meta-label">Início</span>
+          <span class="meta-label">In�cio</span>
           <span class="meta-value">{{ formatarData(projeto.dataInicio) }}</span>
         </div>
       </div>
@@ -33,8 +39,10 @@
       <div class="meta-item">
         <span class="material-symbols-outlined meta-icon">event_upcoming</span>
         <div class="meta-texts">
-          <span class="meta-label">Previsão de Conclusão</span>
-          <span class="meta-value highlight-date">{{ formatarData(projeto.dataPrevistaEntrega) }}</span>
+          <span class="meta-label">Previs�o de Conclus�o</span>
+          <span class="meta-value highlight-date">{{
+            formatarData(projeto.dataPrevistaEntrega)
+          }}</span>
         </div>
       </div>
     </div>
@@ -45,14 +53,18 @@
       <span class="progress-title">Progresso Geral</span>
       <span class="progress-percentage">{{ percentualProgresso }}%</span>
     </div>
-    
+
     <div class="progress-bar-container">
-      <div class="progress-bar-fill" [style.width.%]="percentualProgresso"></div>
+      <div
+        class="progress-bar-fill"
+        [style.width.%]="percentualProgresso"
+      ></div>
     </div>
 
     <div class="progress-footer">
       <span class="etapas-counter">
-        <strong>{{ totalConcluidas }}</strong> de <strong>{{ totalEtapas }}</strong> etapas concluídas
+        <strong>{{ totalConcluidas }}</strong> de
+        <strong>{{ totalEtapas }}</strong> etapas conclu�das
       </span>
     </div>
   </div>

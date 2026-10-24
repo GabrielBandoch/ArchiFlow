@@ -1,13 +1,13 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import * as signalR from '@microsoft/signalr';
-import { AuthService } from './auth.service';
-import { MensagemChat } from '../../models/mensagem-chat.model';
-import { environment } from '../../../environments/environment';
+import { Injectable, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { BehaviorSubject, Observable, tap } from "rxjs";
+import * as signalR from "@microsoft/signalr";
+import { AuthService } from "./auth.service";
+import { MensagemChat } from "../models/mensagem-chat.model";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ChatService {
   private http = inject(HttpClient);
@@ -31,37 +31,46 @@ export class ChatService {
   }
 
   public obterHistorico(projetoId: string): Observable<MensagemChat[]> {
-    return this.http.get<MensagemChat[]>(`${environment.apiUrl}/mensagens/projeto/${projetoId}`).pipe(
-      tap(historico => {
-        this.mensagensSubject.next(historico || []);
-      })
-    );
+    return this.http
+      .get<MensagemChat[]>(
+        `${environment.apiUrl}/mensagens/projeto/${projetoId}`,
+      )
+      .pipe(
+        tap((historico) => {
+          this.mensagensSubject.next(historico || []);
+        }),
+      );
   }
 
   public async iniciarConexao(projetoId: string): Promise<void> {
     this.projetoIdAtual = projetoId;
 
-    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      await this.hubConnection.invoke('EntrarNoProjeto', projetoId);
+    if (
+      this.hubConnection &&
+      this.hubConnection.state === signalR.HubConnectionState.Connected
+    ) {
+      await this.hubConnection.invoke("EntrarNoProjeto", projetoId);
       return;
     }
 
     const token = this.authService.token;
-    const baseApi = environment.apiUrl.replace(/\/api\/?$/, '');
-    const hubUrl = baseApi ? `${baseApi}/hubs/chat` : '/hubs/chat';
+    const baseApi = environment.apiUrl.replace(/\/api\/?$/, "");
+    const hubUrl = baseApi ? `${baseApi}/hubs/chat` : "/hubs/chat";
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl, {
-        accessTokenFactory: () => token || '',
-        transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+        accessTokenFactory: () => token || "",
+        transport:
+          signalR.HttpTransportType.WebSockets |
+          signalR.HttpTransportType.LongPolling,
       })
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.Warning)
       .build();
 
-    this.hubConnection.on('ReceiveMessage', (msg: MensagemChat) => {
+    this.hubConnection.on("ReceiveMessage", (msg: MensagemChat) => {
       const atuais = this.mensagensSubject.value;
-      if (!atuais.some(m => m.id === msg.id)) {
+      if (!atuais.some((m) => m.id === msg.id)) {
         this.mensagensSubject.next([...atuais, msg]);
       }
     });
@@ -69,7 +78,10 @@ export class ChatService {
     this.hubConnection.onreconnected(async () => {
       this.conectadoSubject.next(true);
       if (this.projetoIdAtual) {
-        await this.hubConnection?.invoke('EntrarNoProjeto', this.projetoIdAtual);
+        await this.hubConnection?.invoke(
+          "EntrarNoProjeto",
+          this.projetoIdAtual,
+        );
       }
     });
 
@@ -80,31 +92,45 @@ export class ChatService {
     try {
       await this.hubConnection.start();
       this.conectadoSubject.next(true);
-      await this.hubConnection.invoke('EntrarNoProjeto', projetoId);
+      await this.hubConnection.invoke("EntrarNoProjeto", projetoId);
     } catch {
       this.conectadoSubject.next(false);
     }
   }
 
-  public async enviarMensagem(projetoId: string, conteudo: string): Promise<void> {
+  public async enviarMensagem(
+    projetoId: string,
+    conteudo: string,
+  ): Promise<void> {
     if (!conteudo || !conteudo.trim() || conteudo.trim().length > 2000) return;
 
-    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+    if (
+      this.hubConnection &&
+      this.hubConnection.state === signalR.HubConnectionState.Connected
+    ) {
       try {
-        await this.hubConnection.invoke('EnviarMensagem', projetoId, conteudo.trim());
+        await this.hubConnection.invoke(
+          "EnviarMensagem",
+          projetoId,
+          conteudo.trim(),
+        );
         return;
-      } catch {
-      }
+      } catch {}
     }
 
-    const novaMsg = await this.http.post<MensagemChat>(`${environment.apiUrl}/mensagens/projeto/${projetoId}`, {
-      projetoId,
-      conteudo: conteudo.trim()
-    }).toPromise();
+    const novaMsg = await this.http
+      .post<MensagemChat>(
+        `${environment.apiUrl}/mensagens/projeto/${projetoId}`,
+        {
+          projetoId,
+          conteudo: conteudo.trim(),
+        },
+      )
+      .toPromise();
 
     if (novaMsg) {
       const atuais = this.mensagensSubject.value;
-      if (!atuais.some(m => m.id === novaMsg.id)) {
+      if (!atuais.some((m) => m.id === novaMsg.id)) {
         this.mensagensSubject.next([...atuais, novaMsg]);
       }
     }
@@ -114,7 +140,7 @@ export class ChatService {
     if (this.hubConnection) {
       try {
         if (this.projetoIdAtual) {
-          await this.hubConnection.invoke('SairDoProjeto', this.projetoIdAtual);
+          await this.hubConnection.invoke("SairDoProjeto", this.projetoIdAtual);
         }
         await this.hubConnection.stop();
       } catch {

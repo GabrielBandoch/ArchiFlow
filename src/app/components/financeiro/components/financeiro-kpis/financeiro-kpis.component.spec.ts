@@ -1,19 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LOCALE_ID } from '@angular/core';
-import { registerLocaleData } from '@angular/common';
-import localePt from '@angular/common/locales/pt';
-import { FinanceiroKpisComponent } from './financeiro-kpis.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { LOCALE_ID } from "@angular/core";
+import { registerLocaleData } from "@angular/common";
+import localePt from "@angular/common/locales/pt";
+import { FinanceiroKpisComponent } from "./financeiro-kpis.component";
 
 registerLocaleData(localePt);
 
-describe('FinanceiroKpisComponent', () => {
+describe("FinanceiroKpisComponent", () => {
   let component: FinanceiroKpisComponent;
   let fixture: ComponentFixture<FinanceiroKpisComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinanceiroKpisComponent],
-      providers: [{ provide: LOCALE_ID, useValue: 'pt-BR' }]
+      providers: [{ provide: LOCALE_ID, useValue: "pt-BR" }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinanceiroKpisComponent);
@@ -21,7 +21,7 @@ describe('FinanceiroKpisComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create and display input values', () => {
+  it("should create and display input values", () => {
     component.totalPrevisto = 150000;
     component.totalRecebido = 90000;
     component.totalPendente = 50000;
@@ -33,4 +33,3 @@ describe('FinanceiroKpisComponent', () => {
     expect(component.totalRecebido).toBe(90000);
   });
 });
-

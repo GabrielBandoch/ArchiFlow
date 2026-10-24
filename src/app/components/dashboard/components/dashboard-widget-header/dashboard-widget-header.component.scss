@@ -14,11 +14,26 @@
     font-size: 22px;
   }
 
-  &.icon-blue { background-color: rgba(37, 99, 235, 0.12); color: #2563eb; }
-  &.icon-terracotta { background-color: rgba(118, 85, 56, 0.12); color: var(--af-primary); }
-  &.icon-amber { background-color: rgba(217, 119, 6, 0.12); color: #d97706; }
-  &.icon-purple { background-color: rgba(147, 51, 234, 0.12); color: #9333ea; }
-  &.icon-green { background-color: rgba(16, 185, 129, 0.12); color: #059669; }
+  &.icon-blue {
+    background-color: rgba(37, 99, 235, 0.12);
+    color: #2563eb;
+  }
+  &.icon-terracotta {
+    background-color: rgba(118, 85, 56, 0.12);
+    color: var(--af-primary);
+  }
+  &.icon-amber {
+    background-color: rgba(217, 119, 6, 0.12);
+    color: #d97706;
+  }
+  &.icon-purple {
+    background-color: rgba(147, 51, 234, 0.12);
+    color: #9333ea;
+  }
+  &.icon-green {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #059669;
+  }
 }
 
 .card-title {

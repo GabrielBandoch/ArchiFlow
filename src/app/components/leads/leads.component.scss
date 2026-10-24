@@ -117,12 +117,24 @@
   border-radius: var(--af-radius-full);
   display: inline-block;
 
-  &.status-novo { background-color: var(--af-tertiary); }
-  &.status-contato { background-color: var(--af-primary-container); }
-  &.status-proposta { background-color: var(--af-outline); }
-  &.status-negociando { background-color: var(--af-primary); }
-  &.status-convertido { background-color: #2e7d32; }
-  &.status-perdido { background-color: var(--af-error); }
+  &.status-novo {
+    background-color: var(--af-tertiary);
+  }
+  &.status-contato {
+    background-color: var(--af-primary-container);
+  }
+  &.status-proposta {
+    background-color: var(--af-outline);
+  }
+  &.status-negociando {
+    background-color: var(--af-primary);
+  }
+  &.status-convertido {
+    background-color: #2e7d32;
+  }
+  &.status-perdido {
+    background-color: var(--af-error);
+  }
 }
 
 .lead-card {
@@ -135,7 +147,7 @@
   cursor: grab;
   position: relative;
   flex-shrink: 0;
-  
+
   &:active {
     cursor: grabbing;
     opacity: 0.5;
@@ -168,7 +180,9 @@
       padding: 2px;
       border-radius: var(--af-radius-sm);
       opacity: 0;
-      transition: opacity 0.2s, background-color 0.2s;
+      transition:
+        opacity 0.2s,
+        background-color 0.2s;
 
       &:hover {
         background-color: var(--af-error-container);
@@ -204,7 +218,7 @@
         font-size: 14px;
         color: var(--af-outline);
       }
-      
+
       span.truncate {
         max-width: 220px;
         overflow: hidden;

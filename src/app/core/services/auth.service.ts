@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AutenticacaoService } from '../api';
-import { Usuario } from '../../models/usuario.model';
-import { LoginCommand } from '../../commands/autenticacao.commands';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { AutenticacaoService } from "../api";
+import { Usuario } from "../models/usuario.model";
+import { LoginCommand } from "../../commands/autenticacao.commands";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthService {
   private currentUserSubject: BehaviorSubject<Usuario | undefined>;
@@ -15,20 +15,22 @@ export class AuthService {
   constructor(private apiService: AutenticacaoService) {
     let storedUser: Usuario | undefined;
     try {
-      const userJson = localStorage.getItem('currentUser');
+      const userJson = localStorage.getItem("currentUser");
       if (userJson) {
         const parsed = JSON.parse(userJson);
         if (parsed?.token && !this.isTokenExpired(parsed.token)) {
           storedUser = parsed;
         } else {
-          localStorage.removeItem('currentUser');
+          localStorage.removeItem("currentUser");
         }
       }
     } catch (e) {
-      console.error('Erro ao ler usuário do localStorage', e);
-      localStorage.removeItem('currentUser');
+      console.error("Erro ao ler usuário do localStorage", e);
+      localStorage.removeItem("currentUser");
     }
-    this.currentUserSubject = new BehaviorSubject<Usuario | undefined>(storedUser);
+    this.currentUserSubject = new BehaviorSubject<Usuario | undefined>(
+      storedUser,
+    );
     this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
@@ -39,14 +41,14 @@ export class AuthService {
   public isTokenExpired(token?: string): boolean {
     if (!token) return true;
     try {
-      const parts = token.split('.');
+      const parts = token.split(".");
       if (parts.length !== 3) return true;
-      const payloadBase64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const payloadBase64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
       const payloadJson = decodeURIComponent(
         atob(payloadBase64)
-          .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(""),
       );
       const payload = JSON.parse(payloadJson);
       if (!payload.exp) return false;
@@ -75,7 +77,7 @@ export class AuthService {
 
   public get isCliente(): boolean {
     const perfil = this.currentUserValue?.perfil;
-    return perfil === 'Cliente' || perfil === 'ClienteFinal';
+    return perfil === "Cliente" || perfil === "ClienteFinal";
   }
 
   public get isStaff(): boolean {
@@ -85,7 +87,11 @@ export class AuthService {
 
   public get isAdmin(): boolean {
     const perfil = this.currentUserValue?.perfil;
-    return perfil === 'Administrador' || perfil === 'ArquitetoAdmin' || perfil === 'AdministradorGeral';
+    return (
+      perfil === "Administrador" ||
+      perfil === "ArquitetoAdmin" ||
+      perfil === "AdministradorGeral"
+    );
   }
 
   public hasModulePermission(modulo: string): boolean {
@@ -97,23 +103,23 @@ export class AuthService {
     if (!modulos || modulos.length === 0) {
       return false;
     }
-    return modulos.some(m => m.toLowerCase() === modulo.toLowerCase());
+    return modulos.some((m) => m.toLowerCase() === modulo.toLowerCase());
   }
 
   public getFirstAllowedRoute(): string {
     if (this.isCliente) {
-      return '/portal';
+      return "/portal";
     }
     const candidateRoutes: { modulo: string; route: string }[] = [
-      { modulo: 'dashboard', route: '/dashboard' },
-      { modulo: 'projetos', route: '/projetos' },
-      { modulo: 'clientes', route: '/clientes' },
-      { modulo: 'leads', route: '/leads' },
-      { modulo: 'fornecedores', route: '/fornecedores' },
-      { modulo: 'agenda', route: '/agenda' },
-      { modulo: 'financeiro', route: '/financeiro' },
-      { modulo: 'simulador', route: '/simulador' },
-      { modulo: 'configuracoes', route: '/configuracoes' }
+      { modulo: "dashboard", route: "/dashboard" },
+      { modulo: "projetos", route: "/projetos" },
+      { modulo: "clientes", route: "/clientes" },
+      { modulo: "leads", route: "/leads" },
+      { modulo: "fornecedores", route: "/fornecedores" },
+      { modulo: "agenda", route: "/agenda" },
+      { modulo: "financeiro", route: "/financeiro" },
+      { modulo: "simulador", route: "/simulador" },
+      { modulo: "configuracoes", route: "/configuracoes" },
     ];
 
     for (const item of candidateRoutes) {
@@ -121,29 +127,29 @@ export class AuthService {
         return item.route;
       }
     }
-    return '/perfil';
+    return "/perfil";
   }
 
   public updateCurrentUser(partial: Partial<Usuario>): void {
     const current = this.currentUserValue;
     if (!current) return;
     const updated = { ...current, ...partial };
-    localStorage.setItem('currentUser', JSON.stringify(updated));
+    localStorage.setItem("currentUser", JSON.stringify(updated));
     this.currentUserSubject.next(updated);
   }
 
   login(command: LoginCommand): Observable<Usuario> {
     return this.apiService.login(command).pipe(
-      map(user => {
-        localStorage.setItem('currentUser', JSON.stringify(user));
+      map((user) => {
+        localStorage.setItem("currentUser", JSON.stringify(user));
         this.currentUserSubject.next(user);
         return user;
-      })
+      }),
     );
   }
 
   logout(): void {
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem("currentUser");
     this.currentUserSubject.next(undefined);
   }
 }

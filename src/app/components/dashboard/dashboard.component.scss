@@ -27,8 +27,12 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spinner {
@@ -200,6 +204,28 @@
 .mini-empty-finance {
   background-color: var(--af-surface-container-low);
   border-radius: var(--af-radius-default);
+}
+
+.btn-quick-check {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--af-outline);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  .icon-check {
+    font-size: 18px;
+  }
+
+  &:hover {
+    color: #2e7d32;
+    transform: scale(1.15);
+  }
 }
 
 .link-action {

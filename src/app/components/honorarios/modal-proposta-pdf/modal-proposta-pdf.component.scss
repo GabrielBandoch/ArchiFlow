@@ -1,4 +1,4 @@
-@use '../../../../styles/variables' as *;
+@use "../../../../styles/variables" as *;
 
 .modal-backdrop {
   position: fixed;
@@ -116,7 +116,8 @@
   justify-content: center;
   align-items: flex-start;
   padding: 24px 16px;
-}
+}
+
 .a4-document-sheet {
   background-color: #ffffff !important;
   border-radius: 4px;
@@ -128,7 +129,11 @@
   height: fit-content;
   min-height: 100%;
   flex-shrink: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   color: #1b1c1c;
   box-sizing: border-box;
   position: relative;
@@ -144,7 +149,8 @@
   right: 0;
   height: 5px;
   border-radius: 4px 4px 0 0;
-}
+}
+
 .doc-header {
   border-bottom: 1px solid #e5e2e1;
   padding-bottom: 16px;
@@ -213,7 +219,8 @@
       display: block;
     }
   }
-}
+}
+
 .doc-title-banner {
   padding: 10px 16px;
   border-radius: 6px;
@@ -251,7 +258,8 @@
       margin-left: 4px;
     }
   }
-}
+}
+
 .doc-intro-quote {
   background-color: #fcfbf9;
   border-left: 3px solid;
@@ -261,7 +269,8 @@
   font-style: italic;
   line-height: 1.5;
   color: #303030;
-}
+}
+
 .doc-section {
   display: flex;
   flex-direction: column;
@@ -287,7 +296,8 @@
       margin: 0;
     }
   }
-}
+}
+
 .doc-meta-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -310,7 +320,8 @@
       letter-spacing: 0.05em;
     }
 
-    strong, span {
+    strong,
+    span {
       font-size: 11px;
       color: #1b1c1c;
       white-space: nowrap;
@@ -318,7 +329,8 @@
       text-overflow: ellipsis;
     }
   }
-}
+}
+
 .doc-table {
   border-collapse: collapse;
   width: 100%;
@@ -378,7 +390,8 @@
     line-height: 1.35;
     margin-top: 3px;
   }
-}
+}
+
 .doc-total-bar {
   padding: 10px 16px;
   border-radius: 6px;
@@ -405,7 +418,8 @@
     font-weight: 800;
     line-height: 1;
   }
-}
+}
+
 .doc-payment-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -433,7 +447,8 @@
   .payment-bank-box {
     font-size: 10px;
   }
-}
+}
+
 .doc-terms-box {
   background-color: #fbf9f7;
   border: 1px solid #e5e2e1;
@@ -445,7 +460,8 @@
     line-height: 1.45;
     color: #4f453d;
   }
-}
+}
+
 .doc-signatures-section {
   margin-top: 10px;
   padding-top: 14px;
@@ -476,7 +492,8 @@
       margin-top: 2px;
     }
   }
-}
+}
+
 .doc-footer {
   margin-top: 10px;
   padding-top: 8px;
@@ -496,4 +513,3 @@
 .whitespace-pre-line {
   white-space: pre-line;
 }
-

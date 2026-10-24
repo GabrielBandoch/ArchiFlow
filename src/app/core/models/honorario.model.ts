@@ -1,6 +1,9 @@
-export type TipoProjeto = 'Residencial' | 'Comercial' | 'Corporativo' | 'Interiores' | number;
-export type PadraoImovel = 'Economico' | 'Medio' | 'AltoPadrao' | 'Luxo' | number;
-export type StatusProposta = 'Rascunho' | 'Enviada' | 'Aprovada' | 'Recusada' | number;
+export type TipoProjeto =
+  "Residencial" | "Comercial" | "Corporativo" | "Interiores" | number;
+export type PadraoImovel =
+  "Economico" | "Medio" | "AltoPadrao" | "Luxo" | number;
+export type StatusProposta =
+  "Rascunho" | "Enviada" | "Aprovada" | "Recusada" | number;
 
 export interface ItemEtapaSimulacao {
   nome: string;

@@ -1,47 +1,54 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { ProjetoService } from '../../../core/api/projetos/projeto.service';
-import { ClienteService } from '../../../core/api/clientes/cliente.service';
-import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { DialogService } from '../../../core/services/dialog.service';
-import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TipoProjeto, TarefaEtapa } from '../../../models/projeto.model';
-import { Arquivo } from '../../../models/arquivo.model';
-import { RepresentanteCliente } from '../../../models/cliente.model';
-import { SelectOption } from '../../../shared/components/select/select.component';
-import { EditarProjetoModalComponent } from '../../../dialogs/projetos/editar-projeto-modal/editar-projeto-modal.component';
-import { NovaEtapaModalComponent } from '../../../dialogs/projetos/nova-etapa-modal/nova-etapa-modal.component';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ProjetoHeroCardComponent } from './components/projeto-hero-card/projeto-hero-card.component';
-import { ProjetoEtapasComponent } from './components/projeto-etapas/projeto-etapas.component';
-import { ProjetoArquivosComponent } from './components/projeto-arquivos/projeto-arquivos.component';
-import { ProjetoSidebarComponent } from './components/projeto-sidebar/projeto-sidebar.component';
-import { ProjetoFornecedoresComponent } from './components/projeto-fornecedores/projeto-fornecedores.component';
-import { ProjetoPortalComponent } from './components/projeto-portal/projeto-portal.component';
-import { FornecedorService } from '../../../core/api/fornecedores/fornecedor.service';
-import { ProjetoFornecedor } from '../../../models/fornecedor.model';
+import { Component, OnInit, ViewChild, inject } from "@angular/core";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { ProjetoService } from "../../../core/api/projetos/projeto.service";
+import { ClienteService } from "../../../core/api/clientes/cliente.service";
+import { ArquivoService } from "../../../core/api/projetos/arquivo.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import { DialogService } from "../../../core/services/dialog.service";
+import {
+  Projeto,
+  EtapaProjeto,
+  StatusProjeto,
+  StatusEtapa,
+  TipoProjeto,
+  TarefaEtapa,
+} from "../../../core/models/projeto.model";
+import { Arquivo } from "../../../core/models/arquivo.model";
+import { RepresentanteCliente } from "../../../core/models/cliente.model";
+import { SelectOption } from "../../../shared/components/select/select.component";
+import { EditarProjetoModalComponent } from "../../../dialogs/projetos/editar-projeto-modal/editar-projeto-modal.component";
+import { NovaEtapaModalComponent } from "../../../dialogs/projetos/nova-etapa-modal/nova-etapa-modal.component";
+import { ConfirmDialogComponent } from "../../../shared/components/confirm-dialog/confirm-dialog.component";
+import { ProjetoHeroCardComponent } from "./components/projeto-hero-card/projeto-hero-card.component";
+import { ProjetoEtapasComponent } from "./components/projeto-etapas/projeto-etapas.component";
+import { ProjetoArquivosComponent } from "./components/projeto-arquivos/projeto-arquivos.component";
+import { ProjetoSidebarComponent } from "./components/projeto-sidebar/projeto-sidebar.component";
+import { ProjetoFornecedoresComponent } from "./components/projeto-fornecedores/projeto-fornecedores.component";
+import { ProjetoPortalComponent } from "./components/projeto-portal/projeto-portal.component";
+import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
+import { ProjetoFornecedor } from "../../../core/models/fornecedor.model";
 
 @Component({
-  selector: 'app-detalhes-projeto',
+  selector: "app-detalhes-projeto",
   standalone: true,
   imports: [
-    CORE_IMPORTS, 
-    FORM_IMPORTS, 
-    DESIGN_SYSTEM, 
-    ReactiveFormsModule, 
-    FormsModule, 
+    CORE_IMPORTS,
+    FORM_IMPORTS,
+    DESIGN_SYSTEM,
+    ReactiveFormsModule,
+    FormsModule,
     RouterLink,
     ProjetoHeroCardComponent,
     ProjetoEtapasComponent,
     ProjetoArquivosComponent,
     ProjetoSidebarComponent,
     ProjetoFornecedoresComponent,
-    ProjetoPortalComponent
+    ProjetoPortalComponent,
   ],
-  templateUrl: './detalhes-projeto.component.html',
-  styleUrl: './detalhes-projeto.component.scss'
+  templateUrl: "./detalhes-projeto.component.html",
+  styleUrl: "./detalhes-projeto.component.scss",
 })
 export class DetalhesProjetoComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -53,13 +60,13 @@ export class DetalhesProjetoComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private dialogService = inject(DialogService);
 
-  projetoId = '';
+  projetoId = "";
   projeto: Projeto | null = null;
   arquivos: Arquivo[] = [];
   fornecedoresProjeto: ProjetoFornecedor[] = [];
   representantes: RepresentanteCliente[] = [];
   loading = true;
-  activeTab: 'etapas' | 'arquivos' | 'fornecedores' | 'portal' = 'etapas';
+  activeTab: "etapas" | "arquivos" | "fornecedores" | "portal" = "etapas";
 
   @ViewChild(ProjetoPortalComponent) portalComponent?: ProjetoPortalComponent;
 
@@ -71,67 +78,81 @@ export class DetalhesProjetoComponent implements OnInit {
   TipoProjeto = TipoProjeto;
 
   tipoOptions: SelectOption[] = [
-    { value: TipoProjeto.Residencial, label: 'Residencial' },
-    { value: TipoProjeto.Comercial, label: 'Comercial' },
-    { value: TipoProjeto.Corporativo, label: 'Corporativo' },
-    { value: TipoProjeto.Interiores, label: 'Design de Interiores' }
+    { value: TipoProjeto.Residencial, label: "Residencial" },
+    { value: TipoProjeto.Comercial, label: "Comercial" },
+    { value: TipoProjeto.Corporativo, label: "Corporativo" },
+    { value: TipoProjeto.Interiores, label: "Design de Interiores" },
   ];
 
   statusProjetoOptions: SelectOption[] = [
-    { value: StatusProjeto.Briefing, label: 'Briefing' },
-    { value: StatusProjeto.Desenvolvimento, label: 'Desenvolvimento' },
-    { value: StatusProjeto.Revisao, label: 'Revisão' },
-    { value: StatusProjeto.Aprovacao, label: 'Aprovação' },
-    { value: StatusProjeto.Execucao, label: 'Execução' },
-    { value: StatusProjeto.Concluido, label: 'Concluído' },
-    { value: StatusProjeto.Cancelado, label: 'Cancelado' }
+    { value: StatusProjeto.Briefing, label: "Briefing" },
+    { value: StatusProjeto.Desenvolvimento, label: "Desenvolvimento" },
+    { value: StatusProjeto.Revisao, label: "Revisão" },
+    { value: StatusProjeto.Aprovacao, label: "Aprovação" },
+    { value: StatusProjeto.Execucao, label: "Execução" },
+    { value: StatusProjeto.Concluido, label: "Concluído" },
+    { value: StatusProjeto.Cancelado, label: "Cancelado" },
   ];
 
   get etapaAtiva(): EtapaProjeto | undefined {
-    return this.projeto?.etapas.find(e => e.status === StatusEtapa.EmAndamento) || 
-           this.projeto?.etapas.find(e => e.status === StatusEtapa.Pendente);
+    return (
+      this.projeto?.etapas.find((e) => e.status === StatusEtapa.EmAndamento) ||
+      this.projeto?.etapas.find((e) => e.status === StatusEtapa.Pendente)
+    );
   }
 
   get totalConcluidas(): number {
-    return this.projeto?.etapas.filter(e => e.status === StatusEtapa.Concluida).length || 0;
+    return (
+      this.projeto?.etapas.filter((e) => e.status === StatusEtapa.Concluida)
+        .length || 0
+    );
   }
 
   ngOnInit(): void {
-    this.projetoId = this.route.snapshot.paramMap.get('id') || '';
+    this.projetoId = this.route.snapshot.paramMap.get("id") || "";
     if (this.projetoId) {
       this.carregarProjeto();
       this.carregarArquivos();
       this.carregarFornecedoresDoProjeto();
       this.carregarRepresentantes();
     } else {
-      this.router.navigate(['/projetos']);
+      this.router.navigate(["/projetos"]);
     }
   }
 
   carregarFornecedoresDoProjeto(): void {
     if (!this.projetoId) return;
-    this.fornecedorService.obterFornecedoresDoProjeto(this.projetoId).subscribe({
-      next: (dados) => {
-        this.fornecedoresProjeto = dados;
-      },
-      error: () => {
-      }
-    });
+    this.fornecedorService
+      .obterFornecedoresDoProjeto(this.projetoId)
+      .subscribe({
+        next: (dados) => {
+          this.fornecedoresProjeto = dados;
+        },
+        error: () => {},
+      });
   }
 
   normalizarStatus(status: any): StatusProjeto {
-    if (typeof status === 'string') {
-      const idx = ['Briefing', 'Desenvolvimento', 'Revisao', 'Aprovacao', 'Execucao', 'Concluido', 'Cancelado'].indexOf(status);
+    if (typeof status === "string") {
+      const idx = [
+        "Briefing",
+        "Desenvolvimento",
+        "Revisao",
+        "Aprovacao",
+        "Execucao",
+        "Concluido",
+        "Cancelado",
+      ].indexOf(status);
       if (idx >= 0) return idx as StatusProjeto;
     }
     return Number(status) as StatusProjeto;
   }
 
   normalizarStatusEtapa(status: any): StatusEtapa {
-    if (typeof status === 'string') {
+    if (typeof status === "string") {
       const lower = status.toLowerCase();
-      if (lower.includes('andamento')) return StatusEtapa.EmAndamento;
-      if (lower.includes('conclui')) return StatusEtapa.Concluida;
+      if (lower.includes("andamento")) return StatusEtapa.EmAndamento;
+      if (lower.includes("conclui")) return StatusEtapa.Concluida;
       return StatusEtapa.Pendente;
     }
     return Number(status) as StatusEtapa;
@@ -144,12 +165,20 @@ export class DetalhesProjetoComponent implements OnInit {
         this.projeto = {
           ...data,
           status: this.normalizarStatus(data.status),
-          tipo: typeof data.tipo === 'string' ? ['Residencial', 'Comercial', 'Corporativo', 'Interiores'].indexOf(data.tipo) : Number(data.tipo),
-          etapas: (data.etapas || []).map(e => ({
+          tipo:
+            typeof data.tipo === "string"
+              ? [
+                  "Residencial",
+                  "Comercial",
+                  "Corporativo",
+                  "Interiores",
+                ].indexOf(data.tipo)
+              : Number(data.tipo),
+          etapas: (data.etapas || []).map((e) => ({
             ...e,
             status: this.normalizarStatusEtapa(e.status),
-            tarefas: e.tarefas || []
-          }))
+            tarefas: e.tarefas || [],
+          })),
         };
         this.loading = false;
         if (data && data.clienteId && !data.clienteNome) {
@@ -158,16 +187,16 @@ export class DetalhesProjetoComponent implements OnInit {
               if (this.projeto) {
                 this.projeto.clienteNome = c.nome;
               }
-            }
+            },
           });
         }
       },
       error: (err) => {
         this.loading = false;
-        console.error('Erro ao carregar projeto', err);
-        this.notificationService.error('Projeto não encontrado.');
-        this.router.navigate(['/projetos']);
-      }
+        console.error("Erro ao carregar projeto", err);
+        this.notificationService.error("Projeto não encontrado.");
+        this.router.navigate(["/projetos"]);
+      },
     });
   }
 
@@ -177,8 +206,8 @@ export class DetalhesProjetoComponent implements OnInit {
         this.arquivos = data;
       },
       error: (err) => {
-        console.error('Erro ao carregar arquivos do projeto', err);
-      }
+        console.error("Erro ao carregar arquivos do projeto", err);
+      },
     });
   }
 
@@ -190,16 +219,16 @@ export class DetalhesProjetoComponent implements OnInit {
       },
       error: () => {
         this.representantes = [];
-      }
+      },
     });
   }
 
-  setTab(tab: 'etapas' | 'arquivos' | 'fornecedores' | 'portal'): void {
+  setTab(tab: "etapas" | "arquivos" | "fornecedores" | "portal"): void {
     this.activeTab = tab;
   }
 
   abrirModalConvidarRepresentante(): void {
-    this.activeTab = 'portal';
+    this.activeTab = "portal";
     setTimeout(() => {
       this.portalComponent?.abrirModalConvidar();
     }, 50);
@@ -212,12 +241,14 @@ export class DetalhesProjetoComponent implements OnInit {
       next: (updated) => {
         this.projeto!.status = this.normalizarStatus(updated.status);
         this.projeto!.statusLabel = updated.statusLabel;
-        this.notificationService.success(`Status alterado para "${updated.statusLabel}".`);
+        this.notificationService.success(
+          `Status alterado para "${updated.statusLabel}".`,
+        );
       },
       error: (err) => {
-        console.error('Erro ao alterar status', err);
-        this.notificationService.error('Não foi possível alterar o status.');
-      }
+        console.error("Erro ao alterar status", err);
+        this.notificationService.error("Não foi possível alterar o status.");
+      },
     });
   }
 
@@ -227,8 +258,8 @@ export class DetalhesProjetoComponent implements OnInit {
     const ref = this.dialogService.open(NovaEtapaModalComponent, {
       data: {
         projetoId: this.projeto.id,
-        ordem: nextOrder
-      }
+        ordem: nextOrder,
+      },
     });
     ref.instance.saved.subscribe(() => {
       this.carregarProjeto();
@@ -241,24 +272,32 @@ export class DetalhesProjetoComponent implements OnInit {
         etapa.status = updated.status;
         etapa.statusLabel = updated.statusLabel;
         etapa.dataConclusao = updated.dataConclusao;
-        this.notificationService.success(`Etapa "${etapa.nome}" atualizada para ${updated.statusLabel}!`);
+        this.notificationService.success(
+          `Etapa "${etapa.nome}" atualizada para ${updated.statusLabel}!`,
+        );
 
         if (novoStatus === StatusEtapa.Concluida && this.projeto) {
           const proximas = this.projeto.etapas
-            .filter(e => e.ordem > etapa.ordem && e.status === StatusEtapa.Pendente)
+            .filter(
+              (e) => e.ordem > etapa.ordem && e.status === StatusEtapa.Pendente,
+            )
             .sort((a, b) => a.ordem - b.ordem);
 
           if (proximas.length > 0) {
             const proxima = proximas[0];
-            this.projetoService.atualizarStatusEtapa(proxima.id, StatusEtapa.EmAndamento).subscribe({
-              next: (proxUpdated) => {
-                proxima.status = proxUpdated.status;
-                proxima.statusLabel = proxUpdated.statusLabel;
-                this.notificationService.info(`Próxima etapa "${proxima.nome}" iniciada automaticamente.`);
-                this.carregarProjeto();
-              },
-              error: () => this.carregarProjeto()
-            });
+            this.projetoService
+              .atualizarStatusEtapa(proxima.id, StatusEtapa.EmAndamento)
+              .subscribe({
+                next: (proxUpdated) => {
+                  proxima.status = proxUpdated.status;
+                  proxima.statusLabel = proxUpdated.statusLabel;
+                  this.notificationService.info(
+                    `Próxima etapa "${proxima.nome}" iniciada automaticamente.`,
+                  );
+                  this.carregarProjeto();
+                },
+                error: () => this.carregarProjeto(),
+              });
             return;
           }
         }
@@ -266,9 +305,9 @@ export class DetalhesProjetoComponent implements OnInit {
         this.carregarProjeto();
       },
       error: (err) => {
-        console.error('Erro ao atualizar etapa', err);
-        this.notificationService.error('Não foi possível alterar a etapa.');
-      }
+        console.error("Erro ao atualizar etapa", err);
+        this.notificationService.error("Não foi possível alterar a etapa.");
+      },
     });
   }
 
@@ -295,9 +334,11 @@ export class DetalhesProjetoComponent implements OnInit {
       },
       error: (err) => {
         tarefa.concluida = estadoAnterior;
-        console.error('Erro ao alternar status da tarefa', err);
-        this.notificationService.error('Não foi possível atualizar o entregável.');
-      }
+        console.error("Erro ao alternar status da tarefa", err);
+        this.notificationService.error(
+          "Não foi possível atualizar o entregável.",
+        );
+      },
     });
   }
 
@@ -309,13 +350,13 @@ export class DetalhesProjetoComponent implements OnInit {
       next: (novaTarefa) => {
         if (!etapa.tarefas) etapa.tarefas = [];
         etapa.tarefas.push(novaTarefa);
-        inputEl.value = '';
-        this.notificationService.success('Entregável adicionado!');
+        inputEl.value = "";
+        this.notificationService.success("Entregável adicionado!");
       },
       error: (err) => {
-        console.error('Erro ao adicionar entregável', err);
-        this.notificationService.error('Erro ao adicionar entregável.');
-      }
+        console.error("Erro ao adicionar entregável", err);
+        this.notificationService.error("Erro ao adicionar entregável.");
+      },
     });
   }
 
@@ -323,31 +364,90 @@ export class DetalhesProjetoComponent implements OnInit {
     this.projetoService.removerTarefa(tarefaId).subscribe({
       next: () => {
         if (etapa.tarefas) {
-          etapa.tarefas = etapa.tarefas.filter(t => t.id !== tarefaId);
+          etapa.tarefas = etapa.tarefas.filter((t) => t.id !== tarefaId);
         }
-        this.notificationService.info('Entregável removido.');
+        this.notificationService.info("Entregável removido.");
       },
       error: (err) => {
-        console.error('Erro ao remover entregável', err);
-        this.notificationService.error('Erro ao remover entregável.');
-      }
+        console.error("Erro ao remover entregável", err);
+        this.notificationService.error("Erro ao remover entregável.");
+      },
     });
   }
 
   getTarefasConcluidasCount(etapa: EtapaProjeto): number {
     const tarefas = this.obterTarefas(etapa);
-    return tarefas.filter(t => t.concluida).length;
+    return tarefas.filter((t) => t.concluida).length;
   }
 
-  onEtapaStatusAlterado(event: { etapa: EtapaProjeto; status: StatusEtapa }): void {
+  onEtapaStatusAlterado(event: {
+    etapa: EtapaProjeto;
+    status: StatusEtapa;
+  }): void {
     this.alterarStatusEtapa(event.etapa, event.status);
+  }
+
+  onEtapaDatasAlteradas(event: {
+    etapa: EtapaProjeto;
+    dataFimPrevista?: string | null;
+    dataConclusao?: string | null;
+    limparDataFimPrevista?: boolean;
+    limparDataConclusao?: boolean;
+  }): void {
+    this.projetoService
+      .atualizarDatasEtapa(
+        event.etapa.id,
+        event.dataFimPrevista,
+        event.dataConclusao,
+        event.limparDataFimPrevista,
+        event.limparDataConclusao,
+      )
+      .subscribe({
+        next: (atualizada) => {
+          event.etapa.dataFimPrevista = atualizada.dataFimPrevista;
+          event.etapa.dataConclusao = atualizada.dataConclusao;
+          this.notificationService.success(
+            "Datas da fase atualizadas com sucesso!",
+          );
+        },
+        error: (err) => {
+          console.error("Erro ao atualizar datas da fase", err);
+          this.notificationService.error(
+            "Não foi possível atualizar as datas da fase.",
+          );
+        },
+      });
+  }
+
+  onTarefaPrazoAlterado(event: {
+    etapa: EtapaProjeto;
+    tarefa: TarefaEtapa;
+    dataLimite?: string | null;
+  }): void {
+    this.projetoService
+      .atualizarPrazoTarefa(event.tarefa.id, event.dataLimite)
+      .subscribe({
+        next: (atualizada) => {
+          event.tarefa.dataLimite = atualizada.dataLimite;
+          this.notificationService.success("Prazo do entregável atualizado!");
+        },
+        error: (err) => {
+          console.error("Erro ao atualizar prazo do entregável", err);
+          this.notificationService.error(
+            "Não foi possível atualizar o prazo do entregável.",
+          );
+        },
+      });
   }
 
   onTarefaToggled(event: { etapa: EtapaProjeto; tarefa: TarefaEtapa }): void {
     this.toggleTarefa(event.etapa, event.tarefa);
   }
 
-  onTarefaAdicionada(event: { etapa: EtapaProjeto; inputEl: HTMLInputElement }): void {
+  onTarefaAdicionada(event: {
+    etapa: EtapaProjeto;
+    inputEl: HTMLInputElement;
+  }): void {
     this.adicionarTarefa(event.etapa, event.inputEl);
   }
 
@@ -358,49 +458,85 @@ export class DetalhesProjetoComponent implements OnInit {
   onArquivoUpload(event: { file: File; visivelCliente: boolean }): void {
     if (!this.projeto) return;
     if (event.file.size > 20 * 1024 * 1024) {
-      this.notificationService.error('O arquivo excede o limite máximo permitido de 20 MB.');
+      this.notificationService.error(
+        "O arquivo excede o limite máximo permitido de 20 MB.",
+      );
       return;
     }
 
     this.uploadingArquivo = true;
-    this.arquivoService.upload(event.file, this.projeto.id, event.visivelCliente).subscribe({
-      next: (uploaded) => {
-        this.uploadingArquivo = false;
-        this.notificationService.success(`Arquivo "${uploaded.nome}" enviado!`);
-        this.arquivos.unshift(uploaded);
-      },
-      error: (err) => {
-        this.uploadingArquivo = false;
-        console.error('Erro ao enviar arquivo', err);
-        this.notificationService.error('Erro ao realizar upload.');
-      }
-    });
+    this.arquivoService
+      .upload(event.file, this.projeto.id, event.visivelCliente)
+      .subscribe({
+        next: (uploaded) => {
+          this.uploadingArquivo = false;
+          this.notificationService.success(
+            `Arquivo "${uploaded.nome}" enviado!`,
+          );
+          this.arquivos.unshift(uploaded);
+        },
+        error: (err) => {
+          this.uploadingArquivo = false;
+          console.error("Erro ao enviar arquivo", err);
+          this.notificationService.error("Erro ao realizar upload.");
+        },
+      });
   }
 
   excluirArquivo(arquivo: Arquivo): void {
-    this.dialogService.confirm({
-      title: 'Excluir Arquivo',
-      message: `Tem certeza de que deseja excluir o arquivo "${arquivo.nome}"?`
-    }).subscribe((confirmado) => {
-      if (confirmado) {
-        this.arquivoService.excluir(arquivo.id).subscribe({
-          next: () => {
-            this.arquivos = this.arquivos.filter(a => a.id !== arquivo.id);
-            this.notificationService.success('Arquivo removido com sucesso.');
-          },
-          error: (err) => {
-            console.error('Erro ao excluir arquivo', err);
-            this.notificationService.error('Não foi possível excluir o arquivo.');
-          }
-        });
-      }
-    });
+    this.dialogService
+      .confirm({
+        title: "Excluir Arquivo",
+        message: `Tem certeza de que deseja excluir o arquivo "${arquivo.nome}"?`,
+      })
+      .subscribe((confirmado) => {
+        if (confirmado) {
+          this.arquivoService.excluir(arquivo.id).subscribe({
+            next: () => {
+              this.arquivos = this.arquivos.filter((a) => a.id !== arquivo.id);
+              this.notificationService.success("Arquivo removido com sucesso.");
+            },
+            error: (err) => {
+              console.error("Erro ao excluir arquivo", err);
+              this.notificationService.error(
+                "Não foi possível excluir o arquivo.",
+              );
+            },
+          });
+        }
+      });
+  }
+
+  confirmarExclusaoProjeto(): void {
+    if (!this.projeto) return;
+    const nomeProjeto = this.projeto.nome;
+    const idProjeto = this.projeto.id;
+
+    this.dialogService
+      .confirm({
+        title: "Excluir Projeto",
+        message: `Tem certeza de que deseja excluir o projeto "${nomeProjeto}"? Esta ação removerá permanentemente todas as etapas, tarefas, arquivos e vínculos associados e não poderá ser desfeita.`,
+      })
+      .subscribe((confirmado) => {
+        if (confirmado) {
+          this.projetoService.excluir(idProjeto).subscribe({
+            next: () => {
+              this.notificationService.success("Projeto excluído com sucesso.");
+              this.router.navigate(["/projetos"]);
+            },
+            error: (err) => {
+              console.error("Erro ao excluir projeto", err);
+              this.notificationService.error("Erro ao excluir projeto.");
+            },
+          });
+        }
+      });
   }
 
   abrirModalEdicao(): void {
     if (!this.projeto) return;
     const ref = this.dialogService.open(EditarProjetoModalComponent, {
-      data: { projeto: this.projeto }
+      data: { projeto: this.projeto },
     });
     ref.instance.saved.subscribe((updated: Projeto) => {
       this.projeto = updated;
@@ -409,6 +545,6 @@ export class DetalhesProjetoComponent implements OnInit {
   }
 
   voltar(): void {
-    this.router.navigate(['/projetos']);
+    this.router.navigate(["/projetos"]);
   }
 }

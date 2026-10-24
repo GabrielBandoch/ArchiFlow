@@ -1,19 +1,24 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Cliente } from '../../../../../models/cliente.model';
-import { Lead } from '../../../../../models/lead.model';
-import { Projeto } from '../../../../../models/projeto.model';
-import { PropostaHonorario } from '../../../../../models/honorario.model';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
-import { WhatsAppButtonComponent } from '../../../../../shared/components/whatsapp-button/whatsapp-button.component';
-import { PhoneMaskPipe } from '../../../../../core/pipes/phone-mask.pipe';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Cliente } from "../../../../../core/models/cliente.model";
+import { Lead } from "../../../../../core/models/lead.model";
+import { Projeto } from "../../../../../core/models/projeto.model";
+import { PropostaHonorario } from "../../../../../core/models/honorario.model";
+import { ButtonComponent } from "../../../../../shared/components/button/button.component";
+import { WhatsAppButtonComponent } from "../../../../../shared/components/whatsapp-button/whatsapp-button.component";
+import { PhoneMaskPipe } from "../../../../../core/pipes/phone-mask.pipe";
 
 @Component({
-  selector: 'app-cliente-hero-card',
+  selector: "app-cliente-hero-card",
   standalone: true,
-  imports: [CommonModule, ButtonComponent, WhatsAppButtonComponent, PhoneMaskPipe],
-  templateUrl: './cliente-hero-card.component.html',
-  styleUrls: ['./cliente-hero-card.component.scss']
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    WhatsAppButtonComponent,
+    PhoneMaskPipe,
+  ],
+  templateUrl: "./cliente-hero-card.component.html",
+  styleUrls: ["./cliente-hero-card.component.scss"],
 })
 export class ClienteHeroCardComponent {
   @Input() cliente!: Cliente;

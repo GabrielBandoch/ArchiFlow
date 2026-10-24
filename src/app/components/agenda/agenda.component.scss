@@ -6,15 +6,17 @@
   gap: var(--af-spacing-lg);
 }
 
-/* Header & Google Sync Badge */
 .page-header {
   border-bottom: 1px solid var(--af-outline-variant, #d3c4b9);
   padding-bottom: var(--af-space-md, 16px);
 }
 
-/* Banner Corporativo de Integração Harmonizado */
 .company-sync-banner {
-  background: linear-gradient(135deg, var(--af-surface-container-low, #f6f3f2) 0%, #ede8e3 100%);
+  background: linear-gradient(
+    135deg,
+    var(--af-surface-container-low, #f6f3f2) 0%,
+    #ede8e3 100%
+  );
   border: 1px solid var(--af-outline-variant, #d3c4b9);
   border-left: 4px solid var(--af-primary, #765538);
   box-shadow: 0 2px 6px rgba(118, 85, 56, 0.06);
@@ -36,7 +38,6 @@
   }
 }
 
-/* Métricas Rápidas */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -51,8 +52,12 @@
   border: 1px solid var(--af-outline-variant, #d3c4b9);
   border-radius: var(--af-radius-default, 8px);
   padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.02);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.03),
+    0 4px 12px rgba(0, 0, 0, 0.02);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
@@ -93,13 +98,23 @@
   line-height: 1.2;
 }
 
-/* Cores suaves e refinadas do ArchiFlow */
-.bg-primary-soft { background-color: rgba(118, 85, 56, 0.12); color: var(--af-primary, #765538); }
-.bg-info-soft { background-color: rgba(145, 109, 78, 0.14); color: var(--af-primary-container, #916d4e); }
-.bg-warning-soft { background-color: rgba(141, 79, 37, 0.12); color: #8d4f25; }
-.bg-success-soft { background-color: rgba(54, 102, 63, 0.12); color: #36663f; }
+.bg-primary-soft {
+  background-color: rgba(118, 85, 56, 0.12);
+  color: var(--af-primary, #765538);
+}
+.bg-info-soft {
+  background-color: rgba(145, 109, 78, 0.14);
+  color: var(--af-primary-container, #916d4e);
+}
+.bg-warning-soft {
+  background-color: rgba(141, 79, 37, 0.12);
+  color: #8d4f25;
+}
+.bg-success-soft {
+  background-color: rgba(54, 102, 63, 0.12);
+  color: #36663f;
+}
 
-/* Barra de Controles e Filtros */
 .controls-bar {
   background: var(--af-color-surface);
   border: 1px solid var(--af-color-outline-variant);
@@ -220,9 +235,6 @@
   min-width: 170px;
 }
 
-/* ========================================================
-   GRADE DO CALENDÁRIO
-   ======================================================== */
 .calendar-container {
   background: var(--af-color-surface);
   border: 1px solid var(--af-color-outline-variant);
@@ -261,7 +273,9 @@
   display: flex;
   flex-direction: column;
   background: var(--af-color-surface);
-  transition: background 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
   cursor: pointer;
   position: relative;
 
@@ -315,7 +329,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 4px;
-    transition: opacity 0.15s, background 0.15s;
+    transition:
+      opacity 0.15s,
+      background 0.15s;
 
     .material-symbols-outlined {
       font-size: 1.1rem;
@@ -373,7 +389,6 @@
   }
 }
 
-/* Badges e Pílulas por Tipo Arquitetônico ArchiFlow */
 .badge-tipo-reuniao {
   background-color: #f6f0ea;
   color: #765538;
@@ -410,9 +425,6 @@
   border-left: 3px solid #5f6368;
 }
 
-/* ========================================================
-   VISUALIZAÇÃO EM LISTA
-   ======================================================== */
 .event-card {
   background: var(--af-surface-container-lowest, #ffffff);
   border: 1px solid var(--af-outline-variant, #d3c4b9);
@@ -436,7 +448,11 @@
 .event-date-badge {
   width: 58px;
   height: 58px;
-  background: linear-gradient(135deg, rgba(118, 85, 56, 0.08), rgba(118, 85, 56, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(118, 85, 56, 0.08),
+    rgba(118, 85, 56, 0.15)
+  );
   border-radius: var(--af-radius-default, 8px);
   color: var(--af-primary, #765538);
   border: 1px solid rgba(118, 85, 56, 0.2);
@@ -506,21 +522,27 @@
     color: #1a73e8;
     background: #f1f6fd;
     border-color: rgba(26, 115, 232, 0.25);
-    &:hover { background: #e8f0fe; }
+    &:hover {
+      background: #e8f0fe;
+    }
   }
 
   &.btn-calendar {
     color: #ea4335;
     background: #fef4f3;
     border-color: rgba(234, 67, 53, 0.25);
-    &:hover { background: #fce8e6; }
+    &:hover {
+      background: #fce8e6;
+    }
   }
 
   &.btn-check {
     color: #34a853;
     background: #f2f9f4;
     border-color: rgba(52, 168, 83, 0.25);
-    &:hover { background: #e6f4ea; }
+    &:hover {
+      background: #e6f4ea;
+    }
     &.active-check {
       background: #34a853;
       color: #fff;
@@ -530,12 +552,15 @@
 
   &.btn-delete {
     color: var(--af-color-error, #d32f2f);
-    &:hover { background: #ffebee; border-color: rgba(211, 47, 47, 0.3); }
+    &:hover {
+      background: #ffebee;
+      border-color: rgba(211, 47, 47, 0.3);
+    }
   }
 }
 
-/* Estados Vazio e Loading */
-.loading-box, .empty-state-box {
+.loading-box,
+.empty-state-box {
   background: var(--af-color-surface);
   border: 2px dashed var(--af-color-outline-variant);
   border-radius: var(--af-radius-lg, 12px);
@@ -554,8 +579,12 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 900px) {

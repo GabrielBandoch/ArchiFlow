@@ -1,10 +1,16 @@
-﻿import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { DashboardService } from './dashboard.service';
-import { environment } from '../../../../environments/environment';
-import { DashboardMetricas, PreferenciaDashboard } from '../../../models/dashboard.model';
+import { TestBed } from "@angular/core/testing";
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from "@angular/common/http/testing";
+import { DashboardService } from "./dashboard.service";
+import { environment } from "../../../../environments/environment";
+import {
+  DashboardMetricas,
+  PreferenciaDashboard,
+} from "../../models/dashboard.model";
 
-describe('DashboardService', () => {
+describe("DashboardService", () => {
   let service: DashboardService;
   let httpMock: HttpTestingController;
   const baseUrl = `${environment.apiUrl}/dashboard`;
@@ -12,7 +18,7 @@ describe('DashboardService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [DashboardService]
+      providers: [DashboardService],
     });
 
     service = TestBed.inject(DashboardService);
@@ -23,11 +29,11 @@ describe('DashboardService', () => {
     httpMock.verify();
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch dashboard metrics (obterMetricas)', () => {
+  it("should fetch dashboard metrics (obterMetricas)", () => {
     const mockMetricas: DashboardMetricas = {
       kpis: {
         totalProjetosAtivos: 5,
@@ -38,7 +44,7 @@ describe('DashboardService', () => {
         totalClientes: 6,
         totalPropostas: 10,
         valorTotalPropostas: 120000,
-        valorMedioProposta: 12000
+        valorMedioProposta: 12000,
       },
       projetosPorStatus: [],
       projetosPorTipo: [],
@@ -47,7 +53,7 @@ describe('DashboardService', () => {
       propostasMensais: [],
       projetosRecentes: [],
       leadsRecentes: [],
-      propostasRecentes: []
+      propostasRecentes: [],
     };
 
     service.obterMetricas().subscribe((res) => {
@@ -56,15 +62,15 @@ describe('DashboardService', () => {
     });
 
     const req = httpMock.expectOne(`${baseUrl}/metricas`);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe("GET");
     req.flush(mockMetricas);
   });
 
-  it('should fetch user preferences (obterPreferencias)', () => {
+  it("should fetch user preferences (obterPreferencias)", () => {
     const mockPref: PreferenciaDashboard = {
-      usuarioId: 'u1',
-      layoutJson: '[]',
-      atualizadoEm: '2026-09-22T00:00:00Z'
+      usuarioId: "u1",
+      layoutJson: "[]",
+      atualizadoEm: "2026-09-22T00:00:00Z",
     };
 
     service.obterPreferencias().subscribe((res) => {
@@ -72,16 +78,16 @@ describe('DashboardService', () => {
     });
 
     const req = httpMock.expectOne(`${baseUrl}/preferencias`);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe("GET");
     req.flush(mockPref);
   });
 
-  it('should save user preferences to backend database (salvarPreferencias)', () => {
+  it("should save user preferences to backend database (salvarPreferencias)", () => {
     const layoutJson = '[{"id":"kpi_resumo","visivel":true,"ordem":1}]';
     const mockPref: PreferenciaDashboard = {
-      usuarioId: 'u1',
+      usuarioId: "u1",
       layoutJson,
-      atualizadoEm: '2026-09-22T00:00:00Z'
+      atualizadoEm: "2026-09-22T00:00:00Z",
     };
 
     service.salvarPreferencias(layoutJson).subscribe((res) => {
@@ -89,7 +95,7 @@ describe('DashboardService', () => {
     });
 
     const req = httpMock.expectOne(`${baseUrl}/preferencias`);
-    expect(req.request.method).toBe('PUT');
+    expect(req.request.method).toBe("PUT");
     expect(req.request.body).toEqual({ layoutJson });
     req.flush(mockPref);
   });

@@ -172,6 +172,50 @@
       color: var(--af-error, #ba1a1a);
     }
   }
+
+  &.btn-action-pago {
+    color: #2e7d32;
+    &:hover {
+      background-color: rgba(46, 125, 50, 0.1);
+    }
+  }
+}
+
+.badge-status-pago {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--af-radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  .icon-status {
+    font-size: 14px;
+  }
+
+  &.pago {
+    background-color: rgba(46, 125, 50, 0.12);
+    color: #2e7d32;
+    border-color: rgba(46, 125, 50, 0.25);
+
+    &:hover {
+      background-color: rgba(46, 125, 50, 0.2);
+    }
+  }
+
+  &.pendente {
+    background-color: rgba(230, 81, 0, 0.12);
+    color: #e65100;
+    border-color: rgba(230, 81, 0, 0.25);
+
+    &:hover {
+      background-color: rgba(230, 81, 0, 0.2);
+    }
+  }
 }
 
 .table-footer {
@@ -244,4 +288,3 @@
     }
   }
 }
-

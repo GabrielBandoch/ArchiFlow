@@ -1,8 +1,8 @@
-import { CanActivateFn, Router } from '@angular/router';
-import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-export { staffGuard, portalGuard } from './role.guard';
-export { moduleGuard } from './module.guard';
+import { CanActivateFn, Router } from "@angular/router";
+import { inject } from "@angular/core";
+import { AuthService } from "../services/auth.service";
+export { staffGuard, portalGuard } from "./role.guard";
+export { moduleGuard } from "./module.guard";
 
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -12,6 +12,6 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+  router.navigate(["/login"], { queryParams: { returnUrl: state.url } });
   return false;
 };

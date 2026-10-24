@@ -1,19 +1,27 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { AgendaService } from '../../core/api/agenda/agenda.service';
-import { Compromisso, TiposCompromisso, TipoCompromisso, StatusCompromissoType } from '../../models/agenda.model';
-import { CompromissoModalComponent } from '../../dialogs/agenda/compromisso-modal/compromisso-modal.component';
-import { ConfigurarAgendaModalComponent } from '../../dialogs/agenda/configurar-agenda-modal/configurar-agenda-modal.component';
-import { ButtonComponent } from '../../shared/components/button/button.component';
-import { SelectComponent, SelectOption } from '../../shared/components/select/select.component';
-import { BadgeComponent } from '../../shared/components/badge/badge.component';
-import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ConfiguracaoAgendaEmpresa } from '../../models/agenda.model';
-import { AuthService } from '../../core/services/auth.service';
-import { DialogService } from '../../core/services/dialog.service';
-import { NotificationService } from '../../core/services/notification.service';
+import { Component, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { AgendaService } from "../../core/api/agenda/agenda.service";
+import {
+  Compromisso,
+  TiposCompromisso,
+  TipoCompromisso,
+  StatusCompromissoType,
+} from "../../core/models/agenda.model";
+import { CompromissoModalComponent } from "../../dialogs/agenda/compromisso-modal/compromisso-modal.component";
+import { ConfigurarAgendaModalComponent } from "../../dialogs/agenda/configurar-agenda-modal/configurar-agenda-modal.component";
+import { ButtonComponent } from "../../shared/components/button/button.component";
+import {
+  SelectComponent,
+  SelectOption,
+} from "../../shared/components/select/select.component";
+import { BadgeComponent } from "../../shared/components/badge/badge.component";
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
+import { ConfirmDialogComponent } from "../../shared/components/confirm-dialog/confirm-dialog.component";
+import { ConfiguracaoAgendaEmpresa } from "../../core/models/agenda.model";
+import { AuthService } from "../../core/services/auth.service";
+import { DialogService } from "../../core/services/dialog.service";
+import { NotificationService } from "../../core/services/notification.service";
 
 export interface DiaCalendario {
   data: Date;
@@ -24,7 +32,7 @@ export interface DiaCalendario {
 }
 
 @Component({
-  selector: 'app-agenda',
+  selector: "app-agenda",
   standalone: true,
   imports: [
     CommonModule,
@@ -32,10 +40,10 @@ export interface DiaCalendario {
     ButtonComponent,
     SelectComponent,
     BadgeComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
   ],
-  templateUrl: './agenda.component.html',
-  styleUrls: ['./agenda.component.scss']
+  templateUrl: "./agenda.component.html",
+  styleUrls: ["./agenda.component.scss"],
 })
 export class AgendaComponent implements OnInit {
   private agendaService = inject(AgendaService);
@@ -43,39 +51,46 @@ export class AgendaComponent implements OnInit {
   private dialogService = inject(DialogService);
   private notificationService = inject(NotificationService);
 
-  modoVisualizacao: 'calendario' | 'lista' = 'calendario';
+  modoVisualizacao: "calendario" | "lista" = "calendario";
 
   compromissos: Compromisso[] = [];
   configuracaoEmpresa: ConfiguracaoAgendaEmpresa | null = null;
   carregando = false;
-  termoBusca = '';
-  filtroTipo = 'todos';
-  filtroStatus = 'todos';
+  termoBusca = "";
+  filtroTipo = "todos";
+  filtroStatus = "todos";
 
   dataReferencia: Date = new Date();
-  diasSemana: string[] = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  diasSemana: string[] = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
   diasMes: DiaCalendario[] = [];
 
   filtroTipoOptions: SelectOption[] = [
-    { label: 'Todos os Tipos', value: 'todos' },
-    { label: 'Reunião com Cliente', value: TiposCompromisso.ReuniaoCliente },
-    { label: 'Visita à Obra', value: TiposCompromisso.VisitaObra },
-    { label: 'Medição Técnica', value: TiposCompromisso.MedicaoTecnica },
-    { label: 'Apresentação de Projeto', value: TiposCompromisso.ApresentacaoProjeto },
-    { label: 'Entrega de Etapa', value: TiposCompromisso.EntregaEtapa },
-    { label: 'Geral / Outro', value: TiposCompromisso.Geral }
+    { label: "Todos os Tipos", value: "todos" },
+    { label: "Reunião com Cliente", value: TiposCompromisso.ReuniaoCliente },
+    { label: "Visita à Obra", value: TiposCompromisso.VisitaObra },
+    { label: "Medição Técnica", value: TiposCompromisso.MedicaoTecnica },
+    {
+      label: "Apresentação de Projeto",
+      value: TiposCompromisso.ApresentacaoProjeto,
+    },
+    { label: "Entrega de Etapa", value: TiposCompromisso.EntregaEtapa },
+    { label: "Geral / Outro", value: TiposCompromisso.Geral },
   ];
 
   filtroStatusOptions: SelectOption[] = [
-    { label: 'Todos os Status', value: 'todos' },
-    { label: 'Agendados', value: 'Agendado' },
-    { label: 'Concluídos', value: 'Concluido' },
-    { label: 'Cancelados', value: 'Cancelado' }
+    { label: "Todos os Status", value: "todos" },
+    { label: "Agendados", value: "Agendado" },
+    { label: "Concluídos", value: "Concluido" },
+    { label: "Cancelados", value: "Cancelado" },
   ];
 
   get podeConfigurarAgenda(): boolean {
     const perfil = this.authService.currentUserValue?.perfil;
-    return perfil === 'Administrador' || perfil === 'Gerente' || perfil === 'ArquitetoAdmin';
+    return (
+      perfil === "Administrador" ||
+      perfil === "Gerente" ||
+      perfil === "ArquitetoAdmin"
+    );
   }
 
   ngOnInit(): void {
@@ -85,18 +100,23 @@ export class AgendaComponent implements OnInit {
   }
 
   private tratarRetornoOAuthPopup(): void {
-    if (typeof window !== 'undefined' && window.opener && window.location.search.includes('code=')) {
+    if (
+      typeof window !== "undefined" &&
+      window.opener &&
+      window.location.search.includes("code=")
+    ) {
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const state = urlParams.get('state');
+        const code = urlParams.get("code");
+        const state = urlParams.get("state");
         if (code) {
-          window.opener.postMessage({ type: 'GOOGLE_OAUTH_CODE', code, state }, window.location.origin);
+          window.opener.postMessage(
+            { type: "GOOGLE_OAUTH_CODE", code, state },
+            window.location.origin,
+          );
           window.close();
         }
-      } catch {
-        // Ignora erros ao fechar ou postar mensagem para popup
-      }
+      } catch {}
     }
   }
 
@@ -107,7 +127,7 @@ export class AgendaComponent implements OnInit {
       },
       error: () => {
         this.configuracaoEmpresa = null;
-      }
+      },
     });
   }
 
@@ -120,14 +140,24 @@ export class AgendaComponent implements OnInit {
 
   abrirGoogleAgendaEmpresa(): void {
     if (this.configuracaoEmpresa?.linkEmbedGoogleCalendar) {
-      window.open(this.configuracaoEmpresa.linkEmbedGoogleCalendar, '_blank');
+      window.open(this.configuracaoEmpresa.linkEmbedGoogleCalendar, "_blank");
     }
   }
 
   get mesAnoTitulo(): string {
     const meses = [
-      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
     ];
     return `${meses[this.dataReferencia.getMonth()]} de ${this.dataReferencia.getFullYear()}`;
   }
@@ -137,27 +167,45 @@ export class AgendaComponent implements OnInit {
   }
 
   get totalReunioes(): number {
-    return this.compromissos.filter(c => c.tipo === TiposCompromisso.ReuniaoCliente || c.tipo === TiposCompromisso.ApresentacaoProjeto).length;
+    return this.compromissos.filter(
+      (c) =>
+        c.tipo === TiposCompromisso.ReuniaoCliente ||
+        c.tipo === TiposCompromisso.ApresentacaoProjeto,
+    ).length;
   }
 
   get totalVisitasObras(): number {
-    return this.compromissos.filter(c => c.tipo === TiposCompromisso.VisitaObra || c.tipo === TiposCompromisso.MedicaoTecnica).length;
+    return this.compromissos.filter(
+      (c) =>
+        c.tipo === TiposCompromisso.VisitaObra ||
+        c.tipo === TiposCompromisso.MedicaoTecnica,
+    ).length;
   }
 
   get totalConcluidos(): number {
-    return this.compromissos.filter(c => c.status === 'Concluido').length;
+    return this.compromissos.filter((c) => c.status === "Concluido").length;
   }
 
   get compromissosFiltrados(): Compromisso[] {
-    return this.compromissos.filter(item => {
-      const matchBusca = !this.termoBusca ||
+    return this.compromissos.filter((item) => {
+      const matchBusca =
+        !this.termoBusca ||
         item.titulo.toLowerCase().includes(this.termoBusca.toLowerCase()) ||
-        (item.local && item.local.toLowerCase().includes(this.termoBusca.toLowerCase())) ||
-        (item.nomeCliente && item.nomeCliente.toLowerCase().includes(this.termoBusca.toLowerCase())) ||
-        (item.nomeProjeto && item.nomeProjeto.toLowerCase().includes(this.termoBusca.toLowerCase()));
+        (item.local &&
+          item.local.toLowerCase().includes(this.termoBusca.toLowerCase())) ||
+        (item.nomeCliente &&
+          item.nomeCliente
+            .toLowerCase()
+            .includes(this.termoBusca.toLowerCase())) ||
+        (item.nomeProjeto &&
+          item.nomeProjeto
+            .toLowerCase()
+            .includes(this.termoBusca.toLowerCase()));
 
-      const matchTipo = this.filtroTipo === 'todos' || item.tipo === this.filtroTipo;
-      const matchStatus = this.filtroStatus === 'todos' || item.status === this.filtroStatus;
+      const matchTipo =
+        this.filtroTipo === "todos" || item.tipo === this.filtroTipo;
+      const matchStatus =
+        this.filtroStatus === "todos" || item.status === this.filtroStatus;
 
       return matchBusca && matchTipo && matchStatus;
     });
@@ -166,11 +214,10 @@ export class AgendaComponent implements OnInit {
   carregarCompromissos(): void {
     this.carregando = true;
 
-    // Obter primeiro e último dia do mês corrente na visão
     const ano = this.dataReferencia.getFullYear();
     const mes = this.dataReferencia.getMonth();
-    const inicio = new Date(ano, mes, 1, 0, 0, 0).toISOString();
-    const fim = new Date(ano, mes + 1, 0, 23, 59, 59).toISOString();
+    const inicio = new Date(ano, mes - 1, 20, 0, 0, 0).toISOString();
+    const fim = new Date(ano, mes + 1, 15, 23, 59, 59).toISOString();
 
     this.agendaService.listar(inicio, fim).subscribe({
       next: (dados) => {
@@ -182,7 +229,7 @@ export class AgendaComponent implements OnInit {
         this.compromissos = [];
         this.gerarGradeCalendario();
         this.carregando = false;
-      }
+      },
     });
   }
 
@@ -195,7 +242,6 @@ export class AgendaComponent implements OnInit {
     const dias: DiaCalendario[] = [];
     const hojeStr = new Date().toDateString();
 
-    // Dias do mês anterior para completar o início da semana (Domingo = 0)
     const diaSemanaInicio = primeiroDiaMes.getDay();
     for (let i = diaSemanaInicio - 1; i >= 0; i--) {
       const data = new Date(ano, mes, -i);
@@ -204,11 +250,10 @@ export class AgendaComponent implements OnInit {
         diaNumero: data.getDate(),
         mesmoMes: false,
         isHoje: data.toDateString() === hojeStr,
-        compromissos: this.obterCompromissosDoDia(data)
+        compromissos: this.obterCompromissosDoDia(data),
       });
     }
 
-    // Dias do mês atual
     for (let dia = 1; dia <= ultimoDiaMes.getDate(); dia++) {
       const data = new Date(ano, mes, dia);
       dias.push({
@@ -216,11 +261,10 @@ export class AgendaComponent implements OnInit {
         diaNumero: dia,
         mesmoMes: true,
         isHoje: data.toDateString() === hojeStr,
-        compromissos: this.obterCompromissosDoDia(data)
+        compromissos: this.obterCompromissosDoDia(data),
       });
     }
 
-    // Dias do próximo mês para fechar a grade (múltiplo de 7)
     const resto = dias.length % 7;
     if (resto > 0) {
       const faltam = 7 - resto;
@@ -231,7 +275,7 @@ export class AgendaComponent implements OnInit {
           diaNumero: data.getDate(),
           mesmoMes: false,
           isHoje: data.toDateString() === hojeStr,
-          compromissos: this.obterCompromissosDoDia(data)
+          compromissos: this.obterCompromissosDoDia(data),
         });
       }
     }
@@ -244,21 +288,31 @@ export class AgendaComponent implements OnInit {
     const mes = data.getMonth();
     const dia = data.getDate();
 
-    return this.compromissosFiltrados.filter(c => {
+    return this.compromissosFiltrados.filter((c) => {
       const dataComp = new Date(c.dataHoraInicio);
-      return dataComp.getFullYear() === ano &&
-             dataComp.getMonth() === mes &&
-             dataComp.getDate() === dia;
+      return (
+        dataComp.getFullYear() === ano &&
+        dataComp.getMonth() === mes &&
+        dataComp.getDate() === dia
+      );
     });
   }
 
   mesAnterior(): void {
-    this.dataReferencia = new Date(this.dataReferencia.getFullYear(), this.dataReferencia.getMonth() - 1, 1);
+    this.dataReferencia = new Date(
+      this.dataReferencia.getFullYear(),
+      this.dataReferencia.getMonth() - 1,
+      1,
+    );
     this.carregarCompromissos();
   }
 
   proximoMes(): void {
-    this.dataReferencia = new Date(this.dataReferencia.getFullYear(), this.dataReferencia.getMonth() + 1, 1);
+    this.dataReferencia = new Date(
+      this.dataReferencia.getFullYear(),
+      this.dataReferencia.getMonth() + 1,
+      1,
+    );
     this.carregarCompromissos();
   }
 
@@ -271,15 +325,16 @@ export class AgendaComponent implements OnInit {
     let dataInicial: string;
     if (data) {
       const ano = data.getFullYear();
-      const mes = String(data.getMonth() + 1).padStart(2, '0');
-      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, "0");
+      const dia = String(data.getDate()).padStart(2, "0");
       dataInicial = `${ano}-${mes}-${dia}`;
     } else {
-      dataInicial = new Date().toISOString().substring(0, 10);
+      const hoje = new Date();
+      dataInicial = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}-${String(hoje.getDate()).padStart(2, "0")}`;
     }
 
     const ref = this.dialogService.open(CompromissoModalComponent, {
-      data: { dataInicial }
+      data: { dataInicial },
     });
     ref.instance.saved.subscribe(() => {
       this.carregarCompromissos();
@@ -291,7 +346,7 @@ export class AgendaComponent implements OnInit {
       event.stopPropagation();
     }
     const ref = this.dialogService.open(CompromissoModalComponent, {
-      data: { compromissoParaEdicao: compromisso }
+      data: { compromissoParaEdicao: compromisso },
     });
     ref.instance.saved.subscribe(() => {
       this.carregarCompromissos();
@@ -306,13 +361,16 @@ export class AgendaComponent implements OnInit {
     if (event) {
       event.stopPropagation();
     }
-    const novoStatus: StatusCompromissoType = compromisso.status === 'Concluido' ? 'Agendado' : 'Concluido';
-    this.agendaService.alterarStatus(compromisso.id, { status: novoStatus }).subscribe({
-      next: () => {
-        compromisso.status = novoStatus;
-        this.carregarCompromissos();
-      }
-    });
+    const novoStatus: StatusCompromissoType =
+      compromisso.status === "Concluido" ? "Agendado" : "Concluido";
+    this.agendaService
+      .alterarStatus(compromisso.id, { status: novoStatus })
+      .subscribe({
+        next: () => {
+          compromisso.status = novoStatus;
+          this.carregarCompromissos();
+        },
+      });
   }
 
   abrirModalExcluir(compromisso: Compromisso, event?: Event): void {
@@ -321,19 +379,21 @@ export class AgendaComponent implements OnInit {
     }
     const ref = this.dialogService.open(ConfirmDialogComponent, {
       data: {
-        title: 'Remover Compromisso da Agenda',
-        message: `Tem certeza que deseja remover o compromisso "${compromisso.titulo}"? Esta ação não pode ser desfeita.`
-      }
+        title: "Remover Compromisso da Agenda",
+        message: `Tem certeza que deseja remover o compromisso "${compromisso.titulo}"? Esta ação não pode ser desfeita.`,
+      },
     });
     ref.instance.confirm.subscribe(() => {
       this.agendaService.excluir(compromisso.id).subscribe({
         next: () => {
-          this.notificationService.success('Compromisso excluído com sucesso.');
+          this.notificationService.success("Compromisso excluído com sucesso.");
           this.carregarCompromissos();
         },
         error: () => {
-          this.notificationService.error('Não foi possível excluir o compromisso.');
-        }
+          this.notificationService.error(
+            "Não foi possível excluir o compromisso.",
+          );
+        },
       });
     });
   }
@@ -343,7 +403,7 @@ export class AgendaComponent implements OnInit {
       event.stopPropagation();
     }
     if (compromisso.linkGoogleCalendarWeb) {
-      window.open(compromisso.linkGoogleCalendarWeb, '_blank');
+      window.open(compromisso.linkGoogleCalendarWeb, "_blank");
     }
   }
 
@@ -352,91 +412,103 @@ export class AgendaComponent implements OnInit {
       event.stopPropagation();
     }
     if (compromisso.linkGoogleMeet) {
-      window.open(compromisso.linkGoogleMeet, '_blank');
+      window.open(compromisso.linkGoogleMeet, "_blank");
     }
   }
 
   baixarIcs(): void {
     const ano = this.dataReferencia.getFullYear();
     const mes = this.dataReferencia.getMonth();
-    const inicio = new Date(ano, mes, 1, 0, 0, 0).toISOString();
-    const fim = new Date(ano, mes + 1, 0, 23, 59, 59).toISOString();
+    const inicio = new Date(ano, mes - 1, 20, 0, 0, 0).toISOString();
+    const fim = new Date(ano, mes + 1, 15, 23, 59, 59).toISOString();
 
     this.agendaService.baixarIcs(inicio, fim).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = url;
-        a.download = `agenda-${ano}-${String(mes + 1).padStart(2, '0')}.ics`;
+        a.download = `agenda-${ano}-${String(mes + 1).padStart(2, "0")}.ics`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
-        this.notificationService.success('Calendário (.ics) exportado com sucesso.');
+        this.notificationService.success(
+          "Calendário (.ics) exportado com sucesso.",
+        );
       },
       error: () => {
-        this.notificationService.error('Erro ao exportar o calendário no formato .ics.');
-      }
+        this.notificationService.error(
+          "Erro ao exportar o calendário no formato .ics.",
+        );
+      },
     });
   }
 
   obterBadgeClasseTipo(tipo: TipoCompromisso): string {
     switch (tipo) {
       case TiposCompromisso.ReuniaoCliente:
-        return 'badge-tipo-reuniao';
+        return "badge-tipo-reuniao";
       case TiposCompromisso.VisitaObra:
-        return 'badge-tipo-obra';
+        return "badge-tipo-obra";
       case TiposCompromisso.MedicaoTecnica:
-        return 'badge-tipo-medicao';
+        return "badge-tipo-medicao";
       case TiposCompromisso.ApresentacaoProjeto:
-        return 'badge-tipo-apresentacao';
+        return "badge-tipo-apresentacao";
       case TiposCompromisso.EntregaEtapa:
-        return 'badge-tipo-entrega';
+        return "badge-tipo-entrega";
       default:
-        return 'badge-tipo-geral';
+        return "badge-tipo-geral";
     }
   }
 
   obterNomeTipo(tipo: TipoCompromisso): string {
     const map: Record<string, string> = {
-      [TiposCompromisso.ReuniaoCliente]: 'Reunião',
-      [TiposCompromisso.VisitaObra]: 'Visita Obra',
-      [TiposCompromisso.MedicaoTecnica]: 'Medição',
-      [TiposCompromisso.ApresentacaoProjeto]: 'Apresentação',
-      [TiposCompromisso.EntregaEtapa]: 'Entrega Etapa',
-      [TiposCompromisso.Geral]: 'Geral'
+      [TiposCompromisso.ReuniaoCliente]: "Reunião",
+      [TiposCompromisso.VisitaObra]: "Visita Obra",
+      [TiposCompromisso.MedicaoTecnica]: "Medição",
+      [TiposCompromisso.ApresentacaoProjeto]: "Apresentação",
+      [TiposCompromisso.EntregaEtapa]: "Entrega Etapa",
+      [TiposCompromisso.Geral]: "Geral",
     };
     return map[tipo] || tipo;
   }
 
   formatarHora(dataIso: string): string {
     const d = new Date(dataIso);
-    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   }
 
   formatarDataCompleta(dataIso: string): string {
     const d = new Date(dataIso);
-    return d.toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' });
+    return d.toLocaleDateString([], {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   }
 
-  obterBadgeVarianteTipo(tipo: TipoCompromisso): 'primary' | 'info' | 'warning' | 'neutral' {
+  obterBadgeVarianteTipo(
+    tipo: TipoCompromisso,
+  ): "primary" | "info" | "warning" | "neutral" {
     switch (tipo) {
       case TiposCompromisso.ReuniaoCliente:
       case TiposCompromisso.ApresentacaoProjeto:
-        return 'primary';
+        return "primary";
       case TiposCompromisso.VisitaObra:
-        return 'warning';
+        return "warning";
       case TiposCompromisso.MedicaoTecnica:
       case TiposCompromisso.EntregaEtapa:
-        return 'info';
+        return "info";
       default:
-        return 'neutral';
+        return "neutral";
     }
   }
 
-  obterBadgeVarianteStatus(status: StatusCompromissoType | string): 'success' | 'danger' | 'neutral' {
-    if (status === 'Concluido') return 'success';
-    if (status === 'Cancelado') return 'danger';
-    return 'neutral';
+  obterBadgeVarianteStatus(
+    status: StatusCompromissoType | string,
+  ): "success" | "danger" | "neutral" {
+    if (status === "Concluido") return "success";
+    if (status === "Cancelado") return "danger";
+    return "neutral";
   }
 }

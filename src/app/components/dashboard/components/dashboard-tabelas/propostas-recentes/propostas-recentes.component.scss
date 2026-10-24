@@ -40,10 +40,22 @@
   font-size: 11px;
   font-weight: 600;
 
-  &.status-green { background-color: rgba(16, 185, 129, 0.12); color: #059669; }
-  &.status-blue { background-color: rgba(59, 130, 246, 0.12); color: #2563eb; }
-  &.status-red { background-color: rgba(239, 68, 68, 0.12); color: #dc2626; }
-  &.status-neutral { background-color: var(--af-surface-container); color: var(--af-on-surface-variant); }
+  &.status-green {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #059669;
+  }
+  &.status-blue {
+    background-color: rgba(59, 130, 246, 0.12);
+    color: #2563eb;
+  }
+  &.status-red {
+    background-color: rgba(239, 68, 68, 0.12);
+    color: #dc2626;
+  }
+  &.status-neutral {
+    background-color: var(--af-surface-container);
+    color: var(--af-on-surface-variant);
+  }
 }
 
 .empty-state {

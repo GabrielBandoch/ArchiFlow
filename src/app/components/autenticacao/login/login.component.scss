@@ -20,13 +20,18 @@
   transition: transform 20s ease-out;
 
   &:hover {
-    transform: scale(1.0);
+    transform: scale(1);
   }
 }
 
 .dark-overlay {
   inset: 0;
-  background: linear-gradient(to top, rgba(48, 48, 48, 0.9) 0%, rgba(48, 48, 48, 0.4) 60%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(48, 48, 48, 0.9) 0%,
+    rgba(48, 48, 48, 0.4) 60%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 
@@ -65,7 +70,7 @@
 .logo-icon {
   color: var(--af-primary);
   font-size: 32px;
-  font-variation-settings: 'FILL' 1;
+  font-variation-settings: "FILL" 1;
 }
 
 .logo-text {
@@ -128,7 +133,8 @@
   padding-top: var(--af-space-md);
   box-sizing: border-box;
 
-  @media (min-width: 768px) {}
+  @media (min-width: 768px) {
+  }
 }
 
 .footer-copy,

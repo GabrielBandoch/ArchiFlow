@@ -1,7 +1,18 @@
-<app-dialog [show]="show" dialogTitle="Ajuste Manual do Valor" size="sm" (close)="close.emit()">
-  <form [formGroup]="form" (ngSubmit)="confirmar.emit()" class="d-flex flex-direction-column gap-md">
+<app-dialog
+  [show]="show"
+  dialogTitle="Ajuste Manual do Valor"
+  size="sm"
+  (close)="close.emit()"
+>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="confirmar.emit()"
+    class="d-flex flex-direction-column gap-md"
+  >
     <div class="field-item">
-      <label class="field-label font-label-sm" for="inputAjuste">Novo Valor Sugerido (R$) *</label>
+      <label class="field-label font-label-sm" for="inputAjuste"
+        >Novo Valor Sugerido (R$) *</label
+      >
       <input
         id="inputAjuste"
         type="number"
@@ -13,7 +24,9 @@
     </div>
 
     <div class="field-item">
-      <label class="field-label font-label-sm" for="inputMotivo">Motivo do Ajuste</label>
+      <label class="field-label font-label-sm" for="inputMotivo"
+        >Motivo do Ajuste</label
+      >
       <input
         id="inputMotivo"
         type="text"
@@ -23,9 +36,16 @@
       />
     </div>
 
-    <div dialog-footer class="studio-modal-actions d-flex align-items-center justify-content-end gap-sm margin-top-md">
-      <app-button variant="secondary" (btnClick)="close.emit()">Cancelar</app-button>
-      <app-button type="submit" variant="primary" [disabled]="form.invalid">Aplicar</app-button>
+    <div
+      dialog-footer
+      class="studio-modal-actions d-flex align-items-center justify-content-end gap-sm margin-top-md"
+    >
+      <app-button variant="secondary" (btnClick)="close.emit()"
+        >Cancelar</app-button
+      >
+      <app-button type="submit" variant="primary" [disabled]="form.invalid"
+        >Aplicar</app-button
+      >
     </div>
   </form>
 </app-dialog>

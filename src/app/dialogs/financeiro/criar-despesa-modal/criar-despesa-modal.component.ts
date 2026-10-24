@@ -1,22 +1,37 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { FinanceiroService } from '../../../core/api/financeiro/financeiro.service';
-import { ProjetoService } from '../../../core/api/projetos/projeto.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { CategoriaDespesa, DespesaProjeto } from '../../../models/financeiro.model';
-import { Projeto } from '../../../models/projeto.model';
-import { SelectOption } from '../../../shared/components/select/select.component';
-import { CriarDespesaCommand } from '../../../commands/financeiro.commands';
-import { FinanceiroForm } from '../../../components/financeiro/financeiro.form';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  inject,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
+import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { FinanceiroService } from "../../../core/api/financeiro/financeiro.service";
+import { ProjetoService } from "../../../core/api/projetos/projeto.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import {
+  CategoriaDespesa,
+  DespesaProjeto,
+} from "../../../core/models/financeiro.model";
+import { Projeto } from "../../../core/models/projeto.model";
+import { SelectOption } from "../../../shared/components/select/select.component";
+import { CriarDespesaCommand } from "../../../commands/financeiro.commands";
+import { FinanceiroForm } from "../../../components/financeiro/financeiro.form";
 
-import { ProjectSearchComponent } from '../../../shared/components/project-search/project-search.component';
-import { FornecedorService } from '../../../core/api/fornecedores/fornecedor.service';
-import { Fornecedor } from '../../../models/fornecedor.model';
+import { ProjectSearchComponent } from "../../../shared/components/project-search/project-search.component";
+import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
+import { Fornecedor } from "../../../core/models/fornecedor.model";
 
 @Component({
-  selector: 'app-criar-despesa-modal',
+  selector: "app-criar-despesa-modal",
   standalone: true,
   imports: [
     CommonModule,
@@ -24,10 +39,10 @@ import { Fornecedor } from '../../../models/fornecedor.model';
     CORE_IMPORTS,
     FORM_IMPORTS,
     DESIGN_SYSTEM,
-    ProjectSearchComponent
+    ProjectSearchComponent,
   ],
-  templateUrl: './criar-despesa-modal.component.html',
-  styleUrl: './criar-despesa-modal.component.scss'
+  templateUrl: "./criar-despesa-modal.component.html",
+  styleUrl: "./criar-despesa-modal.component.scss",
 })
 export class CriarDespesaModalComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -51,17 +66,32 @@ export class CriarDespesaModalComponent implements OnInit {
   arquivoSelecionado: File | null = null;
 
   categoriaOptions: SelectOption[] = [
-    { value: CategoriaDespesa.PlotagemImpressao, label: 'Plotagem & Impressão' },
-    { value: CategoriaDespesa.DeslocamentoVisita, label: 'Deslocamento & Visitas Técnicas' },
-    { value: CategoriaDespesa.SoftwareLicencas, label: 'Softwares & Licenças' },
-    { value: CategoriaDespesa.Subcontratacao, label: 'Subcontratação / Consultorias' },
-    { value: CategoriaDespesa.TaxasPrefeitura, label: 'Taxas de Prefeitura & Órgãos' },
-    { value: CategoriaDespesa.Maquetes3D, label: 'Maquetes & Renders 3D' },
-    { value: CategoriaDespesa.Outros, label: 'Outras Despesas' }
+    {
+      value: CategoriaDespesa.PlotagemImpressao,
+      label: "Plotagem & Impressão",
+    },
+    {
+      value: CategoriaDespesa.DeslocamentoVisita,
+      label: "Deslocamento & Visitas Técnicas",
+    },
+    { value: CategoriaDespesa.SoftwareLicencas, label: "Softwares & Licenças" },
+    {
+      value: CategoriaDespesa.Subcontratacao,
+      label: "Subcontratação / Consultorias",
+    },
+    {
+      value: CategoriaDespesa.TaxasPrefeitura,
+      label: "Taxas de Prefeitura & Órgãos",
+    },
+    { value: CategoriaDespesa.Maquetes3D, label: "Maquetes & Renders 3D" },
+    { value: CategoriaDespesa.Outros, label: "Outras Despesas" },
   ];
 
   ngOnInit(): void {
-    this.form = FinanceiroForm.createDespesa(this.fb, this.preselectedProjectId || '');
+    this.form = FinanceiroForm.createDespesa(
+      this.fb,
+      this.preselectedProjectId || "",
+    );
     this.carregarProjetos();
     this.carregarFornecedores();
   }
@@ -71,39 +101,39 @@ export class CriarDespesaModalComponent implements OnInit {
       next: (data) => {
         this.fornecedores = data || [];
         this.fornecedoresOptions = [
-          { value: '', label: 'Nenhum fornecedor vinculado (Geral / Próprio)' },
-          ...(data || []).map(f => ({
+          { value: "", label: "Nenhum fornecedor vinculado (Geral / Próprio)" },
+          ...(data || []).map((f) => ({
             value: f.id,
-            label: `${f.nome} (${f.especialidade})`
-          }))
+            label: `${f.nome} (${f.especialidade})`,
+          })),
         ];
       },
       error: () => {
         this.fornecedoresOptions = [
-          { value: '', label: 'Nenhum fornecedor vinculado (Geral / Próprio)' }
+          { value: "", label: "Nenhum fornecedor vinculado (Geral / Próprio)" },
         ];
-      }
+      },
     });
   }
 
   obterNomeFornecedor(id: string): string {
-    const f = this.fornecedores.find(item => item.id === id);
-    return f ? `${f.nome} (${f.especialidade})` : '';
+    const f = this.fornecedores.find((item) => item.id === id);
+    return f ? `${f.nome} (${f.especialidade})` : "";
   }
 
   carregarProjetos(): void {
     this.projetoService.obterTodos().subscribe({
       next: (data) => {
         this.projetos = data;
-        this.projetoOptions = data.map(p => ({
+        this.projetoOptions = data.map((p) => ({
           value: p.id,
-          label: p.nome
+          label: p.nome,
         }));
         if (this.preselectedProjectId) {
           this.form.patchValue({ projetoId: this.preselectedProjectId });
         }
       },
-      error: (err) => console.error('Erro ao carregar projetos', err)
+      error: (err) => console.error("Erro ao carregar projetos", err),
     });
   }
 
@@ -118,8 +148,10 @@ export class CriarDespesaModalComponent implements OnInit {
     if (input.files && input.files[0]) {
       const file = input.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        this.notificationService.error('O arquivo excede o limite máximo de 20 MB.');
-        input.value = '';
+        this.notificationService.error(
+          "O arquivo excede o limite máximo de 20 MB.",
+        );
+        input.value = "";
         return;
       }
       this.arquivoSelecionado = file;
@@ -128,48 +160,55 @@ export class CriarDespesaModalComponent implements OnInit {
 
   removerArquivo(fileInput?: HTMLInputElement): void {
     this.arquivoSelecionado = null;
-    this.form.patchValue({ comprovanteUrl: '' });
-    if (fileInput) fileInput.value = '';
+    this.form.patchValue({ comprovanteUrl: "" });
+    if (fileInput) fileInput.value = "";
   }
 
   getFileIcon(nome?: string): string {
-    if (!nome) return 'description';
-    const ext = nome.split('.').pop()?.toLowerCase();
-    if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext || '')) return 'image';
-    if (ext === 'pdf') return 'picture_as_pdf';
-    return 'description';
+    if (!nome) return "description";
+    const ext = nome.split(".").pop()?.toLowerCase();
+    if (["jpg", "jpeg", "png", "webp", "gif"].includes(ext || ""))
+      return "image";
+    if (ext === "pdf") return "picture_as_pdf";
+    return "description";
   }
 
   formatarTamanho(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
   }
 
   onSubmit(): void {
     if (this.form.invalid) {
-      this.notificationService.warning('Preencha os campos obrigatórios da saída financeira.');
+      this.notificationService.warning(
+        "Preencha os campos obrigatórios da saída financeira.",
+      );
       return;
     }
 
     if (this.arquivoSelecionado) {
       this.saving = true;
       this.uploadingFile = true;
-      this.financeiroService.uploadComprovante(this.arquivoSelecionado).subscribe({
-        next: (uploadRes) => {
-          this.uploadingFile = false;
-          this.form.patchValue({ comprovanteUrl: uploadRes.url });
-          this.executarCriarDespesa(uploadRes.url);
-        },
-        error: (err) => {
-          this.saving = false;
-          this.uploadingFile = false;
-          console.error('Erro ao enviar comprovante', err);
-          this.notificationService.error('Erro ao enviar arquivo para o servidor.');
-        }
-      });
+      this.financeiroService
+        .uploadComprovante(this.arquivoSelecionado)
+        .subscribe({
+          next: (uploadRes) => {
+            this.uploadingFile = false;
+            this.form.patchValue({ comprovanteUrl: uploadRes.url });
+            this.executarCriarDespesa(uploadRes.url);
+          },
+          error: (err) => {
+            this.saving = false;
+            this.uploadingFile = false;
+            console.error("Erro ao enviar comprovante", err);
+            this.notificationService.error(
+              "Erro ao enviar arquivo para o servidor.",
+            );
+          },
+        });
     } else {
       this.saving = true;
       this.executarCriarDespesa(this.form.value.comprovanteUrl);
@@ -178,27 +217,37 @@ export class CriarDespesaModalComponent implements OnInit {
 
   private executarCriarDespesa(comprovanteUrl?: string): void {
     const val = this.form.value;
-    const nomeFornecedor = val.fornecedorId ? this.obterNomeFornecedor(val.fornecedorId) : '';
-    let obs = val.observacoes?.trim() || '';
+    const nomeFornecedor = val.fornecedorId
+      ? this.obterNomeFornecedor(val.fornecedorId)
+      : "";
+    let obs = val.observacoes?.trim() || "";
     if (nomeFornecedor) {
-      obs = obs ? `[Fornecedor: ${nomeFornecedor}] ${obs}` : `[Fornecedor: ${nomeFornecedor}]`;
+      obs = obs
+        ? `[Fornecedor: ${nomeFornecedor}] ${obs}`
+        : `[Fornecedor: ${nomeFornecedor}]`;
     }
 
     const command: CriarDespesaCommand = {
-      projetoId: val.projetoId || this.projetos[0]?.id || '',
+      projetoId: val.projetoId ? val.projetoId : undefined,
       fornecedorId: val.fornecedorId || undefined,
       descricao: val.descricao,
       valor: Number(val.valor),
       dataDespesa: new Date(val.dataDespesa).toISOString(),
       categoria: val.categoria,
       observacoes: obs || undefined,
-      comprovanteUrl: comprovanteUrl || undefined
+      comprovanteUrl: comprovanteUrl || undefined,
+      pago: !!val.pago,
+      dataPagamento: val.pago
+        ? val.dataPagamento
+          ? new Date(val.dataPagamento).toISOString()
+          : new Date().toISOString()
+        : undefined,
     };
 
     this.financeiroService.criarDespesa(command).subscribe({
       next: (res) => {
         this.saving = false;
-        this.notificationService.success('Despesa registrada com sucesso!');
+        this.notificationService.success("Despesa registrada com sucesso!");
         this.salva.emit(res);
         this.onClose();
       },
@@ -207,12 +256,15 @@ export class CriarDespesaModalComponent implements OnInit {
         if (comprovanteUrl && this.arquivoSelecionado) {
           this.financeiroService.excluirComprovante(comprovanteUrl).subscribe({
             next: () => {},
-            error: () => {}
+            error: () => {},
           });
         }
-        const msg = err.error?.mensagem || err.error?.message || 'Erro ao registrar despesa.';
+        const msg =
+          err.error?.mensagem ||
+          err.error?.message ||
+          "Erro ao registrar despesa.";
         this.notificationService.error(msg);
-      }
+      },
     });
   }
 }

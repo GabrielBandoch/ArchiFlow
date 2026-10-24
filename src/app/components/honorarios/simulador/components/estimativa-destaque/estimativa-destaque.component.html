@@ -4,12 +4,16 @@
   </div>
 
   <div class="destaque-valor">
-    <span class="valor-principal">{{ formatarMoeda(simulacao?.valorTotalSugerido) }}</span>
+    <span class="valor-principal">{{
+      formatarMoeda(simulacao?.valorTotalSugerido)
+    }}</span>
   </div>
 
   <div class="destaque-badges">
     <div class="badge-pill" title="Valor médio por metro quadrado">
-      <span class="material-symbols-outlined" aria-hidden="true">straighten</span>
+      <span class="material-symbols-outlined" aria-hidden="true"
+        >straighten</span
+      >
       <span>{{ formatarMoeda(simulacao?.valorMetroQuadrado) }} / m²</span>
     </div>
     <div class="badge-pill" title="Estimativa de horas técnicas de dedicação">
@@ -26,7 +30,9 @@
       [disabled]="carregando"
       aria-label="Salvar como proposta comercial"
     >
-      <span class="material-symbols-outlined icon-left" aria-hidden="true">save</span>
+      <span class="material-symbols-outlined icon-left" aria-hidden="true"
+        >save</span
+      >
       <span>Salvar Proposta</span>
     </button>
 
@@ -37,7 +43,9 @@
         (click)="vincularLeadClick.emit()"
         aria-label="Vincular a um lead ou cliente"
       >
-        <span class="material-symbols-outlined icon-left" aria-hidden="true">person_add</span>
+        <span class="material-symbols-outlined icon-left" aria-hidden="true"
+          >person_add</span
+        >
         <span>Vincular Lead</span>
       </button>
 
@@ -47,7 +55,9 @@
         (click)="ajusteManualClick.emit()"
         aria-label="Ajustar valor final manualmente"
       >
-        <span class="material-symbols-outlined icon-left" aria-hidden="true">tune</span>
+        <span class="material-symbols-outlined icon-left" aria-hidden="true"
+          >tune</span
+        >
         <span>Ajuste Manual</span>
       </button>
     </div>
@@ -59,7 +69,9 @@
         (click)="pdfClick.emit()"
         aria-label="Visualizar ou Imprimir PDF da Proposta"
       >
-        <span class="material-symbols-outlined icon-left" aria-hidden="true">picture_as_pdf</span>
+        <span class="material-symbols-outlined icon-left" aria-hidden="true"
+          >picture_as_pdf</span
+        >
         <span>Gerar PDF</span>
       </button>
 
@@ -69,7 +81,11 @@
         (click)="whatsappClick.emit()"
         aria-label="Compartilhar via WhatsApp"
       >
-        <span class="material-symbols-outlined icon-left text-success" aria-hidden="true">chat</span>
+        <span
+          class="material-symbols-outlined icon-left text-success"
+          aria-hidden="true"
+          >chat</span
+        >
         <span>WhatsApp</span>
       </button>
     </div>
