@@ -18,7 +18,10 @@
   border-radius: var(--af-radius-md);
   padding: 20px 22px;
   box-shadow: var(--af-shadow-sm);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover {
     transform: translateY(-2px);
@@ -28,7 +31,11 @@
 
   &.has-overdue {
     border-color: rgba(186, 26, 26, 0.4);
-    background: linear-gradient(180deg, #ffffff 0%, rgba(255, 218, 214, 0.25) 100%);
+    background: linear-gradient(
+      180deg,
+      #ffffff 0%,
+      rgba(255, 218, 214, 0.25) 100%
+    );
   }
 }
 
@@ -102,4 +109,3 @@
     color: var(--af-error, #ba1a1a);
   }
 }
-

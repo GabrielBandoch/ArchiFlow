@@ -36,10 +36,22 @@
       font-size: 22px;
     }
 
-    &.icon-total { background-color: var(--af-surface-container-high); color: var(--af-on-surface); }
-    &.icon-active { background-color: #e3f2fd; color: #1565c0; }
-    &.icon-done { background-color: #e8f5e9; color: #2e7d32; }
-    &.icon-area { background-color: #fff3e0; color: #e65100; }
+    &.icon-total {
+      background-color: var(--af-surface-container-high);
+      color: var(--af-on-surface);
+    }
+    &.icon-active {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+    &.icon-done {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    &.icon-area {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
   }
 }
 
@@ -109,7 +121,10 @@
   border-radius: var(--af-radius-md);
   padding: 20px 22px;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover {
     transform: translateY(-2px);
@@ -153,13 +168,34 @@
     border-radius: var(--af-radius-full);
     font-weight: 600;
 
-    &.status-briefing { background-color: var(--af-surface-container-high); color: var(--af-on-surface); }
-    &.status-desenvolvimento { background-color: #e3f2fd; color: #1565c0; }
-    &.status-revisao { background-color: #fff3e0; color: #e65100; }
-    &.status-aprovacao { background-color: #ede7f6; color: #4527a0; }
-    &.status-execucao { background-color: #e0f2f1; color: #00695c; }
-    &.status-concluido { background-color: #e8f5e9; color: #2e7d32; }
-    &.status-cancelado { background-color: var(--af-error-container); color: var(--af-on-error-container); }
+    &.status-briefing {
+      background-color: var(--af-surface-container-high);
+      color: var(--af-on-surface);
+    }
+    &.status-desenvolvimento {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+    &.status-revisao {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
+    &.status-aprovacao {
+      background-color: #ede7f6;
+      color: #4527a0;
+    }
+    &.status-execucao {
+      background-color: #e0f2f1;
+      color: #00695c;
+    }
+    &.status-concluido {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    &.status-cancelado {
+      background-color: var(--af-error-container);
+      color: var(--af-on-error-container);
+    }
   }
 
   .client-sub {
@@ -184,7 +220,11 @@
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--af-primary) 0%, var(--af-primary-container) 100%);
+      background: linear-gradient(
+        90deg,
+        var(--af-primary) 0%,
+        var(--af-primary-container) 100%
+      );
       border-radius: var(--af-radius-full);
       transition: width 0.3s ease;
     }

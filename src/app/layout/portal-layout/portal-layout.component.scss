@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import "../../../styles/variables";
 
 .portal-layout {
   display: flex;
@@ -40,7 +40,11 @@
       .logo-mark {
         width: 36px;
         height: 36px;
-        background: linear-gradient(135deg, var(--af-primary), var(--af-primary-container));
+        background: linear-gradient(
+          135deg,
+          var(--af-primary),
+          var(--af-primary-container)
+        );
         color: var(--af-on-primary);
         font-weight: 700;
         font-size: 1.25rem;

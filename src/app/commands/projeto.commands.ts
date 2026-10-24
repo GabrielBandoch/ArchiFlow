@@ -1,4 +1,8 @@
-import { StatusProjeto, TipoProjeto, StatusEtapa } from '../models/projeto.model';
+import {
+  StatusProjeto,
+  TipoProjeto,
+  StatusEtapa,
+} from "../models/projeto.model";
 
 export interface CriarProjetoCommand {
   nome: string;

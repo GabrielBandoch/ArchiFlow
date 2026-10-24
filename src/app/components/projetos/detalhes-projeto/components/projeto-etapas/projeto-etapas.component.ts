@@ -1,16 +1,20 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { EtapaProjeto, StatusEtapa, TarefaEtapa } from '../../../../../models/projeto.model';
-import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import {
+  EtapaProjeto,
+  StatusEtapa,
+  TarefaEtapa,
+} from "../../../../../models/projeto.model";
+import { EmptyStateComponent } from "../../../../../shared/components/empty-state/empty-state.component";
+import { ButtonComponent } from "../../../../../shared/components/button/button.component";
 
 @Component({
-  selector: 'app-projeto-etapas',
+  selector: "app-projeto-etapas",
   standalone: true,
   imports: [CommonModule, FormsModule, EmptyStateComponent, ButtonComponent],
-  templateUrl: './projeto-etapas.component.html',
-  styleUrl: './projeto-etapas.component.scss'
+  templateUrl: "./projeto-etapas.component.html",
+  styleUrl: "./projeto-etapas.component.scss",
 })
 export class ProjetoEtapasComponent {
   @Input({ required: true }) etapas: EtapaProjeto[] = [];
@@ -18,18 +22,35 @@ export class ProjetoEtapasComponent {
   @Input() etapaAtiva?: EtapaProjeto;
 
   @Output() novaEtapaSolicitada = new EventEmitter<void>();
-  @Output() etapaStatusAlterado = new EventEmitter<{ etapa: EtapaProjeto; status: StatusEtapa; dataConclusao?: string | null }>();
-  @Output() etapaDatasAlteradas = new EventEmitter<{ 
-    etapa: EtapaProjeto; 
-    dataFimPrevista?: string | null; 
+  @Output() etapaStatusAlterado = new EventEmitter<{
+    etapa: EtapaProjeto;
+    status: StatusEtapa;
+    dataConclusao?: string | null;
+  }>();
+  @Output() etapaDatasAlteradas = new EventEmitter<{
+    etapa: EtapaProjeto;
+    dataFimPrevista?: string | null;
     dataConclusao?: string | null;
     limparDataFimPrevista?: boolean;
     limparDataConclusao?: boolean;
   }>();
-  @Output() tarefaToggled = new EventEmitter<{ etapa: EtapaProjeto; tarefa: TarefaEtapa }>();
-  @Output() tarefaAdicionada = new EventEmitter<{ etapa: EtapaProjeto; inputEl: HTMLInputElement }>();
-  @Output() tarefaRemovida = new EventEmitter<{ etapa: EtapaProjeto; tarefaId: string }>();
-  @Output() tarefaPrazoAlterado = new EventEmitter<{ etapa: EtapaProjeto; tarefa: TarefaEtapa; dataLimite?: string | null }>();
+  @Output() tarefaToggled = new EventEmitter<{
+    etapa: EtapaProjeto;
+    tarefa: TarefaEtapa;
+  }>();
+  @Output() tarefaAdicionada = new EventEmitter<{
+    etapa: EtapaProjeto;
+    inputEl: HTMLInputElement;
+  }>();
+  @Output() tarefaRemovida = new EventEmitter<{
+    etapa: EtapaProjeto;
+    tarefaId: string;
+  }>();
+  @Output() tarefaPrazoAlterado = new EventEmitter<{
+    etapa: EtapaProjeto;
+    tarefa: TarefaEtapa;
+    dataLimite?: string | null;
+  }>();
 
   StatusEtapa = StatusEtapa;
 
@@ -60,7 +81,7 @@ export class ProjetoEtapasComponent {
   }
 
   getTarefasConcluidasCount(etapa: EtapaProjeto): number {
-    return (etapa.tarefas || []).filter(t => t.concluida).length;
+    return (etapa.tarefas || []).filter((t) => t.concluida).length;
   }
 
   toggleTarefa(etapa: EtapaProjeto, tarefa: TarefaEtapa): void {
@@ -76,13 +97,13 @@ export class ProjetoEtapasComponent {
   }
 
   formatarDataParaInput(dataStr?: string | null): string {
-    if (!dataStr) return '';
+    if (!dataStr) return "";
     try {
       const d = new Date(dataStr);
-      if (isNaN(d.getTime())) return '';
-      return d.toISOString().split('T')[0];
+      if (isNaN(d.getTime())) return "";
+      return d.toISOString().split("T")[0];
     } catch {
-      return '';
+      return "";
     }
   }
 
@@ -100,7 +121,7 @@ export class ProjetoEtapasComponent {
     this.etapaDatasAlteradas.emit({
       etapa,
       dataFimPrevista: novaData,
-      limparDataFimPrevista: !novaData
+      limparDataFimPrevista: !novaData,
     });
   }
 
@@ -110,7 +131,7 @@ export class ProjetoEtapasComponent {
     this.etapaDatasAlteradas.emit({
       etapa,
       dataFimPrevista: null,
-      limparDataFimPrevista: true
+      limparDataFimPrevista: true,
     });
   }
 
@@ -128,7 +149,7 @@ export class ProjetoEtapasComponent {
     this.etapaDatasAlteradas.emit({
       etapa,
       dataConclusao: novaData,
-      limparDataConclusao: !novaData
+      limparDataConclusao: !novaData,
     });
   }
 
@@ -137,7 +158,11 @@ export class ProjetoEtapasComponent {
     this.editingPrazoTarefaId = tarefa.id;
   }
 
-  salvarPrazoTarefa(etapa: EtapaProjeto, tarefa: TarefaEtapa, event: Event): void {
+  salvarPrazoTarefa(
+    etapa: EtapaProjeto,
+    tarefa: TarefaEtapa,
+    event: Event,
+  ): void {
     const target = event.target as HTMLInputElement;
     const novaData = target.value ? `${target.value}T12:00:00Z` : null;
     tarefa.dataLimite = novaData || undefined;
@@ -145,7 +170,7 @@ export class ProjetoEtapasComponent {
     this.tarefaPrazoAlterado.emit({
       etapa,
       tarefa,
-      dataLimite: novaData
+      dataLimite: novaData,
     });
   }
 
@@ -155,7 +180,7 @@ export class ProjetoEtapasComponent {
     this.tarefaPrazoAlterado.emit({
       etapa,
       tarefa,
-      dataLimite: null
+      dataLimite: null,
     });
   }
 

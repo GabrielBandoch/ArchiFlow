@@ -1,8 +1,8 @@
-@use './styles/variables';
-@use './styles/flex';
-@use './styles/spacing';
-@use './styles/typography';
-@use './styles/utilities';
+@use "./styles/variables";
+@use "./styles/flex";
+@use "./styles/spacing";
+@use "./styles/typography";
+@use "./styles/utilities";
 
 * {
   box-sizing: border-box;
@@ -13,7 +13,12 @@
 html,
 body {
   height: 100%;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   background-color: var(--af-background);
   color: var(--af-on-background);
   -webkit-font-smoothing: antialiased;
@@ -21,7 +26,7 @@ body {
 }
 
 .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined' !important;
+  font-family: "Material Symbols Outlined" !important;
   font-weight: normal;
   font-style: normal;
   display: inline-block;
@@ -217,15 +222,19 @@ a {
   }
 }
 
-/* Utilities */
-.w-max-sm { max-width: 400px; }
-.w-max-md { max-width: 600px; }
-.w-max-lg { max-width: 800px; }
-.lh-relaxed { line-height: 1.6; }
+.w-max-sm {
+  max-width: 400px;
+}
+.w-max-md {
+  max-width: 600px;
+}
+.w-max-lg {
+  max-width: 800px;
+}
+.lh-relaxed {
+  line-height: 1.6;
+}
 
-/* ==========================================================================
-   GLOBAL PRINT STYLES - CLEAN ISOLATED A4 ARCHITECTURAL PROPOSAL
-   ========================================================================== */
 @media print {
   @page {
     size: A4 portrait;
@@ -263,7 +272,8 @@ a {
     visibility: visible !important;
   }
 
-  body, html {
+  body,
+  html {
     background: #ffffff !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -328,7 +338,6 @@ a {
   }
 }
 
-/* --- Global Custom Slim Scrollbars (Elimina as barras grossas de rolagem) --- */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -357,4 +366,4 @@ a {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-}
+}

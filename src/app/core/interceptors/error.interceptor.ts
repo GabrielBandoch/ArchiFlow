@@ -1,23 +1,25 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { HttpInterceptorFn } from "@angular/common/http";
+import { inject } from "@angular/core";
+import { Router } from "@angular/router";
+import { catchError } from "rxjs/operators";
+import { throwError } from "rxjs";
+import { AuthService } from "../services/auth.service";
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   return next(req).pipe(
-    catchError(err => {
-      if (err.status === 401 && !req.url.includes('/auth/login')) {
+    catchError((err) => {
+      if (err.status === 401 && !req.url.includes("/auth/login")) {
         authService.logout();
-        if (!router.url.includes('/login')) {
-          router.navigate(['/login'], { queryParams: { sessionExpired: 'true' } });
+        if (!router.url.includes("/login")) {
+          router.navigate(["/login"], {
+            queryParams: { sessionExpired: "true" },
+          });
         }
       }
       return throwError(() => err);
-    })
+    }),
   );
 };

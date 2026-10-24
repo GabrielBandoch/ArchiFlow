@@ -1,67 +1,86 @@
 <div class="table-container-card d-flex flex-direction-column">
-  <div class="table-toolbar d-flex justify-content-between align-items-center flex-wrap gap-md">
+  <div
+    class="table-toolbar d-flex justify-content-between align-items-center flex-wrap gap-md"
+  >
     <div class="d-flex align-items-center gap-md flex-wrap">
       <div class="d-flex align-items-center gap-sm">
-        <div class="table-icon-box d-flex align-items-center justify-content-center">
+        <div
+          class="table-icon-box d-flex align-items-center justify-content-center"
+        >
           <span class="material-symbols-outlined">receipt_long</span>
         </div>
         <div class="d-flex flex-direction-column">
-          <h3 class="table-title font-headline-md m-0">Saídas & Despesas de Projetos</h3>
-          <span class="font-body-md text-on-surface-variant text-sm">Total filtrado: {{ totalValorDespesas | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+          <h3 class="table-title font-headline-md m-0">
+            Saídas & Despesas de Projetos
+          </h3>
+          <span class="font-body-md text-on-surface-variant text-sm"
+            >Total filtrado:
+            {{
+              totalValorDespesas
+                | currency: "BRL" : "symbol" : "1.2-2" : "pt-BR"
+            }}</span
+          >
         </div>
       </div>
 
       <div class="filter-tabs d-flex p-xs">
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="filter-tab font-label-md"
           [class.active]="filtroCategoria === 'todas'"
-          (click)="setCategoria('todas')">
+          (click)="setCategoria('todas')"
+        >
           Todas
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="filter-tab font-label-md"
           [class.active]="filtroCategoria === 'PlotagemImpressao'"
-          (click)="setCategoria('PlotagemImpressao')">
+          (click)="setCategoria('PlotagemImpressao')"
+        >
           Plotagens
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="filter-tab font-label-md"
           [class.active]="filtroCategoria === 'DeslocamentoVisita'"
-          (click)="setCategoria('DeslocamentoVisita')">
+          (click)="setCategoria('DeslocamentoVisita')"
+        >
           Visitas
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="filter-tab font-label-md"
           [class.active]="filtroCategoria === 'TaxasPrefeitura'"
-          (click)="setCategoria('TaxasPrefeitura')">
+          (click)="setCategoria('TaxasPrefeitura')"
+        >
           Taxas
         </button>
       </div>
 
       <div class="filter-tabs d-flex p-xs">
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="filter-tab font-label-md"
           [class.active]="filtroStatus === 'todas'"
-          (click)="setStatus('todas')">
+          (click)="setStatus('todas')"
+        >
           Todos Status
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="filter-tab font-label-md"
           [class.active]="filtroStatus === 'pagas'"
-          (click)="setStatus('pagas')">
+          (click)="setStatus('pagas')"
+        >
           Pagas
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="filter-tab font-label-md"
           [class.active]="filtroStatus === 'pendentes'"
-          (click)="setStatus('pendentes')">
+          (click)="setStatus('pendentes')"
+        >
           Pendentes
         </button>
       </div>
@@ -70,11 +89,12 @@
     <div class="d-flex align-items-center gap-sm flex-wrap">
       <div class="search-box">
         <span class="material-symbols-outlined search-icon">search</span>
-        <input 
-          type="text" 
-          class="search-input" 
-          placeholder="Buscar projeto ou descrição..." 
-          [(ngModel)]="busca">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar projeto ou descrição..."
+          [(ngModel)]="busca"
+        />
       </div>
 
       <app-button variant="primary" (btnClick)="onNovaDespesa()">
@@ -102,12 +122,20 @@
         <tr *ngFor="let d of despesasPaginadas" class="table-row">
           <td>
             <div class="d-flex flex-direction-column">
-              <span class="font-label-md font-weight-bold text-on-surface">{{ d.descricao }}</span>
-              <span class="font-body-md text-on-surface-variant text-sm" *ngIf="d.observacoes">{{ d.observacoes }}</span>
+              <span class="font-label-md font-weight-bold text-on-surface">{{
+                d.descricao
+              }}</span>
+              <span
+                class="font-body-md text-on-surface-variant text-sm"
+                *ngIf="d.observacoes"
+                >{{ d.observacoes }}</span
+              >
             </div>
           </td>
           <td>
-            <span class="font-body-md text-on-surface font-medium">{{ d.projetoNome || 'Despesa Geral' }}</span>
+            <span class="font-body-md text-on-surface font-medium">{{
+              d.projetoNome || "Despesa Geral"
+            }}</span>
           </td>
           <td>
             <span class="badge-cat font-label-sm">
@@ -121,25 +149,47 @@
               [class.pago]="d.pago"
               [class.pendente]="!d.pago"
               (click)="onAlternarPagamento(d)"
-              [title]="d.pago ? (d.dataPagamento ? ('Pago em ' + (d.dataPagamento | date:'dd/MM/yyyy') + ' - Clique para marcar como pendente') : 'Pago - Clique para marcar como pendente') : 'Pendente - Clique para marcar como pago'">
-              <span class="material-symbols-outlined icon-status">{{ d.pago ? 'check_circle' : 'pending' }}</span>
-              <span>{{ d.pago ? 'Pago' : 'Pendente' }}</span>
+              [title]="
+                d.pago
+                  ? d.dataPagamento
+                    ? 'Pago em ' +
+                      (d.dataPagamento | date: 'dd/MM/yyyy') +
+                      ' - Clique para marcar como pendente'
+                    : 'Pago - Clique para marcar como pendente'
+                  : 'Pendente - Clique para marcar como pago'
+              "
+            >
+              <span class="material-symbols-outlined icon-status">{{
+                d.pago ? "check_circle" : "pending"
+              }}</span>
+              <span>{{ d.pago ? "Pago" : "Pendente" }}</span>
             </button>
           </td>
           <td>
-            <span class="font-body-md text-on-surface">{{ d.dataDespesa | date:'dd/MM/yyyy' }}</span>
+            <span class="font-body-md text-on-surface">{{
+              d.dataDespesa | date: "dd/MM/yyyy"
+            }}</span>
           </td>
           <td>
             <span class="font-label-md font-weight-bold text-danger">
-              -{{ d.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+              -{{ d.valor | currency: "BRL" : "symbol" : "1.2-2" : "pt-BR" }}
             </span>
           </td>
           <td>
-            <a *ngIf="d.comprovanteUrl" [href]="d.comprovanteUrl" target="_blank" class="link-receipt d-flex align-items-center gap-xs font-label-sm text-primary">
+            <a
+              *ngIf="d.comprovanteUrl"
+              [href]="d.comprovanteUrl"
+              target="_blank"
+              class="link-receipt d-flex align-items-center gap-xs font-label-sm text-primary"
+            >
               <span class="material-symbols-outlined">attach_file</span>
               Ver Anexo
             </a>
-            <span *ngIf="!d.comprovanteUrl" class="font-body-md text-on-surface-variant text-sm">-</span>
+            <span
+              *ngIf="!d.comprovanteUrl"
+              class="font-body-md text-on-surface-variant text-sm"
+              >-</span
+            >
           </td>
           <td class="text-right">
             <div class="d-flex align-items-center justify-content-end gap-xs">
@@ -148,14 +198,18 @@
                 class="btn-table-action"
                 [class.btn-action-pago]="d.pago"
                 (click)="onAlternarPagamento(d)"
-                [title]="d.pago ? 'Marcar como Pendente' : 'Marcar como Pago'">
-                <span class="material-symbols-outlined">{{ d.pago ? 'check_circle' : 'radio_button_unchecked' }}</span>
+                [title]="d.pago ? 'Marcar como Pendente' : 'Marcar como Pago'"
+              >
+                <span class="material-symbols-outlined">{{
+                  d.pago ? "check_circle" : "radio_button_unchecked"
+                }}</span>
               </button>
-              <button 
-                type="button" 
-                class="btn-table-action btn-action-delete" 
+              <button
+                type="button"
+                class="btn-table-action btn-action-delete"
                 (click)="onExcluir(d.id)"
-                title="Excluir despesa">
+                title="Excluir despesa"
+              >
                 <span class="material-symbols-outlined">delete</span>
               </button>
             </div>
@@ -172,29 +226,39 @@
       description="Não há despesas cadastradas nos filtros atuais."
       actionLabel="Nova Despesa"
       actionIcon="trending_down"
-      (actionClick)="onNovaDespesa()">
+      (actionClick)="onNovaDespesa()"
+    >
     </app-empty-state>
   </div>
 
-  <div class="table-footer d-flex justify-content-between align-items-center" *ngIf="despesasFiltradas.length > 0">
+  <div
+    class="table-footer d-flex justify-content-between align-items-center"
+    *ngIf="despesasFiltradas.length > 0"
+  >
     <span class="font-body-md text-sm text-on-surface-variant">
-      Mostrando {{ (paginaAtual - 1) * itensPorPagina + 1 }} a {{ Math.min(paginaAtual * itensPorPagina, despesasFiltradas.length) }} de {{ despesasFiltradas.length }} despesas
+      Mostrando {{ (paginaAtual - 1) * itensPorPagina + 1 }} a
+      {{ Math.min(paginaAtual * itensPorPagina, despesasFiltradas.length) }} de
+      {{ despesasFiltradas.length }} despesas
     </span>
 
     <div class="d-flex align-items-center gap-xs">
-      <button 
-        type="button" 
-        class="btn-page" 
+      <button
+        type="button"
+        class="btn-page"
         [disabled]="paginaAtual === 1"
-        (click)="mudarPagina(-1)">
+        (click)="mudarPagina(-1)"
+      >
         <span class="material-symbols-outlined">chevron_left</span>
       </button>
-      <span class="font-label-sm px-sm">{{ paginaAtual }} / {{ totalPaginas }}</span>
-      <button 
-        type="button" 
-        class="btn-page" 
+      <span class="font-label-sm px-sm"
+        >{{ paginaAtual }} / {{ totalPaginas }}</span
+      >
+      <button
+        type="button"
+        class="btn-page"
         [disabled]="paginaAtual === totalPaginas"
-        (click)="mudarPagina(1)">
+        (click)="mudarPagina(1)"
+      >
         <span class="material-symbols-outlined">chevron_right</span>
       </button>
     </div>

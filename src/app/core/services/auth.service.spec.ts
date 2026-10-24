@@ -1,34 +1,36 @@
-import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { AuthService } from './auth.service';
-import { AutenticacaoService } from '../api';
-import { Usuario } from '../../models/usuario.model';
+import { TestBed } from "@angular/core/testing";
+import { of } from "rxjs";
+import { AuthService } from "./auth.service";
+import { AutenticacaoService } from "../api";
+import { Usuario } from "../../models/usuario.model";
 
-describe('AuthService', () => {
+describe("AuthService", () => {
   let service: AuthService;
   let apiServiceSpy: jasmine.SpyObj<AutenticacaoService>;
 
   const createMockJwt = (expiresInSeconds: number): string => {
-    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
     const now = Math.floor(Date.now() / 1000);
-    const payload = btoa(JSON.stringify({
-      nameid: 'user-1',
-      email: 'test@archiflow.com',
-      exp: now + expiresInSeconds
-    }));
-    const signature = 'mockSignature';
+    const payload = btoa(
+      JSON.stringify({
+        nameid: "user-1",
+        email: "test@archiflow.com",
+        exp: now + expiresInSeconds,
+      }),
+    );
+    const signature = "mockSignature";
     return `${header}.${payload}.${signature}`;
   };
 
   beforeEach(() => {
     localStorage.clear();
-    apiServiceSpy = jasmine.createSpyObj('AutenticacaoService', ['login']);
+    apiServiceSpy = jasmine.createSpyObj("AutenticacaoService", ["login"]);
 
     TestBed.configureTestingModule({
       providers: [
         AuthService,
-        { provide: AutenticacaoService, useValue: apiServiceSpy }
-      ]
+        { provide: AutenticacaoService, useValue: apiServiceSpy },
+      ],
     });
   });
 
@@ -36,7 +38,7 @@ describe('AuthService', () => {
     localStorage.clear();
   });
 
-  it('deve identificar token expirado corretamente com isTokenExpired', () => {
+  it("deve identificar token expirado corretamente com isTokenExpired", () => {
     service = TestBed.inject(AuthService);
 
     const expiredToken = createMockJwt(-3600);
@@ -45,37 +47,37 @@ describe('AuthService', () => {
     expect(service.isTokenExpired(expiredToken)).toBeTrue();
     expect(service.isTokenExpired(validToken)).toBeFalse();
     expect(service.isTokenExpired(undefined)).toBeTrue();
-    expect(service.isTokenExpired('invalid.token')).toBeTrue();
+    expect(service.isTokenExpired("invalid.token")).toBeTrue();
   });
 
-  it('deve deslogar e limpar localStorage se o usuario armazenado tiver token expirado', () => {
+  it("deve deslogar e limpar localStorage se o usuario armazenado tiver token expirado", () => {
     const expiredToken = createMockJwt(-100);
     const mockUser: Usuario = {
-      id: 'usr-1',
-      nome: 'Teste',
-      email: 'teste@archiflow.com',
+      id: "usr-1",
+      nome: "Teste",
+      email: "teste@archiflow.com",
       token: expiredToken,
-      perfil: 'Administrador'
+      perfil: "Administrador",
     };
-    localStorage.setItem('currentUser', JSON.stringify(mockUser));
+    localStorage.setItem("currentUser", JSON.stringify(mockUser));
 
     service = TestBed.inject(AuthService);
 
     expect(service.currentUserValue).toBeUndefined();
     expect(service.isAuthenticated).toBeFalse();
-    expect(localStorage.getItem('currentUser')).toBeNull();
+    expect(localStorage.getItem("currentUser")).toBeNull();
   });
 
-  it('deve manter sessao se o token for valido', () => {
+  it("deve manter sessao se o token for valido", () => {
     const validToken = createMockJwt(3600);
     const mockUser: Usuario = {
-      id: 'usr-1',
-      nome: 'Teste Valido',
-      email: 'valido@archiflow.com',
+      id: "usr-1",
+      nome: "Teste Valido",
+      email: "valido@archiflow.com",
       token: validToken,
-      perfil: 'Administrador'
+      perfil: "Administrador",
     };
-    localStorage.setItem('currentUser', JSON.stringify(mockUser));
+    localStorage.setItem("currentUser", JSON.stringify(mockUser));
 
     service = TestBed.inject(AuthService);
 
@@ -83,140 +85,142 @@ describe('AuthService', () => {
     expect(service.isAuthenticated).toBeTrue();
   });
 
-  it('deve realizar login, salvar no localStorage e emitir currentUser', () => {
+  it("deve realizar login, salvar no localStorage e emitir currentUser", () => {
     service = TestBed.inject(AuthService);
     const validToken = createMockJwt(3600);
     const userRetornado: Usuario = {
-      id: 'usr-2',
-      nome: 'Novo Login',
-      email: 'novo@archiflow.com',
+      id: "usr-2",
+      nome: "Novo Login",
+      email: "novo@archiflow.com",
       token: validToken,
-      perfil: 'Arquiteto'
+      perfil: "Arquiteto",
     };
 
     apiServiceSpy.login.and.returnValue(of(userRetornado));
 
-    service.login({ email: 'novo@archiflow.com', senha: '123' }).subscribe(user => {
-      expect(user).toEqual(userRetornado);
-      expect(service.currentUserValue).toEqual(userRetornado);
-      expect(service.isAuthenticated).toBeTrue();
-      expect(localStorage.getItem('currentUser')).toContain('Novo Login');
-    });
+    service
+      .login({ email: "novo@archiflow.com", senha: "123" })
+      .subscribe((user) => {
+        expect(user).toEqual(userRetornado);
+        expect(service.currentUserValue).toEqual(userRetornado);
+        expect(service.isAuthenticated).toBeTrue();
+        expect(localStorage.getItem("currentUser")).toContain("Novo Login");
+      });
   });
 
-  it('deve deslogar limpando o state e o localStorage', () => {
+  it("deve deslogar limpando o state e o localStorage", () => {
     const validToken = createMockJwt(3600);
     const mockUser: Usuario = {
-      id: 'usr-1',
-      nome: 'Teste',
-      email: 'teste@archiflow.com',
+      id: "usr-1",
+      nome: "Teste",
+      email: "teste@archiflow.com",
       token: validToken,
-      perfil: 'Administrador'
+      perfil: "Administrador",
     };
-    localStorage.setItem('currentUser', JSON.stringify(mockUser));
+    localStorage.setItem("currentUser", JSON.stringify(mockUser));
     service = TestBed.inject(AuthService);
 
     service.logout();
 
     expect(service.currentUserValue).toBeUndefined();
     expect(service.isAuthenticated).toBeFalse();
-    expect(localStorage.getItem('currentUser')).toBeNull();
+    expect(localStorage.getItem("currentUser")).toBeNull();
   });
 
-  it('deve permitir acesso a todos os modulos para administradores', () => {
+  it("deve permitir acesso a todos os modulos para administradores", () => {
     const validToken = createMockJwt(3600);
     const mockAdmin: Usuario = {
-      id: 'usr-admin',
-      nome: 'Admin',
-      email: 'admin@cotu.com',
+      id: "usr-admin",
+      nome: "Admin",
+      email: "admin@cotu.com",
       token: validToken,
-      perfil: 'Administrador'
+      perfil: "Administrador",
     };
-    localStorage.setItem('currentUser', JSON.stringify(mockAdmin));
+    localStorage.setItem("currentUser", JSON.stringify(mockAdmin));
     service = TestBed.inject(AuthService);
 
     expect(service.isAdmin).toBeTrue();
-    expect(service.hasModulePermission('financeiro')).toBeTrue();
-    expect(service.hasModulePermission('qualquer-modulo')).toBeTrue();
-    expect(service.getFirstAllowedRoute()).toBe('/dashboard');
+    expect(service.hasModulePermission("financeiro")).toBeTrue();
+    expect(service.hasModulePermission("qualquer-modulo")).toBeTrue();
+    expect(service.getFirstAllowedRoute()).toBe("/dashboard");
   });
 
-  it('deve permitir acesso aos modulos autorizados para colaboradores', () => {
+  it("deve permitir acesso aos modulos autorizados para colaboradores", () => {
     const validToken = createMockJwt(3600);
     const mockStaff: Usuario = {
-      id: 'usr-colab',
-      nome: 'Colaborador',
-      email: 'colab@cotu.com',
+      id: "usr-colab",
+      nome: "Colaborador",
+      email: "colab@cotu.com",
       token: validToken,
-      perfil: 'Colaborador',
-      modulosPermitidos: ['Projetos', 'Agenda']
+      perfil: "Colaborador",
+      modulosPermitidos: ["Projetos", "Agenda"],
     };
-    localStorage.setItem('currentUser', JSON.stringify(mockStaff));
+    localStorage.setItem("currentUser", JSON.stringify(mockStaff));
     service = TestBed.inject(AuthService);
 
     expect(service.isAdmin).toBeFalse();
-    expect(service.hasModulePermission('projetos')).toBeTrue();
-    expect(service.hasModulePermission('agenda')).toBeTrue();
-    expect(service.hasModulePermission('financeiro')).toBeFalse();
-    expect(service.getFirstAllowedRoute()).toBe('/projetos');
+    expect(service.hasModulePermission("projetos")).toBeTrue();
+    expect(service.hasModulePermission("agenda")).toBeTrue();
+    expect(service.hasModulePermission("financeiro")).toBeFalse();
+    expect(service.getFirstAllowedRoute()).toBe("/projetos");
   });
 
-  it('deve negar acesso para colaborador com lista de modulos vazia', () => {
+  it("deve negar acesso para colaborador com lista de modulos vazia", () => {
     const validToken = createMockJwt(3600);
     const mockStaff: Usuario = {
-      id: 'usr-vazio',
-      nome: 'Sem Modulos',
-      email: 'vazio@cotu.com',
+      id: "usr-vazio",
+      nome: "Sem Modulos",
+      email: "vazio@cotu.com",
       token: validToken,
-      perfil: 'Colaborador',
-      modulosPermitidos: []
+      perfil: "Colaborador",
+      modulosPermitidos: [],
     };
-    localStorage.setItem('currentUser', JSON.stringify(mockStaff));
+    localStorage.setItem("currentUser", JSON.stringify(mockStaff));
     service = TestBed.inject(AuthService);
 
-    expect(service.hasModulePermission('dashboard')).toBeFalse();
-    expect(service.hasModulePermission('projetos')).toBeFalse();
-    expect(service.getFirstAllowedRoute()).toBe('/perfil');
+    expect(service.hasModulePermission("dashboard")).toBeFalse();
+    expect(service.hasModulePermission("projetos")).toBeFalse();
+    expect(service.getFirstAllowedRoute()).toBe("/perfil");
   });
 
-  it('deve negar acesso para colaborador com modulos nao definidos', () => {
+  it("deve negar acesso para colaborador com modulos nao definidos", () => {
     const validToken = createMockJwt(3600);
     const mockStaff: Usuario = {
-      id: 'usr-sem-def',
-      nome: 'Sem Definicao',
-      email: 'semdef@cotu.com',
+      id: "usr-sem-def",
+      nome: "Sem Definicao",
+      email: "semdef@cotu.com",
       token: validToken,
-      perfil: 'Colaborador'
+      perfil: "Colaborador",
     };
-    localStorage.setItem('currentUser', JSON.stringify(mockStaff));
+    localStorage.setItem("currentUser", JSON.stringify(mockStaff));
     service = TestBed.inject(AuthService);
 
-    expect(service.hasModulePermission('dashboard')).toBeFalse();
-    expect(service.getFirstAllowedRoute()).toBe('/perfil');
+    expect(service.hasModulePermission("dashboard")).toBeFalse();
+    expect(service.getFirstAllowedRoute()).toBe("/perfil");
   });
 
-  it('deve negar modulos internos para conta de cliente e direcionar para portal', () => {
+  it("deve negar modulos internos para conta de cliente e direcionar para portal", () => {
     const validToken = createMockJwt(3600);
     const mockCliente: Usuario = {
-      id: 'usr-cli',
-      nome: 'Cliente Portal',
-      email: 'cliente@externo.com',
+      id: "usr-cli",
+      nome: "Cliente Portal",
+      email: "cliente@externo.com",
       token: validToken,
-      perfil: 'Cliente'
+      perfil: "Cliente",
     };
-    localStorage.setItem('currentUser', JSON.stringify(mockCliente));
+    localStorage.setItem("currentUser", JSON.stringify(mockCliente));
     service = TestBed.inject(AuthService);
 
     expect(service.isCliente).toBeTrue();
-    expect(service.hasModulePermission('dashboard')).toBeFalse();
-    expect(service.hasModulePermission('projetos')).toBeFalse();
-    expect(service.getFirstAllowedRoute()).toBe('/portal');
+    expect(service.hasModulePermission("dashboard")).toBeFalse();
+    expect(service.hasModulePermission("projetos")).toBeFalse();
+    expect(service.getFirstAllowedRoute()).toBe("/portal");
   });
 
-  it('deve negar modulos quando o usuario nao estiver autenticado', () => {
+  it("deve negar modulos quando o usuario nao estiver autenticado", () => {
     service = TestBed.inject(AuthService);
 
     expect(service.isAuthenticated).toBeFalse();
-    expect(service.hasModulePermission('dashboard')).toBeFalse();
+    expect(service.hasModulePermission("dashboard")).toBeFalse();
   });
 });

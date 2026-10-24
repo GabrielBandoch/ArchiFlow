@@ -1,17 +1,17 @@
-import { CotuLogoComponent } from '../../shared/components/cotu-logo/cotu-logo.component';
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet, Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
-import { ConfiguracaoPropostaService } from '../../core/services/configuracao-proposta.service';
-import { DESIGN_SYSTEM } from '../../shared';
+import { CotuLogoComponent } from "../../shared/components/cotu-logo/cotu-logo.component";
+import { Component, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterOutlet, Router } from "@angular/router";
+import { AuthService } from "../../core/services/auth.service";
+import { ConfiguracaoPropostaService } from "../../core/services/configuracao-proposta.service";
+import { DESIGN_SYSTEM } from "../../shared";
 
 @Component({
-  selector: 'app-portal-layout',
+  selector: "app-portal-layout",
   standalone: true,
   imports: [CotuLogoComponent, CommonModule, RouterOutlet, DESIGN_SYSTEM],
-  templateUrl: './portal-layout.component.html',
-  styleUrl: './portal-layout.component.scss'
+  templateUrl: "./portal-layout.component.html",
+  styleUrl: "./portal-layout.component.scss",
 })
 export class PortalLayoutComponent {
   authService = inject(AuthService);
@@ -19,7 +19,10 @@ export class PortalLayoutComponent {
   router = inject(Router);
 
   get nomeEscritorio(): string {
-    return this.configService.getConfiguracao()?.nomeEscritorio || 'Escritório de Arquitetura';
+    return (
+      this.configService.getConfiguracao()?.nomeEscritorio ||
+      "Escritório de Arquitetura"
+    );
   }
 
   get currentUser() {
@@ -27,8 +30,8 @@ export class PortalLayoutComponent {
   }
 
   get userInitials(): string {
-    const nome = this.currentUser?.nome || 'C';
-    const parts = nome.trim().split(' ');
+    const nome = this.currentUser?.nome || "C";
+    const parts = nome.trim().split(" ");
     if (parts.length >= 2) {
       return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     }
@@ -37,6 +40,6 @@ export class PortalLayoutComponent {
 
   onLogout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(["/login"]);
   }
 }

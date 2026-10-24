@@ -1,28 +1,28 @@
 export enum StatusParcela {
-  Pendente = 'Pendente',
-  Pago = 'Pago',
-  Atrasado = 'Atrasado',
-  Cancelado = 'Cancelado'
+  Pendente = "Pendente",
+  Pago = "Pago",
+  Atrasado = "Atrasado",
+  Cancelado = "Cancelado",
 }
 
 export enum FormaPagamento {
-  Pix = 'Pix',
-  Transferencia = 'Transferencia',
-  Boleto = 'Boleto',
-  CartaoCredito = 'CartaoCredito',
-  CartaoDebito = 'CartaoDebito',
-  Dinheiro = 'Dinheiro',
-  Outro = 'Outro'
+  Pix = "Pix",
+  Transferencia = "Transferencia",
+  Boleto = "Boleto",
+  CartaoCredito = "CartaoCredito",
+  CartaoDebito = "CartaoDebito",
+  Dinheiro = "Dinheiro",
+  Outro = "Outro",
 }
 
 export enum CategoriaDespesa {
-  PlotagemImpressao = 'PlotagemImpressao',
-  DeslocamentoVisita = 'DeslocamentoVisita',
-  SoftwareLicencas = 'SoftwareLicencas',
-  Subcontratacao = 'Subcontratacao',
-  TaxasPrefeitura = 'TaxasPrefeitura',
-  Maquetes3D = 'Maquetes3D',
-  Outros = 'Outros'
+  PlotagemImpressao = "PlotagemImpressao",
+  DeslocamentoVisita = "DeslocamentoVisita",
+  SoftwareLicencas = "SoftwareLicencas",
+  Subcontratacao = "Subcontratacao",
+  TaxasPrefeitura = "TaxasPrefeitura",
+  Maquetes3D = "Maquetes3D",
+  Outros = "Outros",
 }
 
 export interface ParcelaFinanceira {

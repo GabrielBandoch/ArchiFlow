@@ -1,9 +1,14 @@
-import { Injectable, ViewContainerRef, ComponentRef, Type } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  Injectable,
+  ViewContainerRef,
+  ComponentRef,
+  Type,
+} from "@angular/core";
+import { Observable, Subject } from "rxjs";
+import { ConfirmDialogComponent } from "../../shared/components/confirm-dialog/confirm-dialog.component";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class DialogService {
   private viewContainerRef?: ViewContainerRef;
@@ -14,7 +19,9 @@ export class DialogService {
 
   open<T>(component: Type<T>, config?: { data?: any }): ComponentRef<T> {
     if (!this.viewContainerRef) {
-      throw new Error('ViewContainerRef not registered. Call DialogService.registerContainerRef() first.');
+      throw new Error(
+        "ViewContainerRef not registered. Call DialogService.registerContainerRef() first.",
+      );
     }
 
     const componentRef = this.viewContainerRef.createComponent(component);
@@ -22,16 +29,16 @@ export class DialogService {
 
     if (config?.data) {
       Object.assign(instance, config.data);
-      if ('data' in instance) {
+      if ("data" in instance) {
         instance.data = config.data;
       }
     }
 
-    if ('show' in instance) {
+    if ("show" in instance) {
       instance.show = true;
     }
 
-    if ('close' in instance) {
+    if ("close" in instance) {
       instance.close.subscribe(() => {
         componentRef.destroy();
       });
@@ -53,8 +60,8 @@ export class DialogService {
     const ref = this.open(ConfirmDialogComponent, {
       data: {
         title: config.title,
-        message: config.message
-      }
+        message: config.message,
+      },
     });
 
     ref.instance.confirm.subscribe(() => {

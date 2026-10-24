@@ -153,7 +153,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
 
     &:hover {
       transform: scale(1.15);
@@ -187,7 +189,7 @@
       padding: 0;
     }
     &::-webkit-color-swatch {
-      border: 1px solid var(--af-outline-variant, rgba(0,0,0,0.15));
+      border: 1px solid var(--af-outline-variant, rgba(0, 0, 0, 0.15));
       border-radius: var(--af-radius-default);
     }
   }
@@ -263,7 +265,7 @@
 .mini-spin {
   width: 12px;
   height: 12px;
-  border: 2px solid var(--af-outline-variant, rgba(0,0,0,0.2));
+  border: 2px solid var(--af-outline-variant, rgba(0, 0, 0, 0.2));
   border-top-color: var(--af-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -271,5 +273,7 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }

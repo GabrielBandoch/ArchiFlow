@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EstimativaDestaqueComponent } from './estimativa-destaque.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { EstimativaDestaqueComponent } from "./estimativa-destaque.component";
 
-describe('EstimativaDestaqueComponent', () => {
+describe("EstimativaDestaqueComponent", () => {
   let component: EstimativaDestaqueComponent;
   let fixture: ComponentFixture<EstimativaDestaqueComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EstimativaDestaqueComponent]
+      imports: [EstimativaDestaqueComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EstimativaDestaqueComponent);
@@ -15,21 +15,21 @@ describe('EstimativaDestaqueComponent', () => {
     fixture.detectChanges();
   });
 
-  it('deve criar o componente', () => {
+  it("deve criar o componente", () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve formatar valor monetário corretamente', () => {
-    expect(component.formatarMoeda(1500)).toContain('1.500');
-    expect(component.formatarMoeda(undefined)).toBe('R$ 0,00');
+  it("deve formatar valor monetário corretamente", () => {
+    expect(component.formatarMoeda(1500)).toContain("1.500");
+    expect(component.formatarMoeda(undefined)).toBe("R$ 0,00");
   });
 
-  it('deve emitir eventos de clique corretamente', () => {
-    spyOn(component.salvarPropostaClick, 'emit');
-    spyOn(component.vincularLeadClick, 'emit');
-    spyOn(component.ajusteManualClick, 'emit');
-    spyOn(component.pdfClick, 'emit');
-    spyOn(component.whatsappClick, 'emit');
+  it("deve emitir eventos de clique corretamente", () => {
+    spyOn(component.salvarPropostaClick, "emit");
+    spyOn(component.vincularLeadClick, "emit");
+    spyOn(component.ajusteManualClick, "emit");
+    spyOn(component.pdfClick, "emit");
+    spyOn(component.whatsappClick, "emit");
 
     component.salvarPropostaClick.emit();
     component.vincularLeadClick.emit();

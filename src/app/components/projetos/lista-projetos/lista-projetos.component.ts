@@ -1,19 +1,23 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { ProjetoService } from '../../../core/api/projetos/projeto.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { DialogService } from '../../../core/services/dialog.service';
-import { Projeto, StatusProjeto, TipoProjeto } from '../../../models/projeto.model';
-import { CriarProjetoModalComponent } from '../../../dialogs/projetos/criar-projeto-modal/criar-projeto-modal.component';
+import { Component, OnInit, inject } from "@angular/core";
+import { Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { ProjetoService } from "../../../core/api/projetos/projeto.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import { DialogService } from "../../../core/services/dialog.service";
+import {
+  Projeto,
+  StatusProjeto,
+  TipoProjeto,
+} from "../../../models/projeto.model";
+import { CriarProjetoModalComponent } from "../../../dialogs/projetos/criar-projeto-modal/criar-projeto-modal.component";
 
 @Component({
-  selector: 'app-lista-projetos',
+  selector: "app-lista-projetos",
   standalone: true,
   imports: [CORE_IMPORTS, DESIGN_SYSTEM, FormsModule],
-  templateUrl: './lista-projetos.component.html',
-  styleUrl: './lista-projetos.component.scss'
+  templateUrl: "./lista-projetos.component.html",
+  styleUrl: "./lista-projetos.component.scss",
 })
 export class ListaProjetosComponent implements OnInit {
   private projetoService = inject(ProjetoService);
@@ -23,8 +27,8 @@ export class ListaProjetosComponent implements OnInit {
 
   projetos: Projeto[] = [];
   projetosFiltrados: Projeto[] = [];
-  searchQuery = '';
-  filtroStatus: 'todos' | 'andamento' | 'concluidos' | 'briefing' = 'todos';
+  searchQuery = "";
+  filtroStatus: "todos" | "andamento" | "concluidos" | "briefing" = "todos";
   loading = true;
 
   StatusProjeto = StatusProjeto;
@@ -35,16 +39,18 @@ export class ListaProjetosComponent implements OnInit {
   }
 
   get totalEmAndamento(): number {
-    return this.projetos.filter(p => 
-      p.status === StatusProjeto.Desenvolvimento || 
-      p.status === StatusProjeto.Revisao || 
-      p.status === StatusProjeto.Aprovacao || 
-      p.status === StatusProjeto.Execucao
+    return this.projetos.filter(
+      (p) =>
+        p.status === StatusProjeto.Desenvolvimento ||
+        p.status === StatusProjeto.Revisao ||
+        p.status === StatusProjeto.Aprovacao ||
+        p.status === StatusProjeto.Execucao,
     ).length;
   }
 
   get totalConcluidos(): number {
-    return this.projetos.filter(p => p.status === StatusProjeto.Concluido).length;
+    return this.projetos.filter((p) => p.status === StatusProjeto.Concluido)
+      .length;
   }
 
   get totalMetragem(): number {
@@ -56,8 +62,16 @@ export class ListaProjetosComponent implements OnInit {
   }
 
   normalizarStatus(status: any): StatusProjeto {
-    if (typeof status === 'string') {
-      const idx = ['Briefing', 'Desenvolvimento', 'Revisao', 'Aprovacao', 'Execucao', 'Concluido', 'Cancelado'].indexOf(status);
+    if (typeof status === "string") {
+      const idx = [
+        "Briefing",
+        "Desenvolvimento",
+        "Revisao",
+        "Aprovacao",
+        "Execucao",
+        "Concluido",
+        "Cancelado",
+      ].indexOf(status);
       if (idx >= 0) return idx as StatusProjeto;
     }
     return Number(status) as StatusProjeto;
@@ -67,22 +81,22 @@ export class ListaProjetosComponent implements OnInit {
     this.loading = true;
     this.projetoService.obterTodos().subscribe({
       next: (data) => {
-        this.projetos = data.map(p => ({
+        this.projetos = data.map((p) => ({
           ...p,
-          status: this.normalizarStatus(p.status)
+          status: this.normalizarStatus(p.status),
         }));
         this.filtrarProjetos();
         this.loading = false;
       },
       error: (err) => {
         this.loading = false;
-        console.error('Erro ao carregar projetos', err);
-        this.notificationService.error('Erro ao carregar lista de projetos.');
-      }
+        console.error("Erro ao carregar projetos", err);
+        this.notificationService.error("Erro ao carregar lista de projetos.");
+      },
     });
   }
 
-  setFiltro(status: 'todos' | 'andamento' | 'concluidos' | 'briefing'): void {
+  setFiltro(status: "todos" | "andamento" | "concluidos" | "briefing"): void {
     this.filtroStatus = status;
     this.filtrarProjetos();
   }
@@ -90,26 +104,28 @@ export class ListaProjetosComponent implements OnInit {
   filtrarProjetos(): void {
     let result = this.projetos;
 
-    if (this.filtroStatus === 'andamento') {
-      result = result.filter(p => 
-        p.status === StatusProjeto.Desenvolvimento || 
-        p.status === StatusProjeto.Revisao || 
-        p.status === StatusProjeto.Aprovacao || 
-        p.status === StatusProjeto.Execucao
+    if (this.filtroStatus === "andamento") {
+      result = result.filter(
+        (p) =>
+          p.status === StatusProjeto.Desenvolvimento ||
+          p.status === StatusProjeto.Revisao ||
+          p.status === StatusProjeto.Aprovacao ||
+          p.status === StatusProjeto.Execucao,
       );
-    } else if (this.filtroStatus === 'concluidos') {
-      result = result.filter(p => p.status === StatusProjeto.Concluido);
-    } else if (this.filtroStatus === 'briefing') {
-      result = result.filter(p => p.status === StatusProjeto.Briefing);
+    } else if (this.filtroStatus === "concluidos") {
+      result = result.filter((p) => p.status === StatusProjeto.Concluido);
+    } else if (this.filtroStatus === "briefing") {
+      result = result.filter((p) => p.status === StatusProjeto.Briefing);
     }
 
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
-      result = result.filter(p =>
-        p.nome.toLowerCase().includes(q) ||
-        (p.descricao && p.descricao.toLowerCase().includes(q)) ||
-        (p.clienteNome && p.clienteNome.toLowerCase().includes(q)) ||
-        p.tipoLabel.toLowerCase().includes(q)
+      result = result.filter(
+        (p) =>
+          p.nome.toLowerCase().includes(q) ||
+          (p.descricao && p.descricao.toLowerCase().includes(q)) ||
+          (p.clienteNome && p.clienteNome.toLowerCase().includes(q)) ||
+          p.tipoLabel.toLowerCase().includes(q),
       );
     }
 
@@ -120,32 +136,34 @@ export class ListaProjetosComponent implements OnInit {
     const ref = this.dialogService.open(CriarProjetoModalComponent);
     ref.instance.saved.subscribe((novo: Projeto) => {
       this.carregarProjetos();
-      this.router.navigate(['/projetos', novo.id]);
+      this.router.navigate(["/projetos", novo.id]);
     });
   }
 
   confirmarExclusaoProjeto(projeto: Projeto, event: MouseEvent): void {
     event.stopPropagation();
-    this.dialogService.confirm({
-      title: 'Excluir Projeto',
-      message: `Tem certeza de que deseja excluir o projeto "${projeto.nome}"? Esta ação removerá permanentemente todas as etapas, tarefas e vínculos associados e não poderá ser desfeita.`
-    }).subscribe((confirmado) => {
-      if (confirmado) {
-        this.projetoService.excluir(projeto.id).subscribe({
-          next: () => {
-            this.notificationService.success('Projeto excluído com sucesso.');
-            this.carregarProjetos();
-          },
-          error: (err) => {
-            console.error('Erro ao excluir projeto', err);
-            this.notificationService.error('Erro ao excluir projeto.');
-          }
-        });
-      }
-    });
+    this.dialogService
+      .confirm({
+        title: "Excluir Projeto",
+        message: `Tem certeza de que deseja excluir o projeto "${projeto.nome}"? Esta ação removerá permanentemente todas as etapas, tarefas e vínculos associados e não poderá ser desfeita.`,
+      })
+      .subscribe((confirmado) => {
+        if (confirmado) {
+          this.projetoService.excluir(projeto.id).subscribe({
+            next: () => {
+              this.notificationService.success("Projeto excluído com sucesso.");
+              this.carregarProjetos();
+            },
+            error: (err) => {
+              console.error("Erro ao excluir projeto", err);
+              this.notificationService.error("Erro ao excluir projeto.");
+            },
+          });
+        }
+      });
   }
 
   verDetalhes(id: string): void {
-    this.router.navigate(['/projetos', id]);
+    this.router.navigate(["/projetos", id]);
   }
 }

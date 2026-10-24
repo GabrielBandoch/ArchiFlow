@@ -1,15 +1,15 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PropostasMensal } from '../../../../../models/dashboard.model';
-import { DashboardWidgetHeaderComponent } from '../../dashboard-widget-header/dashboard-widget-header.component';
-import { formatarMoeda, formatarMoedaInteiro } from '../../../dashboard.utils';
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { PropostasMensal } from "../../../../../models/dashboard.model";
+import { DashboardWidgetHeaderComponent } from "../../dashboard-widget-header/dashboard-widget-header.component";
+import { formatarMoeda, formatarMoedaInteiro } from "../../../dashboard.utils";
 
 @Component({
-  selector: 'app-propostas-mensais-chart',
+  selector: "app-propostas-mensais-chart",
   standalone: true,
   imports: [CommonModule, DashboardWidgetHeaderComponent],
-  templateUrl: './propostas-mensais-chart.component.html',
-  styleUrl: './propostas-mensais-chart.component.scss'
+  templateUrl: "./propostas-mensais-chart.component.html",
+  styleUrl: "./propostas-mensais-chart.component.scss",
 })
 export class PropostasMensaisChartComponent {
   @Input() dados: PropostasMensal[] = [];
@@ -20,7 +20,7 @@ export class PropostasMensaisChartComponent {
 
   obterMaxValor(): number {
     if (!this.dados || this.dados.length === 0) return 0;
-    return Math.max(...this.dados.map(m => m.valorTotal || 0));
+    return Math.max(...this.dados.map((m) => m.valorTotal || 0));
   }
 
   obterAlturaPercentual(valor: number): number {

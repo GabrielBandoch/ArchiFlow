@@ -33,10 +33,18 @@
     font-size: 18px;
   }
 
-  .icon-blue { color: #2563eb; }
-  .icon-amber { color: #d97706; }
-  .icon-purple { color: #9333ea; }
-  .icon-green { color: #059669; }
+  .icon-blue {
+    color: #2563eb;
+  }
+  .icon-amber {
+    color: #d97706;
+  }
+  .icon-purple {
+    color: #9333ea;
+  }
+  .icon-green {
+    color: #059669;
+  }
 
   &:hover {
     background-color: var(--af-surface-container-high);

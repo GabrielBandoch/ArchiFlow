@@ -1,13 +1,13 @@
-import { ErrorHandler, Injectable } from '@angular/core';
+import { ErrorHandler, Injectable } from "@angular/core";
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   handleError(error: unknown): void {
     const errorString = this.extractErrorMessage(error);
     const isChunkLoadFailed =
-      errorString.includes('Failed to fetch dynamically imported module') ||
-      errorString.includes('Loading chunk') ||
-      errorString.includes('Failed to load module script');
+      errorString.includes("Failed to fetch dynamically imported module") ||
+      errorString.includes("Loading chunk") ||
+      errorString.includes("Failed to load module script");
 
     if (isChunkLoadFailed && this.canAttemptReload()) {
       this.reloadPage();
@@ -18,12 +18,12 @@ export class GlobalErrorHandler implements ErrorHandler {
   }
 
   private extractErrorMessage(error: unknown): string {
-    if (!error) return '';
-    if (typeof error === 'string') return error;
+    if (!error) return "";
+    if (typeof error === "string") return error;
     if (error instanceof Error) return error.message;
 
     const withFields = error as { message?: string; rejection?: unknown };
-    if (typeof withFields.message === 'string') return withFields.message;
+    if (typeof withFields.message === "string") return withFields.message;
     if (withFields.rejection) {
       return this.extractErrorMessage(withFields.rejection);
     }
@@ -32,8 +32,8 @@ export class GlobalErrorHandler implements ErrorHandler {
   }
 
   private canAttemptReload(): boolean {
-    const storageKeyTs = 'archiflow_chunk_reload_ts';
-    const storageKeyCount = 'archiflow_chunk_reload_count';
+    const storageKeyTs = "archiflow_chunk_reload_ts";
+    const storageKeyCount = "archiflow_chunk_reload_count";
 
     const lastReload = Number(this.getStorageItem(storageKeyTs) || 0);
     const attempts = Number(this.getStorageItem(storageKeyCount) || 0);
@@ -59,12 +59,10 @@ export class GlobalErrorHandler implements ErrorHandler {
   private setStorageItem(key: string, value: string): void {
     try {
       sessionStorage.setItem(key, value);
-    } catch {
-    }
+    } catch {}
   }
 
   reloadPage(): void {
     window.location.reload();
   }
 }
-

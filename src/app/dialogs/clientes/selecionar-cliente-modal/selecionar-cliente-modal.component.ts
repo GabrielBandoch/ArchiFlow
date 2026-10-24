@@ -1,52 +1,72 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Cliente } from '../../../models/cliente.model';
-import { ClienteService } from '../../../core/api/clientes/cliente.service';
-import { DialogComponent } from '../../../shared/components/dialog/dialog.component';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
-import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  inject,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { Cliente } from "../../../models/cliente.model";
+import { ClienteService } from "../../../core/api/clientes/cliente.service";
+import { DialogComponent } from "../../../shared/components/dialog/dialog.component";
+import { ButtonComponent } from "../../../shared/components/button/button.component";
+import { PhoneMaskPipe } from "../../../core/pipes/phone-mask.pipe";
 
 @Component({
-  selector: 'app-selecionar-cliente-modal',
+  selector: "app-selecionar-cliente-modal",
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogComponent, ButtonComponent, PhoneMaskPipe],
-  templateUrl: './selecionar-cliente-modal.component.html',
-  styleUrl: './selecionar-cliente-modal.component.scss'
+  imports: [
+    CommonModule,
+    FormsModule,
+    DialogComponent,
+    ButtonComponent,
+    PhoneMaskPipe,
+  ],
+  templateUrl: "./selecionar-cliente-modal.component.html",
+  styleUrl: "./selecionar-cliente-modal.component.scss",
 })
 export class SelecionarClienteModalComponent implements OnInit, OnChanges {
   @Input() show = false;
   @Input() clientes: Cliente[] = [];
-  @Input() initialSearchText = '';
+  @Input() initialSearchText = "";
 
   @Output() close = new EventEmitter<void>();
   @Output() clientSelected = new EventEmitter<Cliente>();
 
   private clienteService = inject(ClienteService, { optional: true });
 
-  modalSearchText = '';
+  modalSearchText = "";
   modalClientesFiltrados: Cliente[] = [];
   paginaAtual = 1;
   itensPorPagina = 5;
 
   get totalPaginas(): number {
-    return Math.ceil(this.modalClientesFiltrados.length / this.itensPorPagina) || 1;
+    return (
+      Math.ceil(this.modalClientesFiltrados.length / this.itensPorPagina) || 1
+    );
   }
 
   get clientesPaginados(): Cliente[] {
     const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
-    return this.modalClientesFiltrados.slice(inicio, inicio + this.itensPorPagina);
+    return this.modalClientesFiltrados.slice(
+      inicio,
+      inicio + this.itensPorPagina,
+    );
   }
 
   ngOnInit(): void {
-    this.modalSearchText = this.initialSearchText || '';
+    this.modalSearchText = this.initialSearchText || "";
     if ((!this.clientes || this.clientes.length === 0) && this.clienteService) {
       this.clienteService.obterTodos().subscribe({
         next: (data) => {
           this.clientes = data;
           this.filtrarModal();
         },
-        error: (err) => console.error('Erro ao buscar clientes no modal', err)
+        error: (err) => console.error("Erro ao buscar clientes no modal", err),
       });
     } else {
       this.filtrarModal();
@@ -54,11 +74,11 @@ export class SelecionarClienteModalComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['show'] && this.show) {
-      this.modalSearchText = this.initialSearchText || '';
+    if (changes["show"] && this.show) {
+      this.modalSearchText = this.initialSearchText || "";
       this.filtrarModal();
     }
-    if (changes['clientes']) {
+    if (changes["clientes"]) {
       this.filtrarModal();
     }
   }
@@ -67,11 +87,12 @@ export class SelecionarClienteModalComponent implements OnInit, OnChanges {
     let result = this.clientes || [];
     if (this.modalSearchText.trim()) {
       const q = this.modalSearchText.toLowerCase();
-      result = result.filter(c => 
-        c.nome.toLowerCase().includes(q) || 
-        c.email.toLowerCase().includes(q) || 
-        (c.cpfCnpj && c.cpfCnpj.toLowerCase().includes(q)) || 
-        (c.telefone && c.telefone.toLowerCase().includes(q))
+      result = result.filter(
+        (c) =>
+          c.nome.toLowerCase().includes(q) ||
+          c.email.toLowerCase().includes(q) ||
+          (c.cpfCnpj && c.cpfCnpj.toLowerCase().includes(q)) ||
+          (c.telefone && c.telefone.toLowerCase().includes(q)),
       );
     }
     this.modalClientesFiltrados = result;

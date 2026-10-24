@@ -1,19 +1,35 @@
 <div class="card param-card shadow-sm">
-  <div class="card-header-clean d-flex justify-content-between align-items-center">
+  <div
+    class="card-header-clean d-flex justify-content-between align-items-center"
+  >
     <div class="d-flex align-items-center gap-xs">
-      <span class="material-symbols-outlined section-icon" aria-hidden="true">analytics</span>
+      <span class="material-symbols-outlined section-icon" aria-hidden="true"
+        >analytics</span
+      >
       <h2 class="section-title">Parâmetros do Projeto</h2>
     </div>
   </div>
 
-  <form [formGroup]="form" class="param-form d-flex flex-direction-column gap-md">
-    
-    <!-- SEÇÃO: VÍNCULO DO CLIENTE OU LEAD -->
+  <form
+    [formGroup]="form"
+    class="param-form d-flex flex-direction-column gap-md"
+  >
     <div class="cliente-vinculo-section">
       <div class="d-flex justify-content-between align-items-center mb-xs">
-        <label class="form-label font-label-sm m-0">Cliente / Lead da Proposta</label>
-        <span class="badge-vinculo-status font-label-xs" [class.badge-ok]="form.value.tipoVinculo && form.value.tipoVinculo !== 'nenhum'">
-          {{ form.value.tipoVinculo === 'nenhum' || !form.value.tipoVinculo ? 'Opcional (Rascunho)' : 'Vinculado' }}
+        <label class="form-label font-label-sm m-0"
+          >Cliente / Lead da Proposta</label
+        >
+        <span
+          class="badge-vinculo-status font-label-xs"
+          [class.badge-ok]="
+            form.value.tipoVinculo && form.value.tipoVinculo !== 'nenhum'
+          "
+        >
+          {{
+            form.value.tipoVinculo === "nenhum" || !form.value.tipoVinculo
+              ? "Opcional (Rascunho)"
+              : "Vinculado"
+          }}
         </span>
       </div>
 
@@ -21,8 +37,11 @@
         <button
           type="button"
           class="pill-btn"
-          [class.active]="form.value.tipoVinculo === 'nenhum' || !form.value.tipoVinculo"
-          (click)="setTipoVinculo('nenhum')">
+          [class.active]="
+            form.value.tipoVinculo === 'nenhum' || !form.value.tipoVinculo
+          "
+          (click)="setTipoVinculo('nenhum')"
+        >
           <span class="material-symbols-outlined icon-sm">draft</span>
           Rascunho
         </button>
@@ -30,7 +49,8 @@
           type="button"
           class="pill-btn"
           [class.active]="form.value.tipoVinculo === 'lead'"
-          (click)="setTipoVinculo('lead')">
+          (click)="setTipoVinculo('lead')"
+        >
           <span class="material-symbols-outlined icon-sm">person_search</span>
           Lead
         </button>
@@ -38,7 +58,8 @@
           type="button"
           class="pill-btn"
           [class.active]="form.value.tipoVinculo === 'cliente'"
-          (click)="setTipoVinculo('cliente')">
+          (click)="setTipoVinculo('cliente')"
+        >
           <span class="material-symbols-outlined icon-sm">group</span>
           Cliente
         </button>
@@ -46,53 +67,83 @@
           type="button"
           class="pill-btn"
           [class.active]="form.value.tipoVinculo === 'avulso'"
-          (click)="setTipoVinculo('avulso')">
+          (click)="setTipoVinculo('avulso')"
+        >
           <span class="material-symbols-outlined icon-sm">edit_note</span>
           Avulso
         </button>
       </div>
 
-      <!-- SE FOR LEAD -->
-      <div class="vinculo-selector animate-fade-in" *ngIf="form.value.tipoVinculo === 'lead'">
+      <div
+        class="vinculo-selector animate-fade-in"
+        *ngIf="form.value.tipoVinculo === 'lead'"
+      >
         <app-lead-search
           id="paramLead"
           placeholder="Buscar lead por nome ou e-mail..."
           [leads]="leads"
           formControlName="leadId"
-          (leadSelected)="onLeadSelected($event)">
+          (leadSelected)="onLeadSelected($event)"
+        >
         </app-lead-search>
       </div>
 
-      <!-- SE FOR CLIENTE -->
-      <div class="vinculo-selector animate-fade-in" *ngIf="form.value.tipoVinculo === 'cliente'">
+      <div
+        class="vinculo-selector animate-fade-in"
+        *ngIf="form.value.tipoVinculo === 'cliente'"
+      >
         <app-client-search
           id="paramCliente"
           placeholder="Buscar cliente cadastrado..."
           [clientes]="clientes"
           formControlName="clienteId"
-          (clientSelected)="onClienteSelected($event)">
+          (clientSelected)="onClienteSelected($event)"
+        >
         </app-client-search>
       </div>
 
-      <!-- SE FOR CONTATO AVULSO -->
-      <div class="vinculo-avulso-grid animate-fade-in d-flex flex-direction-column gap-xs" *ngIf="form.value.tipoVinculo === 'avulso'">
-        <input type="text" formControlName="clienteNome" class="form-control" placeholder="Nome completo do cliente *">
+      <div
+        class="vinculo-avulso-grid animate-fade-in d-flex flex-direction-column gap-xs"
+        *ngIf="form.value.tipoVinculo === 'avulso'"
+      >
+        <input
+          type="text"
+          formControlName="clienteNome"
+          class="form-control"
+          placeholder="Nome completo do cliente *"
+        />
         <div class="d-flex gap-xs flex-wrap">
-          <input type="text" formControlName="clienteTelefone" class="form-control flex-grow-1" placeholder="WhatsApp / Telefone (ex: 47999999999)">
-          <input type="email" formControlName="clienteEmail" class="form-control flex-grow-1" placeholder="E-mail de contato">
+          <input
+            type="text"
+            formControlName="clienteTelefone"
+            class="form-control flex-grow-1"
+            placeholder="WhatsApp / Telefone (ex: 47999999999)"
+          />
+          <input
+            type="email"
+            formControlName="clienteEmail"
+            class="form-control flex-grow-1"
+            placeholder="E-mail de contato"
+          />
         </div>
       </div>
 
-      <!-- RESUMO DO CLIENTE SELECIONADO -->
-      <div class="cliente-selecionado-card mt-xs p-xs d-flex align-items-center justify-content-between" *ngIf="clienteSelecionadoInfo">
+      <div
+        class="cliente-selecionado-card mt-xs p-xs d-flex align-items-center justify-content-between"
+        *ngIf="clienteSelecionadoInfo"
+      >
         <div class="d-flex align-items-center gap-xs font-body-xs">
-          <span class="material-symbols-outlined icon-sm text-primary">check_circle</span>
-          <span><strong>{{ clienteSelecionadoInfo.nome }}</strong> {{ clienteSelecionadoInfo.detalhes }}</span>
+          <span class="material-symbols-outlined icon-sm text-primary"
+            >check_circle</span
+          >
+          <span
+            ><strong>{{ clienteSelecionadoInfo.nome }}</strong>
+            {{ clienteSelecionadoInfo.detalhes }}</span
+          >
         </div>
       </div>
     </div>
 
-    <!-- ÁREA ESTIMADA & TIPO DE PROJETO -->
     <div class="form-row-2">
       <div class="form-group">
         <label for="metragemInput" class="form-label">Área Estimada (m²)</label>
@@ -112,7 +163,9 @@
       </div>
 
       <div class="form-group">
-        <label for="tipoProjetoSelect" class="form-label">Tipo de Projeto</label>
+        <label for="tipoProjetoSelect" class="form-label"
+          >Tipo de Projeto</label
+        >
         <select
           id="tipoProjetoSelect"
           formControlName="tipoProjeto"
@@ -126,7 +179,6 @@
       </div>
     </div>
 
-    <!-- PADRÃO DO IMÓVEL -->
     <div class="form-group mt-xs">
       <label class="form-label">Padrão do Imóvel</label>
       <div class="padroes-grid" role="radiogroup" aria-label="Padrão do Imóvel">

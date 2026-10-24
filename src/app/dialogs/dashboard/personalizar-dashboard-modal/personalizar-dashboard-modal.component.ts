@@ -1,15 +1,18 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { DashboardWidgetConfig, WIDGETS_DEFAULT } from '../../../models/dashboard.model';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import {
+  DashboardWidgetConfig,
+  WIDGETS_DEFAULT,
+} from "../../../models/dashboard.model";
 
 @Component({
-  selector: 'app-personalizar-dashboard-modal',
+  selector: "app-personalizar-dashboard-modal",
   standalone: true,
   imports: [CommonModule, FormsModule, CORE_IMPORTS, DESIGN_SYSTEM],
-  templateUrl: './personalizar-dashboard-modal.component.html',
-  styleUrl: './personalizar-dashboard-modal.component.scss'
+  templateUrl: "./personalizar-dashboard-modal.component.html",
+  styleUrl: "./personalizar-dashboard-modal.component.scss",
 })
 export class PersonalizarDashboardModalComponent {
   @Input() show = false;
@@ -23,16 +26,16 @@ export class PersonalizarDashboardModalComponent {
   tempWidgets: DashboardWidgetConfig[] = [];
 
   ngOnInit(): void {
-    this.tempWidgets = this.widgets.map(w => ({ ...w }));
+    this.tempWidgets = this.widgets.map((w) => ({ ...w }));
   }
 
-  moverWidget(index: number, direcao: 'up' | 'down'): void {
-    const novoIndex = direcao === 'up' ? index - 1 : index + 1;
+  moverWidget(index: number, direcao: "up" | "down"): void {
+    const novoIndex = direcao === "up" ? index - 1 : index + 1;
     if (novoIndex < 0 || novoIndex >= this.tempWidgets.length) return;
 
     const item = this.tempWidgets.splice(index, 1)[0];
     this.tempWidgets.splice(novoIndex, 0, item);
-    this.tempWidgets.forEach((w, idx) => w.ordem = idx + 1);
+    this.tempWidgets.forEach((w, idx) => (w.ordem = idx + 1));
   }
 
   onRestaurarPadrao(): void {

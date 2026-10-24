@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 export interface EtapaConfig {
   nome: string;
@@ -9,11 +9,11 @@ export interface EtapaConfig {
 }
 
 @Component({
-  selector: 'app-etapas-escopo',
+  selector: "app-etapas-escopo",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './etapas-escopo.component.html',
-  styleUrl: './etapas-escopo.component.scss'
+  templateUrl: "./etapas-escopo.component.html",
+  styleUrl: "./etapas-escopo.component.scss",
 })
 export class EtapasEscopoComponent {
   @Input({ required: true }) etapas: EtapaConfig[] = [];

@@ -1,15 +1,18 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { CORE_IMPORTS, DESIGN_SYSTEM } from '../../../../shared';
-import { CategoriaDespesa, DespesaProjeto } from '../../../../models/financeiro.model';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../../shared";
+import {
+  CategoriaDespesa,
+  DespesaProjeto,
+} from "../../../../models/financeiro.model";
 
 @Component({
-  selector: 'app-financeiro-tabela-despesas',
+  selector: "app-financeiro-tabela-despesas",
   standalone: true,
   imports: [CommonModule, FormsModule, CORE_IMPORTS, DESIGN_SYSTEM],
-  templateUrl: './financeiro-tabela-despesas.component.html',
-  styleUrl: './financeiro-tabela-despesas.component.scss'
+  templateUrl: "./financeiro-tabela-despesas.component.html",
+  styleUrl: "./financeiro-tabela-despesas.component.scss",
 })
 export class FinanceiroTabelaDespesasComponent {
   protected readonly Math = Math;
@@ -18,40 +21,45 @@ export class FinanceiroTabelaDespesasComponent {
   @Output() novaDespesa = new EventEmitter<void>();
   @Output() alternarPagamento = new EventEmitter<DespesaProjeto>();
 
-  busca = '';
-  filtroCategoria: string = 'todas';
-  filtroStatus: 'todas' | 'pagas' | 'pendentes' = 'todas';
+  busca = "";
+  filtroCategoria: string = "todas";
+  filtroStatus: "todas" | "pagas" | "pendentes" = "todas";
   paginaAtual = 1;
   itensPorPagina = 8;
 
   categoriaLabels: { [key: string]: string } = {
-    'PlotagemImpressao': 'Plotagem & Impressão',
-    'DeslocamentoVisita': 'Deslocamento / Visitas',
-    'SoftwareLicencas': 'Softwares & Licenças',
-    'Subcontratacao': 'Subcontratação',
-    'TaxasPrefeitura': 'Taxas Prefeitura',
-    'Maquetes3D': 'Maquetes 3D',
-    'Outros': 'Outros'
+    PlotagemImpressao: "Plotagem & Impressão",
+    DeslocamentoVisita: "Deslocamento / Visitas",
+    SoftwareLicencas: "Softwares & Licenças",
+    Subcontratacao: "Subcontratação",
+    TaxasPrefeitura: "Taxas Prefeitura",
+    Maquetes3D: "Maquetes 3D",
+    Outros: "Outros",
   };
 
   get despesasFiltradas(): DespesaProjeto[] {
     let lista = this.despesas || [];
 
-    if (this.filtroCategoria !== 'todas') {
-      lista = lista.filter(d => d.categoria === this.filtroCategoria || d.categoriaNome === this.filtroCategoria);
+    if (this.filtroCategoria !== "todas") {
+      lista = lista.filter(
+        (d) =>
+          d.categoria === this.filtroCategoria ||
+          d.categoriaNome === this.filtroCategoria,
+      );
     }
 
-    if (this.filtroStatus === 'pagas') {
-      lista = lista.filter(d => d.pago);
-    } else if (this.filtroStatus === 'pendentes') {
-      lista = lista.filter(d => !d.pago);
+    if (this.filtroStatus === "pagas") {
+      lista = lista.filter((d) => d.pago);
+    } else if (this.filtroStatus === "pendentes") {
+      lista = lista.filter((d) => !d.pago);
     }
 
     if (this.busca.trim()) {
       const termo = this.busca.toLowerCase().trim();
-      lista = lista.filter(d =>
-        (d.projetoNome && d.projetoNome.toLowerCase().includes(termo)) ||
-        (d.descricao && d.descricao.toLowerCase().includes(termo))
+      lista = lista.filter(
+        (d) =>
+          (d.projetoNome && d.projetoNome.toLowerCase().includes(termo)) ||
+          (d.descricao && d.descricao.toLowerCase().includes(termo)),
       );
     }
 
@@ -76,7 +84,7 @@ export class FinanceiroTabelaDespesasComponent {
     this.paginaAtual = 1;
   }
 
-  setStatus(status: 'todas' | 'pagas' | 'pendentes'): void {
+  setStatus(status: "todas" | "pagas" | "pendentes"): void {
     this.filtroStatus = status;
     this.paginaAtual = 1;
   }

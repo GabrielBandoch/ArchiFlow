@@ -1,17 +1,17 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { OrigemLeadService } from '../../../core/api';
-import { NotificationService } from '../../../core/services/notification.service';
-import { OrigemLead } from '../../../models/origem-lead.model';
-import { OrigemLeadForm } from './origem-lead.form';
+import { Component, OnInit, inject } from "@angular/core";
+import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { OrigemLeadService } from "../../../core/api";
+import { NotificationService } from "../../../core/services/notification.service";
+import { OrigemLead } from "../../../models/origem-lead.model";
+import { OrigemLeadForm } from "./origem-lead.form";
 
 @Component({
-  selector: 'app-origens-lead',
+  selector: "app-origens-lead",
   standalone: true,
   imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule],
-  templateUrl: './origens-lead.component.html',
-  styleUrl: './origens-lead.component.scss'
+  templateUrl: "./origens-lead.component.html",
+  styleUrl: "./origens-lead.component.scss",
 })
 export class OrigensLeadComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -23,7 +23,7 @@ export class OrigensLeadComponent implements OnInit {
   editForm: FormGroup;
   submitted = false;
   editSubmitted = false;
-  
+
   editingOrigemId: string | null = null;
 
   constructor() {
@@ -37,16 +37,20 @@ export class OrigensLeadComponent implements OnInit {
 
   carregarOrigens(): void {
     this.origemService.obterTodos().subscribe({
-      next: (data) => this.origens = data,
+      next: (data) => (this.origens = data),
       error: (err) => {
-        console.error('Erro ao carregar origens', err);
-        this.notificationService.error('Erro ao carregar as origens.');
-      }
+        console.error("Erro ao carregar origens", err);
+        this.notificationService.error("Erro ao carregar as origens.");
+      },
     });
   }
 
-  get f() { return this.form.controls; }
-  get ef() { return this.editForm.controls; }
+  get f() {
+    return this.form.controls;
+  }
+  get ef() {
+    return this.editForm.controls;
+  }
 
   onSubmit(): void {
     this.submitted = true;
@@ -57,23 +61,23 @@ export class OrigensLeadComponent implements OnInit {
     const desc = this.form.value.descricao;
     this.origemService.criar(desc).subscribe({
       next: () => {
-        this.notificationService.success('Origem cadastrada com sucesso!');
+        this.notificationService.success("Origem cadastrada com sucesso!");
         this.form.reset();
         this.submitted = false;
         this.carregarOrigens();
       },
       error: (err) => {
-        console.error('Erro ao criar origem', err);
-        const errorMsg = err.error?.error || 'Erro ao cadastrar origem.';
+        console.error("Erro ao criar origem", err);
+        const errorMsg = err.error?.error || "Erro ao cadastrar origem.";
         this.notificationService.error(errorMsg);
-      }
+      },
     });
   }
 
   iniciarEdicao(origem: OrigemLead): void {
     this.editingOrigemId = origem.id;
     this.editForm.setValue({
-      descricao: origem.descricao
+      descricao: origem.descricao,
     });
     this.editSubmitted = false;
   }
@@ -91,41 +95,45 @@ export class OrigensLeadComponent implements OnInit {
     const desc = this.editForm.value.descricao;
     this.origemService.atualizar(this.editingOrigemId, desc).subscribe({
       next: () => {
-        this.notificationService.success('Origem atualizada com sucesso!');
+        this.notificationService.success("Origem atualizada com sucesso!");
         this.editingOrigemId = null;
         this.carregarOrigens();
       },
       error: (err) => {
-        console.error('Erro ao atualizar origem', err);
-        const errorMsg = err.error?.error || 'Erro ao atualizar origem.';
+        console.error("Erro ao atualizar origem", err);
+        const errorMsg = err.error?.error || "Erro ao atualizar origem.";
         this.notificationService.error(errorMsg);
-      }
+      },
     });
   }
 
   desativarOrigem(origem: OrigemLead): void {
     this.origemService.desativar(origem.id).subscribe({
       next: () => {
-        this.notificationService.success(`Origem "${origem.descricao}" desativada com sucesso.`);
+        this.notificationService.success(
+          `Origem "${origem.descricao}" desativada com sucesso.`,
+        );
         this.carregarOrigens();
       },
       error: (err) => {
-        console.error('Erro ao desativar origem', err);
-        this.notificationService.error('Erro ao desativar origem.');
-      }
+        console.error("Erro ao desativar origem", err);
+        this.notificationService.error("Erro ao desativar origem.");
+      },
     });
   }
 
   reativarOrigem(origem: OrigemLead): void {
     this.origemService.reativar(origem.id).subscribe({
       next: () => {
-        this.notificationService.success(`Origem "${origem.descricao}" reativada com sucesso.`);
+        this.notificationService.success(
+          `Origem "${origem.descricao}" reativada com sucesso.`,
+        );
         this.carregarOrigens();
       },
       error: (err) => {
-        console.error('Erro ao reativar origem', err);
-        this.notificationService.error('Erro ao reativar origem.');
-      }
+        console.error("Erro ao reativar origem", err);
+        this.notificationService.error("Erro ao reativar origem.");
+      },
     });
   }
 }

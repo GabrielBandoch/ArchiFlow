@@ -1,7 +1,18 @@
-<app-dialog [show]="show" dialogTitle="Salvar Proposta Comercial" size="md" (close)="close.emit()">
-  <form [formGroup]="form" (ngSubmit)="salvar.emit()" class="d-flex flex-direction-column gap-md">
+<app-dialog
+  [show]="show"
+  dialogTitle="Salvar Proposta Comercial"
+  size="md"
+  (close)="close.emit()"
+>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="salvar.emit()"
+    class="d-flex flex-direction-column gap-md"
+  >
     <div class="field-item">
-      <label class="field-label font-label-sm" for="tituloProposta">Título da Proposta *</label>
+      <label class="field-label font-label-sm" for="tituloProposta"
+        >Título da Proposta *</label
+      >
       <input
         id="tituloProposta"
         type="text"
@@ -14,55 +25,74 @@
     <div class="field-item">
       <label class="field-label font-label-sm">Vincular a:</label>
       <div class="tipo-pessoa-pills d-flex align-items-center gap-xs">
-        <button 
-          type="button" 
-          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs" 
-          [class.active]="form.value.tipoVinculo === 'nenhum'" 
-          (click)="form.patchValue({ tipoVinculo: 'nenhum', leadId: '', clienteId: '' })">
+        <button
+          type="button"
+          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs"
+          [class.active]="form.value.tipoVinculo === 'nenhum'"
+          (click)="
+            form.patchValue({
+              tipoVinculo: 'nenhum',
+              leadId: '',
+              clienteId: '',
+            })
+          "
+        >
           <span class="material-symbols-outlined">draft</span>
           Avulso
         </button>
-        <button 
-          type="button" 
-          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs" 
-          [class.active]="form.value.tipoVinculo === 'lead'" 
-          (click)="form.patchValue({ tipoVinculo: 'lead', clienteId: '' })">
+        <button
+          type="button"
+          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs"
+          [class.active]="form.value.tipoVinculo === 'lead'"
+          (click)="form.patchValue({ tipoVinculo: 'lead', clienteId: '' })"
+        >
           <span class="material-symbols-outlined">person_search</span>
           Lead Existente
         </button>
-        <button 
-          type="button" 
-          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs" 
-          [class.active]="form.value.tipoVinculo === 'cliente'" 
-          (click)="form.patchValue({ tipoVinculo: 'cliente', leadId: '' })">
+        <button
+          type="button"
+          class="pill-btn font-label-md d-inline-flex align-items-center gap-xs"
+          [class.active]="form.value.tipoVinculo === 'cliente'"
+          (click)="form.patchValue({ tipoVinculo: 'cliente', leadId: '' })"
+        >
           <span class="material-symbols-outlined">group</span>
           Cliente Existente
         </button>
       </div>
     </div>
 
-    <div class="field-item animate-fade-in" *ngIf="form.value.tipoVinculo === 'lead'">
+    <div
+      class="field-item animate-fade-in"
+      *ngIf="form.value.tipoVinculo === 'lead'"
+    >
       <app-lead-search
         id="selectLead"
         label="Selecione o Lead"
         placeholder="Buscar lead por nome, e-mail ou telefone..."
         [leads]="leads"
-        formControlName="leadId">
+        formControlName="leadId"
+      >
       </app-lead-search>
     </div>
 
-    <div class="field-item animate-fade-in" *ngIf="form.value.tipoVinculo === 'cliente'">
+    <div
+      class="field-item animate-fade-in"
+      *ngIf="form.value.tipoVinculo === 'cliente'"
+    >
       <app-client-search
         id="selectCliente"
         label="Selecione o Cliente"
         placeholder="Buscar cliente por nome ou e-mail..."
         [clientes]="clientes"
-        formControlName="clienteId">
+        formControlName="clienteId"
+      >
       </app-client-search>
     </div>
 
     <div class="field-item">
-      <label class="field-label font-label-sm" for="valorFinalInput">Valor Final Negociado (R$) *</label>
+      <label class="field-label font-label-sm" for="valorFinalInput"
+        >Valor Final Negociado (R$) *</label
+      >
       <input
         id="valorFinalInput"
         type="number"
@@ -71,13 +101,18 @@
         min="1"
         step="0.01"
       />
-      <span class="form-hint font-label-sm text-on-surface-variant margin-top-xs">
-        Valor sugerido pela simulação: <strong>{{ formatarMoeda(simulacao?.valorTotalSugerido) }}</strong>
+      <span
+        class="form-hint font-label-sm text-on-surface-variant margin-top-xs"
+      >
+        Valor sugerido pela simulação:
+        <strong>{{ formatarMoeda(simulacao?.valorTotalSugerido) }}</strong>
       </span>
     </div>
 
     <div class="field-item">
-      <label class="field-label font-label-sm" for="obsProposta">Observações / Condições Comerciais</label>
+      <label class="field-label font-label-sm" for="obsProposta"
+        >Observações / Condições Comerciais</label
+      >
       <textarea
         id="obsProposta"
         formControlName="observacoes"
@@ -87,10 +122,19 @@
       ></textarea>
     </div>
 
-    <div dialog-footer class="studio-modal-actions d-flex align-items-center justify-content-end gap-sm margin-top-md">
-      <app-button variant="secondary" (btnClick)="close.emit()">Cancelar</app-button>
-      <app-button type="submit" variant="primary" [disabled]="form.invalid || salvando">
-        {{ salvando ? 'Salvando...' : 'Salvar Proposta' }}
+    <div
+      dialog-footer
+      class="studio-modal-actions d-flex align-items-center justify-content-end gap-sm margin-top-md"
+    >
+      <app-button variant="secondary" (btnClick)="close.emit()"
+        >Cancelar</app-button
+      >
+      <app-button
+        type="submit"
+        variant="primary"
+        [disabled]="form.invalid || salvando"
+      >
+        {{ salvando ? "Salvando..." : "Salvar Proposta" }}
       </app-button>
     </div>
   </form>

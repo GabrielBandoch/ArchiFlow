@@ -1,6 +1,9 @@
 <div class="detalhes-page d-flex flex-direction-column gap-lg" *ngIf="projeto">
   <nav class="breadcrumb-bar d-flex align-items-center gap-xs font-label-md">
-    <a routerLink="/projetos" class="breadcrumb-link d-flex align-items-center gap-xs">
+    <a
+      routerLink="/projetos"
+      class="breadcrumb-link d-flex align-items-center gap-xs"
+    >
       <span class="material-symbols-outlined icon-home">arrow_back</span>
       <span>Projetos</span>
     </a>
@@ -13,36 +16,41 @@
     [statusProjetoOptions]="statusProjetoOptions"
     (statusAlterado)="alterarStatusProjeto($event)"
     (editarSolicitado)="abrirModalEdicao()"
-    (excluirSolicitado)="confirmarExclusaoProjeto()">
+    (excluirSolicitado)="confirmarExclusaoProjeto()"
+  >
   </app-projeto-hero-card>
 
   <div class="dossier-nav-tabs d-flex align-items-center gap-lg">
-    <button 
-      type="button" 
-      class="nav-tab-btn font-label-md" 
-      [class.active]="activeTab === 'etapas'" 
-      (click)="setTab('etapas')">
+    <button
+      type="button"
+      class="nav-tab-btn font-label-md"
+      [class.active]="activeTab === 'etapas'"
+      (click)="setTab('etapas')"
+    >
       Etapas do Projeto ({{ projeto.etapas.length }})
     </button>
-    <button 
-      type="button" 
-      class="nav-tab-btn font-label-md" 
-      [class.active]="activeTab === 'arquivos'" 
-      (click)="setTab('arquivos')">
+    <button
+      type="button"
+      class="nav-tab-btn font-label-md"
+      [class.active]="activeTab === 'arquivos'"
+      (click)="setTab('arquivos')"
+    >
       Arquivos & Pranchas ({{ arquivos.length }})
     </button>
-    <button 
-      type="button" 
-      class="nav-tab-btn font-label-md" 
-      [class.active]="activeTab === 'fornecedores'" 
-      (click)="setTab('fornecedores')">
+    <button
+      type="button"
+      class="nav-tab-btn font-label-md"
+      [class.active]="activeTab === 'fornecedores'"
+      (click)="setTab('fornecedores')"
+    >
       Parceiros & Especialistas ({{ fornecedoresProjeto.length }})
     </button>
-    <button 
-      type="button" 
-      class="nav-tab-btn font-label-md" 
-      [class.active]="activeTab === 'portal'" 
-      (click)="setTab('portal')">
+    <button
+      type="button"
+      class="nav-tab-btn font-label-md"
+      [class.active]="activeTab === 'portal'"
+      (click)="setTab('portal')"
+    >
       Portal do Cliente ({{ representantes.length }})
     </button>
   </div>
@@ -60,7 +68,8 @@
         (tarefaToggled)="onTarefaToggled($event)"
         (tarefaAdicionada)="onTarefaAdicionada($event)"
         (tarefaRemovida)="onTarefaRemovida($event)"
-        (tarefaPrazoAlterado)="onTarefaPrazoAlterado($event)">
+        (tarefaPrazoAlterado)="onTarefaPrazoAlterado($event)"
+      >
       </app-projeto-etapas>
 
       <app-projeto-arquivos
@@ -68,7 +77,8 @@
         [arquivos]="arquivos"
         [uploadingArquivo]="uploadingArquivo"
         (arquivoUpload)="onArquivoUpload($event)"
-        (arquivoExcluido)="excluirArquivo($event)">
+        (arquivoExcluido)="excluirArquivo($event)"
+      >
       </app-projeto-arquivos>
 
       <app-projeto-fornecedores
@@ -76,7 +86,8 @@
         [projetoId]="projeto.id"
         [projetoNome]="projeto.nome"
         [fornecedoresVinculados]="fornecedoresProjeto"
-        (vinculoAlterado)="carregarFornecedoresDoProjeto()">
+        (vinculoAlterado)="carregarFornecedoresDoProjeto()"
+      >
       </app-projeto-fornecedores>
 
       <app-projeto-portal
@@ -86,7 +97,8 @@
         [clienteId]="projeto.clienteId"
         [clienteNome]="projeto.clienteNome"
         [representantes]="representantes"
-        (representantesAlterados)="carregarRepresentantes()">
+        (representantesAlterados)="carregarRepresentantes()"
+      >
       </app-projeto-portal>
     </div>
 
@@ -97,16 +109,18 @@
       [representantes]="representantes"
       (verTodosArquivos)="setTab('arquivos')"
       (verPortal)="setTab('portal')"
-      (convidarRepresentante)="abrirModalConvidarRepresentante()">
+      (convidarRepresentante)="abrirModalConvidarRepresentante()"
+    >
     </app-projeto-sidebar>
   </div>
 
-  <app-chat-widget 
-    *ngIf="projeto" 
-    [projetoId]="projeto.id" 
-    [projetoNome]="projeto.nome" 
+  <app-chat-widget
+    *ngIf="projeto"
+    [projetoId]="projeto.id"
+    [projetoNome]="projeto.nome"
     [interlocutorNome]="projeto.clienteNome || 'Cliente'"
     [interlocutorCargo]="'Cliente do Projeto'"
-    [floating]="true">
+    [floating]="true"
+  >
   </app-chat-widget>
 </div>

@@ -1,18 +1,25 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { ProjetoService } from '../../../core/api/projetos/projeto.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { EtapaProjeto } from '../../../models/projeto.model';
-import { CriarEtapaCommand } from '../../../commands/projeto.commands';
-import { ProjetoForm } from '../../../components/projetos/projeto.form';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  inject,
+} from "@angular/core";
+import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { ProjetoService } from "../../../core/api/projetos/projeto.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import { EtapaProjeto } from "../../../models/projeto.model";
+import { CriarEtapaCommand } from "../../../commands/projeto.commands";
+import { ProjetoForm } from "../../../components/projetos/projeto.form";
 
 @Component({
-  selector: 'app-nova-etapa-modal',
+  selector: "app-nova-etapa-modal",
   standalone: true,
   imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM, ReactiveFormsModule],
-  templateUrl: './nova-etapa-modal.component.html',
-  styleUrl: './nova-etapa-modal.component.scss'
+  templateUrl: "./nova-etapa-modal.component.html",
+  styleUrl: "./nova-etapa-modal.component.scss",
 })
 export class NovaEtapaModalComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -20,7 +27,7 @@ export class NovaEtapaModalComponent implements OnInit {
   private notificationService = inject(NotificationService);
 
   @Input() show = false;
-  @Input() projetoId = '';
+  @Input() projetoId = "";
   @Input() ordem = 1;
 
   @Output() close = new EventEmitter<void>();
@@ -49,7 +56,7 @@ export class NovaEtapaModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     if (this.form.invalid || !this.projetoId) {
-      this.notificationService.warning('Por favor, preencha o nome da etapa.');
+      this.notificationService.warning("Por favor, preencha o nome da etapa.");
       return;
     }
 
@@ -58,23 +65,27 @@ export class NovaEtapaModalComponent implements OnInit {
     const command: CriarEtapaCommand = {
       projetoId: this.projetoId,
       nome: val.nome,
-      descricao: val.descricao || '',
+      descricao: val.descricao || "",
       ordem: Number(val.ordem || 1),
-      dataFimPrevista: val.dataFimPrevista ? `${val.dataFimPrevista}T12:00:00Z` : undefined
+      dataFimPrevista: val.dataFimPrevista
+        ? `${val.dataFimPrevista}T12:00:00Z`
+        : undefined,
     };
 
     this.projetoService.criarEtapa(this.projetoId, command).subscribe({
       next: (etapa) => {
         this.saving = false;
-        this.notificationService.success(`Etapa "${etapa.nome}" adicionada com sucesso!`);
+        this.notificationService.success(
+          `Etapa "${etapa.nome}" adicionada com sucesso!`,
+        );
         this.saved.emit(etapa);
         this.onClose();
       },
       error: (err) => {
         this.saving = false;
-        console.error('Erro ao criar etapa', err);
-        this.notificationService.error('Erro ao criar etapa.');
-      }
+        console.error("Erro ao criar etapa", err);
+        this.notificationService.error("Erro ao criar etapa.");
+      },
     });
   }
 }

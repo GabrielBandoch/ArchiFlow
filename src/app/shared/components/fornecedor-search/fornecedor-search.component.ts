@@ -1,31 +1,55 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef, ElementRef, HostListener, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Fornecedor } from '../../../models/fornecedor.model';
-import { ButtonComponent } from '../button/button.component';
-import { FornecedorService } from '../../../core/api/fornecedores/fornecedor.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { SelecionarFornecedorModalComponent } from '../../../dialogs/fornecedores/selecionar-fornecedor-modal/selecionar-fornecedor-modal.component';
-import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  forwardRef,
+  ElementRef,
+  HostListener,
+  inject,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormsModule,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+} from "@angular/forms";
+import { Fornecedor } from "../../../models/fornecedor.model";
+import { ButtonComponent } from "../button/button.component";
+import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import { SelecionarFornecedorModalComponent } from "../../../dialogs/fornecedores/selecionar-fornecedor-modal/selecionar-fornecedor-modal.component";
+import { PhoneMaskPipe } from "../../../core/pipes/phone-mask.pipe";
 
 @Component({
-  selector: 'app-fornecedor-search, app-partner-search',
+  selector: "app-fornecedor-search, app-partner-search",
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, SelecionarFornecedorModalComponent, PhoneMaskPipe],
-  templateUrl: './fornecedor-search.component.html',
-  styleUrl: './fornecedor-search.component.scss',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonComponent,
+    SelecionarFornecedorModalComponent,
+    PhoneMaskPipe,
+  ],
+  templateUrl: "./fornecedor-search.component.html",
+  styleUrl: "./fornecedor-search.component.scss",
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => FornecedorSearchComponent),
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
-export class FornecedorSearchComponent implements ControlValueAccessor, OnInit, OnChanges {
-  @Input() id = '';
+export class FornecedorSearchComponent
+  implements ControlValueAccessor, OnInit, OnChanges
+{
+  @Input() id = "";
   @Input() label?: string;
-  @Input() placeholder = 'Buscar parceiro por nome ou especialidade...';
+  @Input() placeholder = "Buscar parceiro por nome ou especialidade...";
   @Input() required = false;
   @Input() error?: string;
   @Input() fornecedores: Fornecedor[] = [];
@@ -37,7 +61,7 @@ export class FornecedorSearchComponent implements ControlValueAccessor, OnInit, 
   private elementRef = inject(ElementRef);
 
   fornecedorSelecionado: Fornecedor | null = null;
-  searchText = '';
+  searchText = "";
   sugestoes: Fornecedor[] = [];
   showDropdown = false;
   showModal = false;
@@ -48,13 +72,16 @@ export class FornecedorSearchComponent implements ControlValueAccessor, OnInit, 
   onTouched: () => void = () => {};
 
   ngOnInit(): void {
-    if ((!this.fornecedores || this.fornecedores.length === 0) && this.fornecedorService) {
+    if (
+      (!this.fornecedores || this.fornecedores.length === 0) &&
+      this.fornecedorService
+    ) {
       this.carregarFornecedoresDoServico();
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['fornecedores']) {
+    if (changes["fornecedores"]) {
       if (this.pendingValue) {
         this.writeValue(this.pendingValue);
       }
@@ -71,12 +98,14 @@ export class FornecedorSearchComponent implements ControlValueAccessor, OnInit, 
         }
       },
       error: () => {
-        this.notificationService?.warning('Não foi possível carregar a lista de parceiros.');
-      }
+        this.notificationService?.warning(
+          "Não foi possível carregar a lista de parceiros.",
+        );
+      },
     });
   }
 
-  @HostListener('document:click', ['$event'])
+  @HostListener("document:click", ["$event"])
   onClickOutside(event: MouseEvent): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.showDropdown = false;
@@ -84,23 +113,23 @@ export class FornecedorSearchComponent implements ControlValueAccessor, OnInit, 
   }
 
   writeValue(value: unknown): void {
-    this.pendingValue = value as (string | Fornecedor | null);
+    this.pendingValue = value as string | Fornecedor | null;
     if (!value) {
       this.fornecedorSelecionado = null;
-      this.searchText = '';
+      this.searchText = "";
       return;
     }
 
-    if (typeof value === 'string') {
-      const forn = (this.fornecedores || []).find(f => f.id === value);
+    if (typeof value === "string") {
+      const forn = (this.fornecedores || []).find((f) => f.id === value);
       if (forn) {
         this.fornecedorSelecionado = forn;
         this.searchText = forn.nome;
       }
-    } else if (typeof value === 'object' && (value as Fornecedor).id) {
+    } else if (typeof value === "object" && (value as Fornecedor).id) {
       const forn = value as Fornecedor;
       this.fornecedorSelecionado = forn;
-      this.searchText = forn.nome || '';
+      this.searchText = forn.nome || "";
     }
   }
 
@@ -119,12 +148,13 @@ export class FornecedorSearchComponent implements ControlValueAccessor, OnInit, 
   onInputSearch(): void {
     const q = this.searchText.trim().toLowerCase();
     if (q.length >= 2) {
-      this.sugestoes = (this.fornecedores || []).filter(f => 
-        (f.nome && f.nome.toLowerCase().includes(q)) ||
-        (f.especialidade && f.especialidade.toLowerCase().includes(q)) ||
-        (f.email && f.email.toLowerCase().includes(q)) ||
-        (f.telefone && f.telefone.toLowerCase().includes(q)) ||
-        (f.cidade && f.cidade.toLowerCase().includes(q))
+      this.sugestoes = (this.fornecedores || []).filter(
+        (f) =>
+          (f.nome && f.nome.toLowerCase().includes(q)) ||
+          (f.especialidade && f.especialidade.toLowerCase().includes(q)) ||
+          (f.email && f.email.toLowerCase().includes(q)) ||
+          (f.telefone && f.telefone.toLowerCase().includes(q)) ||
+          (f.cidade && f.cidade.toLowerCase().includes(q)),
       );
       this.showDropdown = true;
     } else {
@@ -145,7 +175,7 @@ export class FornecedorSearchComponent implements ControlValueAccessor, OnInit, 
 
   limparSelecao(): void {
     this.fornecedorSelecionado = null;
-    this.searchText = '';
+    this.searchText = "";
     this.showDropdown = false;
     this.pendingValue = null;
     this.onChange(null);
@@ -154,7 +184,10 @@ export class FornecedorSearchComponent implements ControlValueAccessor, OnInit, 
   }
 
   abrirModal(): void {
-    if ((!this.fornecedores || this.fornecedores.length === 0) && this.fornecedorService) {
+    if (
+      (!this.fornecedores || this.fornecedores.length === 0) &&
+      this.fornecedorService
+    ) {
       this.carregarFornecedoresDoServico();
     }
     this.showModal = true;

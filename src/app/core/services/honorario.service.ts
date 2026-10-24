@@ -1,1 +1,1 @@
-export { HonorarioService } from '../api/honorarios/honorario.service';
+export { HonorarioService } from "../api/honorarios/honorario.service";

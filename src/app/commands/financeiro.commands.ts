@@ -1,4 +1,8 @@
-import { CategoriaDespesa, FormaPagamento, StatusParcela } from '../models/financeiro.model';
+import {
+  CategoriaDespesa,
+  FormaPagamento,
+  StatusParcela,
+} from "../models/financeiro.model";
 
 export interface CriarContratoCommand {
   projetoId?: string;

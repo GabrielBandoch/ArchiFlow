@@ -1,9 +1,16 @@
-<div class="dialog-overlay" *ngIf="show" [style.z-index]="zIndex || null" (mousedown)="onBackdropMouseDown($event)" (click)="onBackdropClick($event)">
-  <div class="dialog-container" 
-       [class]="'dialog-size-' + size" 
-       [class.overflow-visible]="overflowVisible"
-       (click)="$event.stopPropagation()">
-    
+<div
+  class="dialog-overlay"
+  *ngIf="show"
+  [style.z-index]="zIndex || null"
+  (mousedown)="onBackdropMouseDown($event)"
+  (click)="onBackdropClick($event)"
+>
+  <div
+    class="dialog-container"
+    [class]="'dialog-size-' + size"
+    [class.overflow-visible]="overflowVisible"
+    (click)="$event.stopPropagation()"
+  >
     <div class="dialog-header">
       <h3 class="dialog-title" *ngIf="dialogTitle">{{ dialogTitle }}</h3>
       <button class="dialog-btn-close" (click)="onClose()" title="Fechar">
@@ -18,6 +25,5 @@
     <div class="dialog-footer">
       <ng-content select="[dialog-footer]"></ng-content>
     </div>
-
   </div>
 </div>

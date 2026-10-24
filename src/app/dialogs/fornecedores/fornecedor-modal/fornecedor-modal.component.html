@@ -1,11 +1,17 @@
 <app-dialog
   [show]="show"
-  [dialogTitle]="fornecedor ? 'Editar Parceiro Especializado' : 'Novo Parceiro Especializado'"
+  [dialogTitle]="
+    fornecedor ? 'Editar Parceiro Especializado' : 'Novo Parceiro Especializado'
+  "
   size="md"
   [overflowVisible]="true"
-  (close)="fechar()">
-
-  <form [formGroup]="form" (ngSubmit)="salvar()" class="d-flex flex-direction-column gap-md fornecedor-form">
+  (close)="fechar()"
+>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="salvar()"
+    class="d-flex flex-direction-column gap-md fornecedor-form"
+  >
     <div class="form-section-header">
       <span class="section-badge-title">Dados do Parceiro</span>
     </div>
@@ -19,7 +25,12 @@
           placeholder="Ex: Lumina Iluminação, Joinville Aços"
           formControlName="nome"
           [required]="true"
-          [error]="submitted && f['nome'].errors ? 'O nome da empresa ou parceiro é obrigatório.' : undefined">
+          [error]="
+            submitted && f['nome'].errors
+              ? 'O nome da empresa ou parceiro é obrigatório.'
+              : undefined
+          "
+        >
         </app-input>
       </div>
 
@@ -31,7 +42,12 @@
           formControlName="especialidade"
           placeholder="Selecione a especialidade"
           [required]="true"
-          [error]="submitted && f['especialidade'].errors ? 'Selecione uma especialidade.' : undefined">
+          [error]="
+            submitted && f['especialidade'].errors
+              ? 'Selecione uma especialidade.'
+              : undefined
+          "
+        >
         </app-select>
       </div>
     </div>
@@ -45,7 +61,12 @@
           placeholder="contato@empresa.com.br"
           formControlName="email"
           [required]="true"
-          [error]="submitted && f['email'].errors ? 'E-mail comercial válido é obrigatório.' : undefined">
+          [error]="
+            submitted && f['email'].errors
+              ? 'E-mail comercial válido é obrigatório.'
+              : undefined
+          "
+        >
         </app-input>
       </div>
 
@@ -56,7 +77,8 @@
           mask="phone"
           label="Telefone / WhatsApp"
           placeholder="(47) 99999-9999"
-          formControlName="telefone">
+          formControlName="telefone"
+        >
         </app-input>
       </div>
     </div>
@@ -68,7 +90,8 @@
           type="text"
           label="Cidade"
           placeholder="Ex: Joinville"
-          formControlName="cidade">
+          formControlName="cidade"
+        >
         </app-input>
       </div>
 
@@ -79,7 +102,8 @@
           label="UF"
           placeholder="SC"
           maxlength="2"
-          formControlName="estado">
+          formControlName="estado"
+        >
         </app-input>
       </div>
     </div>
@@ -91,22 +115,42 @@
         [rows]="3"
         label="Capacidades Técnicas e Descrição"
         placeholder="Ex: Fabricantes especializados em envidraçamento estrutural, caixilharia de alumínio e vidros com isolamento térmico..."
-        formControlName="descricao">
+        formControlName="descricao"
+      >
       </app-input>
     </div>
 
-    <div class="dialog-actions d-flex justify-content-end align-items-center gap-xs margin-top-md">
-      <app-button variant="ghost" type="button" (btnClick)="fechar()" [disabled]="salvando">
+    <div
+      class="dialog-actions d-flex justify-content-end align-items-center gap-xs margin-top-md"
+    >
+      <app-button
+        variant="ghost"
+        type="button"
+        (btnClick)="fechar()"
+        [disabled]="salvando"
+      >
         Cancelar
       </app-button>
       <app-button variant="primary" type="submit" [disabled]="salvando">
-        <span class="material-symbols-outlined icon-btn-inline" *ngIf="!salvando">
-          {{ fornecedor ? 'save' : 'add_business' }}
+        <span
+          class="material-symbols-outlined icon-btn-inline"
+          *ngIf="!salvando"
+        >
+          {{ fornecedor ? "save" : "add_business" }}
         </span>
-        <span class="material-symbols-outlined icon-btn-inline spinner-icon" *ngIf="salvando">
+        <span
+          class="material-symbols-outlined icon-btn-inline spinner-icon"
+          *ngIf="salvando"
+        >
           progress_activity
         </span>
-        {{ salvando ? 'Salvando...' : (fornecedor ? 'Salvar Alterações' : 'Cadastrar Parceiro') }}
+        {{
+          salvando
+            ? "Salvando..."
+            : fornecedor
+              ? "Salvar Alterações"
+              : "Cadastrar Parceiro"
+        }}
       </app-button>
     </div>
   </form>

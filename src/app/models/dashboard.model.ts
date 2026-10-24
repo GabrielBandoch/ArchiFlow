@@ -103,12 +103,40 @@ export interface DashboardWidgetConfig {
   icone: string;
   visivel: boolean;
   ordem: number;
-  largura: 'full' | 'half';
+  largura: "full" | "half";
 }
 
 export const WIDGETS_DEFAULT: DashboardWidgetConfig[] = [
-  { id: 'pendencias_hoje', titulo: 'O Que Fazer Hoje (Pendências & Agenda)', icone: 'today', visivel: true, ordem: 1, largura: 'full' },
-  { id: 'financeiro_semana', titulo: 'Financeiro da Semana (A Pagar & Recebíveis)', icone: 'account_balance_wallet', visivel: true, ordem: 2, largura: 'full' },
-  { id: 'projetos_por_fase', titulo: 'Projetos por Fase', icone: 'assignment', visivel: true, ordem: 3, largura: 'half' },
-  { id: 'crm_leads', titulo: 'CRM & Contatos Recentes', icone: 'contacts', visivel: true, ordem: 4, largura: 'half' }
+  {
+    id: "pendencias_hoje",
+    titulo: "O Que Fazer Hoje (Pendências & Agenda)",
+    icone: "today",
+    visivel: true,
+    ordem: 1,
+    largura: "full",
+  },
+  {
+    id: "financeiro_semana",
+    titulo: "Financeiro da Semana (A Pagar & Recebíveis)",
+    icone: "account_balance_wallet",
+    visivel: true,
+    ordem: 2,
+    largura: "full",
+  },
+  {
+    id: "projetos_por_fase",
+    titulo: "Projetos por Fase",
+    icone: "assignment",
+    visivel: true,
+    ordem: 3,
+    largura: "half",
+  },
+  {
+    id: "crm_leads",
+    titulo: "CRM & Contatos Recentes",
+    icone: "contacts",
+    visivel: true,
+    ordem: 4,
+    largura: "half",
+  },
 ];

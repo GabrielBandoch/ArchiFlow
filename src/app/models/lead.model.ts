@@ -1,10 +1,10 @@
 export enum StatusLead {
-  Novo = 'Novo',
-  EmContato = 'EmContato',
-  PropostaEnviada = 'PropostaEnviada',
-  Negociando = 'Negociando',
-  Convertido = 'Convertido',
-  Perdido = 'Perdido'
+  Novo = "Novo",
+  EmContato = "EmContato",
+  PropostaEnviada = "PropostaEnviada",
+  Negociando = "Negociando",
+  Convertido = "Convertido",
+  Perdido = "Perdido",
 }
 
 export interface HistoricoContatoLead {

@@ -1,5 +1,4 @@
 <div class="portal-timeline-wrapper">
-  
   <section class="current-phase-card" *ngIf="etapaAtual">
     <div class="card-header-accent">
       <div class="header-badge">
@@ -7,30 +6,45 @@
         <span>Etapa Atual</span>
       </div>
       <span class="phase-target" *ngIf="etapaAtual.dataFimPrevista">
-        Entrega estimada: <strong>{{ formatarData(etapaAtual.dataFimPrevista) }}</strong>
+        Entrega estimada:
+        <strong>{{ formatarData(etapaAtual.dataFimPrevista) }}</strong>
       </span>
     </div>
 
     <div class="current-phase-body">
       <h2 class="current-phase-name">{{ etapaAtual.nome }}</h2>
-      <p class="current-phase-desc" *ngIf="etapaAtual.descricao">{{ etapaAtual.descricao }}</p>
+      <p class="current-phase-desc" *ngIf="etapaAtual.descricao">
+        {{ etapaAtual.descricao }}
+      </p>
 
-      <div class="deliverables-section" *ngIf="etapaAtual.tarefas && etapaAtual.tarefas.length > 0">
+      <div
+        class="deliverables-section"
+        *ngIf="etapaAtual.tarefas && etapaAtual.tarefas.length > 0"
+      >
         <h4 class="deliverables-title">
           <span class="material-symbols-outlined">checklist</span>
           Entregáveis desta etapa
         </h4>
         <div class="deliverables-list">
-          <div *ngFor="let item of etapaAtual.tarefas" class="deliverable-item d-flex align-items-center justify-content-between gap-sm" [class.completed]="item.concluida">
+          <div
+            *ngFor="let item of etapaAtual.tarefas"
+            class="deliverable-item d-flex align-items-center justify-content-between gap-sm"
+            [class.completed]="item.concluida"
+          >
             <div class="d-flex align-items-center gap-xs flex-grow-1 min-w-0">
               <span class="material-symbols-outlined status-icon">
-                {{ item.concluida ? 'check_circle' : 'radio_button_unchecked' }}
+                {{ item.concluida ? "check_circle" : "radio_button_unchecked" }}
               </span>
               <span class="item-title truncate">{{ item.titulo }}</span>
             </div>
             <div class="d-flex align-items-center gap-xs flex-shrink-0">
-              <span class="item-prazo font-label-xs text-secondary d-inline-flex align-items-center gap-xxs" *ngIf="item.dataLimite">
-                <span class="material-symbols-outlined font-size-14">event</span>
+              <span
+                class="item-prazo font-label-xs text-secondary d-inline-flex align-items-center gap-xxs"
+                *ngIf="item.dataLimite"
+              >
+                <span class="material-symbols-outlined font-size-14"
+                  >event</span
+                >
                 Prazo: {{ formatarData(item.dataLimite) }}
               </span>
               <span class="item-badge" *ngIf="item.concluida">Concluído</span>
@@ -48,17 +62,28 @@
     </div>
 
     <div class="timeline-container">
-      <div *ngFor="let etapa of etapas; let last = last; let i = index" 
-           class="timeline-step" 
-           [class.step-completed]="etapa.status === StatusEtapa.Concluida"
-           [class.step-active]="etapa.status === StatusEtapa.EmAndamento"
-           [class.step-pending]="etapa.status === StatusEtapa.Pendente">
-        
+      <div
+        *ngFor="let etapa of etapas; let last = last; let i = index"
+        class="timeline-step"
+        [class.step-completed]="etapa.status === StatusEtapa.Concluida"
+        [class.step-active]="etapa.status === StatusEtapa.EmAndamento"
+        [class.step-pending]="etapa.status === StatusEtapa.Pendente"
+      >
         <div class="timeline-marker">
           <div class="marker-circle">
-            <span *ngIf="etapa.status === StatusEtapa.Concluida" class="material-symbols-outlined">check</span>
-            <span *ngIf="etapa.status === StatusEtapa.EmAndamento" class="material-symbols-outlined">autorenew</span>
-            <span *ngIf="etapa.status === StatusEtapa.Pendente">{{ i + 1 }}</span>
+            <span
+              *ngIf="etapa.status === StatusEtapa.Concluida"
+              class="material-symbols-outlined"
+              >check</span
+            >
+            <span
+              *ngIf="etapa.status === StatusEtapa.EmAndamento"
+              class="material-symbols-outlined"
+              >autorenew</span
+            >
+            <span *ngIf="etapa.status === StatusEtapa.Pendente">{{
+              i + 1
+            }}</span>
           </div>
           <div class="marker-line" *ngIf="!last"></div>
         </div>
@@ -67,35 +92,68 @@
           <div class="content-header">
             <div class="header-left">
               <h4 class="step-title">{{ etapa.nome }}</h4>
-              <span class="step-badge" [class.badge-completed]="etapa.status === StatusEtapa.Concluida"
-                                      [class.badge-active]="etapa.status === StatusEtapa.EmAndamento"
-                                      [class.badge-pending]="etapa.status === StatusEtapa.Pendente">
-                {{ etapa.status === StatusEtapa.Concluida ? 'Concluída' : (etapa.status === StatusEtapa.EmAndamento ? 'Em Andamento' : 'Pendente') }}
+              <span
+                class="step-badge"
+                [class.badge-completed]="etapa.status === StatusEtapa.Concluida"
+                [class.badge-active]="etapa.status === StatusEtapa.EmAndamento"
+                [class.badge-pending]="etapa.status === StatusEtapa.Pendente"
+              >
+                {{
+                  etapa.status === StatusEtapa.Concluida
+                    ? "Concluída"
+                    : etapa.status === StatusEtapa.EmAndamento
+                      ? "Em Andamento"
+                      : "Pendente"
+                }}
               </span>
             </div>
-            <div class="step-dates d-flex flex-direction-column align-items-end gap-xxs">
-              <span *ngIf="etapa.dataFimPrevista" class="date-expected font-label-xs">
-                Prazo: <strong>{{ formatarData(etapa.dataFimPrevista) }}</strong>
+            <div
+              class="step-dates d-flex flex-direction-column align-items-end gap-xxs"
+            >
+              <span
+                *ngIf="etapa.dataFimPrevista"
+                class="date-expected font-label-xs"
+              >
+                Prazo:
+                <strong>{{ formatarData(etapa.dataFimPrevista) }}</strong>
               </span>
-              <span *ngIf="etapa.status === StatusEtapa.Concluida && etapa.dataConclusao" class="date-concluded font-label-xs text-success">
-                Concluída em: <strong>{{ formatarData(etapa.dataConclusao) }}</strong>
+              <span
+                *ngIf="
+                  etapa.status === StatusEtapa.Concluida && etapa.dataConclusao
+                "
+                class="date-concluded font-label-xs text-success"
+              >
+                Concluída em:
+                <strong>{{ formatarData(etapa.dataConclusao) }}</strong>
               </span>
             </div>
           </div>
 
           <p class="step-desc" *ngIf="etapa.descricao">{{ etapa.descricao }}</p>
 
-          <div class="step-tasks-preview" *ngIf="etapa.tarefas && etapa.tarefas.length > 0">
-            <div class="tasks-header">Entregáveis ({{ etapa.tarefas.length }})</div>
+          <div
+            class="step-tasks-preview"
+            *ngIf="etapa.tarefas && etapa.tarefas.length > 0"
+          >
+            <div class="tasks-header">
+              Entregáveis ({{ etapa.tarefas.length }})
+            </div>
             <div class="tasks-mini-list">
-              <div *ngFor="let t of etapa.tarefas" class="mini-task d-flex align-items-center justify-content-between gap-xs" [class.done]="t.concluida">
+              <div
+                *ngFor="let t of etapa.tarefas"
+                class="mini-task d-flex align-items-center justify-content-between gap-xs"
+                [class.done]="t.concluida"
+              >
                 <div class="d-flex align-items-center gap-xxs min-w-0">
                   <span class="material-symbols-outlined mini-icon">
-                    {{ t.concluida ? 'check_small' : 'circle' }}
+                    {{ t.concluida ? "check_small" : "circle" }}
                   </span>
                   <span class="truncate">{{ t.titulo }}</span>
                 </div>
-                <span class="mini-prazo font-label-xs text-secondary flex-shrink-0" *ngIf="t.dataLimite">
+                <span
+                  class="mini-prazo font-label-xs text-secondary flex-shrink-0"
+                  *ngIf="t.dataLimite"
+                >
                   {{ formatarData(t.dataLimite) }}
                 </span>
               </div>
@@ -105,5 +163,4 @@
       </div>
     </div>
   </section>
-
 </div>

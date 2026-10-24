@@ -1,27 +1,34 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-import { ProjetoService } from '../../../core/api/projetos/projeto.service';
-import { ArquivoService } from '../../../core/api/projetos/arquivo.service';
-import { ClienteService } from '../../../core/api/clientes/cliente.service';
-import { HonorarioService } from '../../../core/api/honorarios/honorario.service';
-import { ConfiguracaoPropostaService } from '../../../core/services/configuracao-proposta.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TipoProjeto, TarefaEtapa } from '../../../models/projeto.model';
-import { Arquivo } from '../../../models/arquivo.model';
-import { PropostaHonorario } from '../../../models/honorario.model';
-import { DESIGN_SYSTEM, ChatWidgetComponent } from '../../../shared';
-import { PortalHeroComponent } from '../portal-hero/portal-hero.component';
-import { PortalTimelineComponent } from '../portal-timeline/portal-timeline.component';
-import { PortalDocumentosComponent } from '../portal-documentos/portal-documentos.component';
-import { PortalSuporteComponent } from '../portal-suporte/portal-suporte.component';
-import { DialogService } from '../../../core/services/dialog.service';
-import { ModalPropostaPdfComponent } from '../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component';
-import { PropostaVisualizacaoData } from '../../../models/proposta-pdf.types';
+import { Component, OnInit, ViewChild, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from "../../../core/services/auth.service";
+import { ProjetoService } from "../../../core/api/projetos/projeto.service";
+import { ArquivoService } from "../../../core/api/projetos/arquivo.service";
+import { ClienteService } from "../../../core/api/clientes/cliente.service";
+import { HonorarioService } from "../../../core/api/honorarios/honorario.service";
+import { ConfiguracaoPropostaService } from "../../../core/services/configuracao-proposta.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import {
+  Projeto,
+  EtapaProjeto,
+  StatusProjeto,
+  StatusEtapa,
+  TipoProjeto,
+  TarefaEtapa,
+} from "../../../models/projeto.model";
+import { Arquivo } from "../../../models/arquivo.model";
+import { PropostaHonorario } from "../../../models/honorario.model";
+import { DESIGN_SYSTEM, ChatWidgetComponent } from "../../../shared";
+import { PortalHeroComponent } from "../portal-hero/portal-hero.component";
+import { PortalTimelineComponent } from "../portal-timeline/portal-timeline.component";
+import { PortalDocumentosComponent } from "../portal-documentos/portal-documentos.component";
+import { PortalSuporteComponent } from "../portal-suporte/portal-suporte.component";
+import { DialogService } from "../../../core/services/dialog.service";
+import { ModalPropostaPdfComponent } from "../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component";
+import { PropostaVisualizacaoData } from "../../../models/proposta-pdf.types";
 
 @Component({
-  selector: 'app-portal-cliente',
+  selector: "app-portal-cliente",
   standalone: true,
   imports: [
     CommonModule,
@@ -29,10 +36,10 @@ import { PropostaVisualizacaoData } from '../../../models/proposta-pdf.types';
     PortalHeroComponent,
     PortalTimelineComponent,
     PortalDocumentosComponent,
-    PortalSuporteComponent
+    PortalSuporteComponent,
   ],
-  templateUrl: './portal-cliente.component.html',
-  styleUrl: './portal-cliente.component.scss'
+  templateUrl: "./portal-cliente.component.html",
+  styleUrl: "./portal-cliente.component.scss",
 })
 export class PortalClienteComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -46,7 +53,7 @@ export class PortalClienteComponent implements OnInit {
   private notificationService = inject(NotificationService, { optional: true });
   private dialogService = inject(DialogService, { optional: true });
 
-  projetoId = '';
+  projetoId = "";
   projeto: Projeto | null = null;
   listaProjetosCliente: Projeto[] = [];
   modoSelecaoProjeto = false;
@@ -56,7 +63,7 @@ export class PortalClienteComponent implements OnInit {
   propostaParaPdf: PropostaVisualizacaoData | null = null;
 
   loading = true;
-  filtroArquivo: 'todos' | 'plantas' | 'documentos' | 'imagens' = 'todos';
+  filtroArquivo: "todos" | "plantas" | "documentos" | "imagens" = "todos";
 
   @ViewChild(ChatWidgetComponent) chatWidget?: ChatWidgetComponent;
 
@@ -71,8 +78,8 @@ export class PortalClienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const paramId = params.get('id');
+    this.route.paramMap.subscribe((params) => {
+      const paramId = params.get("id");
       if (paramId) {
         this.projetoId = paramId;
         this.modoSelecaoProjeto = false;
@@ -105,16 +112,16 @@ export class PortalClienteComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.projeto = null;
-      }
+      },
     });
   }
 
   selecionarProjeto(p: Projeto): void {
-    this.router.navigate(['/portal', p.id]);
+    this.router.navigate(["/portal", p.id]);
   }
 
   voltarParaSelecao(): void {
-    this.router.navigate(['/portal']);
+    this.router.navigate(["/portal"]);
   }
 
   carregarDados(): void {
@@ -124,19 +131,29 @@ export class PortalClienteComponent implements OnInit {
         this.projeto = {
           ...data,
           status: this.normalizarStatus(data.status),
-          tipo: typeof data.tipo === 'string' ? ['Residencial', 'Comercial', 'Corporativo', 'Interiores'].indexOf(data.tipo) : Number(data.tipo),
-          etapas: (data.etapas || []).map(e => ({
-            ...e,
-            status: this.normalizarStatusEtapa(e.status),
-            tarefas: e.tarefas || []
-          })).sort((a, b) => a.ordem - b.ordem)
+          tipo:
+            typeof data.tipo === "string"
+              ? [
+                  "Residencial",
+                  "Comercial",
+                  "Corporativo",
+                  "Interiores",
+                ].indexOf(data.tipo)
+              : Number(data.tipo),
+          etapas: (data.etapas || [])
+            .map((e) => ({
+              ...e,
+              status: this.normalizarStatusEtapa(e.status),
+              tarefas: e.tarefas || [],
+            }))
+            .sort((a, b) => a.ordem - b.ordem),
         };
 
         if (data.clienteId && !data.clienteNome) {
           this.clienteService.obterPorId(data.clienteId).subscribe({
             next: (c) => {
               if (this.projeto) this.projeto.clienteNome = c.nome;
-            }
+            },
           });
         }
 
@@ -144,10 +161,10 @@ export class PortalClienteComponent implements OnInit {
         this.carregarPropostaVinculada(data.clienteId);
       },
       error: (err) => {
-        console.error('Erro ao carregar projeto no portal', err);
+        console.error("Erro ao carregar projeto no portal", err);
         this.loading = false;
-        this.notificationService?.error('Erro ao carregar dados do projeto.');
-      }
+        this.notificationService?.error("Erro ao carregar dados do projeto.");
+      },
     });
   }
 
@@ -158,10 +175,12 @@ export class PortalClienteComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Erro ao carregar arquivos no portal', err);
+        console.error("Erro ao carregar arquivos no portal", err);
         this.loading = false;
-        this.notificationService?.error('Erro ao carregar arquivos do projeto.');
-      }
+        this.notificationService?.error(
+          "Erro ao carregar arquivos do projeto.",
+        );
+      },
     });
   }
 
@@ -169,12 +188,12 @@ export class PortalClienteComponent implements OnInit {
     if (!clienteId) return;
     this.honorarioService.obterPropostas().subscribe({
       next: (propostas) => {
-        const prop = (propostas || []).find(p => p.clienteId === clienteId);
+        const prop = (propostas || []).find((p) => p.clienteId === clienteId);
         if (prop) {
           this.propostaVinculada = prop;
         }
       },
-      error: () => {}
+      error: () => {},
     });
   }
 
@@ -182,57 +201,69 @@ export class PortalClienteComponent implements OnInit {
     if (!this.projeto) return;
 
     if (this.propostaVinculada) {
-      const etapas = (this.propostaVinculada.itensEtapa || []).map((i: any) => ({
-        nome: i.nomeEtapa,
-        descricao: i.descricao,
-        percentual: i.percentual,
-        valor: i.valor,
-        incluso: i.incluso
-      }));
+      const etapas = (this.propostaVinculada.itensEtapa || []).map(
+        (i: any) => ({
+          nome: i.nomeEtapa,
+          descricao: i.descricao,
+          percentual: i.percentual,
+          valor: i.valor,
+          incluso: i.incluso,
+        }),
+      );
 
       this.propostaParaPdf = {
         codigo: this.propostaVinculada.codigo,
         titulo: this.propostaVinculada.titulo || this.projeto.nome,
-        clienteNome: this.propostaVinculada.clienteNome || this.projeto.clienteNome,
-        metragemQuadrada: this.propostaVinculada.metragemQuadrada || this.projeto.metragemTotal || 0,
+        clienteNome:
+          this.propostaVinculada.clienteNome || this.projeto.clienteNome,
+        metragemQuadrada:
+          this.propostaVinculada.metragemQuadrada ||
+          this.projeto.metragemTotal ||
+          0,
         padraoImovelNome: this.propostaVinculada.padraoImovelNome,
-        tipoProjetoNome: this.propostaVinculada.tipoProjetoNome || this.tipoProjetoFormatado,
+        tipoProjetoNome:
+          this.propostaVinculada.tipoProjetoNome || this.tipoProjetoFormatado,
         valorTotalSugerido: this.propostaVinculada.valorTotalSugerido,
         valorFinalAjustado: this.propostaVinculada.valorFinalAjustado,
         criadoEm: this.propostaVinculada.criadoEm,
-        statusNome: this.propostaVinculada.statusNome || 'Aprovada',
-        etapas: etapas.length > 0 ? etapas : (this.projeto.etapas || []).map(e => ({
-          nome: e.nome,
-          descricao: e.descricao,
-          percentual: Math.round(100 / (this.projeto?.etapas?.length || 1)),
-          valor: 0
-        }))
+        statusNome: this.propostaVinculada.statusNome || "Aprovada",
+        etapas:
+          etapas.length > 0
+            ? etapas
+            : (this.projeto.etapas || []).map((e) => ({
+                nome: e.nome,
+                descricao: e.descricao,
+                percentual: Math.round(
+                  100 / (this.projeto?.etapas?.length || 1),
+                ),
+                valor: 0,
+              })),
       };
     } else {
-      const etapas = (this.projeto.etapas || []).map(e => ({
+      const etapas = (this.projeto.etapas || []).map((e) => ({
         nome: e.nome,
         descricao: e.descricao,
         percentual: Math.round(100 / (this.projeto?.etapas?.length || 1)),
-        valor: 0
+        valor: 0,
       }));
 
       this.propostaParaPdf = {
-        codigo: 'CONTRATO-' + this.projeto.id.substring(0, 8).toUpperCase(),
+        codigo: "CONTRATO-" + this.projeto.id.substring(0, 8).toUpperCase(),
         titulo: this.projeto.nome,
-        clienteNome: this.projeto.clienteNome || 'Cliente',
+        clienteNome: this.projeto.clienteNome || "Cliente",
         metragemQuadrada: this.projeto.metragemTotal || 0,
         tipoProjetoNome: this.tipoProjetoFormatado,
         valorFinalAjustado: 0,
         criadoEm: this.projeto.dataInicio || new Date().toISOString(),
-        statusNome: 'Aprovado',
-        etapas
+        statusNome: "Aprovado",
+        etapas,
       };
     }
 
     this.modalPdfAberto = true;
     if (this.dialogService) {
       this.dialogService.open(ModalPropostaPdfComponent, {
-        data: { proposta: this.propostaParaPdf }
+        data: { proposta: this.propostaParaPdf },
       });
     }
   }
@@ -243,18 +274,26 @@ export class PortalClienteComponent implements OnInit {
   }
 
   normalizarStatus(status: any): StatusProjeto {
-    if (typeof status === 'string') {
-      const idx = ['Briefing', 'Desenvolvimento', 'Revisao', 'Aprovacao', 'Execucao', 'Concluido', 'Cancelado'].indexOf(status);
+    if (typeof status === "string") {
+      const idx = [
+        "Briefing",
+        "Desenvolvimento",
+        "Revisao",
+        "Aprovacao",
+        "Execucao",
+        "Concluido",
+        "Cancelado",
+      ].indexOf(status);
       if (idx >= 0) return idx as StatusProjeto;
     }
     return Number(status) as StatusProjeto;
   }
 
   normalizarStatusEtapa(status: any): StatusEtapa {
-    if (typeof status === 'string') {
+    if (typeof status === "string") {
       const lower = status.toLowerCase();
-      if (lower.includes('andamento')) return StatusEtapa.EmAndamento;
-      if (lower.includes('conclui')) return StatusEtapa.Concluida;
+      if (lower.includes("andamento")) return StatusEtapa.EmAndamento;
+      if (lower.includes("conclui")) return StatusEtapa.Concluida;
       return StatusEtapa.Pendente;
     }
     return Number(status) as StatusEtapa;
@@ -265,7 +304,9 @@ export class PortalClienteComponent implements OnInit {
   }
 
   get etapasConcluidas(): EtapaProjeto[] {
-    return (this.projeto?.etapas || []).filter(e => e.status === StatusEtapa.Concluida);
+    return (this.projeto?.etapas || []).filter(
+      (e) => e.status === StatusEtapa.Concluida,
+    );
   }
 
   get totalConcluidas(): number {
@@ -278,30 +319,55 @@ export class PortalClienteComponent implements OnInit {
   }
 
   get etapaAtual(): EtapaProjeto | undefined {
-    return (this.projeto?.etapas || []).find(e => e.status === StatusEtapa.EmAndamento) ||
-           (this.projeto?.etapas || []).find(e => e.status === StatusEtapa.Pendente);
+    return (
+      (this.projeto?.etapas || []).find(
+        (e) => e.status === StatusEtapa.EmAndamento,
+      ) ||
+      (this.projeto?.etapas || []).find(
+        (e) => e.status === StatusEtapa.Pendente,
+      )
+    );
   }
 
   get proximosPassos(): EtapaProjeto[] {
     if (!this.etapaAtual) return [];
-    return (this.projeto?.etapas || [])
-      .filter(e => e.ordem > this.etapaAtual!.ordem && e.status === StatusEtapa.Pendente);
+    return (this.projeto?.etapas || []).filter(
+      (e) =>
+        e.ordem > this.etapaAtual!.ordem && e.status === StatusEtapa.Pendente,
+    );
   }
 
   get tipoProjetoFormatado(): string {
-    const tipos = ['Residencial', 'Comercial', 'Corporativo', 'Design de Interiores'];
-    if (this.projeto && this.projeto.tipo !== undefined && this.projeto.tipo !== null) {
-      return tipos[this.projeto.tipo] || 'Geral';
+    const tipos = [
+      "Residencial",
+      "Comercial",
+      "Corporativo",
+      "Design de Interiores",
+    ];
+    if (
+      this.projeto &&
+      this.projeto.tipo !== undefined &&
+      this.projeto.tipo !== null
+    ) {
+      return tipos[this.projeto.tipo] || "Geral";
     }
-    return 'Geral';
+    return "Geral";
   }
 
   obterStatusProjetoLabel(status?: number | StatusProjeto): string {
-    const labels = ['Briefing', 'Desenvolvimento', 'Revisão', 'Aprovação', 'Execução', 'Concluído', 'Cancelado'];
+    const labels = [
+      "Briefing",
+      "Desenvolvimento",
+      "Revisão",
+      "Aprovação",
+      "Execução",
+      "Concluído",
+      "Cancelado",
+    ];
     if (status !== undefined && status !== null) {
-      return labels[Number(status)] || 'Em Andamento';
+      return labels[Number(status)] || "Em Andamento";
     }
-    return 'Em Andamento';
+    return "Em Andamento";
   }
 
   get statusProjetoLabel(): string {
@@ -309,42 +375,53 @@ export class PortalClienteComponent implements OnInit {
   }
 
   get arquivosFiltrados(): Arquivo[] {
-    if (this.filtroArquivo === 'todos') return this.arquivos;
-    if (this.filtroArquivo === 'plantas') {
-      return this.arquivos.filter(a => {
-        const ext = a.nome.split('.').pop()?.toLowerCase();
-        return ['dwg', 'dxf', 'rvt', 'skp', 'ifc'].includes(ext || '') || (a.tipo?.toLowerCase().includes('cad') ?? false);
+    if (this.filtroArquivo === "todos") return this.arquivos;
+    if (this.filtroArquivo === "plantas") {
+      return this.arquivos.filter((a) => {
+        const ext = a.nome.split(".").pop()?.toLowerCase();
+        return (
+          ["dwg", "dxf", "rvt", "skp", "ifc"].includes(ext || "") ||
+          (a.tipo?.toLowerCase().includes("cad") ?? false)
+        );
       });
     }
-    if (this.filtroArquivo === 'documentos') {
-      return this.arquivos.filter(a => {
-        const ext = a.nome.split('.').pop()?.toLowerCase();
-        return ['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(ext || '') || (a.tipo?.toLowerCase().includes('pdf') ?? false);
+    if (this.filtroArquivo === "documentos") {
+      return this.arquivos.filter((a) => {
+        const ext = a.nome.split(".").pop()?.toLowerCase();
+        return (
+          ["pdf", "doc", "docx", "xls", "xlsx"].includes(ext || "") ||
+          (a.tipo?.toLowerCase().includes("pdf") ?? false)
+        );
       });
     }
-    if (this.filtroArquivo === 'imagens') {
-      return this.arquivos.filter(a => {
-        const ext = a.nome.split('.').pop()?.toLowerCase();
-        return ['jpg', 'jpeg', 'png', 'webp', 'svg', 'gif'].includes(ext || '') || (a.tipo?.toLowerCase().includes('image') ?? false);
+    if (this.filtroArquivo === "imagens") {
+      return this.arquivos.filter((a) => {
+        const ext = a.nome.split(".").pop()?.toLowerCase();
+        return (
+          ["jpg", "jpeg", "png", "webp", "svg", "gif"].includes(ext || "") ||
+          (a.tipo?.toLowerCase().includes("image") ?? false)
+        );
       });
     }
     return this.arquivos;
   }
 
-  setFiltroArquivo(filtro: 'todos' | 'plantas' | 'documentos' | 'imagens'): void {
+  setFiltroArquivo(
+    filtro: "todos" | "plantas" | "documentos" | "imagens",
+  ): void {
     this.filtroArquivo = filtro;
   }
 
   baixarArquivo(arquivo: Arquivo): void {
     if (arquivo.urlStorage) {
-      window.open(arquivo.urlStorage, '_blank');
+      window.open(arquivo.urlStorage, "_blank");
     }
   }
 
   formatarData(data: any): string {
-    if (!data) return 'Não definida';
+    if (!data) return "Não definida";
     const date = new Date(data);
-    return date.toLocaleDateString('pt-BR');
+    return date.toLocaleDateString("pt-BR");
   }
 
   formatarMoeda(valor?: number): string {

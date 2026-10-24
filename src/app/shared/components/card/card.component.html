@@ -1,11 +1,12 @@
-<div 
+<div
   [ngClass]="[
-    'card', 
-    'card-' + variant, 
-    'card-pad-' + padding, 
+    'card',
+    'card-' + variant,
+    'card-pad-' + padding,
     hoverable ? 'card-hover' : '',
-    customClass
-  ]">
+    customClass,
+  ]"
+>
   <div *ngIf="cardTitle" class="card-header">
     <div class="card-header-titles">
       <h3 class="card-title">{{ cardTitle }}</h3>

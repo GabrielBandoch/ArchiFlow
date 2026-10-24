@@ -1,4 +1,4 @@
-import { StatusLead } from '../models/lead.model';
+import { StatusLead } from "../models/lead.model";
 
 export interface CriarLeadCommand {
   nome: string;

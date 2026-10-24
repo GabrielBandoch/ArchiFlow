@@ -1,17 +1,17 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AutenticacaoService } from '../../../core/api/auth/autenticacao.service';
-import { CotuLogoComponent } from '../../../shared/components/cotu-logo/cotu-logo.component';
-import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from '../../../shared';
-import { RecuperarSenhaForm } from './recuperar-senha.form';
+import { Component, inject } from "@angular/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
+import { AutenticacaoService } from "../../../core/api/auth/autenticacao.service";
+import { CotuLogoComponent } from "../../../shared/components/cotu-logo/cotu-logo.component";
+import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
+import { RecuperarSenhaForm } from "./recuperar-senha.form";
 
 @Component({
-  selector: 'app-recuperar-senha',
+  selector: "app-recuperar-senha",
   standalone: true,
   imports: [CotuLogoComponent, CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM],
-  templateUrl: './recuperar-senha.component.html',
-  styleUrl: './recuperar-senha.component.scss'
+  templateUrl: "./recuperar-senha.component.html",
+  styleUrl: "./recuperar-senha.component.scss",
 })
 export class RecuperarSenhaComponent {
   private fb = inject(FormBuilder);
@@ -23,7 +23,7 @@ export class RecuperarSenhaComponent {
   loading = false;
   submitted = false;
   sucesso = false;
-  errorMessage = '';
+  errorMessage = "";
 
   get f() {
     return this.recuperarForm.controls;
@@ -34,14 +34,14 @@ export class RecuperarSenhaComponent {
       return;
     }
     this.submitted = true;
-    this.errorMessage = '';
+    this.errorMessage = "";
 
     if (this.recuperarForm.invalid) {
       return;
     }
 
     this.loading = true;
-    const email = this.f['email'].value;
+    const email = this.f["email"].value;
 
     this.authApi.solicitarRecuperacao({ email }).subscribe({
       next: () => {
@@ -51,11 +51,11 @@ export class RecuperarSenhaComponent {
       error: () => {
         this.loading = false;
         this.sucesso = true;
-      }
+      },
     });
   }
 
   voltarLogin(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(["/login"]);
   }
 }

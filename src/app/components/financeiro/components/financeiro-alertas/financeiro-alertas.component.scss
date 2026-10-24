@@ -44,7 +44,9 @@
   background-color: var(--af-surface-container-low);
   border-radius: var(--af-radius-sm);
   border: 1px solid var(--af-outline-variant);
-  transition: transform 0.15s, border-color 0.15s;
+  transition:
+    transform 0.15s,
+    border-color 0.15s;
 
   &:hover {
     transform: translateY(-1px);
@@ -136,4 +138,3 @@
     line-height: 1.4;
   }
 }
-

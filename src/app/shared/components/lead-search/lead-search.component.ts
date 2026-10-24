@@ -1,31 +1,55 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef, ElementRef, HostListener, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Lead } from '../../../models/lead.model';
-import { ButtonComponent } from '../button/button.component';
-import { LeadService } from '../../../core/api/leads/lead.service';
-import { NotificationService } from '../../../core/services/notification.service';
-import { SelecionarLeadModalComponent } from '../../../dialogs/leads/selecionar-lead-modal/selecionar-lead-modal.component';
-import { PhoneMaskPipe } from '../../../core/pipes/phone-mask.pipe';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  forwardRef,
+  ElementRef,
+  HostListener,
+  inject,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormsModule,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+} from "@angular/forms";
+import { Lead } from "../../../models/lead.model";
+import { ButtonComponent } from "../button/button.component";
+import { LeadService } from "../../../core/api/leads/lead.service";
+import { NotificationService } from "../../../core/services/notification.service";
+import { SelecionarLeadModalComponent } from "../../../dialogs/leads/selecionar-lead-modal/selecionar-lead-modal.component";
+import { PhoneMaskPipe } from "../../../core/pipes/phone-mask.pipe";
 
 @Component({
-  selector: 'app-lead-search',
+  selector: "app-lead-search",
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, SelecionarLeadModalComponent, PhoneMaskPipe],
-  templateUrl: './lead-search.component.html',
-  styleUrl: './lead-search.component.scss',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonComponent,
+    SelecionarLeadModalComponent,
+    PhoneMaskPipe,
+  ],
+  templateUrl: "./lead-search.component.html",
+  styleUrl: "./lead-search.component.scss",
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => LeadSearchComponent),
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
-export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChanges {
-  @Input() id = '';
+export class LeadSearchComponent
+  implements ControlValueAccessor, OnInit, OnChanges
+{
+  @Input() id = "";
   @Input() label?: string;
-  @Input() placeholder = 'Buscar lead por nome ou e-mail...';
+  @Input() placeholder = "Buscar lead por nome ou e-mail...";
   @Input() required = false;
   @Input() error?: string;
   @Input() leads: Lead[] = [];
@@ -37,7 +61,7 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
   private elementRef = inject(ElementRef);
 
   leadSelecionado: Lead | null = null;
-  searchText = '';
+  searchText = "";
   sugestoes: Lead[] = [];
   showDropdown = false;
   showModal = false;
@@ -54,7 +78,7 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['leads']) {
+    if (changes["leads"]) {
       if (this.pendingValue) {
         this.writeValue(this.pendingValue);
       }
@@ -71,12 +95,14 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
         }
       },
       error: () => {
-        this.notificationService?.warning('Não foi possível carregar a lista de leads.');
-      }
+        this.notificationService?.warning(
+          "Não foi possível carregar a lista de leads.",
+        );
+      },
     });
   }
 
-  @HostListener('document:click', ['$event'])
+  @HostListener("document:click", ["$event"])
   onClickOutside(event: MouseEvent): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.showDropdown = false;
@@ -84,23 +110,23 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
   }
 
   writeValue(value: unknown): void {
-    this.pendingValue = value as (string | Lead | null);
+    this.pendingValue = value as string | Lead | null;
     if (!value) {
       this.leadSelecionado = null;
-      this.searchText = '';
+      this.searchText = "";
       return;
     }
 
-    if (typeof value === 'string') {
-      const lead = (this.leads || []).find(l => l.id === value);
+    if (typeof value === "string") {
+      const lead = (this.leads || []).find((l) => l.id === value);
       if (lead) {
         this.leadSelecionado = lead;
         this.searchText = lead.nome;
       }
-    } else if (typeof value === 'object' && (value as Lead).id) {
+    } else if (typeof value === "object" && (value as Lead).id) {
       const lead = value as Lead;
       this.leadSelecionado = lead;
-      this.searchText = lead.nome || '';
+      this.searchText = lead.nome || "";
     }
   }
 
@@ -119,10 +145,11 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
   onInputSearch(): void {
     const q = this.searchText.trim().toLowerCase();
     if (q.length >= 2) {
-      this.sugestoes = (this.leads || []).filter(l => 
-        l.nome.toLowerCase().includes(q) ||
-        (l.email && l.email.toLowerCase().includes(q)) ||
-        (l.telefone && l.telefone.toLowerCase().includes(q))
+      this.sugestoes = (this.leads || []).filter(
+        (l) =>
+          l.nome.toLowerCase().includes(q) ||
+          (l.email && l.email.toLowerCase().includes(q)) ||
+          (l.telefone && l.telefone.toLowerCase().includes(q)),
       );
       this.showDropdown = true;
     } else {
@@ -143,7 +170,7 @@ export class LeadSearchComponent implements ControlValueAccessor, OnInit, OnChan
 
   limparSelecao(): void {
     this.leadSelecionado = null;
-    this.searchText = '';
+    this.searchText = "";
     this.showDropdown = false;
     this.pendingValue = null;
     this.onChange(null);

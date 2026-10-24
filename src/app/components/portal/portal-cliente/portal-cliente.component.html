@@ -1,54 +1,94 @@
-<app-spinner *ngIf="loading" size="lg" message="Carregando as informações..."></app-spinner>
+<app-spinner
+  *ngIf="loading"
+  size="lg"
+  message="Carregando as informações..."
+></app-spinner>
 
-<div *ngIf="!loading && modoSelecaoProjeto" class="portal-project-selector p-xl">
+<div
+  *ngIf="!loading && modoSelecaoProjeto"
+  class="portal-project-selector p-xl"
+>
   <div class="selector-header margin-bottom-xl text-center">
-    <h1 class="font-headline-lg margin-bottom-xs">Seus Projetos de Arquitetura</h1>
+    <h1 class="font-headline-lg margin-bottom-xs">
+      Seus Projetos de Arquitetura
+    </h1>
     <p class="font-body-md text-secondary">
       Selecione qual projeto você deseja acompanhar hoje:
     </p>
   </div>
 
   <div class="projects-card-grid">
-    <div 
-      *ngFor="let proj of listaProjetosCliente" 
+    <div
+      *ngFor="let proj of listaProjetosCliente"
       class="project-card-item p-lg d-flex flex-direction-column justify-content-between"
-      (click)="selecionarProjeto(proj)">
+      (click)="selecionarProjeto(proj)"
+    >
       <div>
-        <div class="d-flex align-items-center justify-content-between margin-bottom-sm">
+        <div
+          class="d-flex align-items-center justify-content-between margin-bottom-sm"
+        >
           <app-badge variant="neutral" size="sm" text="Projeto"></app-badge>
-          <app-badge variant="success" size="sm" [text]="obterStatusProjetoLabel(proj.status)"></app-badge>
+          <app-badge
+            variant="success"
+            size="sm"
+            [text]="obterStatusProjetoLabel(proj.status)"
+          ></app-badge>
         </div>
-        <h3 class="proj-title font-title-lg margin-bottom-xs">{{ proj.nome }}</h3>
+        <h3 class="proj-title font-title-lg margin-bottom-xs">
+          {{ proj.nome }}
+        </h3>
         <p class="proj-desc font-body-sm text-secondary" *ngIf="proj.descricao">
           {{ proj.descricao }}
         </p>
       </div>
 
-      <div class="margin-top-lg pt-md border-top d-flex align-items-center justify-content-between">
+      <div
+        class="margin-top-lg pt-md border-top d-flex align-items-center justify-content-between"
+      >
         <span class="font-label-xs text-secondary">
           {{ proj.etapas ? proj.etapas.length : 0 }} etapas no cronograma
         </span>
-        <button type="button" class="btn-open-proj d-inline-flex align-items-center gap-xxs" (click)="$event.stopPropagation(); selecionarProjeto(proj)">
+        <button
+          type="button"
+          class="btn-open-proj d-inline-flex align-items-center gap-xxs"
+          (click)="$event.stopPropagation(); selecionarProjeto(proj)"
+        >
           <span>Acessar</span>
-          <span class="material-symbols-outlined font-size-16">arrow_forward</span>
+          <span class="material-symbols-outlined font-size-16"
+            >arrow_forward</span
+          >
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<div *ngIf="!loading && !projeto && !modoSelecaoProjeto" class="portal-empty-state">
+<div
+  *ngIf="!loading && !projeto && !modoSelecaoProjeto"
+  class="portal-empty-state"
+>
   <div class="empty-card">
     <span class="material-symbols-outlined icon">domain_disabled</span>
     <h2>Nenhum projeto encontrado</h2>
-    <p>Não identificamos um projeto vinculado ao seu usuário no momento. Entre em contato com a equipe do seu escritório de arquitetura para habilitar o seu acesso.</p>
+    <p>
+      Não identificamos um projeto vinculado ao seu usuário no momento. Entre em
+      contato com a equipe do seu escritório de arquitetura para habilitar o seu
+      acesso.
+    </p>
   </div>
 </div>
 
 <div *ngIf="!loading && projeto" class="portal-dashboard">
-  
-  <div *ngIf="listaProjetosCliente.length > 1" class="portal-back-bar margin-bottom-md">
-    <button type="button" class="btn-back-projects d-inline-flex align-items-center gap-xs" (click)="voltarParaSelecao()" aria-label="Ver todos os meus projetos">
+  <div
+    *ngIf="listaProjetosCliente.length > 1"
+    class="portal-back-bar margin-bottom-md"
+  >
+    <button
+      type="button"
+      class="btn-back-projects d-inline-flex align-items-center gap-xs"
+      (click)="voltarParaSelecao()"
+      aria-label="Ver todos os meus projetos"
+    >
       <span class="material-symbols-outlined">arrow_back</span>
       <span>Ver todos os meus projetos</span>
     </button>
@@ -60,43 +100,60 @@
     [tipoFormatado]="tipoProjetoFormatado"
     [percentualProgresso]="percentualProgresso"
     [totalConcluidas]="totalConcluidas"
-    [totalEtapas]="totalEtapas">
+    [totalEtapas]="totalEtapas"
+  >
   </app-portal-hero>
 
   <div class="portal-grid">
     <div class="main-column">
       <app-portal-timeline
         [etapaAtual]="etapaAtual"
-        [etapas]="projeto.etapas || []">
+        [etapas]="projeto.etapas || []"
+      >
       </app-portal-timeline>
     </div>
 
     <div class="sidebar-column">
-      <div class="portal-card proposta-card d-flex flex-direction-column gap-sm p-lg" *ngIf="propostaVinculada">
+      <div
+        class="portal-card proposta-card d-flex flex-direction-column gap-sm p-lg"
+        *ngIf="propostaVinculada"
+      >
         <div class="d-flex align-items-center justify-content-between">
           <div class="d-flex align-items-center gap-xs">
-            <span class="material-symbols-outlined text-primary">request_quote</span>
+            <span class="material-symbols-outlined text-primary"
+              >request_quote</span
+            >
             <h3 class="font-headline-sm m-0">Proposta & Contrato</h3>
           </div>
           <span class="badge-status-aprovado font-label-xs">Aprovado</span>
         </div>
 
         <p class="font-body-xs text-on-surface-variant m-0">
-          Acesse a via digital completa da sua proposta técnica, escopo de etapas contratadas e condições comerciais.
+          Acesse a via digital completa da sua proposta técnica, escopo de
+          etapas contratadas e condições comerciais.
         </p>
 
-        <div class="proposta-meta-box p-sm d-flex flex-direction-column gap-xs" *ngIf="propostaVinculada">
+        <div
+          class="proposta-meta-box p-sm d-flex flex-direction-column gap-xs"
+          *ngIf="propostaVinculada"
+        >
           <div class="d-flex justify-content-between font-body-xs">
             <span class="text-on-surface-variant">Código:</span>
             <strong class="font-mono">{{ propostaVinculada.codigo }}</strong>
           </div>
           <div class="d-flex justify-content-between font-body-xs">
             <span class="text-on-surface-variant">Investimento Total:</span>
-            <strong class="text-primary">{{ formatarMoeda(propostaVinculada.valorFinalAjustado) }}</strong>
+            <strong class="text-primary">{{
+              formatarMoeda(propostaVinculada.valorFinalAjustado)
+            }}</strong>
           </div>
         </div>
 
-        <button type="button" class="btn-ver-pdf d-flex align-items-center justify-content-center gap-xs w-full mt-xs" (click)="abrirPdfProposta()">
+        <button
+          type="button"
+          class="btn-ver-pdf d-flex align-items-center justify-content-center gap-xs w-full mt-xs"
+          (click)="abrirPdfProposta()"
+        >
           <span class="material-symbols-outlined">picture_as_pdf</span>
           <span>Visualizar / Baixar PDF</span>
         </button>
@@ -106,21 +163,21 @@
         [arquivos]="arquivos"
         [filtro]="filtroArquivo"
         (filtroChange)="setFiltroArquivo($event)"
-        (download)="baixarArquivo($event)">
+        (download)="baixarArquivo($event)"
+      >
       </app-portal-documentos>
 
-      <app-portal-suporte
-        (abrirChat)="abrirChat()">
-      </app-portal-suporte>
+      <app-portal-suporte (abrirChat)="abrirChat()"> </app-portal-suporte>
     </div>
   </div>
 
-  <app-chat-widget 
-    *ngIf="projeto" 
-    [projetoId]="projeto.id" 
-    [projetoNome]="projeto.nome" 
+  <app-chat-widget
+    *ngIf="projeto"
+    [projetoId]="projeto.id"
+    [projetoNome]="projeto.nome"
     [interlocutorNome]="'Arquiteto Responsável'"
     [interlocutorCargo]="'Escritório de Arquitetura'"
-    [floating]="true">
+    [floating]="true"
+  >
   </app-chat-widget>
 </div>

@@ -1,21 +1,23 @@
 export const TiposCompromisso = {
-  ReuniaoCliente: 'ReuniaoCliente',
-  VisitaObra: 'VisitaObra',
-  MedicaoTecnica: 'MedicaoTecnica',
-  ApresentacaoProjeto: 'ApresentacaoProjeto',
-  EntregaEtapa: 'EntregaEtapa',
-  Geral: 'Geral'
+  ReuniaoCliente: "ReuniaoCliente",
+  VisitaObra: "VisitaObra",
+  MedicaoTecnica: "MedicaoTecnica",
+  ApresentacaoProjeto: "ApresentacaoProjeto",
+  EntregaEtapa: "EntregaEtapa",
+  Geral: "Geral",
 } as const;
 
-export type TipoCompromisso = (typeof TiposCompromisso)[keyof typeof TiposCompromisso];
+export type TipoCompromisso =
+  (typeof TiposCompromisso)[keyof typeof TiposCompromisso];
 
 export const StatusCompromisso = {
-  Agendado: 'Agendado',
-  Concluido: 'Concluido',
-  Cancelado: 'Cancelado'
+  Agendado: "Agendado",
+  Concluido: "Concluido",
+  Cancelado: "Cancelado",
 } as const;
 
-export type StatusCompromissoType = (typeof StatusCompromisso)[keyof typeof StatusCompromisso];
+export type StatusCompromissoType =
+  (typeof StatusCompromisso)[keyof typeof StatusCompromisso];
 
 export interface Compromisso {
   id: string;
@@ -82,7 +84,7 @@ export interface ConfiguracaoAgendaEmpresa {
   googleOAuthEmail?: string;
   possuiOAuthConectado?: boolean;
   googleClientId?: string;
-  tipoIntegracao?: 'OAuth' | 'ServiceAccount' | 'Nenhum';
+  tipoIntegracao?: "OAuth" | "ServiceAccount" | "Nenhum";
   nomeAgenda: string;
   sincronizacaoAutomaticaAtiva: boolean;
   linkEmbedGoogleCalendar?: string;
@@ -94,7 +96,7 @@ export interface SalvarConfiguracaoAgendaCommand {
   chaveGoogleServiceAccountJson?: string;
   googleClientId?: string;
   googleClientSecret?: string;
-  tipoIntegracao?: 'OAuth' | 'ServiceAccount' | 'Nenhum';
+  tipoIntegracao?: "OAuth" | "ServiceAccount" | "Nenhum";
   nomeAgenda: string;
   sincronizacaoAutomaticaAtiva: boolean;
 }
@@ -111,4 +113,3 @@ export interface OAuthUrlResponse {
   url: string;
   state: string;
 }
-

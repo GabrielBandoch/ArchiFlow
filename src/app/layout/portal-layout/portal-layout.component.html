@@ -24,12 +24,17 @@
         <div class="user-chip">
           <div class="avatar">{{ userInitials }}</div>
           <div class="user-details">
-            <span class="user-name">{{ currentUser?.nome || 'Cliente' }}</span>
+            <span class="user-name">{{ currentUser?.nome || "Cliente" }}</span>
             <span class="user-role">Acesso Exclusivo</span>
           </div>
         </div>
 
-        <button type="button" class="btn-logout" (click)="onLogout()" title="Sair da conta">
+        <button
+          type="button"
+          class="btn-logout"
+          (click)="onLogout()"
+          title="Sair da conta"
+        >
           <span class="material-symbols-outlined">logout</span>
           <span class="logout-text">Sair</span>
         </button>
@@ -46,10 +51,14 @@
   <footer class="portal-footer">
     <div class="footer-container">
       <div class="footer-left">
-        <p>&copy; 2026 COTU. Plataforma de Gestão de Projetos e Relacionamento.</p>
+        <p>
+          &copy; 2026 COTU. Plataforma de Gestão de Projetos e Relacionamento.
+        </p>
       </div>
       <div class="footer-right">
-        <span>Gestão por <strong>{{ nomeEscritorio }}</strong></span>
+        <span
+          >Gestão por <strong>{{ nomeEscritorio }}</strong></span
+        >
       </div>
     </div>
   </footer>

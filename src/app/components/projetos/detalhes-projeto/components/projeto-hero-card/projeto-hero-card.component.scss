@@ -3,13 +3,14 @@
   border: 1px solid var(--color-border-subtle, #f0ede8);
   border-radius: var(--radius-lg, 12px);
   padding: var(--space-xl, 24px);
-  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.05));
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
 
   .hero-main-info {
     min-width: 280px;
 
     .hero-badge-row {
-      .status-pill, .tipo-pill {
+      .status-pill,
+      .tipo-pill {
         display: inline-flex;
         align-items: center;
         padding: 4px 10px;
@@ -33,7 +34,8 @@
           color: #c5221f;
         }
 
-        &.status-desenvolvimento, &.status-execucao {
+        &.status-desenvolvimento,
+        &.status-execucao {
           background: #e8f0fe;
           color: #1a73e8;
         }
