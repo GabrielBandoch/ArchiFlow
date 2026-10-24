@@ -202,6 +202,28 @@
   border-radius: var(--af-radius-default);
 }
 
+.btn-quick-check {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--af-outline);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  .icon-check {
+    font-size: 18px;
+  }
+
+  &:hover {
+    color: #2e7d32;
+    transform: scale(1.15);
+  }
+}
+
 .link-action {
   color: var(--af-primary);
   text-decoration: none;

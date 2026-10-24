@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ProjetoFornecedor, Fornecedor, VincularProjetoCommand } from '../../../../../models/fornecedor.model';
 import { FornecedorService } from '../../../../../core/api/fornecedores/fornecedor.service';
@@ -12,6 +12,7 @@ import { EmptyStateComponent } from '../../../../../shared/components/empty-stat
 import { DialogComponent } from '../../../../../shared/components/dialog/dialog.component';
 import { SelectComponent, SelectOption } from '../../../../../shared/components/select/select.component';
 import { InputComponent } from '../../../../../shared/components/input/input.component';
+import { FornecedorSearchComponent } from '../../../../../shared/components/fornecedor-search/fornecedor-search.component';
 import { WhatsAppButtonComponent } from '../../../../../shared/components/whatsapp-button/whatsapp-button.component';
 import { PhoneMaskPipe } from '../../../../../core/pipes/phone-mask.pipe';
 import { ProjetoFornecedoresForm } from './projeto-fornecedores.form';
@@ -30,6 +31,7 @@ import { ProjetoFornecedoresForm } from './projeto-fornecedores.form';
     DialogComponent,
     SelectComponent,
     InputComponent,
+    FornecedorSearchComponent,
     WhatsAppButtonComponent,
     PhoneMaskPipe
   ],
@@ -73,14 +75,16 @@ export class ProjetoFornecedoresComponent implements OnInit {
     });
   }
 
+  get fornecedoresDisponiveis(): Fornecedor[] {
+    const vinculadosIds = new Set((this.fornecedoresVinculados || []).map(v => v.fornecedorId));
+    return (this.todosFornecedores || []).filter(f => !vinculadosIds.has(f.id));
+  }
+
   get fornecedoresOptions(): SelectOption[] {
-    const vinculadosIds = new Set(this.fornecedoresVinculados.map(v => v.fornecedorId));
-    return this.todosFornecedores
-      .filter(f => !vinculadosIds.has(f.id))
-      .map(f => ({
-        value: f.id,
-        label: `${f.nome} (${f.especialidade})`
-      }));
+    return this.fornecedoresDisponiveis.map(f => ({
+      value: f.id,
+      label: `${f.nome} (${f.especialidade})`
+    }));
   }
 
   abrirModalVincular(): void {
@@ -89,6 +93,7 @@ export class ProjetoFornecedoresComponent implements OnInit {
       fornecedorId: '',
       funcaoNoProjeto: ''
     });
+    this.carregarTodosFornecedores();
     this.modalVincularAberto = true;
   }
 

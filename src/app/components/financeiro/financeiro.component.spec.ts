@@ -70,7 +70,8 @@ describe('FinanceiroComponent', () => {
       'obterDespesas',
       'obterParcelaPorId',
       'excluirParcela',
-      'excluirDespesa'
+      'excluirDespesa',
+      'alternarPagamentoDespesa'
     ]);
     projetoServiceSpy = jasmine.createSpyObj('ProjetoService', ['obterTodos']);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'warning']);

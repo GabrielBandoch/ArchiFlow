@@ -119,26 +119,35 @@
                   <span class="material-symbols-outlined">receipt_long</span>
                   <h3 class="font-headline-sm m-0">Contas a Pagar na Semana</h3>
                 </div>
-                <span class="badge-danger font-label-xs">{{ contasPagarSemana.length }} despesa(s)</span>
+                <span class="badge-danger font-label-xs">{{ contasPagarSemana.length }} pendente(s)</span>
               </div>
 
               <div>
-                <span class="font-label-sm text-on-surface-variant d-block">Total a Pagar Esta Semana</span>
+                <span class="font-label-sm text-on-surface-variant d-block">Total Pendente Esta Semana</span>
                 <span class="font-headline-md font-weight-bold text-danger">{{ formatarMoeda(totalPagarSemana) }}</span>
               </div>
 
               <div *ngIf="contasPagarSemana.length > 0" class="mini-finance-list d-flex flex-direction-column gap-xs">
                 <div *ngFor="let desp of contasPagarSemana.slice(0, 4)" class="mini-finance-item d-flex align-items-center justify-content-between p-xs">
-                  <div>
-                    <span class="font-body-xs font-weight-semibold d-block text-on-surface">{{ desp.descricao }}</span>
-                    <span class="font-label-xs text-on-surface-variant">{{ desp.categoriaNome || 'Despesa' }} • Vence: {{ formatarData(desp.dataDespesa) }}</span>
+                  <div class="d-flex align-items-center gap-xs min-w-0">
+                    <button
+                      type="button"
+                      class="btn-quick-check"
+                      (click)="marcarDespesaPaga(desp)"
+                      title="Marcar como já paga">
+                      <span class="material-symbols-outlined icon-check">check_circle</span>
+                    </button>
+                    <div class="min-w-0">
+                      <span class="font-body-xs font-weight-semibold d-block text-on-surface truncate">{{ desp.descricao }}</span>
+                      <span class="font-label-xs text-on-surface-variant">{{ desp.projetoNome || 'Despesa Geral' }} • Vence: {{ formatarData(desp.dataDespesa) }}</span>
+                    </div>
                   </div>
                   <strong class="font-body-xs text-danger">{{ formatarMoeda(desp.valor) }}</strong>
                 </div>
               </div>
 
               <div *ngIf="contasPagarSemana.length === 0" class="mini-empty-finance font-body-xs text-on-surface-variant p-sm text-center">
-                Nenhuma conta ou despesa vencendo nesta semana.
+                Nenhuma conta ou despesa pendente para esta semana.
               </div>
 
               <div class="margin-top-auto pt-xs border-top d-flex justify-content-end">

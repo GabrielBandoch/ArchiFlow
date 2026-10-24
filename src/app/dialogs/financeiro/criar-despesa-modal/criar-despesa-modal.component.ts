@@ -185,14 +185,16 @@ export class CriarDespesaModalComponent implements OnInit {
     }
 
     const command: CriarDespesaCommand = {
-      projetoId: val.projetoId || this.projetos[0]?.id || '',
+      projetoId: val.projetoId ? val.projetoId : undefined,
       fornecedorId: val.fornecedorId || undefined,
       descricao: val.descricao,
       valor: Number(val.valor),
       dataDespesa: new Date(val.dataDespesa).toISOString(),
       categoria: val.categoria,
       observacoes: obs || undefined,
-      comprovanteUrl: comprovanteUrl || undefined
+      comprovanteUrl: comprovanteUrl || undefined,
+      pago: !!val.pago,
+      dataPagamento: val.pago ? (val.dataPagamento ? new Date(val.dataPagamento).toISOString() : new Date().toISOString()) : undefined
     };
 
     this.financeiroService.criarDespesa(command).subscribe({

@@ -21,7 +21,8 @@ describe('FinanceiroTabelaDespesasComponent', () => {
       dataDespesa: '2026-10-01',
       categoria: CategoriaDespesa.PlotagemImpressao,
       categoriaNome: 'PlotagemImpressao',
-      criadoEm: '2026-09-01'
+      criadoEm: '2026-09-01',
+      pago: false
     },
     {
       id: 'd2',
@@ -32,7 +33,8 @@ describe('FinanceiroTabelaDespesasComponent', () => {
       dataDespesa: '2026-10-05',
       categoria: CategoriaDespesa.TaxasPrefeitura,
       categoriaNome: 'TaxasPrefeitura',
-      criadoEm: '2026-09-01'
+      criadoEm: '2026-09-01',
+      pago: true
     }
   ];
 
@@ -65,6 +67,12 @@ describe('FinanceiroTabelaDespesasComponent', () => {
     spyOn(component.excluir, 'emit');
     component.onExcluir('d1');
     expect(component.excluir.emit).toHaveBeenCalledWith('d1');
+  });
+
+  it('should emit alternarPagamento event', () => {
+    spyOn(component.alternarPagamento, 'emit');
+    component.onAlternarPagamento(mockDespesas[0]);
+    expect(component.alternarPagamento.emit).toHaveBeenCalledWith(mockDespesas[0]);
   });
 });
 

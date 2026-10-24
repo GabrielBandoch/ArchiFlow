@@ -162,6 +162,16 @@ export class FinanceiroService {
     return this.http.put<DespesaProjeto>(url, command);
   }
 
+  alternarPagamentoDespesa(id: string, pago?: boolean, dataPagamento?: string): Observable<DespesaProjeto> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('financeiro')
+      .segment('despesas')
+      .segment(id)
+      .segment('pagamento')
+      .build();
+    return this.http.patch<DespesaProjeto>(url, { pago, dataPagamento });
+  }
+
   excluirDespesa(id: string): Observable<void> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment('financeiro')

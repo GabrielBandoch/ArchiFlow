@@ -27,7 +27,7 @@ export enum CategoriaDespesa {
 
 export interface ParcelaFinanceira {
   id: string;
-  projetoId: string;
+  projetoId?: string;
   projetoNome: string;
   clienteId?: string;
   clienteNome?: string;
@@ -49,7 +49,7 @@ export interface ParcelaFinanceira {
 
 export interface ContratoFinanceiro {
   id: string;
-  projetoId: string;
+  projetoId?: string;
   projetoNome: string;
   valorTotal: number;
   condicoesPagamento?: string;
@@ -60,7 +60,7 @@ export interface ContratoFinanceiro {
 
 export interface DespesaProjeto {
   id: string;
-  projetoId: string;
+  projetoId?: string;
   projetoNome: string;
   descricao: string;
   valor: number;
@@ -70,6 +70,8 @@ export interface DespesaProjeto {
   observacoes?: string;
   comprovanteUrl?: string;
   criadoEm: string;
+  pago: boolean;
+  dataPagamento?: string;
 }
 
 export interface ReceitaMes {
@@ -83,7 +85,7 @@ export interface ReceitaMes {
 
 export interface AlertaFinanceiro {
   parcelaId: string;
-  projetoId: string;
+  projetoId?: string;
   titulo: string;
   subtitulo: string;
   valor: number;

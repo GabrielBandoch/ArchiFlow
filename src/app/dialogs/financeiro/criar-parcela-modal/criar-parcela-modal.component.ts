@@ -95,7 +95,7 @@ export class CriarParcelaModalComponent implements OnInit {
     const val = this.formAvulsa.value;
 
     const command: CriarParcelaCommand = {
-      projetoId: val.projetoId,
+      projetoId: val.projetoId ? val.projetoId : undefined,
       numeroParcela: Number(val.numeroParcela),
       totalParcelas: Number(val.totalParcelas),
       descricao: val.descricao,
@@ -129,7 +129,7 @@ export class CriarParcelaModalComponent implements OnInit {
     const val = this.formContrato.value;
 
     const command: CriarContratoCommand = {
-      projetoId: val.projetoId,
+      projetoId: val.projetoId ? val.projetoId : undefined,
       valorTotal: Number(val.valorTotal),
       numeroParcelas: Number(val.numeroParcelas),
       dataPrimeiroVencimento: new Date(val.dataPrimeiroVencimento).toISOString(),

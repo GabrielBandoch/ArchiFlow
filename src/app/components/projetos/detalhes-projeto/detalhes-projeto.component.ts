@@ -343,6 +343,45 @@ export class DetalhesProjetoComponent implements OnInit {
     this.alterarStatusEtapa(event.etapa, event.status);
   }
 
+  onEtapaDatasAlteradas(event: { 
+    etapa: EtapaProjeto; 
+    dataFimPrevista?: string | null; 
+    dataConclusao?: string | null;
+    limparDataFimPrevista?: boolean;
+    limparDataConclusao?: boolean;
+  }): void {
+    this.projetoService.atualizarDatasEtapa(
+      event.etapa.id, 
+      event.dataFimPrevista, 
+      event.dataConclusao, 
+      event.limparDataFimPrevista, 
+      event.limparDataConclusao
+    ).subscribe({
+      next: (atualizada) => {
+        event.etapa.dataFimPrevista = atualizada.dataFimPrevista;
+        event.etapa.dataConclusao = atualizada.dataConclusao;
+        this.notificationService.success('Datas da fase atualizadas com sucesso!');
+      },
+      error: (err) => {
+        console.error('Erro ao atualizar datas da fase', err);
+        this.notificationService.error('Não foi possível atualizar as datas da fase.');
+      }
+    });
+  }
+
+  onTarefaPrazoAlterado(event: { etapa: EtapaProjeto; tarefa: TarefaEtapa; dataLimite?: string | null }): void {
+    this.projetoService.atualizarPrazoTarefa(event.tarefa.id, event.dataLimite).subscribe({
+      next: (atualizada) => {
+        event.tarefa.dataLimite = atualizada.dataLimite;
+        this.notificationService.success('Prazo do entregável atualizado!');
+      },
+      error: (err) => {
+        console.error('Erro ao atualizar prazo do entregável', err);
+        this.notificationService.error('Não foi possível atualizar o prazo do entregável.');
+      }
+    });
+  }
+
   onTarefaToggled(event: { etapa: EtapaProjeto; tarefa: TarefaEtapa }): void {
     this.toggleTarefa(event.etapa, event.tarefa);
   }

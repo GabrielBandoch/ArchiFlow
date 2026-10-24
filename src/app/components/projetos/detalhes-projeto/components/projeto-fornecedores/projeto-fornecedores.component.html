@@ -65,23 +65,23 @@
 <app-dialog
   [show]="modalVincularAberto"
   dialogTitle="Vincular Parceiro à Obra"
-  size="sm"
+  size="md"
   [overflowVisible]="true"
   (close)="fecharModalVincular()">
 
   <form [formGroup]="form" (ngSubmit)="salvarVinculo()" class="d-flex flex-direction-column gap-md">
     <div class="field-item">
-      <app-select
+      <app-fornecedor-search
         id="fornecedorId"
-        label="Selecione o Parceiro Especializado"
-        [options]="fornecedoresOptions"
+        label="Parceiro Especializado"
+        placeholder="Buscar parceiro por nome ou especialidade..."
+        [fornecedores]="fornecedoresDisponiveis"
         formControlName="fornecedorId"
-        placeholder="Selecione um parceiro..."
         [required]="true"
         [error]="submitted && f['fornecedorId'].errors ? 'Selecione um parceiro cadastrado.' : undefined">
-      </app-select>
-      <span class="font-label-xs text-on-surface-variant margin-top-xxs" *ngIf="fornecedoresOptions.length === 0">
-        Não há outros parceiros disponíveis. Cadastre novos na aba Fornecedores.
+      </app-fornecedor-search>
+      <span class="font-label-xs text-on-surface-variant margin-top-xxs" *ngIf="fornecedoresDisponiveis.length === 0">
+        Não há outros parceiros disponíveis para vínculo. Cadastre novos na aba Fornecedores.
       </span>
     </div>
 
@@ -101,7 +101,7 @@
       <app-button variant="ghost" type="button" (btnClick)="fecharModalVincular()" [disabled]="salvando">
         Cancelar
       </app-button>
-      <app-button variant="primary" type="submit" [disabled]="salvando || fornecedoresOptions.length === 0">
+      <app-button variant="primary" type="submit" [disabled]="salvando || fornecedoresDisponiveis.length === 0">
         <span class="material-symbols-outlined icon-btn-inline" *ngIf="!salvando">add_link</span>
         <span class="material-symbols-outlined icon-btn-inline spinner-icon" *ngIf="salvando">progress_activity</span>
         {{ salvando ? 'Vinculando...' : 'Confirmar Vínculo' }}

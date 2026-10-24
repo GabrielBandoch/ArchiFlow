@@ -11,7 +11,7 @@
       [error]="submitted && f['nome'].errors ? 'O nome da etapa é obrigatório.' : undefined">
     </app-input>
 
-    <div class="d-flex gap-md">
+    <div class="d-flex gap-md flex-wrap">
       <div class="flex-grow-0" style="width: 140px;">
         <app-input 
           id="ordemEtapa" 
@@ -21,16 +21,23 @@
         </app-input>
       </div>
 
-      <div class="flex-grow-1">
+      <div class="flex-grow-1" style="min-width: 200px;">
         <app-input 
-          id="descEtapa" 
-          type="text" 
-          label="Descrição / Entregáveis da Etapa" 
-          placeholder="Ex: Emissão das pranchas legais..." 
-          formControlName="descricao">
+          id="dataFimPrevistaEtapa" 
+          type="date" 
+          label="Previsão de Entrega (Opcional)" 
+          formControlName="dataFimPrevista">
         </app-input>
       </div>
     </div>
+
+    <app-input 
+      id="descEtapa" 
+      type="text" 
+      label="Descrição / Entregáveis da Etapa" 
+      placeholder="Ex: Emissão das pranchas legais..." 
+      formControlName="descricao">
+    </app-input>
 
     <div dialog-footer class="d-flex justify-content-end gap-sm">
       <app-button variant="secondary" (btnClick)="onClose()">Cancelar</app-button>

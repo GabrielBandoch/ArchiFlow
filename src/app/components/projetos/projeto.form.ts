@@ -31,7 +31,8 @@ export class ProjetoForm {
     return fb.group({
       nome: ['', [Validators.required, Validators.maxLength(100)]],
       descricao: ['', [Validators.maxLength(300)]],
-      ordem: [nextOrder, [Validators.required, Validators.min(1)]]
+      ordem: [nextOrder, [Validators.required, Validators.min(1)]],
+      dataFimPrevista: ['']
     });
   }
 }

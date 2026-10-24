@@ -56,9 +56,11 @@
         [etapaAtiva]="etapaAtiva"
         (novaEtapaSolicitada)="abrirModalNovaEtapa()"
         (etapaStatusAlterado)="onEtapaStatusAlterado($event)"
+        (etapaDatasAlteradas)="onEtapaDatasAlteradas($event)"
         (tarefaToggled)="onTarefaToggled($event)"
         (tarefaAdicionada)="onTarefaAdicionada($event)"
-        (tarefaRemovida)="onTarefaRemovida($event)">
+        (tarefaRemovida)="onTarefaRemovida($event)"
+        (tarefaPrazoAlterado)="onTarefaPrazoAlterado($event)">
       </app-projeto-etapas>
 
       <app-projeto-arquivos

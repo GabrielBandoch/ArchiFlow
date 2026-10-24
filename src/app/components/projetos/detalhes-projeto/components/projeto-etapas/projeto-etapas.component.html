@@ -2,7 +2,7 @@
   <div class="panel-top-bar d-flex justify-content-between align-items-center flex-wrap gap-sm">
     <div>
       <h2 class="panel-heading font-headline-md m-0">Etapas do Projeto</h2>
-      <p class="panel-subheading font-label-sm text-on-surface-variant margin-top-xs m-0">Acompanhamento sequencial das fases arquitetônicas.</p>
+      <p class="panel-subheading font-label-sm text-on-surface-variant margin-top-xs m-0">Acompanhamento sequencial das fases arquitetônicas e prazos de entrega.</p>
     </div>
 
     <button type="button" class="btn-add-etapa d-inline-flex align-items-center gap-xs font-label-sm" (click)="onNovaEtapa()">
@@ -73,17 +73,69 @@
             <span *ngIf="etapa.status === StatusEtapa.Concluida" class="material-symbols-outlined">check</span>
           </div>
           <div class="etapa-info-text d-flex flex-direction-column gap-xs">
-            <div class="etapa-title-row d-flex align-items-center gap-xs">
+            <div class="etapa-title-row d-flex align-items-center gap-xs flex-wrap">
               <h3 class="etapa-name-heading font-body-lg font-weight-bold m-0">{{ etapa.nome }}</h3>
               <span class="etapa-pill font-label-sm" [class]="'pill-' + etapa.statusLabel.toLowerCase()">
                 {{ etapa.statusLabel }}
               </span>
             </div>
             <p class="etapa-desc-text font-body-md text-on-surface-variant m-0" *ngIf="etapa.descricao">{{ etapa.descricao }}</p>
-            <span class="etapa-conclusao-tag d-inline-flex align-items-center gap-xs font-label-sm text-on-surface-variant" *ngIf="etapa.dataConclusao">
-              <span class="material-symbols-outlined">event_available</span>
-              Concluída em {{ etapa.dataConclusao | date:'dd/MM/yyyy HH:mm' }}
-            </span>
+
+            <!-- Linha de Datas da Fase (Previsão de Entrega & Data de Conclusão) -->
+            <div class="etapa-dates-row d-flex align-items-center flex-wrap gap-xs margin-top-xs">
+              
+              <!-- Badge Prazo/Previsão de Entrega da Fase -->
+              <div class="date-chip-item d-inline-flex align-items-center" *ngIf="editingPrevisaoEtapaId !== etapa.id">
+                <div class="chip-content d-inline-flex align-items-center gap-xxs" 
+                     [class.has-date]="!!etapa.dataFimPrevista"
+                     (click)="abrirEdicaoPrevisaoEtapa(etapa, $event)"
+                     title="Clique para definir ou alterar o prazo de entrega desta fase">
+                  <span class="material-symbols-outlined date-icon">event</span>
+                  <span class="date-label" *ngIf="etapa.dataFimPrevista">
+                    <strong>Prazo:</strong> {{ etapa.dataFimPrevista | date:'dd/MM/yyyy' }}
+                  </span>
+                  <span class="date-label text-muted" *ngIf="!etapa.dataFimPrevista">
+                    + Definir prazo da fase
+                  </span>
+                  <span class="material-symbols-outlined edit-hint-icon">edit_calendar</span>
+                </div>
+              </div>
+
+              <!-- Editor inline do Prazo de Entrega da Fase -->
+              <div class="date-editor-inline d-inline-flex align-items-center gap-xxs" *ngIf="editingPrevisaoEtapaId === etapa.id" (click)="$event.stopPropagation()">
+                <span class="font-label-xs font-weight-bold text-primary">Prazo:</span>
+                <input type="date" class="input-date-mini" [value]="formatarDataParaInput(etapa.dataFimPrevista)" (change)="salvarPrevisaoEtapa(etapa, $event)" />
+                <button type="button" class="btn-clear-date" *ngIf="etapa.dataFimPrevista" (click)="limparPrevisaoEtapa(etapa)" title="Remover prazo">
+                  <span class="material-symbols-outlined">delete_sweep</span>
+                </button>
+                <button type="button" class="btn-close-date" (click)="cancelarEdicaoDatas()" title="Fechar">
+                  <span class="material-symbols-outlined">close</span>
+                </button>
+              </div>
+
+              <!-- Badge Data de Conclusão (quando concluída) -->
+              <div class="date-chip-item d-inline-flex align-items-center" *ngIf="etapa.status === StatusEtapa.Concluida && editingConclusaoEtapaId !== etapa.id">
+                <div class="chip-content chip-concluida d-inline-flex align-items-center gap-xxs"
+                     (click)="abrirEdicaoConclusaoEtapa(etapa, $event)"
+                     title="Clique para alterar a data real em que esta fase foi concluída">
+                  <span class="material-symbols-outlined date-icon text-success">event_available</span>
+                  <span class="date-label">
+                    Concluída em <strong>{{ (etapa.dataConclusao | date:'dd/MM/yyyy') || 'Data não definida' }}</strong>
+                  </span>
+                  <span class="material-symbols-outlined edit-hint-icon">edit</span>
+                </div>
+              </div>
+
+              <!-- Editor inline da Data de Conclusão -->
+              <div class="date-editor-inline d-inline-flex align-items-center gap-xxs" *ngIf="editingConclusaoEtapaId === etapa.id" (click)="$event.stopPropagation()">
+                <span class="font-label-xs font-weight-bold text-success">Conclusão:</span>
+                <input type="date" class="input-date-mini" [value]="formatarDataParaInput(etapa.dataConclusao)" (change)="salvarConclusaoEtapa(etapa, $event)" />
+                <button type="button" class="btn-close-date" (click)="cancelarEdicaoDatas()" title="Fechar">
+                  <span class="material-symbols-outlined">close</span>
+                </button>
+              </div>
+
+            </div>
           </div>
         </div>
 
@@ -140,7 +192,37 @@
             <div class="custom-checkbox d-flex align-items-center justify-content-center" [class.checked]="tarefa.concluida">
               <span class="material-symbols-outlined" *ngIf="tarefa.concluida">check</span>
             </div>
+            
             <span class="task-title-text font-body-md flex-grow-1">{{ tarefa.titulo }}</span>
+
+            <!-- Prazo do Entregável -->
+            <div class="task-prazo-wrap" (click)="$event.stopPropagation()">
+              <div *ngIf="editingPrazoTarefaId !== tarefa.id"
+                   class="task-prazo-chip d-inline-flex align-items-center gap-xxs"
+                   [class.has-prazo]="!!tarefa.dataLimite"
+                   (click)="abrirEdicaoPrazoTarefa(tarefa, $event)"
+                   title="Clique para definir ou alterar o prazo deste entregável">
+                <span class="material-symbols-outlined prazo-icon">schedule</span>
+                <span class="prazo-text" *ngIf="tarefa.dataLimite">
+                  Prazo: {{ tarefa.dataLimite | date:'dd/MM/yyyy' }}
+                </span>
+                <span class="prazo-text text-muted" *ngIf="!tarefa.dataLimite">
+                  + Prazo
+                </span>
+              </div>
+
+              <!-- Editor inline de Prazo da Tarefa -->
+              <div *ngIf="editingPrazoTarefaId === tarefa.id" class="task-prazo-editor d-inline-flex align-items-center gap-xxs">
+                <input type="date" class="input-task-prazo" [value]="formatarDataParaInput(tarefa.dataLimite)" (change)="salvarPrazoTarefa(etapa, tarefa, $event)" />
+                <button type="button" class="btn-mini-action" *ngIf="tarefa.dataLimite" (click)="limparPrazoTarefa(etapa, tarefa)" title="Remover prazo">
+                  <span class="material-symbols-outlined">delete_sweep</span>
+                </button>
+                <button type="button" class="btn-mini-action" (click)="cancelarEdicaoPrazoTarefa()" title="Fechar">
+                  <span class="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            </div>
+
             <button 
               type="button" 
               class="btn-remove-task d-inline-flex align-items-center justify-content-center" 

@@ -110,4 +110,24 @@ describe('CriarDespesaModalComponent', () => {
     expect(financeiroServiceSpy.excluirComprovante).toHaveBeenCalledWith('https://s3.amazonaws.com/recibo.pdf');
     expect(notificationServiceSpy.error).toHaveBeenCalledWith('Erro ao salvar despesa');
   });
+
+  it('deve registrar despesa sem projeto vinculado com projetoId undefined e respeitar status pago', () => {
+    component.form.patchValue({
+      projetoId: '',
+      descricao: 'Café do escritório',
+      valor: 50,
+      dataDespesa: '2026-10-01',
+      categoria: CategoriaDespesa.Outros,
+      pago: true
+    });
+
+    component.onSubmit();
+
+    expect(financeiroServiceSpy.criarDespesa).toHaveBeenCalledWith(jasmine.objectContaining({
+      projetoId: undefined,
+      descricao: 'Café do escritório',
+      valor: 50,
+      pago: true
+    }));
+  });
 });

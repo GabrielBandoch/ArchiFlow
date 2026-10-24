@@ -16,9 +16,11 @@ export class FinanceiroTabelaDespesasComponent {
   @Input() despesas: DespesaProjeto[] = [];
   @Output() excluir = new EventEmitter<string>();
   @Output() novaDespesa = new EventEmitter<void>();
+  @Output() alternarPagamento = new EventEmitter<DespesaProjeto>();
 
   busca = '';
   filtroCategoria: string = 'todas';
+  filtroStatus: 'todas' | 'pagas' | 'pendentes' = 'todas';
   paginaAtual = 1;
   itensPorPagina = 8;
 
@@ -37,6 +39,12 @@ export class FinanceiroTabelaDespesasComponent {
 
     if (this.filtroCategoria !== 'todas') {
       lista = lista.filter(d => d.categoria === this.filtroCategoria || d.categoriaNome === this.filtroCategoria);
+    }
+
+    if (this.filtroStatus === 'pagas') {
+      lista = lista.filter(d => d.pago);
+    } else if (this.filtroStatus === 'pendentes') {
+      lista = lista.filter(d => !d.pago);
     }
 
     if (this.busca.trim()) {
@@ -68,6 +76,11 @@ export class FinanceiroTabelaDespesasComponent {
     this.paginaAtual = 1;
   }
 
+  setStatus(status: 'todas' | 'pagas' | 'pendentes'): void {
+    this.filtroStatus = status;
+    this.paginaAtual = 1;
+  }
+
   mudarPagina(delta: number): void {
     const nova = this.paginaAtual + delta;
     if (nova >= 1 && nova <= this.totalPaginas) {
@@ -85,5 +98,9 @@ export class FinanceiroTabelaDespesasComponent {
 
   onNovaDespesa(): void {
     this.novaDespesa.emit();
+  }
+
+  onAlternarPagamento(d: DespesaProjeto): void {
+    this.alternarPagamento.emit(d);
   }
 }

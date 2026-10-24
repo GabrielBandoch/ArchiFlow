@@ -26,6 +26,7 @@ export interface TarefaEtapa {
   etapaId: string;
   titulo: string;
   concluida: boolean;
+  dataLimite?: string;
 }
 
 export interface EtapaProjeto {

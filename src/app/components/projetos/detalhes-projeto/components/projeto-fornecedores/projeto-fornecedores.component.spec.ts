@@ -81,7 +81,7 @@ describe('ProjetoFornecedoresComponent', () => {
     expect(component.modalVincularAberto).toBeFalse();
   });
 
-  it('deve filtrar fornecedores já vinculados nas opções do select', () => {
+  it('deve filtrar fornecedores já vinculados nas opções e na lista disponível', () => {
     component.fornecedoresVinculados = [
       { id: 'v-1', fornecedorId: 'f-1', projetoId: 'proj-1', funcaoNoProjeto: 'Móveis', dataVinculo: '2026-10-01' }
     ];
@@ -89,6 +89,10 @@ describe('ProjetoFornecedoresComponent', () => {
     const options = component.fornecedoresOptions;
     expect(options.length).toBe(1);
     expect(options[0].value).toBe('f-2');
+
+    const disponiveis = component.fornecedoresDisponiveis;
+    expect(disponiveis.length).toBe(1);
+    expect(disponiveis[0].id).toBe('f-2');
   });
 
   it('não deve salvar vínculo se formulário for inválido', () => {

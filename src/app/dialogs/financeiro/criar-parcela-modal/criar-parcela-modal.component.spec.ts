@@ -57,4 +57,22 @@ describe('CriarParcelaModalComponent', () => {
     component.onSubmit();
     expect(financeiroServiceSpy.registrarParcela).toHaveBeenCalled();
   });
+
+  it('should submit single installment without project', () => {
+    component.formAvulsa.patchValue({
+      projetoId: '',
+      descricao: 'Honorário Avulso Sem Projeto',
+      valor: 2000,
+      dataVencimento: '2026-10-01',
+      numeroParcela: 1,
+      totalParcelas: 1
+    });
+
+    component.onSubmit();
+    expect(financeiroServiceSpy.registrarParcela).toHaveBeenCalledWith(jasmine.objectContaining({
+      projetoId: undefined,
+      descricao: 'Honorário Avulso Sem Projeto',
+      valor: 2000
+    }));
+  });
 });

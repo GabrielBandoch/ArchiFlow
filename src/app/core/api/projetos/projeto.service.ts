@@ -3,7 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Projeto, EtapaProjeto, StatusProjeto, StatusEtapa, TarefaEtapa } from '../../../models/projeto.model';
-import { CriarProjetoCommand, AtualizarProjetoCommand, AtualizarStatusProjetoCommand, CriarEtapaCommand, AtualizarStatusEtapaCommand } from '../../../commands/projeto.commands';
+import { 
+  CriarProjetoCommand, 
+  AtualizarProjetoCommand, 
+  AtualizarStatusProjetoCommand, 
+  CriarEtapaCommand, 
+  AtualizarStatusEtapaCommand,
+  AtualizarDatasEtapaCommand,
+  AdicionarTarefaCommand,
+  AtualizarPrazoTarefaCommand
+} from '../../../commands/projeto.commands';
 import { RepresentanteCliente } from '../../../models/cliente.model';
 import { ConvidarRepresentanteCommand } from '../../../commands/cliente.commands';
 import { UrlBuilder } from '../../utils/url-builder';
@@ -63,7 +72,7 @@ export class ProjetoService {
     return this.http.post<EtapaProjeto>(url, command);
   }
 
-  atualizarStatusEtapa(etapaId: string, status: StatusEtapa): Observable<EtapaProjeto> {
+  atualizarStatusEtapa(etapaId: string, status: StatusEtapa, dataConclusao?: string | null): Observable<EtapaProjeto> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment('projetos')
       .segment('etapas')
@@ -71,17 +80,43 @@ export class ProjetoService {
       .segment('status')
       .build();
     const command: AtualizarStatusEtapaCommand = { etapaId, status };
+    if (dataConclusao) {
+      command.dataConclusao = dataConclusao;
+    }
     return this.http.patch<EtapaProjeto>(url, command);
   }
 
-  adicionarTarefa(etapaId: string, titulo: string): Observable<TarefaEtapa> {
+  atualizarDatasEtapa(
+    etapaId: string, 
+    dataFimPrevista?: string | null, 
+    dataConclusao?: string | null,
+    limparDataFimPrevista = false,
+    limparDataConclusao = false
+  ): Observable<EtapaProjeto> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('projetos')
+      .segment('etapas')
+      .segment(etapaId)
+      .segment('datas')
+      .build();
+    const command: AtualizarDatasEtapaCommand = {
+      etapaId,
+      dataFimPrevista: dataFimPrevista || null,
+      dataConclusao: dataConclusao || null,
+      limparDataFimPrevista,
+      limparDataConclusao
+    };
+    return this.http.patch<EtapaProjeto>(url, command);
+  }
+
+  adicionarTarefa(etapaId: string, titulo: string, dataLimite?: string | null): Observable<TarefaEtapa> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment('projetos')
       .segment('etapas')
       .segment(etapaId)
       .segment('tarefas')
       .build();
-    return this.http.post<TarefaEtapa>(url, { etapaId, titulo });
+    return this.http.post<TarefaEtapa>(url, { etapaId, titulo, dataLimite: dataLimite || null });
   }
 
   alternarTarefa(tarefaId: string): Observable<TarefaEtapa> {
@@ -93,6 +128,21 @@ export class ProjetoService {
       .segment('toggle')
       .build();
     return this.http.patch<TarefaEtapa>(url, {});
+  }
+
+  atualizarPrazoTarefa(tarefaId: string, dataLimite?: string | null): Observable<TarefaEtapa> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment('projetos')
+      .segment('etapas')
+      .segment('tarefas')
+      .segment(tarefaId)
+      .segment('prazo')
+      .build();
+    const command: AtualizarPrazoTarefaCommand = {
+      tarefaId,
+      dataLimite: dataLimite || null
+    };
+    return this.http.patch<TarefaEtapa>(url, command);
   }
 
   removerTarefa(tarefaId: string): Observable<void> {

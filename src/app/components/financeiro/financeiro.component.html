@@ -90,7 +90,8 @@
     <app-financeiro-tabela-despesas
       [despesas]="despesas"
       (excluir)="excluirDespesa($event)"
-      (novaDespesa)="abrirModalNovaDespesa()">
+      (novaDespesa)="abrirModalNovaDespesa()"
+      (alternarPagamento)="alternarPagamentoDespesa($event)">
     </app-financeiro-tabela-despesas>
   </div>
 </div>

@@ -64,6 +64,18 @@
           [required]="true">
         </app-select>
 
+        <div class="d-flex align-items-center gap-sm p-sm rounded border-outline-variant bg-surface-container-low">
+          <input
+            type="checkbox"
+            id="despesaPago"
+            class="form-check-input m-0 cursor-pointer"
+            formControlName="pago"
+          />
+          <label for="despesaPago" class="font-label-md text-on-surface cursor-pointer m-0 select-none">
+            Esta despesa já foi paga
+          </label>
+        </div>
+
         <div class="form-group">
           <label class="form-label font-label-md text-on-surface mb-xs">Comprovante / Recibo (Anexo)</label>
           <input 

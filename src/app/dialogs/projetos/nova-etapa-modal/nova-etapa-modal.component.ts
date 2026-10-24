@@ -59,7 +59,8 @@ export class NovaEtapaModalComponent implements OnInit {
       projetoId: this.projetoId,
       nome: val.nome,
       descricao: val.descricao || '',
-      ordem: Number(val.ordem || 1)
+      ordem: Number(val.ordem || 1),
+      dataFimPrevista: val.dataFimPrevista ? `${val.dataFimPrevista}T12:00:00Z` : undefined
     };
 
     this.projetoService.criarEtapa(this.projetoId, command).subscribe({

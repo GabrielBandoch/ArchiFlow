@@ -1,4 +1,4 @@
-﻿<div class="portal-timeline-wrapper">
+<div class="portal-timeline-wrapper">
   
   <section class="current-phase-card" *ngIf="etapaAtual">
     <div class="card-header-accent">
@@ -21,12 +21,20 @@
           Entregáveis desta etapa
         </h4>
         <div class="deliverables-list">
-          <div *ngFor="let item of etapaAtual.tarefas" class="deliverable-item" [class.completed]="item.concluida">
-            <span class="material-symbols-outlined status-icon">
-              {{ item.concluida ? 'check_circle' : 'radio_button_unchecked' }}
-            </span>
-            <span class="item-title">{{ item.titulo }}</span>
-            <span class="item-badge" *ngIf="item.concluida">Concluído</span>
+          <div *ngFor="let item of etapaAtual.tarefas" class="deliverable-item d-flex align-items-center justify-content-between gap-sm" [class.completed]="item.concluida">
+            <div class="d-flex align-items-center gap-xs flex-grow-1 min-w-0">
+              <span class="material-symbols-outlined status-icon">
+                {{ item.concluida ? 'check_circle' : 'radio_button_unchecked' }}
+              </span>
+              <span class="item-title truncate">{{ item.titulo }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-xs flex-shrink-0">
+              <span class="item-prazo font-label-xs text-secondary d-inline-flex align-items-center gap-xxs" *ngIf="item.dataLimite">
+                <span class="material-symbols-outlined font-size-14">event</span>
+                Prazo: {{ formatarData(item.dataLimite) }}
+              </span>
+              <span class="item-badge" *ngIf="item.concluida">Concluído</span>
+            </div>
           </div>
         </div>
       </div>
@@ -65,12 +73,12 @@
                 {{ etapa.status === StatusEtapa.Concluida ? 'Concluída' : (etapa.status === StatusEtapa.EmAndamento ? 'Em Andamento' : 'Pendente') }}
               </span>
             </div>
-            <div class="step-dates">
-              <span *ngIf="etapa.status === StatusEtapa.Concluida && etapa.dataConclusao" class="date-concluded">
-                Concluída em: {{ formatarData(etapa.dataConclusao) }}
+            <div class="step-dates d-flex flex-direction-column align-items-end gap-xxs">
+              <span *ngIf="etapa.dataFimPrevista" class="date-expected font-label-xs">
+                Prazo: <strong>{{ formatarData(etapa.dataFimPrevista) }}</strong>
               </span>
-              <span *ngIf="etapa.status !== StatusEtapa.Concluida && etapa.dataFimPrevista" class="date-expected">
-                Previsão: {{ formatarData(etapa.dataFimPrevista) }}
+              <span *ngIf="etapa.status === StatusEtapa.Concluida && etapa.dataConclusao" class="date-concluded font-label-xs text-success">
+                Concluída em: <strong>{{ formatarData(etapa.dataConclusao) }}</strong>
               </span>
             </div>
           </div>
@@ -80,11 +88,16 @@
           <div class="step-tasks-preview" *ngIf="etapa.tarefas && etapa.tarefas.length > 0">
             <div class="tasks-header">Entregáveis ({{ etapa.tarefas.length }})</div>
             <div class="tasks-mini-list">
-              <div *ngFor="let t of etapa.tarefas" class="mini-task" [class.done]="t.concluida">
-                <span class="material-symbols-outlined mini-icon">
-                  {{ t.concluida ? 'check_small' : 'circle' }}
+              <div *ngFor="let t of etapa.tarefas" class="mini-task d-flex align-items-center justify-content-between gap-xs" [class.done]="t.concluida">
+                <div class="d-flex align-items-center gap-xxs min-w-0">
+                  <span class="material-symbols-outlined mini-icon">
+                    {{ t.concluida ? 'check_small' : 'circle' }}
+                  </span>
+                  <span class="truncate">{{ t.titulo }}</span>
+                </div>
+                <span class="mini-prazo font-label-xs text-secondary flex-shrink-0" *ngIf="t.dataLimite">
+                  {{ formatarData(t.dataLimite) }}
                 </span>
-                <span>{{ t.titulo }}</span>
               </div>
             </div>
           </div>

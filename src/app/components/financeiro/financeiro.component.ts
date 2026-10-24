@@ -171,6 +171,24 @@ export class FinanceiroComponent implements OnInit {
     });
   }
 
+  alternarPagamentoDespesa(despesa: DespesaProjeto): void {
+    const novoStatus = !despesa.pago;
+    this.financeiroService.alternarPagamentoDespesa(despesa.id, novoStatus).subscribe({
+      next: (atualizada) => {
+        despesa.pago = atualizada.pago;
+        despesa.dataPagamento = atualizada.dataPagamento;
+        this.notificationService.success(
+          atualizada.pago ? 'Despesa marcada como paga!' : 'Despesa marcada como pendente!'
+        );
+        this.carregarDados();
+      },
+      error: (err) => {
+        console.error('Erro ao alternar pagamento da despesa', err);
+        this.notificationService.error('Erro ao atualizar status de pagamento da despesa.');
+      }
+    });
+  }
+
   excluirDespesa(id: string): void {
     this.dialogService.confirm({
       title: 'Excluir Despesa',

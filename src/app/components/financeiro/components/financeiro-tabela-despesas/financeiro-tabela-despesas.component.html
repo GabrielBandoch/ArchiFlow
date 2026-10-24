@@ -41,6 +41,30 @@
           Taxas
         </button>
       </div>
+
+      <div class="filter-tabs d-flex p-xs">
+        <button 
+          type="button" 
+          class="filter-tab font-label-md"
+          [class.active]="filtroStatus === 'todas'"
+          (click)="setStatus('todas')">
+          Todos Status
+        </button>
+        <button 
+          type="button" 
+          class="filter-tab font-label-md"
+          [class.active]="filtroStatus === 'pagas'"
+          (click)="setStatus('pagas')">
+          Pagas
+        </button>
+        <button 
+          type="button" 
+          class="filter-tab font-label-md"
+          [class.active]="filtroStatus === 'pendentes'"
+          (click)="setStatus('pendentes')">
+          Pendentes
+        </button>
+      </div>
     </div>
 
     <div class="d-flex align-items-center gap-sm flex-wrap">
@@ -67,6 +91,7 @@
           <th>Descrição</th>
           <th>Projeto</th>
           <th>Categoria</th>
+          <th>Status</th>
           <th>Data</th>
           <th>Valor</th>
           <th>Comprovante</th>
@@ -82,12 +107,24 @@
             </div>
           </td>
           <td>
-            <span class="font-body-md text-on-surface font-medium">{{ d.projetoNome }}</span>
+            <span class="font-body-md text-on-surface font-medium">{{ d.projetoNome || 'Despesa Geral' }}</span>
           </td>
           <td>
             <span class="badge-cat font-label-sm">
               {{ getCategoriaLabel(d.categoriaNome || d.categoria) }}
             </span>
+          </td>
+          <td>
+            <button
+              type="button"
+              class="badge-status-pago"
+              [class.pago]="d.pago"
+              [class.pendente]="!d.pago"
+              (click)="onAlternarPagamento(d)"
+              [title]="d.pago ? (d.dataPagamento ? ('Pago em ' + (d.dataPagamento | date:'dd/MM/yyyy') + ' - Clique para marcar como pendente') : 'Pago - Clique para marcar como pendente') : 'Pendente - Clique para marcar como pago'">
+              <span class="material-symbols-outlined icon-status">{{ d.pago ? 'check_circle' : 'pending' }}</span>
+              <span>{{ d.pago ? 'Pago' : 'Pendente' }}</span>
+            </button>
           </td>
           <td>
             <span class="font-body-md text-on-surface">{{ d.dataDespesa | date:'dd/MM/yyyy' }}</span>
@@ -105,13 +142,23 @@
             <span *ngIf="!d.comprovanteUrl" class="font-body-md text-on-surface-variant text-sm">-</span>
           </td>
           <td class="text-right">
-            <button 
-              type="button" 
-              class="btn-table-action btn-action-delete" 
-              (click)="onExcluir(d.id)"
-              title="Excluir despesa">
-              <span class="material-symbols-outlined">delete</span>
-            </button>
+            <div class="d-flex align-items-center justify-content-end gap-xs">
+              <button
+                type="button"
+                class="btn-table-action"
+                [class.btn-action-pago]="d.pago"
+                (click)="onAlternarPagamento(d)"
+                [title]="d.pago ? 'Marcar como Pendente' : 'Marcar como Pago'">
+                <span class="material-symbols-outlined">{{ d.pago ? 'check_circle' : 'radio_button_unchecked' }}</span>
+              </button>
+              <button 
+                type="button" 
+                class="btn-table-action btn-action-delete" 
+                (click)="onExcluir(d.id)"
+                title="Excluir despesa">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -153,4 +200,3 @@
     </div>
   </div>
 </div>
-

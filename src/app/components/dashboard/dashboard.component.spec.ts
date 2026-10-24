@@ -103,7 +103,7 @@ describe('DashboardComponent', () => {
     dialogServiceSpy = jasmine.createSpyObj('DialogService', ['open']);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'info']);
     agendaServiceSpy = jasmine.createSpyObj('AgendaService', ['obterProximos', 'obterPorPeriodo']);
-    financeiroServiceSpy = jasmine.createSpyObj('FinanceiroService', ['obterDespesas', 'obterParcelas']);
+    financeiroServiceSpy = jasmine.createSpyObj('FinanceiroService', ['obterDespesas', 'obterParcelas', 'alternarPagamentoDespesa']);
 
     dashboardServiceSpy.obterMetricas.and.returnValue(of(mockMetricas));
     dashboardServiceSpy.obterPreferencias.and.returnValue(of(null));

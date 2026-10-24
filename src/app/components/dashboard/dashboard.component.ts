@@ -105,6 +105,10 @@ export class DashboardComponent implements OnInit {
       }
     });
 
+    this.carregarDadosFinanceiros();
+  }
+
+  carregarDadosFinanceiros(): void {
     const hoje = new Date();
     const diaSemana = hoje.getDay();
     const diffSegunda = hoje.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1);
@@ -119,8 +123,8 @@ export class DashboardComponent implements OnInit {
 
     this.financeiroService.obterDespesas({ inicio: inicioSemana, fim: fimSemana }).subscribe({
       next: (despesas) => {
-        this.contasPagarSemana = despesas;
-        this.totalPagarSemana = despesas.reduce((acc, d) => acc + (d.valor || 0), 0);
+        this.contasPagarSemana = (despesas || []).filter(d => !d.pago);
+        this.totalPagarSemana = this.contasPagarSemana.reduce((acc, d) => acc + (d.valor || 0), 0);
       },
       error: () => {}
     });
@@ -142,6 +146,19 @@ export class DashboardComponent implements OnInit {
       },
       error: () => {
         this.carregandoFinanceiro = false;
+      }
+    });
+  }
+
+  marcarDespesaPaga(desp: DespesaProjeto): void {
+    this.financeiroService.alternarPagamentoDespesa(desp.id, true).subscribe({
+      next: () => {
+        this.notificationService.success('Despesa marcada como paga!');
+        this.carregarDadosFinanceiros();
+      },
+      error: (err) => {
+        console.error('Erro ao marcar despesa como paga', err);
+        this.notificationService.error('Erro ao marcar despesa como paga.');
       }
     });
   }

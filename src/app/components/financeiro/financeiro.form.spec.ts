@@ -10,10 +10,10 @@ describe('FinanceiroForm', () => {
   });
 
   describe('createParcelaAvulsa', () => {
-    it('deve criar formulario invalido por padrao e exigir campos obrigatorios', () => {
+    it('deve criar formulario e permitir projetoId opcional', () => {
       const form = FinanceiroForm.createParcelaAvulsa(fb);
       expect(form.valid).toBeFalse();
-      expect(form.get('projetoId')?.hasError('required')).toBeTrue();
+      expect(form.get('projetoId')?.hasError('required')).toBeFalsy();
       expect(form.get('descricao')?.hasError('required')).toBeTrue();
       expect(form.get('valor')?.hasError('required')).toBeTrue();
       expect(form.get('dataVencimento')?.value).toBeTruthy();
@@ -48,9 +48,11 @@ describe('FinanceiroForm', () => {
   });
 
   describe('createDespesa', () => {
-    it('deve exigir projetoId, descricao, valor e inicializar com categoria padrao', () => {
+    it('deve inicializar com categoria padrao, pago como falso e permitir projetoId opcional', () => {
       const form = FinanceiroForm.createDespesa(fb, 'proj-789');
       expect(form.get('categoria')?.value).toBe(CategoriaDespesa.PlotagemImpressao);
+      expect(form.get('pago')?.value).toBeFalse();
+      expect(form.get('projetoId')?.hasError('required')).toBeFalsy();
       expect(form.valid).toBeFalse();
 
       form.patchValue({

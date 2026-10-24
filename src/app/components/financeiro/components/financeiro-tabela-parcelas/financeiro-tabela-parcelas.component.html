@@ -74,7 +74,7 @@
         <tr *ngFor="let p of parcelasPaginadas" class="table-row">
           <td>
             <div class="d-flex flex-direction-column">
-              <span class="font-label-md font-weight-bold text-on-surface">{{ p.projetoNome }}</span>
+              <span class="font-label-md font-weight-bold text-on-surface">{{ p.projetoNome || 'Receita Avulsa / Geral' }}</span>
               <span class="font-body-md text-on-surface-variant text-sm">{{ p.descricao }}</span>
             </div>
           </td>
