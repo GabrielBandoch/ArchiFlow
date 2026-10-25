@@ -1,0 +1,57 @@
+<div class="calendar-container">
+  <div class="calendar-header-grid">
+    <div *ngFor="let dia of diasSemana" class="weekday-header font-label-md">
+      {{ dia }}
+    </div>
+  </div>
+
+  <div class="calendar-days-grid">
+    <div
+      *ngFor="let celula of diasMes"
+      class="calendar-day-cell"
+      [class.other-month]="!celula.mesmoMes"
+      [class.is-today]="celula.isHoje"
+      (click)="diaClick.emit(celula.data)"
+    >
+      <div
+        class="day-cell-top d-flex justify-content-between align-items-center"
+      >
+        <span class="day-number" [class.today-badge]="celula.isHoje">
+          {{ celula.diaNumero }}
+        </span>
+        <app-button
+          variant="icon"
+          size="sm"
+          customClass="btn-quick-add"
+          title="Agendar neste dia"
+          (btnClick)="$event.stopPropagation(); quickAddClick.emit(celula.data)"
+        >
+          <span class="material-symbols-outlined">add</span>
+        </app-button>
+      </div>
+
+      <div class="day-events-list d-flex flex-direction-column gap-xxs">
+        <div
+          *ngFor="let comp of celula.compromissos"
+          class="event-pill"
+          [ngClass]="obterBadgeClasseTipo(comp.tipo)"
+          [class.event-concluido]="comp.status === 'Concluido'"
+          (click)="$event.stopPropagation(); compromissoClick.emit(comp)"
+          [title]="
+            comp.titulo + ' (' + formatarHora(comp.dataHoraInicio) + ')'
+          "
+        >
+          <span
+            class="material-symbols-outlined event-mini-icon"
+            *ngIf="comp.linkGoogleMeet"
+            >videocam</span
+          >
+          <span class="event-time font-label-xs">{{
+            formatarHora(comp.dataHoraInicio)
+          }}</span>
+          <span class="event-title font-label-xs">{{ comp.titulo }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

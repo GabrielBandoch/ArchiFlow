@@ -1,0 +1,484 @@
+.preview-column {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.preview-header-bar {
+  background-color: var(--af-surface, #fcf9f8);
+  border: 1px solid var(--af-outline-variant, #d3c4b9);
+  border-radius: 10px;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .badge-a4 {
+    background-color: var(--af-surface-container, #f0eded);
+    color: var(--af-on-surface-variant, #4f453d);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+}
+
+.a4-preview-canvas {
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  overflow-x: auto;
+  max-width: 100%;
+  border-radius: 16px;
+  background-color: #242220;
+  padding: 36px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.45);
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 16px 8px;
+    border-radius: 8px;
+  }
+}
+
+.a4-sheet {
+  background-color: #ffffff !important;
+  border-radius: 4px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+  padding: 36px 42px 30px 42px;
+  width: 100%;
+  max-width: 680px;
+  height: fit-content;
+  min-height: 100%;
+  flex-shrink: 0;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  color: #1b1c1c;
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    padding: 18px 12px;
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+.a4-top-accent-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-radius: 4px 4px 0 0;
+}
+
+.a4-header {
+  border-bottom: 1px solid #e5e2e1;
+  padding-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+
+  @media (max-width: 580px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    .a4-contacts {
+      text-align: left !important;
+    }
+  }
+
+  .a4-logo-wrapper {
+    max-height: 48px;
+    max-width: 160px;
+    display: flex;
+    align-items: center;
+
+    .a4-logo {
+      max-height: 46px;
+      max-width: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .a4-monogram-box {
+    width: 42px;
+    height: 42px;
+    border: 2px solid;
+    border-radius: 8px;
+    background-color: rgba(118, 85, 56, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .material-symbols-outlined {
+      font-size: 24px;
+    }
+  }
+
+  .a4-brand-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.15;
+  }
+
+  .a4-brand-slogan {
+    font-size: 11px;
+    color: #4f453d;
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .a4-brand-reg {
+    font-size: 10px;
+    color: #79573a;
+    margin-top: 3px;
+    font-weight: 600;
+  }
+
+  .a4-contacts {
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: #4f453d;
+    text-align: right;
+
+    .contact-item {
+      display: block;
+    }
+  }
+}
+
+.a4-title-banner {
+  padding: 10px 16px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 580px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    .a4-doc-meta {
+      text-align: left;
+      align-items: flex-start !important;
+    }
+  }
+
+  .a4-doc-category {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .a4-doc-code {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1b1c1c;
+  }
+
+  .a4-doc-meta {
+    font-size: 11px;
+    color: #4f453d;
+
+    .badge-validade {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-left: 4px;
+    }
+  }
+}
+
+.a4-intro-quote {
+  background-color: #fcfbf9;
+  border-left: 3px solid;
+  padding: 10px 14px;
+  border-radius: 0 6px 6px 0;
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.5;
+  color: #303030;
+}
+
+.a4-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .a4-section-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .a4-sec-num {
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    h4 {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+  }
+}
+
+.a4-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  background-color: #fbf9f7;
+  border: 1px solid #e5e2e1;
+  border-radius: 6px;
+  padding: 10px 14px;
+
+  @media (max-width: 680px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 8px 10px;
+
+    .meta-cell strong,
+    .meta-cell span {
+      white-space: normal !important;
+      word-break: break-word;
+    }
+  }
+
+  .meta-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    .lbl {
+      color: #79573a;
+      font-size: 9px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    strong,
+    span {
+      font-size: 11px;
+      color: #1b1c1c;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.a4-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.a4-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 11px;
+  min-width: 480px;
+
+  @media (max-width: 768px) {
+    min-width: 0;
+  }
+
+  th {
+    padding: 8px 12px;
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #303030;
+    border-bottom: 2px solid #d3c4b9;
+    text-align: left;
+  }
+
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f0eded;
+    vertical-align: middle;
+  }
+
+  .col-etapa {
+    width: 62%;
+  }
+
+  .col-pct {
+    width: 14%;
+    text-align: right;
+  }
+
+  .col-valor {
+    width: 24%;
+    text-align: right;
+  }
+
+  .etapa-nome {
+    font-weight: 700;
+    color: #1b1c1c;
+    font-size: 11.5px;
+  }
+
+  .badge-prazo {
+    font-size: 9px;
+    background-color: #f0eded;
+    color: #4f453d;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+
+  .etapa-desc {
+    display: block;
+    color: #685c51;
+    font-size: 10px;
+    line-height: 1.35;
+    margin-top: 3px;
+  }
+}
+
+.a4-total-bar {
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .total-lbl {
+    font-size: 11px;
+    font-weight: 800;
+    color: #1b1c1c;
+    letter-spacing: 0.03em;
+  }
+
+  .total-sub {
+    font-size: 9.5px;
+    color: #685c51;
+    margin-top: 2px;
+  }
+
+  .a4-total-amount {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+}
+
+.a4-payment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-terms-box,
+  .payment-bank-box {
+    background-color: #fbf9f7;
+    border: 1px solid #e5e2e1;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 10.5px;
+    line-height: 1.45;
+
+    .sub-lbl {
+      display: block;
+      font-size: 9px;
+      font-weight: 700;
+      color: #79573a;
+      margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  .payment-bank-box {
+    font-size: 10px;
+  }
+}
+
+.a4-terms-box {
+  background-color: #fbf9f7;
+  border: 1px solid #e5e2e1;
+  border-radius: 6px;
+  padding: 10px 12px;
+
+  .a4-terms-text {
+    font-size: 10px;
+    line-height: 1.45;
+    color: #4f453d;
+  }
+}
+
+.a4-signatures-section {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px dashed #d3c4b9;
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+
+  .sign-box {
+    text-align: center;
+    flex: 1;
+
+    .sign-line {
+      border-top: 1px solid #81756b;
+      width: 80%;
+      margin: 0 auto 6px auto;
+    }
+
+    .sign-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #1b1c1c;
+    }
+
+    .sign-role {
+      font-size: 9.5px;
+      color: #79573a;
+      margin-top: 2px;
+    }
+  }
+}
+
+.a4-footer {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e2e1;
+  font-size: 9px;
+  color: #81756b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .bullet-sep {
+    color: #d3c4b9;
+    margin: 0 4px;
+  }
+}

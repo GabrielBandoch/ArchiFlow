@@ -92,6 +92,14 @@ describe("SimuladorComponent", () => {
       "formatarMoeda",
     ]);
     mockDialogService = jasmine.createSpyObj("DialogService", ["open"]);
+    mockDialogService.open.and.callFake(() => ({
+      instance: {
+        close: new EventEmitter<void>(),
+        salvar: new EventEmitter<void>(),
+        confirmar: new EventEmitter<void>(),
+      },
+      destroy: () => {},
+    } as any));
 
     mockHonorarioService.simular.and.returnValue(of(mockSimulacao));
     mockClienteService.obterTodos.and.returnValue(of([]));

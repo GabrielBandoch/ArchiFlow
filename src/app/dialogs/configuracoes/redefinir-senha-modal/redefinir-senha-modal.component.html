@@ -1,0 +1,56 @@
+<app-dialog
+  [show]="show"
+  dialogTitle="Redefinir Senha de Acesso"
+  size="sm"
+  (close)="onClose()"
+>
+  <div class="d-flex flex-direction-column gap-sm" *ngIf="membro">
+    <p class="font-body-sm m-0">
+      Deseja redefinir o acesso do colaborador
+      <strong>{{ membro.nome }}</strong>?
+    </p>
+
+    <div class="field-item margin-top-xs">
+      <label class="form-label font-label-sm"
+        >Nova Senha Manual (Opcional)</label
+      >
+      <input
+        type="password"
+        class="search-input w-full"
+        [(ngModel)]="novaSenhaManual"
+        placeholder="Deixe vazio para gerar automaticamente"
+      />
+      <span class="font-label-xs text-on-surface-variant margin-top-xxs">
+        Se deixado em branco, geraremos uma senha aleatória segura e enviaremos
+        para <strong>{{ membro.email }}</strong>.
+      </span>
+    </div>
+
+    <div class="dialog-actions d-flex justify-content-end gap-xs margin-top-md">
+      <app-button
+        variant="ghost"
+        (btnClick)="onClose()"
+        [disabled]="salvandoSenha"
+      >
+        Cancelar
+      </app-button>
+      <app-button
+        variant="primary"
+        (btnClick)="confirmarRedefinirSenha()"
+        [disabled]="salvandoSenha"
+      >
+        <span
+          class="material-symbols-outlined icon-btn-inline"
+          *ngIf="!salvandoSenha"
+          >lock_reset</span
+        >
+        <span
+          class="material-symbols-outlined icon-btn-inline spinner-icon"
+          *ngIf="salvandoSenha"
+          >progress_activity</span
+        >
+        {{ salvandoSenha ? "Redefinindo..." : "Confirmar e Enviar" }}
+      </app-button>
+    </div>
+  </div>
+</app-dialog>

@@ -1,0 +1,51 @@
+.doc-section {
+  padding: 16px 32px 0;
+
+  .doc-section-header {
+    margin-bottom: 10px;
+
+    .doc-sec-num {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h4 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+.doc-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  background-color: #fcfbfb;
+  border: 1px solid #ebe6e3;
+  border-radius: 6px;
+  padding: 12px 16px;
+
+  .meta-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #777;
+      letter-spacing: 0.5px;
+    }
+
+    strong {
+      font-size: 13px;
+      color: #222;
+    }
+
+    span {
+      font-size: 12px;
+      color: #444;
+    }
+  }
+}

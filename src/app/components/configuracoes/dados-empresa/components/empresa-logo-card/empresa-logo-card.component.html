@@ -1,0 +1,68 @@
+<app-card>
+  <div class="p-lg text-center">
+    <h3 class="card-title margin-bottom-xs">Logotipo Oficial</h3>
+    <p class="card-subtitle text-secondary font-body-sm margin-bottom-lg">
+      Utilizado nos cabeçalhos de propostas, documentos e Portal do Cliente.
+    </p>
+
+    <div class="logo-preview-box margin-bottom-lg">
+      @if (logoUrl) {
+        <img [src]="logoUrl" alt="Logotipo da empresa" class="logo-img" />
+      } @else {
+        <div
+          class="logo-empty-state d-flex flex-direction-column align-items-center justify-content-center"
+        >
+          <span class="material-symbols-outlined logo-icon"
+            >corporate_fare</span
+          >
+          <span class="font-label-sm text-secondary margin-top-xs"
+            >Nenhum logotipo enviado</span
+          >
+        </div>
+      }
+    </div>
+
+    <div class="logo-actions d-flex flex-direction-column gap-xs">
+      <label
+        class="btn-upload"
+        tabindex="0"
+        role="button"
+        aria-label="Selecionar logotipo da empresa"
+        (keydown.enter)="logoInput.click()"
+        (keydown.space)="logoInput.click(); $event.preventDefault()"
+      >
+        <input
+          #logoInput
+          type="file"
+          (change)="onFileChange($event)"
+          accept="image/png,image/jpeg,image/webp,image/svg+xml"
+          class="d-none"
+          [disabled]="enviandoLogo"
+        />
+        <span class="material-symbols-outlined icon">upload</span>
+        {{
+          enviandoLogo
+            ? "Enviando logotipo..."
+            : logoUrl
+              ? "Substituir logotipo"
+              : "Enviar logotipo"
+        }}
+      </label>
+
+      @if (logoUrl) {
+        <app-button
+          variant="danger"
+          size="sm"
+          (btnClick)="removerLogo.emit()"
+          [disabled]="enviandoLogo"
+        >
+          <span class="material-symbols-outlined icon">delete</span>
+          Remover logotipo
+        </app-button>
+      }
+    </div>
+    <p class="font-label-xs text-secondary margin-top-sm">
+      Formatos: PNG, JPG, WEBP, SVG (máx. 5MB)
+    </p>
+  </div>
+</app-card>

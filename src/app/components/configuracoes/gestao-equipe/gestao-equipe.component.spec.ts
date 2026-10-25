@@ -147,22 +147,32 @@ describe("GestaoEquipeComponent", () => {
     expect(notificationServiceSpy.success).toHaveBeenCalled();
   });
 
-  it("deve abrir modal de redefinir senha e redefinir com sucesso", () => {
+  it("deve abrir modal de convidar membro via dialogService", () => {
+    dialogServiceSpy.open.and.returnValue({
+      instance: { saved: of(undefined) },
+    } as any);
+
+    component.abrirModalConvidar();
+
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
+  });
+
+  it("deve abrir modal de editar membro via dialogService", () => {
+    const colab = component.membros[1];
+    dialogServiceSpy.open.and.returnValue({
+      instance: { saved: of(undefined) },
+    } as any);
+
+    component.abrirModalEditar(colab);
+
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
+  });
+
+  it("deve abrir modal de redefinir senha via dialogService", () => {
     const colab = component.membros[1];
     component.abrirModalRedefinir(colab);
-    expect(component.modalRedefinirAberto).toBeTrue();
-    expect(component.membroRedefinir).toBe(colab);
 
-    usuarioServiceSpy.redefinirSenha.and.returnValue(of(void 0));
-    component.novaSenhaManual = "NovaSenha@2026";
-    component.confirmarRedefinirSenha();
-
-    expect(usuarioServiceSpy.redefinirSenha).toHaveBeenCalledWith(
-      "user-colab",
-      "NovaSenha@2026",
-    );
-    expect(notificationServiceSpy.success).toHaveBeenCalled();
-    expect(component.modalRedefinirAberto).toBeFalse();
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
   });
 
   it("deve excluir membro com sucesso", () => {

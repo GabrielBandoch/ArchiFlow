@@ -1,0 +1,35 @@
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--af-on-surface);
+}
+
+.section-title {
+  color: var(--af-primary);
+  font-weight: 600;
+}
+
+.border-top {
+  border-top: 1px solid var(--af-surface-variant);
+}
+
+.flex-2 {
+  flex: 2;
+  min-width: 200px;
+}
+
+.mini-spin {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--af-outline-variant, rgba(0, 0, 0, 0.2));
+  border-top-color: var(--af-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

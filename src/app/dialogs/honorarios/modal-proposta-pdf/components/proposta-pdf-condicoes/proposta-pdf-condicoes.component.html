@@ -1,0 +1,88 @@
+<div class="condicoes-container" *ngIf="config && proposta">
+  <div class="doc-section" *ngIf="config.exibirCondicoesPagamento">
+    <div class="doc-section-header d-flex align-items-center gap-xs">
+      <span class="doc-sec-num" [style.color]="config.corPrimaria">03.</span>
+      <h4 class="m-0" [style.color]="config.corPrimaria">
+        CONDIÇÕES COMERCIAIS & DADOS BANCÁRIOS
+      </h4>
+    </div>
+
+    <div class="doc-payment-grid">
+      <div class="payment-terms-box">
+        <span class="sub-lbl">FORMA DE PAGAMENTO:</span>
+        <p class="m-0">{{ config.condicoesPagamentoPadrao }}</p>
+      </div>
+      <div
+        class="payment-bank-box font-mono"
+        *ngIf="
+          config.chavePix || config.dadosBancarios;
+          else bankPlaceholderTpl
+        "
+      >
+        <div *ngIf="config.chavePix">
+          <strong>CHAVE PIX:</strong> {{ config.chavePix }}
+        </div>
+        <div *ngIf="config.dadosBancarios">
+          <strong>BANCO:</strong> {{ config.dadosBancarios }}
+        </div>
+      </div>
+      <ng-template #bankPlaceholderTpl>
+        <div
+          class="payment-bank-box font-mono text-on-surface-variant font-italic"
+        >
+          Dados bancários e chave PIX sob consulta ou informados no contrato
+          final.
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="doc-section" *ngIf="config.exibirTermosGerais">
+    <div class="doc-section-header d-flex align-items-center gap-xs">
+      <span class="doc-sec-num" [style.color]="config.corPrimaria">04.</span>
+      <h4 class="m-0" [style.color]="config.corPrimaria">
+        TERMOS GERAIS & POLÍTICAS DE REVISÃO
+      </h4>
+    </div>
+    <div class="doc-terms-box">
+      <p class="m-0 doc-terms-text whitespace-pre-line">
+        {{ config.termosGerais }}
+      </p>
+    </div>
+  </div>
+
+  <div
+    class="doc-section doc-signatures-section"
+    *ngIf="config.exibirAssinaturas"
+  >
+    <div class="d-flex justify-content-between gap-xl">
+      <div class="sign-box text-center flex-grow-1">
+        <div class="sign-line"></div>
+        <span class="sign-name d-block">{{
+          config.nomeEscritorio || "Arquiteto Responsável"
+        }}</span>
+        <span class="sign-role">Arquiteto(a) Responsável</span>
+      </div>
+      <div class="sign-box text-center flex-grow-1">
+        <div class="sign-line"></div>
+        <span class="sign-name d-block">{{
+          proposta.clienteNome || proposta.leadNome || "Contratante"
+        }}</span>
+        <span class="sign-role">Contratante / De Acordo</span>
+      </div>
+    </div>
+  </div>
+
+  <footer
+    class="doc-footer d-flex justify-content-between align-items-center"
+  >
+    <div class="doc-footer-brand d-flex align-items-center gap-xxs">
+      <span class="font-mono text-xs">COTU</span>
+      <span class="bullet-sep">•</span>
+      <span>Sistema Integrado de Gestão & Precificação Arquitetônica</span>
+    </div>
+    <div class="doc-footer-meta font-mono text-xs">
+      Documento de Proposta de Honorários
+    </div>
+  </footer>
+</div>

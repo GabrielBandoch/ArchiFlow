@@ -1,0 +1,91 @@
+.doc-section {
+  padding: 16px 32px 0;
+
+  .doc-section-header {
+    margin-bottom: 10px;
+
+    .doc-sec-num {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h4 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+.doc-table {
+  border-collapse: collapse;
+  font-size: 12px;
+
+  th {
+    padding: 8px 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #444;
+    border-bottom: 2px solid #ddd;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ebe6e3;
+    vertical-align: middle;
+  }
+
+  .col-etapa {
+    width: 65%;
+  }
+
+  .col-pct {
+    width: 12%;
+  }
+
+  .col-valor {
+    width: 23%;
+  }
+
+  .etapa-nome {
+    font-weight: 600;
+    color: #222;
+  }
+
+  .badge-prazo {
+    font-size: 10px;
+    background-color: #f0eded;
+    color: #555;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .etapa-desc {
+    font-size: 11px;
+    color: #666;
+    display: block;
+    margin-top: 2px;
+  }
+}
+
+.doc-total-bar {
+  padding: 12px 18px;
+  border-radius: 6px;
+  margin-top: 10px;
+
+  .total-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .total-sub {
+    font-size: 10px;
+    color: #666;
+  }
+
+  .doc-total-amount {
+    font-size: 18px;
+  }
+}

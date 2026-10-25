@@ -212,21 +212,3 @@
   >
   </app-empty-state>
 </div>
-
-<app-fornecedor-modal
-  *ngIf="modalCadastroAberto"
-  [show]="modalCadastroAberto"
-  [fornecedor]="fornecedorSelecionado"
-  (close)="modalCadastroAberto = false"
-  (salvo)="onFornecedorSalvo()"
->
-</app-fornecedor-modal>
-
-<app-avaliar-fornecedor-modal
-  *ngIf="modalAvaliarAberto"
-  [show]="modalAvaliarAberto"
-  [fornecedor]="fornecedorSelecionado"
-  (close)="modalAvaliarAberto = false"
-  (avaliado)="onFornecedorAvaliado()"
->
-</app-avaliar-fornecedor-modal>

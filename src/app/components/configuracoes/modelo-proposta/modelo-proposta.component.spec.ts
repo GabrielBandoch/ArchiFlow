@@ -7,12 +7,14 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { of } from "rxjs";
 
 import { EmpresaService } from "../../../core/api/empresa/empresa.service";
+import { DialogService } from "../../../core/services/dialog.service";
 
 describe("ModeloPropostaComponent", () => {
   let component: ModeloPropostaComponent;
   let fixture: ComponentFixture<ModeloPropostaComponent>;
   let configService: jasmine.SpyObj<ConfiguracaoPropostaService>;
   let notificationService: jasmine.SpyObj<NotificationService>;
+  let dialogServiceSpy: jasmine.SpyObj<DialogService>;
 
   const mockConfig = {
     nomeEscritorio: "Studio Teste Arquitetura",
@@ -56,6 +58,10 @@ describe("ModeloPropostaComponent", () => {
     const empresaSpy = jasmine.createSpyObj("EmpresaService", [
       "obterDadosEmpresa",
     ]);
+    dialogServiceSpy = jasmine.createSpyObj("DialogService", ["open"]);
+    dialogServiceSpy.open.and.returnValue({
+      instance: { close: of(undefined) },
+    } as any);
 
     configSpy.getConfiguracao.and.returnValue(mockConfig);
     configSpy.carregarDoServidor.and.returnValue(of(mockConfig));
@@ -82,6 +88,7 @@ describe("ModeloPropostaComponent", () => {
         { provide: ConfiguracaoPropostaService, useValue: configSpy },
         { provide: NotificationService, useValue: notifSpy },
         { provide: EmpresaService, useValue: empresaSpy },
+        { provide: DialogService, useValue: dialogServiceSpy },
       ],
     }).compileComponents();
 

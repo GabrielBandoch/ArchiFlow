@@ -1,0 +1,83 @@
+@use "../../../../styles/variables" as *;
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(27, 28, 28, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.modal-dialog-pdf {
+  background-color: #f0eded;
+  border-radius: var(--radius-xl, 16px);
+  width: 100%;
+  max-width: 900px;
+  max-height: 96vh;
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
+  border: 1px solid #d3c4b9;
+}
+
+.modal-document-container {
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  background-color: #525659;
+  padding: 24px;
+}
+
+.a4-document-sheet {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 210mm;
+  min-height: 297mm;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .modal-backdrop {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    background: none;
+    overflow: visible;
+  }
+
+  .modal-dialog-pdf {
+    max-width: 100%;
+    max-height: none;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+  }
+
+  .modal-document-container {
+    background: none;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .a4-document-sheet {
+    box-shadow: none;
+    max-width: 100%;
+    min-height: auto;
+  }
+}

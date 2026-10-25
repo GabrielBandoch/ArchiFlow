@@ -30,8 +30,6 @@ import { PhoneMaskPipe } from "../../core/pipes/phone-mask.pipe";
     EmptyStateComponent,
     SearchInputComponent,
     SelectComponent,
-    FornecedorModalComponent,
-    AvaliarFornecedorModalComponent,
     WhatsAppButtonComponent,
     PhoneMaskPipe,
   ],
@@ -49,10 +47,6 @@ export class FornecedoresComponent implements OnInit {
   termoBusca = "";
   especialidadeSelecionada = "todos";
   filtroClassificacao = "qualquer";
-
-  modalCadastroAberto = false;
-  modalAvaliarAberto = false;
-  fornecedorSelecionado?: Fornecedor;
 
   readonly especialidadesChips = [
     { label: "Todos", value: "todos" },
@@ -116,20 +110,30 @@ export class FornecedoresComponent implements OnInit {
   }
 
   abrirModalNovo(): void {
-    this.fornecedorSelecionado = undefined;
-    this.modalCadastroAberto = true;
+    const ref = this.dialogService.open(FornecedorModalComponent);
+    ref.instance.salvo.subscribe(() => {
+      this.carregarFornecedores();
+    });
   }
 
   abrirModalEditar(fornecedor: Fornecedor, event?: Event): void {
     event?.stopPropagation();
-    this.fornecedorSelecionado = fornecedor;
-    this.modalCadastroAberto = true;
+    const ref = this.dialogService.open(FornecedorModalComponent, {
+      data: { fornecedor },
+    });
+    ref.instance.salvo.subscribe(() => {
+      this.carregarFornecedores();
+    });
   }
 
   abrirModalAvaliar(fornecedor: Fornecedor, event?: Event): void {
     event?.stopPropagation();
-    this.fornecedorSelecionado = fornecedor;
-    this.modalAvaliarAberto = true;
+    const ref = this.dialogService.open(AvaliarFornecedorModalComponent, {
+      data: { fornecedor },
+    });
+    ref.instance.avaliado.subscribe(() => {
+      this.carregarFornecedores();
+    });
   }
 
   verDetalhes(fornecedor: Fornecedor): void {
@@ -162,15 +166,5 @@ export class FornecedoresComponent implements OnInit {
             ),
         });
       });
-  }
-
-  onFornecedorSalvo(): void {
-    this.modalCadastroAberto = false;
-    this.carregarFornecedores();
-  }
-
-  onFornecedorAvaliado(): void {
-    this.modalAvaliarAberto = false;
-    this.carregarFornecedores();
   }
 }

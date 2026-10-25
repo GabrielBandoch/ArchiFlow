@@ -1,0 +1,114 @@
+<app-card>
+  <div class="p-lg">
+    <div
+      class="d-flex align-items-center justify-content-between flex-wrap gap-sm margin-bottom-md border-bottom pb-sm"
+    >
+      <div class="d-flex align-items-center gap-sm">
+        <div
+          class="section-icon-wrap d-flex align-items-center justify-content-center"
+        >
+          <span class="material-symbols-outlined text-primary"
+            >event_available</span
+          >
+        </div>
+        <div>
+          <h3 class="font-headline-sm m-0">
+            O Que Fazer Hoje • Pendências & Agenda
+          </h3>
+          <p class="font-body-xs text-on-surface-variant m-0">
+            Compromissos, visitas de obra e prazos agendados no calendário
+          </p>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-xs">
+        <span class="badge-count font-label-xs"
+          >{{ compromissos.length }} item(ns) hoje</span
+        >
+        <a routerLink="/agenda">
+          <app-button variant="outline" size="sm">
+            <span class="material-symbols-outlined">calendar_month</span>
+            Abrir Calendário
+          </app-button>
+        </a>
+      </div>
+    </div>
+
+    <div
+      *ngIf="compromissos.length > 0"
+      class="today-tasks-list d-flex flex-direction-column gap-xs"
+    >
+      <div
+        *ngFor="let item of compromissos"
+        class="today-task-row d-flex align-items-center justify-content-between p-sm"
+      >
+        <div class="d-flex align-items-center gap-md">
+          <div
+            class="time-pill font-label-sm d-flex flex-direction-column align-items-center justify-content-center"
+          >
+            <strong>{{
+              formatarHora(item.dataHoraInicio) || "Dia todo"
+            }}</strong>
+          </div>
+          <div>
+            <h4 class="font-body-md font-weight-semibold m-0 text-on-surface">
+              {{ item.titulo }}
+            </h4>
+            <p class="font-body-xs text-on-surface-variant m-0">
+              <span *ngIf="item.nomeProjeto"
+                >Projeto: <strong>{{ item.nomeProjeto }}</strong> •
+              </span>
+              <span *ngIf="item.nomeCliente"
+                >Cliente: {{ item.nomeCliente }} •
+              </span>
+              <span *ngIf="item.local">{{ item.local }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-xs">
+          <span class="task-type-badge font-label-xs">{{
+            item.tipo || "Compromisso"
+          }}</span>
+          <span
+            class="task-status-badge font-label-xs"
+            [class.badge-done]="item.status === 'Concluido'"
+          >
+            {{ item.status === "Concluido" ? "Concluído" : "Pendente" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="compromissos.length === 0"
+      class="today-empty-state d-flex align-items-center justify-content-between p-md flex-wrap gap-md"
+    >
+      <div class="d-flex align-items-center gap-md">
+        <div
+          class="empty-icon-circle d-flex align-items-center justify-content-center"
+        >
+          <span class="material-symbols-outlined text-primary"
+            >check_circle</span
+          >
+        </div>
+        <div>
+          <h4 class="font-body-md font-weight-semibold m-0 text-on-surface">
+            Tudo em dia para hoje!
+          </h4>
+          <p class="font-body-xs text-on-surface-variant m-0">
+            Nenhum compromisso ou pendência agendada para hoje. Aproveite para
+            planejar suas entregas no calendário.
+          </p>
+        </div>
+      </div>
+      <app-button
+        variant="outline"
+        size="sm"
+        (btnClick)="agendarTarefa.emit()"
+      >
+        <span class="material-symbols-outlined">add</span>
+        Agendar Tarefa
+      </app-button>
+    </div>
+  </div>
+</app-card>

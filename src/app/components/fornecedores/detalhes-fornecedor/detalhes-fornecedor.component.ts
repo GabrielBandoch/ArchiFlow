@@ -1,17 +1,10 @@
 import { Component, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import {
   Fornecedor,
   AvaliacaoFornecedor,
   ProjetoFornecedor,
-  VincularProjetoCommand,
 } from "../../../core/models/fornecedor.model";
 import { FornecedorService } from "../../../core/api/fornecedores/fornecedor.service";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
@@ -22,35 +15,22 @@ import { ButtonComponent } from "../../../shared/components/button/button.compon
 import { BadgeComponent } from "../../../shared/components/badge/badge.component";
 import { EmptyStateComponent } from "../../../shared/components/empty-state/empty-state.component";
 import { WhatsAppButtonComponent } from "../../../shared/components/whatsapp-button/whatsapp-button.component";
-import { DialogComponent } from "../../../shared/components/dialog/dialog.component";
-import {
-  SelectComponent,
-  SelectOption,
-} from "../../../shared/components/select/select.component";
-import { InputComponent } from "../../../shared/components/input/input.component";
-import { ProjectSearchComponent } from "../../../shared/components/project-search/project-search.component";
 import { PhoneMaskPipe } from "../../../core/pipes/phone-mask.pipe";
 import { FornecedorModalComponent } from "../../../dialogs/fornecedores/fornecedor-modal/fornecedor-modal.component";
 import { AvaliarFornecedorModalComponent } from "../../../dialogs/fornecedores/avaliar-fornecedor-modal/avaliar-fornecedor-modal.component";
+import { VincularProjetoModalComponent } from "../../../dialogs/fornecedores/vincular-projeto-modal/vincular-projeto-modal.component";
 
 @Component({
   selector: "app-detalhes-fornecedor",
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     RouterLink,
     ButtonComponent,
     BadgeComponent,
     EmptyStateComponent,
     WhatsAppButtonComponent,
-    DialogComponent,
-    SelectComponent,
-    InputComponent,
-    ProjectSearchComponent,
     PhoneMaskPipe,
-    FornecedorModalComponent,
-    AvaliarFornecedorModalComponent,
   ],
   templateUrl: "./detalhes-fornecedor.component.html",
   styleUrls: ["./detalhes-fornecedor.component.scss"],
@@ -58,7 +38,6 @@ import { AvaliarFornecedorModalComponent } from "../../../dialogs/fornecedores/a
 export class DetalhesFornecedorComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private fb = inject(FormBuilder);
   private fornecedorService = inject(FornecedorService);
   private projetoService = inject(ProjetoService);
   private dialogService = inject(DialogService);
@@ -67,16 +46,7 @@ export class DetalhesFornecedorComponent implements OnInit {
   fornecedorId = "";
   fornecedor?: Fornecedor;
   carregando = true;
-
-  modalEditarAberto = false;
-  modalAvaliarAberto = false;
-  modalVincularAberto = false;
-
   todosProjetos: Projeto[] = [];
-  projetosOptions: SelectOption[] = [];
-  formVinculo!: FormGroup;
-  salvandoVinculo = false;
-  submittedVinculo = false;
 
   get avaliacoes(): AvaliacaoFornecedor[] {
     return this.fornecedor?.avaliacoes || [];
@@ -86,10 +56,6 @@ export class DetalhesFornecedorComponent implements OnInit {
     return this.fornecedor?.projetosVinculados || [];
   }
 
-  get fVinculo() {
-    return this.formVinculo.controls;
-  }
-
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get("id");
     if (!id) {
@@ -97,12 +63,6 @@ export class DetalhesFornecedorComponent implements OnInit {
       return;
     }
     this.fornecedorId = id;
-
-    this.formVinculo = this.fb.group({
-      projetoId: ["", Validators.required],
-      funcaoNoProjeto: ["", [Validators.required, Validators.minLength(3)]],
-    });
-
     this.carregarProjetos();
     this.carregarFornecedor();
   }
@@ -111,21 +71,8 @@ export class DetalhesFornecedorComponent implements OnInit {
     this.projetoService.obterTodos().subscribe({
       next: (projetos) => {
         this.todosProjetos = projetos;
-        this.atualizarOptionsProjetos();
       },
     });
-  }
-
-  atualizarOptionsProjetos(): void {
-    const idsVinculados = new Set(
-      this.projetosVinculados.map((p) => p.projetoId),
-    );
-    this.projetosOptions = this.todosProjetos
-      .filter((p) => !idsVinculados.has(p.id))
-      .map((p) => ({
-        label: p.nome,
-        value: p.id,
-      }));
   }
 
   obterNomeProjeto(projetoId: string): string {
@@ -139,7 +86,6 @@ export class DetalhesFornecedorComponent implements OnInit {
       next: (f) => {
         this.fornecedor = f;
         this.carregando = false;
-        this.atualizarOptionsProjetos();
       },
       error: () => {
         this.carregando = false;
@@ -154,51 +100,33 @@ export class DetalhesFornecedorComponent implements OnInit {
   }
 
   abrirModalEditar(): void {
-    this.modalEditarAberto = true;
+    if (!this.fornecedor) return;
+    const ref = this.dialogService.open(FornecedorModalComponent, {
+      data: { fornecedor: this.fornecedor },
+    });
+    ref.instance.salvo.subscribe((f: Fornecedor) => {
+      this.fornecedor = f;
+      this.carregarFornecedor();
+    });
   }
 
   abrirModalAvaliar(): void {
-    this.modalAvaliarAberto = true;
+    if (!this.fornecedor) return;
+    const ref = this.dialogService.open(AvaliarFornecedorModalComponent, {
+      data: { fornecedor: this.fornecedor },
+    });
+    ref.instance.avaliado.subscribe(() => {
+      this.carregarFornecedor();
+    });
   }
 
   abrirModalVincular(): void {
-    this.submittedVinculo = false;
-    this.formVinculo.reset();
-    this.atualizarOptionsProjetos();
-    this.modalVincularAberto = true;
-  }
-
-  fecharModalVincular(): void {
-    this.modalVincularAberto = false;
-  }
-
-  salvarVinculo(): void {
-    this.submittedVinculo = true;
-    if (this.formVinculo.invalid || !this.fornecedor) {
-      this.formVinculo.markAllAsTouched();
-      return;
-    }
-
-    this.salvandoVinculo = true;
-    const cmd: VincularProjetoCommand = {
-      fornecedorId: this.fornecedor.id,
-      projetoId: this.formVinculo.value.projetoId,
-      funcaoNoProjeto: this.formVinculo.value.funcaoNoProjeto,
-    };
-
-    this.fornecedorService.vincularProjeto(this.fornecedor.id, cmd).subscribe({
-      next: () => {
-        this.salvandoVinculo = false;
-        this.modalVincularAberto = false;
-        this.notificationService.success(
-          "Parceiro vinculado à obra com sucesso!",
-        );
-        this.carregarFornecedor();
-      },
-      error: () => {
-        this.salvandoVinculo = false;
-        this.notificationService.error("Erro ao vincular parceiro à obra.");
-      },
+    if (!this.fornecedor) return;
+    const ref = this.dialogService.open(VincularProjetoModalComponent, {
+      data: { fornecedor: this.fornecedor },
+    });
+    ref.instance.vinculado.subscribe(() => {
+      this.carregarFornecedor();
     });
   }
 
@@ -229,17 +157,6 @@ export class DetalhesFornecedorComponent implements OnInit {
       });
   }
 
-  onFornecedorSalvo(f: Fornecedor): void {
-    this.fornecedor = f;
-    this.modalEditarAberto = false;
-    this.carregarFornecedor();
-  }
-
-  onAvaliacaoRegistrada(): void {
-    this.modalAvaliarAberto = false;
-    this.carregarFornecedor();
-  }
-
   excluir(): void {
     if (!this.fornecedor) return;
 
@@ -254,25 +171,35 @@ export class DetalhesFornecedorComponent implements OnInit {
       .subscribe((confirmou) => {
         if (!confirmou) return;
 
-        this.fornecedorService.excluir(this.fornecedorId).subscribe({
+        this.fornecedorService.excluir(this.fornecedor!.id).subscribe({
           next: () => {
             this.notificationService.success(
-              "Fornecedor removido com sucesso.",
+              `Fornecedor ${this.fornecedor!.nome} removido.`,
             );
             this.voltar();
           },
           error: () => {
-            this.notificationService.error("Erro ao remover fornecedor.");
+            this.notificationService.error(
+              "Não foi possível remover o fornecedor.",
+            );
           },
         });
       });
   }
 
-  copiarTexto(texto?: string, label = "Informação"): void {
+  copiarTexto(texto?: string, label: string = "Texto"): void {
     if (!texto) return;
-    navigator.clipboard.writeText(texto);
+    navigator.clipboard?.writeText(texto);
     this.notificationService.success(
       `${label} copiado para a área de transferência!`,
     );
+  }
+
+  gerarEstrelas(notaMedia: number): number[] {
+    return Array.from({ length: 5 }, (_, i) => i + 1);
+  }
+
+  obterStatusEstrela(posicao: number, notaMedia: number): "full" | "empty" {
+    return posicao <= Math.round(notaMedia) ? "full" : "empty";
   }
 }

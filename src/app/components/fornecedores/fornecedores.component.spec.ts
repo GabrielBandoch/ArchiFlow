@@ -115,24 +115,33 @@ describe("FornecedoresComponent", () => {
     expect(fornecedorServiceSpy.obterTodos).toHaveBeenCalledWith("Marcenaria");
   });
 
-  it("deve abrir modal de novo parceiro", () => {
+  it("deve abrir modal de novo parceiro via dialogService", () => {
+    dialogServiceSpy.open.and.returnValue({
+      instance: { salvo: of(undefined) },
+    } as any);
+
     component.abrirModalNovo();
-    expect(component.modalCadastroAberto).toBeTrue();
-    expect(component.fornecedorSelecionado).toBeUndefined();
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
   });
 
-  it("deve abrir modal de editar parceiro", () => {
+  it("deve abrir modal de editar parceiro via dialogService", () => {
     const f = mockFornecedores[0];
+    dialogServiceSpy.open.and.returnValue({
+      instance: { salvo: of(undefined) },
+    } as any);
+
     component.abrirModalEditar(f);
-    expect(component.modalCadastroAberto).toBeTrue();
-    expect(component.fornecedorSelecionado).toBe(f);
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
   });
 
-  it("deve abrir modal de avaliação de parceiro", () => {
+  it("deve abrir modal de avaliação de parceiro via dialogService", () => {
     const f = mockFornecedores[0];
+    dialogServiceSpy.open.and.returnValue({
+      instance: { avaliado: of(undefined) },
+    } as any);
+
     component.abrirModalAvaliar(f);
-    expect(component.modalAvaliarAberto).toBeTrue();
-    expect(component.fornecedorSelecionado).toBe(f);
+    expect(dialogServiceSpy.open).toHaveBeenCalled();
   });
 
   it("deve excluir parceiro com confirmação", () => {

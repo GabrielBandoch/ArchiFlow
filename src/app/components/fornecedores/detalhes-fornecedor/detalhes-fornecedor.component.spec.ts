@@ -42,7 +42,13 @@ describe("DetalhesFornecedorComponent", () => {
     const projetoServiceSpy = jasmine.createSpyObj("ProjetoService", [
       "obterTodos",
     ]);
-    const dialogServiceSpy = jasmine.createSpyObj("DialogService", ["confirm"]);
+    const dialogServiceSpy = jasmine.createSpyObj("DialogService", [
+      "confirm",
+      "open",
+    ]);
+    dialogServiceSpy.open.and.returnValue({
+      instance: { salvo: of(undefined), avaliado: of(undefined), vinculado: of(undefined) },
+    } as any);
     const notificationServiceSpy = jasmine.createSpyObj("NotificationService", [
       "success",
       "error",
@@ -89,5 +95,17 @@ describe("DetalhesFornecedorComponent", () => {
   it("deve navegar de volta para /fornecedores ao clicar em voltar", () => {
     component.voltar();
     expect(router.navigate).toHaveBeenCalledWith(["/fornecedores"]);
+  });
+
+  it("deve abrir modais de editar, avaliar e vincular via dialogService", () => {
+    const dialogService = TestBed.inject(DialogService);
+    component.abrirModalEditar();
+    expect(dialogService.open).toHaveBeenCalled();
+
+    component.abrirModalAvaliar();
+    expect(dialogService.open).toHaveBeenCalledTimes(2);
+
+    component.abrirModalVincular();
+    expect(dialogService.open).toHaveBeenCalledTimes(3);
   });
 });

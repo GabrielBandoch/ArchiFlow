@@ -7,6 +7,7 @@ import { NotificationService } from "../../../core/services/notification.service
 import { DialogService } from "../../../core/services/dialog.service";
 import { MembroEquipe } from "../../../core/models/usuario.model";
 import { MembroEquipeModalComponent } from "../../../dialogs/configuracoes/membro-equipe-modal/membro-equipe-modal.component";
+import { RedefinirSenhaModalComponent } from "../../../dialogs/configuracoes/redefinir-senha-modal/redefinir-senha-modal.component";
 
 @Component({
   selector: "app-gestao-equipe",
@@ -15,7 +16,6 @@ import { MembroEquipeModalComponent } from "../../../dialogs/configuracoes/membr
     CORE_IMPORTS,
     DESIGN_SYSTEM,
     FormsModule,
-    MembroEquipeModalComponent,
   ],
   templateUrl: "./gestao-equipe.component.html",
   styleUrl: "./gestao-equipe.component.scss",
@@ -48,14 +48,6 @@ export class GestaoEquipeComponent implements OnInit {
     { value: "ativos", label: "Apenas Ativos" },
     { value: "inativos", label: "Apenas Inativos" },
   ];
-
-  modalAberto = false;
-  membroSelecionado?: MembroEquipe;
-
-  modalRedefinirAberto = false;
-  membroRedefinir?: MembroEquipe;
-  novaSenhaManual = "";
-  salvandoSenha = false;
 
   ngOnInit(): void {
     this.carregarEquipe();
@@ -139,22 +131,19 @@ export class GestaoEquipeComponent implements OnInit {
   }
 
   abrirModalConvidar(): void {
-    this.membroSelecionado = undefined;
-    this.modalAberto = true;
+    const ref = this.dialogService.open(MembroEquipeModalComponent);
+    ref.instance.saved.subscribe(() => {
+      this.carregarEquipe();
+    });
   }
 
   abrirModalEditar(membro: MembroEquipe): void {
-    this.membroSelecionado = membro;
-    this.modalAberto = true;
-  }
-
-  fecharModal(): void {
-    this.modalAberto = false;
-    this.membroSelecionado = undefined;
-  }
-
-  onMembroSalvo(_: MembroEquipe): void {
-    this.carregarEquipe();
+    const ref = this.dialogService.open(MembroEquipeModalComponent, {
+      data: { membroParaEdicao: membro },
+    });
+    ref.instance.saved.subscribe(() => {
+      this.carregarEquipe();
+    });
   }
 
   alternarStatus(membro: MembroEquipe): void {
@@ -183,41 +172,9 @@ export class GestaoEquipeComponent implements OnInit {
   }
 
   abrirModalRedefinir(membro: MembroEquipe): void {
-    this.membroRedefinir = membro;
-    this.novaSenhaManual = "";
-    this.modalRedefinirAberto = true;
-  }
-
-  fecharModalRedefinir(): void {
-    this.modalRedefinirAberto = false;
-    this.membroRedefinir = undefined;
-    this.novaSenhaManual = "";
-  }
-
-  confirmarRedefinirSenha(): void {
-    if (!this.membroRedefinir) return;
-
-    this.salvandoSenha = true;
-    const senha = this.novaSenhaManual.trim() || undefined;
-
-    this.usuarioService
-      .redefinirSenha(this.membroRedefinir.id, senha)
-      .subscribe({
-        next: () => {
-          this.salvandoSenha = false;
-          this.notificationService.success(
-            `Senha do colaborador ${this.membroRedefinir?.nome} redefinida! Notificação enviada por e-mail.`,
-          );
-          this.fecharModalRedefinir();
-        },
-        error: (err) => {
-          this.salvandoSenha = false;
-          console.error("Erro ao redefinir senha", err);
-          this.notificationService.error(
-            "Erro ao redefinir a senha do colaborador.",
-          );
-        },
-      });
+    this.dialogService.open(RedefinirSenhaModalComponent, {
+      data: { membro },
+    });
   }
 
   abrirModalExcluir(membro: MembroEquipe): void {
@@ -254,66 +211,37 @@ export class GestaoEquipeComponent implements OnInit {
       });
   }
 
-  obterBadgeRoleClass(role: string): string {
-    switch (role) {
-      case "Administrador":
-      case "ArquitetoAdmin":
-        return "badge-admin";
-      case "ArquitetoColaborador":
-      case "Gerente":
-        return "badge-arquiteto";
-      case "Financeiro":
-        return "badge-financeiro";
-      case "Estagiario":
-        return "badge-estagiario";
-      default:
-        return "badge-colab";
-    }
-  }
-
-  obterRoleBadgeVariant(
-    role: string,
-  ): "primary" | "info" | "warning" | "neutral" {
-    switch (role) {
-      case "Administrador":
-      case "ArquitetoAdmin":
-        return "primary";
-      case "ArquitetoColaborador":
-      case "Gerente":
-        return "info";
-      case "Financeiro":
-        return "warning";
-      case "Estagiario":
-      default:
-        return "neutral";
-    }
-  }
-
-  obterLabelRole(role: string): string {
-    switch (role) {
-      case "Administrador":
-        return "Administrador";
-      case "ArquitetoAdmin":
-        return "Arquiteto Titular";
-      case "ArquitetoColaborador":
-        return "Arquiteto Colaborador";
-      case "Gerente":
-        return "Gerente de Projetos";
-      case "Financeiro":
-        return "Financeiro";
-      case "Estagiario":
-        return "Estagiário";
-      case "Colaborador":
-        return "Colaborador";
-      default:
-        return role;
-    }
-  }
-
   obterIniciais(nome: string): string {
     if (!nome) return "AF";
     const partes = nome.trim().split(" ");
     if (partes.length === 1) return partes[0].substring(0, 2).toUpperCase();
     return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+  }
+
+  obterBadgeRole(role: string): { label: string; variant: string } {
+    switch (role) {
+      case "ArquitetoAdmin":
+        return { label: "Arquiteto Titular", variant: "primary" };
+      case "Administrador":
+        return { label: "Administrador", variant: "primary" };
+      case "ArquitetoColaborador":
+        return { label: "Arquiteto", variant: "secondary" };
+      case "Gerente":
+        return { label: "Gerente", variant: "info" };
+      case "Financeiro":
+        return { label: "Financeiro", variant: "warning" };
+      case "Estagiario":
+        return { label: "Estagiário", variant: "neutral" };
+      default:
+        return { label: role || "Colaborador", variant: "neutral" };
+    }
+  }
+
+  obterRoleBadgeVariant(role: string): any {
+    return this.obterBadgeRole(role).variant;
+  }
+
+  obterLabelRole(role: string): string {
+    return this.obterBadgeRole(role).label;
   }
 }
