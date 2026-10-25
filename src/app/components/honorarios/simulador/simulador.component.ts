@@ -316,6 +316,9 @@ export class SimuladorComponent implements OnInit, OnDestroy {
     this.calcularSimulacao();
   }
 
+  private modalSalvarRef?: any;
+  private modalAjusteRef?: any;
+
   abrirModalSalvar(comVinculo: boolean = false): void {
     if (!this.simulacao) return;
 
@@ -353,10 +356,29 @@ export class SimuladorComponent implements OnInit, OnDestroy {
     });
 
     this.modalSalvarAberto = true;
+    this.modalSalvarRef = this.dialogService.open(ModalSalvarPropostaComponent, {
+      data: {
+        form: this.propostaForm,
+        simulacao: this.simulacao,
+        leads: this.leads,
+        clientes: this.clientes,
+        salvando: this.salvando,
+      },
+    });
+
+    this.modalSalvarRef.instance.salvar?.subscribe(() => {
+      this.salvarProposta();
+    });
+
+    this.modalSalvarRef.instance.close?.subscribe(() => {
+      this.modalSalvarAberto = false;
+    });
   }
 
   fecharModalSalvar(): void {
     this.modalSalvarAberto = false;
+    this.modalSalvarRef?.destroy?.();
+    this.modalSalvarRef = undefined;
   }
 
   salvarProposta(): void {
@@ -389,7 +411,7 @@ export class SimuladorComponent implements OnInit, OnDestroy {
     this.honorarioService.criarProposta(command).subscribe({
       next: (proposta) => {
         this.salvando = false;
-        this.modalSalvarAberto = false;
+        this.fecharModalSalvar();
         this.notificationService.success(
           `Proposta ${proposta.codigo} salva com sucesso!`,
         );
@@ -411,10 +433,25 @@ export class SimuladorComponent implements OnInit, OnDestroy {
     });
 
     this.modalAjusteManualAberto = true;
+    this.modalAjusteRef = this.dialogService.open(ModalAjusteManualComponent, {
+      data: {
+        form: this.ajusteForm,
+      },
+    });
+
+    this.modalAjusteRef.instance.confirmar?.subscribe(() => {
+      this.confirmarAjusteManual();
+    });
+
+    this.modalAjusteRef.instance.close?.subscribe(() => {
+      this.modalAjusteManualAberto = false;
+    });
   }
 
   fecharModalAjusteManual(): void {
     this.modalAjusteManualAberto = false;
+    this.modalAjusteRef?.destroy?.();
+    this.modalAjusteRef = undefined;
   }
 
   confirmarAjusteManual(): void {
@@ -429,7 +466,7 @@ export class SimuladorComponent implements OnInit, OnDestroy {
       ),
     };
 
-    this.modalAjusteManualAberto = false;
+    this.fecharModalAjusteManual();
     this.notificationService.success(
       "Valor da estimativa ajustado manualmente!",
     );

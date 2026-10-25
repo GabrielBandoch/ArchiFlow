@@ -1,0 +1,23 @@
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--af-outline-variant, #e0e0e0);
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: var(--af-primary, #765538);
+  }
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

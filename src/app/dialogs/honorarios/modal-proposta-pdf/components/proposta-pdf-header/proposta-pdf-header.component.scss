@@ -1,0 +1,92 @@
+.a4-top-accent-bar {
+  height: 6px;
+  width: 100%;
+}
+
+.doc-header {
+  padding: 24px 32px 18px;
+  border-bottom: 1px solid #e0e0e0;
+
+  .doc-logo-wrapper {
+    max-height: 52px;
+    max-width: 160px;
+    display: flex;
+    align-items: center;
+
+    .doc-logo {
+      max-height: 52px;
+      max-width: 160px;
+      object-fit: contain;
+    }
+  }
+
+  .doc-monogram-box {
+    width: 44px;
+    height: 44px;
+    border: 2px solid;
+    border-radius: 6px;
+  }
+
+  .doc-brand-name {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .doc-brand-slogan {
+    font-size: 11px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .doc-brand-reg {
+    font-size: 10px;
+    color: #888;
+  }
+
+  .doc-contacts {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #444;
+  }
+}
+
+.doc-title-banner {
+  padding: 14px 32px;
+  margin: 16px 32px 0;
+  border-radius: 4px;
+
+  .doc-category {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+  }
+
+  .doc-code {
+    font-size: 11px;
+    color: #666;
+  }
+
+  .doc-emission-date {
+    font-size: 11px;
+    color: #444;
+  }
+
+  .badge-validade {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+}
+
+.doc-intro-quote {
+  margin: 16px 32px 0;
+  padding: 10px 16px;
+  border-left: 3px solid;
+  background-color: #faf8f7;
+  font-size: 12px;
+  font-style: italic;
+  color: #555;
+  line-height: 1.5;
+}

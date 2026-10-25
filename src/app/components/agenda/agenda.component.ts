@@ -22,6 +22,8 @@ import { ConfiguracaoAgendaEmpresa } from "../../core/models/agenda.model";
 import { AuthService } from "../../core/services/auth.service";
 import { DialogService } from "../../core/services/dialog.service";
 import { NotificationService } from "../../core/services/notification.service";
+import { AgendaMetricasComponent } from "./components/agenda-metricas/agenda-metricas.component";
+import { AgendaCalendarioViewComponent } from "./components/agenda-calendario-view/agenda-calendario-view.component";
 
 export interface DiaCalendario {
   data: Date;
@@ -41,6 +43,8 @@ export interface DiaCalendario {
     SelectComponent,
     BadgeComponent,
     EmptyStateComponent,
+    AgendaMetricasComponent,
+    AgendaCalendarioViewComponent,
   ],
   templateUrl: "./agenda.component.html",
   styleUrls: ["./agenda.component.scss"],
@@ -50,8 +54,6 @@ export class AgendaComponent implements OnInit {
   private authService = inject(AuthService);
   private dialogService = inject(DialogService);
   private notificationService = inject(NotificationService);
-
-  modoVisualizacao: "calendario" | "lista" = "calendario";
 
   compromissos: Compromisso[] = [];
   configuracaoEmpresa: ConfiguracaoAgendaEmpresa | null = null;

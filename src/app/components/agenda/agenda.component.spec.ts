@@ -132,12 +132,6 @@ describe("AgendaComponent", () => {
     expect(component.totalConcluidos).toBe(1);
   });
 
-  it("deve alternar os modos de visualização", () => {
-    expect(component.modoVisualizacao).toBe("calendario");
-    component.modoVisualizacao = "lista";
-    expect(component.modoVisualizacao).toBe("lista");
-  });
-
   it("deve navegar entre meses", () => {
     const mesInicial = component.dataReferencia.getMonth();
     component.proximoMes();

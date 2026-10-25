@@ -3,20 +3,9 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { UrlBuilder } from "../../utils/url-builder";
+import { OpcaoConfiguracao } from "../../models/configuracao-sistema.model";
 
-export interface OpcaoConfiguracao {
-  id: string;
-  categoria: string;
-  chave: string;
-  rotulo: string;
-  subRotulo?: string;
-  icone?: string;
-  cor?: string;
-  corFundo?: string;
-  ordem: number;
-  ativo: boolean;
-  dadosExtrasJson?: string;
-}
+export { OpcaoConfiguracao } from "../../models/configuracao-sistema.model";
 
 @Injectable({
   providedIn: "root",

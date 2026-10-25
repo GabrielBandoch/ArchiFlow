@@ -1,0 +1,45 @@
+<div class="modal-backdrop" *ngIf="show">
+  <div class="modal-dialog-pdf d-flex flex-direction-column">
+    <app-proposta-pdf-toolbar
+      [proposta]="proposta"
+      [isConfigurado]="isConfigurado"
+      (whatsapp)="compartilharWhatsapp()"
+      (email)="enviarEmail()"
+      (imprimir)="imprimir()"
+      (fechar)="fechar()"
+      (configurar)="irParaConfiguracoes()"
+    >
+    </app-proposta-pdf-toolbar>
+
+    <div class="modal-document-container p-lg" *ngIf="proposta">
+      <div
+        class="a4-document-sheet"
+        [style.--cor-primaria]="config.corPrimaria || '#765538'"
+      >
+        <app-proposta-pdf-header
+          [config]="config"
+          [proposta]="proposta"
+        >
+        </app-proposta-pdf-header>
+
+        <app-proposta-pdf-resumo
+          [config]="config"
+          [proposta]="proposta"
+        >
+        </app-proposta-pdf-resumo>
+
+        <app-proposta-pdf-etapas
+          [config]="config"
+          [proposta]="proposta"
+        >
+        </app-proposta-pdf-etapas>
+
+        <app-proposta-pdf-condicoes
+          [config]="config"
+          [proposta]="proposta"
+        >
+        </app-proposta-pdf-condicoes>
+      </div>
+    </div>
+  </div>
+</div>

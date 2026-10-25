@@ -1,0 +1,161 @@
+<div class="financeiro-semana-grid">
+  <app-card>
+    <div class="p-lg d-flex flex-direction-column gap-md h-full">
+      <div
+        class="d-flex align-items-center justify-content-between border-bottom pb-xs"
+      >
+        <div class="d-flex align-items-center gap-xs text-danger">
+          <span class="material-symbols-outlined">receipt_long</span>
+          <h3 class="font-headline-sm m-0">Contas a Pagar na Semana</h3>
+        </div>
+        <span class="badge-danger font-label-xs"
+          >{{ contasPagar.length }} pendente(s)</span
+        >
+      </div>
+
+      <div>
+        <span class="font-label-sm text-on-surface-variant d-block"
+          >Total Pendente Esta Semana</span
+        >
+        <span class="font-headline-md font-weight-bold text-danger">{{
+          formatarMoeda(totalPagar)
+        }}</span>
+      </div>
+
+      <div
+        *ngIf="contasPagar.length > 0"
+        class="mini-finance-list d-flex flex-direction-column gap-xs"
+      >
+        <div
+          *ngFor="let desp of contasPagar.slice(0, 4)"
+          class="mini-finance-item d-flex align-items-center justify-content-between p-xs"
+        >
+          <div class="d-flex align-items-center gap-xs min-w-0">
+            <button
+              type="button"
+              class="btn-quick-check"
+              (click)="marcarDespesaPaga.emit(desp)"
+              title="Marcar como já paga"
+            >
+              <span class="material-symbols-outlined icon-check"
+                >check_circle</span
+              >
+            </button>
+            <div class="min-w-0">
+              <span
+                class="font-body-xs font-weight-semibold d-block text-on-surface truncate"
+                >{{ desp.descricao }}</span
+              >
+              <span class="font-label-xs text-on-surface-variant"
+                >{{ desp.projetoNome || "Despesa Geral" }} • Vence:
+                {{ formatarData(desp.dataDespesa) }}</span
+              >
+            </div>
+          </div>
+          <strong class="font-body-xs text-danger">{{
+            formatarMoeda(desp.valor)
+          }}</strong>
+        </div>
+      </div>
+
+      <div
+        *ngIf="contasPagar.length === 0"
+        class="mini-empty-finance font-body-xs text-on-surface-variant p-sm text-center"
+      >
+        Nenhuma conta ou despesa pendente para esta semana.
+      </div>
+
+      <div
+        class="margin-top-auto pt-xs border-top d-flex justify-content-end"
+      >
+        <a
+          routerLink="/financeiro"
+          class="link-action font-label-sm d-flex align-items-center gap-xs"
+        >
+          <span>Ver todas no Financeiro</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </app-card>
+
+  <app-card>
+    <div class="p-lg d-flex flex-direction-column gap-md h-full">
+      <div
+        class="d-flex align-items-center justify-content-between border-bottom pb-xs"
+      >
+        <div class="d-flex align-items-center gap-xs text-success">
+          <span class="material-symbols-outlined">payments</span>
+          <h3 class="font-headline-sm m-0">Recebíveis da Semana</h3>
+        </div>
+        <span class="badge-success font-label-xs"
+          >{{ recebiveis.length }} parcela(s)</span
+        >
+      </div>
+
+      <div
+        class="d-flex align-items-center justify-content-between flex-wrap gap-xs"
+      >
+        <div>
+          <span class="font-label-sm text-on-surface-variant d-block"
+            >Previsão a Receber Esta Semana</span
+          >
+          <span class="font-headline-md font-weight-bold text-success">{{
+            formatarMoeda(totalReceber)
+          }}</span>
+        </div>
+
+        <div
+          *ngIf="parcelasAtrasadas.length > 0"
+          class="alert-overdue-pill font-label-xs"
+        >
+          <span class="material-symbols-outlined icon-inline-sm">warning</span>
+          <span>{{ parcelasAtrasadas.length }} parcela(s) em atraso</span>
+        </div>
+      </div>
+
+      <div
+        *ngIf="recebiveis.length > 0"
+        class="mini-finance-list d-flex flex-direction-column gap-xs"
+      >
+        <div
+          *ngFor="let parc of recebiveis.slice(0, 4)"
+          class="mini-finance-item d-flex align-items-center justify-content-between p-xs"
+        >
+          <div>
+            <span
+              class="font-body-xs font-weight-semibold d-block text-on-surface"
+              >{{ parc.projetoNome }}</span
+            >
+            <span class="font-label-xs text-on-surface-variant"
+              >{{ parc.descricao }} • Vencimento:
+              {{ formatarData(parc.dataVencimento) }}</span
+            >
+          </div>
+          <strong class="font-body-xs text-success">{{
+            formatarMoeda(parc.valor)
+          }}</strong>
+        </div>
+      </div>
+
+      <div
+        *ngIf="recebiveis.length === 0"
+        class="mini-empty-finance font-body-xs text-on-surface-variant p-sm text-center"
+      >
+        Nenhuma parcela com vencimento programado para esta semana.
+      </div>
+
+      <div
+        class="margin-top-auto pt-xs border-top d-flex justify-content-end"
+      >
+        <a
+          routerLink="/financeiro"
+          class="link-action font-label-sm d-flex align-items-center gap-xs"
+        >
+          <span>Ver todas as parcelas</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </app-card>
+</div>

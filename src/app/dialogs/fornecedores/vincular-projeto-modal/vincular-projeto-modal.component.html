@@ -1,0 +1,61 @@
+<app-dialog
+  [show]="show"
+  dialogTitle="Vincular a uma Obra / Projeto"
+  size="md"
+  (close)="onClose()"
+>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="salvar()"
+    class="d-flex flex-direction-column gap-md margin-top-xs"
+  >
+    <p class="font-body-sm text-secondary m-0">
+      Associe <strong>{{ fornecedor?.nome }}</strong> a um projeto em andamento
+      especificando a responsabilidade técnica ou fornecimento contratado.
+    </p>
+
+    <div class="field-item">
+      <app-project-search
+        id="vincularProjeto"
+        label="Projeto / Obra *"
+        [required]="true"
+        formControlName="projetoId"
+        [error]="
+          submitted && form.get('projetoId')?.errors
+            ? 'Selecione uma obra.'
+            : undefined
+        "
+      >
+      </app-project-search>
+    </div>
+
+    <div class="field-item">
+      <app-input
+        id="funcaoNoProjeto"
+        label="Função / Escopo do Serviço nesta Obra *"
+        placeholder="Ex: Fabricação e montagem de esquadrias em alumínio"
+        icon="badge"
+        formControlName="funcaoNoProjeto"
+        [error]="
+          submitted && form.get('funcaoNoProjeto')?.errors
+            ? 'Informe o escopo ou função do parceiro nesta obra.'
+            : undefined
+        "
+      >
+      </app-input>
+    </div>
+
+    <div class="dialog-actions d-flex justify-content-end gap-xs margin-top-md">
+      <app-button
+        variant="ghost"
+        (btnClick)="onClose()"
+        [disabled]="salvando"
+      >
+        Cancelar
+      </app-button>
+      <app-button variant="primary" type="submit" [disabled]="salvando">
+        {{ salvando ? "Vinculando..." : "Vincular Parceiro" }}
+      </app-button>
+    </div>
+  </form>
+</app-dialog>

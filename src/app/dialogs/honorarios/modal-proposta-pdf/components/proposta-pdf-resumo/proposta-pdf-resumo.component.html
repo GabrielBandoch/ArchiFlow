@@ -1,0 +1,32 @@
+<div class="doc-section" *ngIf="config.exibirResumo && proposta">
+  <div class="doc-section-header d-flex align-items-center gap-xs">
+    <span class="doc-sec-num" [style.color]="config.corPrimaria">01.</span>
+    <h4 class="m-0" [style.color]="config.corPrimaria">
+      DADOS DO PROJETO & CLIENTE
+    </h4>
+  </div>
+
+  <div class="doc-meta-grid">
+    <div class="meta-cell">
+      <span class="lbl">CLIENTE / CONTRATANTE</span>
+      <strong>{{
+        proposta.clienteNome ||
+          proposta.leadNome ||
+          "Cliente em Negociação"
+      }}</strong>
+    </div>
+    <div class="meta-cell">
+      <span class="lbl">OBJETO / PROJETO</span>
+      <strong>{{ proposta.titulo }}</strong>
+    </div>
+    <div class="meta-cell">
+      <span class="lbl">TIPOLOGIA DO PROJETO</span>
+      <span>{{ proposta.tipoProjetoNome || "Residencial" }}</span>
+    </div>
+    <div class="meta-cell">
+      <span class="lbl">METRAGEM & PADRÃO</span>
+      <strong>{{ proposta.metragemQuadrada }} m²</strong>
+      <span *ngIf="proposta.padraoImovelNome">({{ proposta.padraoImovelNome }})</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,89 @@
+.doc-section {
+  padding: 16px 32px 0;
+
+  .doc-section-header {
+    margin-bottom: 10px;
+
+    .doc-sec-num {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h4 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+.doc-payment-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 12px;
+
+  .payment-terms-box,
+  .payment-bank-box {
+    background-color: #fcfbfb;
+    border: 1px solid #ebe6e3;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 11px;
+    line-height: 1.5;
+
+    .sub-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: #666;
+      display: block;
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.doc-terms-box {
+  background-color: #fcfbfb;
+  border: 1px solid #ebe6e3;
+  border-radius: 6px;
+  padding: 10px 14px;
+
+  .doc-terms-text {
+    font-size: 11px;
+    color: #555;
+    line-height: 1.5;
+  }
+}
+
+.doc-signatures-section {
+  padding-top: 32px;
+  padding-bottom: 24px;
+
+  .sign-box {
+    .sign-line {
+      border-top: 1px solid #888;
+      width: 80%;
+      margin: 0 auto 8px;
+    }
+
+    .sign-name {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .sign-role {
+      font-size: 10px;
+      color: #666;
+    }
+  }
+}
+
+.doc-footer {
+  border-top: 1px solid #e0e0e0;
+  padding: 12px 32px;
+  margin-top: 24px;
+  color: #888;
+
+  .bullet-sep {
+    color: #ccc;
+  }
+}

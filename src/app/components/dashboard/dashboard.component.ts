@@ -22,11 +22,20 @@ import { PersonalizarDashboardModalComponent } from "../../dialogs/dashboard/per
 import { CriarProjetoModalComponent } from "../../dialogs/projetos/criar-projeto-modal/criar-projeto-modal.component";
 import { NovoLeadModalComponent } from "../../dialogs/leads/novo-lead-modal/novo-lead-modal.component";
 import { CompromissoModalComponent } from "../../dialogs/agenda/compromisso-modal/compromisso-modal.component";
+import { DashboardPendenciasHojeComponent } from "./components/dashboard-pendencias-hoje/dashboard-pendencias-hoje.component";
+import { DashboardFinanceiroSemanaComponent } from "./components/dashboard-financeiro-semana/dashboard-financeiro-semana.component";
 
 @Component({
   selector: "app-dashboard",
   standalone: true,
-  imports: [CommonModule, RouterLink, CORE_IMPORTS, DESIGN_SYSTEM],
+  imports: [
+    CommonModule,
+    RouterLink,
+    CORE_IMPORTS,
+    DESIGN_SYSTEM,
+    DashboardPendenciasHojeComponent,
+    DashboardFinanceiroSemanaComponent,
+  ],
   templateUrl: "./dashboard.component.html",
   styleUrl: "./dashboard.component.scss",
 })

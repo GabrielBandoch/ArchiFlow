@@ -1,0 +1,103 @@
+<div class="header-container" *ngIf="proposta && config">
+  <div
+    class="a4-top-accent-bar"
+    [style.background-color]="config.corPrimaria || '#765538'"
+  ></div>
+
+  <header
+    class="doc-header d-flex justify-content-between align-items-center"
+    *ngIf="config.exibirCabecalho"
+  >
+    <div class="doc-brand d-flex align-items-center gap-md">
+      <div
+        *ngIf="config.logoUrl; else defaultMonogramTpl"
+        class="doc-logo-wrapper"
+      >
+        <img [src]="config.logoUrl" alt="Logo" class="doc-logo" />
+      </div>
+      <ng-template #defaultMonogramTpl>
+        <div
+          class="doc-monogram-box d-flex align-items-center justify-content-center"
+          [style.border-color]="config.corPrimaria || '#765538'"
+          [style.color]="config.corPrimaria || '#765538'"
+        >
+          <span class="material-symbols-outlined">architecture</span>
+        </div>
+      </ng-template>
+
+      <div class="d-flex flex-direction-column">
+        <h1
+          class="doc-brand-name m-0"
+          [style.color]="config.corPrimaria || '#765538'"
+        >
+          {{ config.nomeEscritorio || "SEU ESCRITÓRIO DE ARQUITETURA" }}
+        </h1>
+        <span class="doc-brand-slogan" *ngIf="config.slogan">
+          {{ config.slogan }}
+        </span>
+        <span
+          class="doc-brand-reg font-mono"
+          *ngIf="config.registroProfissional"
+        >
+          {{ config.registroProfissional }}
+        </span>
+      </div>
+    </div>
+
+    <div
+      class="doc-contacts d-flex flex-direction-column align-items-end text-right"
+    >
+      <span class="contact-item" *ngIf="config.telefone">
+        <strong>Tel:</strong> {{ config.telefone }}
+      </span>
+      <span class="contact-item" *ngIf="config.email">
+        <strong>E-mail:</strong> {{ config.email }}
+      </span>
+      <span class="contact-item" *ngIf="config.endereco">
+        {{ config.endereco }}
+      </span>
+      <span
+        class="contact-item text-on-surface-variant font-italic"
+        *ngIf="!config.telefone && !config.email"
+      >
+        Identidade do escritório em configuração
+      </span>
+    </div>
+  </header>
+
+  <div
+    class="doc-title-banner d-flex justify-content-between align-items-center"
+    [style.background-color]="config.corPrimaria + '12'"
+    [style.border-left]="'3px solid ' + config.corPrimaria"
+  >
+    <div class="d-flex flex-direction-column gap-xxs">
+      <div class="doc-category" [style.color]="config.corPrimaria">
+        PROPOSTA TÉCNICA E COMERCIAL DE HONORÁRIOS
+      </div>
+      <div class="doc-code font-mono">CÓDIGO: {{ proposta.codigo }}</div>
+    </div>
+    <div
+      class="doc-meta text-right d-flex flex-direction-column align-items-end gap-xxs"
+    >
+      <div class="doc-emission-date">
+        <strong>Emissão:</strong>
+        {{ proposta.criadoEm | date: "dd/MM/yyyy" }}
+      </div>
+      <div
+        class="badge-validade"
+        [style.color]="config.corPrimaria"
+        [style.background-color]="config.corPrimaria + '18'"
+      >
+        Validade: {{ config.validadeDias }} dias
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="doc-intro-quote"
+    *ngIf="config.textoApresentacao"
+    [style.border-left-color]="config.corPrimaria"
+  >
+    <p class="m-0">{{ config.textoApresentacao }}</p>
+  </div>
+</div>

@@ -218,52 +218,54 @@
                 <div
                   class="d-flex align-items-center justify-content-end gap-xs"
                 >
-                  <button
-                    type="button"
-                    class="btn-table-action"
-                    (click)="abrirPdfPropostaSalva(p)"
+                  <app-button
+                    variant="icon"
+                    size="sm"
+                    (btnClick)="abrirPdfPropostaSalva(p)"
                     title="Visualizar / Imprimir PDF da Proposta"
                   >
                     <span class="material-symbols-outlined text-primary"
                       >picture_as_pdf</span
                     >
-                  </button>
-                  <button
-                    type="button"
-                    class="btn-table-action"
-                    (click)="compartilharWhatsappPropostaSalva(p)"
+                  </app-button>
+                  <app-button
+                    variant="icon"
+                    size="sm"
+                    (btnClick)="compartilharWhatsappPropostaSalva(p)"
                     title="Compartilhar via WhatsApp"
                   >
                     <span class="material-symbols-outlined text-success"
                       >chat</span
                     >
-                  </button>
-                  <button
+                  </app-button>
+                  <app-button
                     *ngIf="p.status === 0"
-                    type="button"
-                    class="btn-table-action"
-                    (click)="atualizarStatusProposta(p, 1)"
+                    variant="icon"
+                    size="sm"
+                    (btnClick)="atualizarStatusProposta(p, 1)"
                     title="Marcar como Enviada"
                   >
                     <span class="material-symbols-outlined">send</span>
-                  </button>
-                  <button
+                  </app-button>
+                  <app-button
                     *ngIf="p.status === 0 || p.status === 1"
-                    type="button"
-                    class="btn-table-action btn-action-approve"
-                    (click)="atualizarStatusProposta(p, 2)"
+                    variant="icon"
+                    size="sm"
+                    customClass="btn-action-approve"
+                    (btnClick)="atualizarStatusProposta(p, 2)"
                     title="Aprovar Proposta"
                   >
                     <span class="material-symbols-outlined">check_circle</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn-table-action btn-action-delete"
-                    (click)="excluirProposta(p)"
+                  </app-button>
+                  <app-button
+                    variant="icon"
+                    size="sm"
+                    customClass="btn-action-delete"
+                    (btnClick)="excluirProposta(p)"
                     title="Excluir proposta"
                   >
                     <span class="material-symbols-outlined">delete</span>
-                  </button>
+                  </app-button>
                 </div>
               </td>
             </tr>
@@ -284,24 +286,4 @@
       </div>
     </div>
   </div>
-
-  <app-modal-salvar-proposta
-    [show]="modalSalvarAberto"
-    [form]="propostaForm"
-    [simulacao]="simulacao"
-    [leads]="leads"
-    [clientes]="clientes"
-    [salvando]="salvando"
-    (close)="fecharModalSalvar()"
-    (salvar)="salvarProposta()"
-  >
-  </app-modal-salvar-proposta>
-
-  <app-modal-ajuste-manual
-    [show]="modalAjusteManualAberto"
-    [form]="ajusteForm"
-    (close)="fecharModalAjusteManual()"
-    (confirmar)="confirmarAjusteManual()"
-  >
-  </app-modal-ajuste-manual>
 </div>

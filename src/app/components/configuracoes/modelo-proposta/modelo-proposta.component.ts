@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   FormBuilder,
@@ -13,10 +13,12 @@ import {
 } from "../../../core/models/configuracao-proposta.model";
 import { ButtonComponent } from "../../../shared/components/button/button.component";
 import { NotificationService } from "../../../core/services/notification.service";
+import { DialogService } from "../../../core/services/dialog.service";
 import {
   ModalPropostaPdfComponent,
   PropostaVisualizacaoData,
-} from "../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component";
+} from "../../../dialogs/honorarios/modal-proposta-pdf/modal-proposta-pdf.component";
+import { PropostaPreviewCardComponent } from "./components/proposta-preview-card/proposta-preview-card.component";
 
 import { RouterLink } from "@angular/router";
 import { EmpresaService } from "../../../core/api/empresa/empresa.service";
@@ -31,12 +33,13 @@ import { ModeloPropostaForm } from "./modelo-proposta.form";
     ReactiveFormsModule,
     RouterLink,
     ButtonComponent,
-    ModalPropostaPdfComponent,
+    PropostaPreviewCardComponent,
   ],
   templateUrl: "./modelo-proposta.component.html",
   styleUrls: ["./modelo-proposta.component.scss"],
 })
 export class ModeloPropostaComponent implements OnInit {
+  private dialogService = inject(DialogService);
   public form!: FormGroup;
   public abaAtiva: "identidade" | "secoes" | "textos" | "whatsapp" =
     "identidade";
@@ -232,6 +235,15 @@ export class ModeloPropostaComponent implements OnInit {
 
   public testarImpressao(): void {
     this.modalPdfAberto = true;
+    const ref = this.dialogService.open(ModalPropostaPdfComponent, {
+      data: {
+        proposta: this.previewData,
+        show: true,
+      },
+    });
+    ref.instance.close?.subscribe(() => {
+      this.modalPdfAberto = false;
+    });
   }
 
   public fecharModalPdf(): void {

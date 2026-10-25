@@ -1,0 +1,76 @@
+<div
+  class="modal-toolbar d-flex justify-content-between align-items-center p-md flex-wrap gap-sm no-print"
+>
+  <div class="d-flex align-items-center gap-sm">
+    <div
+      class="toolbar-icon-box d-flex align-items-center justify-content-center"
+    >
+      <span class="material-symbols-outlined">picture_as_pdf</span>
+    </div>
+    <div>
+      <h3 class="font-headline-sm m-0">Proposta Técnica & Comercial (PDF)</h3>
+      <span class="font-body-xs text-on-surface-variant font-mono">{{
+        proposta?.codigo || "PROPOSTA"
+      }}</span>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-xs flex-wrap">
+    <app-button
+      variant="outline"
+      (btnClick)="whatsapp.emit()"
+      title="Compartilhar proposta via WhatsApp"
+    >
+      <span class="material-symbols-outlined text-success">chat</span>
+      WhatsApp
+    </app-button>
+    <app-button
+      variant="outline"
+      (btnClick)="email.emit()"
+      title="Enviar proposta por E-mail"
+    >
+      <span class="material-symbols-outlined">mail</span>
+      E-mail
+    </app-button>
+    <app-button
+      variant="primary"
+      (btnClick)="imprimir.emit()"
+      title="Imprimir em folha A4 ou Salvar em PDF"
+    >
+      <span class="material-symbols-outlined">print</span>
+      Imprimir / Salvar PDF
+    </app-button>
+    <button
+      type="button"
+      class="btn-close-modal"
+      (click)="fechar.emit()"
+      title="Fechar"
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+</div>
+
+<div
+  class="unconfigured-warning-banner d-flex align-items-center justify-content-between no-print"
+  *ngIf="!isConfigurado"
+>
+  <div class="d-flex align-items-center gap-sm font-body-sm banner-text-wrap">
+    <span class="warning-badge-icon">
+      <span class="material-symbols-outlined icon-sm">storefront</span>
+    </span>
+    <span
+      ><strong>Personalize seu Escritório:</strong> Configure seu logotipo,
+      CAU/CREA e cores oficiais para orçamentos 100% com a sua identidade
+      visual.</span
+    >
+  </div>
+  <button
+    type="button"
+    class="btn-config-now font-label-xs d-flex align-items-center gap-xxs"
+    (click)="configurar.emit()"
+  >
+    <span class="material-symbols-outlined icon-xs">tune</span>
+    Personalizar Agora
+  </button>
+</div>

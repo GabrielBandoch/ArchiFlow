@@ -10,11 +10,21 @@ import { CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { NotificationService } from "../../../core/services/notification.service";
 import { MaskUtils } from "../../../core/utils/mask-utils";
 import { DadosEmpresaForm } from "./dados-empresa.form";
+import { EmpresaLogoCardComponent } from "./components/empresa-logo-card/empresa-logo-card.component";
+import { EmpresaIdentidadeCardComponent } from "./components/empresa-identidade-card/empresa-identidade-card.component";
+import { EmpresaDadosFormComponent } from "./components/empresa-dados-form/empresa-dados-form.component";
 
 @Component({
   selector: "app-dados-empresa",
   standalone: true,
-  imports: [CORE_IMPORTS, FORM_IMPORTS, DESIGN_SYSTEM],
+  imports: [
+    CORE_IMPORTS,
+    FORM_IMPORTS,
+    DESIGN_SYSTEM,
+    EmpresaLogoCardComponent,
+    EmpresaIdentidadeCardComponent,
+    EmpresaDadosFormComponent,
+  ],
   templateUrl: "./dados-empresa.component.html",
   styleUrl: "./dados-empresa.component.scss",
 })
@@ -44,6 +54,10 @@ export class DadosEmpresaComponent implements OnInit {
 
   get f() {
     return this.empresaForm.controls;
+  }
+
+  onCorPrimariaChange(cor: string): void {
+    this.empresaForm.get("corPrimaria")?.setValue(cor);
   }
 
   ngOnInit(): void {
