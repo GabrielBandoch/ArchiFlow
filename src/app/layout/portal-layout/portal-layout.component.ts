@@ -1,9 +1,9 @@
 import { CotuLogoComponent } from "../../shared/components/cotu-logo/cotu-logo.component";
-import { Component, inject } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterOutlet, Router } from "@angular/router";
 import { AuthService } from "../../core/services/auth.service";
-import { ConfiguracaoPropostaService } from "../../core/services/configuracao-proposta.service";
+import { EmpresaService } from "../../core/api/empresa/empresa.service";
 import { DESIGN_SYSTEM } from "../../shared";
 
 @Component({
@@ -13,16 +13,22 @@ import { DESIGN_SYSTEM } from "../../shared";
   templateUrl: "./portal-layout.component.html",
   styleUrl: "./portal-layout.component.scss",
 })
-export class PortalLayoutComponent {
+export class PortalLayoutComponent implements OnInit {
   authService = inject(AuthService);
-  configService = inject(ConfiguracaoPropostaService);
+  empresaService = inject(EmpresaService, { optional: true });
   router = inject(Router);
 
-  get nomeEscritorio(): string {
-    return (
-      this.configService.getConfiguracao()?.nomeEscritorio ||
-      "Escritório de Arquitetura"
-    );
+  nomeEscritorio = "Escritório de Arquitetura";
+
+  ngOnInit(): void {
+    this.empresaService?.obterDadosEmpresa().subscribe({
+      next: (dados) => {
+        if (dados?.nomeEmpresa) {
+          this.nomeEscritorio = dados.nomeEmpresa;
+        }
+      },
+      error: () => {},
+    });
   }
 
   get currentUser() {

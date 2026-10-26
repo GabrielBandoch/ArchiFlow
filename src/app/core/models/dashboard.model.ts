@@ -5,9 +5,6 @@ export interface DashboardKpis {
   totalLeadsConvertidos: number;
   taxaConversaoLeads: number;
   totalClientes: number;
-  totalPropostas: number;
-  valorTotalPropostas: number;
-  valorMedioProposta: number;
 }
 
 export interface ProjetosPorStatus {
@@ -37,13 +34,6 @@ export interface LeadsPorOrigem {
   percentual: number;
 }
 
-export interface PropostasMensal {
-  mesAno: string;
-  rotuloMes: string;
-  quantidade: number;
-  valorTotal: number;
-}
-
 export interface ProjetoResumoDashboard {
   id: string;
   nome: string;
@@ -68,27 +58,14 @@ export interface LeadResumoDashboard {
   criadoEm: string;
 }
 
-export interface PropostaResumoDashboard {
-  id: string;
-  titulo: string;
-  codigo: string;
-  clienteOuLeadNome?: string;
-  metragemQuadrada: number;
-  valorFinal: number;
-  status: string;
-  criadoEm: string;
-}
-
 export interface DashboardMetricas {
   kpis: DashboardKpis;
   projetosPorStatus: ProjetosPorStatus[];
   projetosPorTipo: ProjetosPorTipo[];
   leadsPorStatus: LeadsPorStatus[];
   leadsPorOrigem: LeadsPorOrigem[];
-  propostasMensais: PropostasMensal[];
   projetosRecentes: ProjetoResumoDashboard[];
   leadsRecentes: LeadResumoDashboard[];
-  propostasRecentes: PropostaResumoDashboard[];
 }
 
 export interface PreferenciaDashboard {

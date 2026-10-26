@@ -118,7 +118,6 @@ export class AuthService {
       { modulo: "fornecedores", route: "/fornecedores" },
       { modulo: "agenda", route: "/agenda" },
       { modulo: "financeiro", route: "/financeiro" },
-      { modulo: "simulador", route: "/simulador" },
       { modulo: "configuracoes", route: "/configuracoes" },
     ];
 

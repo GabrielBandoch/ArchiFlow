@@ -5,8 +5,6 @@ import { AuthService } from "../../../core/services/auth.service";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { ArquivoService } from "../../../core/api/projetos/arquivo.service";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
-import { HonorarioService } from "../../../core/api/honorarios/honorario.service";
-import { ConfiguracaoPropostaService } from "../../../core/services/configuracao-proposta.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import {
   Projeto,
@@ -17,15 +15,12 @@ import {
   TarefaEtapa,
 } from "../../../core/models/projeto.model";
 import { Arquivo } from "../../../core/models/arquivo.model";
-import { PropostaHonorario } from "../../../core/models/honorario.model";
 import { DESIGN_SYSTEM, ChatWidgetComponent } from "../../../shared";
 import { PortalHeroComponent } from "../portal-hero/portal-hero.component";
 import { PortalTimelineComponent } from "../portal-timeline/portal-timeline.component";
 import { PortalDocumentosComponent } from "../portal-documentos/portal-documentos.component";
 import { PortalSuporteComponent } from "../portal-suporte/portal-suporte.component";
 import { DialogService } from "../../../core/services/dialog.service";
-import { ModalPropostaPdfComponent } from "../../honorarios/modal-proposta-pdf/modal-proposta-pdf.component";
-import { PropostaVisualizacaoData } from "../../../core/models/proposta-pdf.types";
 
 @Component({
   selector: "app-portal-cliente",
@@ -48,8 +43,6 @@ export class PortalClienteComponent implements OnInit {
   private projetoService = inject(ProjetoService);
   private arquivoService = inject(ArquivoService);
   private clienteService = inject(ClienteService);
-  private honorarioService = inject(HonorarioService);
-  private configPropostaService = inject(ConfiguracaoPropostaService);
   private notificationService = inject(NotificationService, { optional: true });
   private dialogService = inject(DialogService, { optional: true });
 
@@ -58,9 +51,6 @@ export class PortalClienteComponent implements OnInit {
   listaProjetosCliente: Projeto[] = [];
   modoSelecaoProjeto = false;
   arquivos: Arquivo[] = [];
-  propostaVinculada: PropostaHonorario | null = null;
-  modalPdfAberto = false;
-  propostaParaPdf: PropostaVisualizacaoData | null = null;
 
   loading = true;
   filtroArquivo: "todos" | "plantas" | "documentos" | "imagens" = "todos";
@@ -158,7 +148,6 @@ export class PortalClienteComponent implements OnInit {
         }
 
         this.carregarArquivos();
-        this.carregarPropostaVinculada(data.clienteId);
       },
       error: (err) => {
         console.error("Erro ao carregar projeto no portal", err);
@@ -182,95 +171,6 @@ export class PortalClienteComponent implements OnInit {
         );
       },
     });
-  }
-
-  carregarPropostaVinculada(clienteId?: string): void {
-    if (!clienteId) return;
-    this.honorarioService.obterPropostas().subscribe({
-      next: (propostas) => {
-        const prop = (propostas || []).find((p) => p.clienteId === clienteId);
-        if (prop) {
-          this.propostaVinculada = prop;
-        }
-      },
-      error: () => {},
-    });
-  }
-
-  abrirPdfProposta(): void {
-    if (!this.projeto) return;
-
-    if (this.propostaVinculada) {
-      const etapas = (this.propostaVinculada.itensEtapa || []).map(
-        (i: any) => ({
-          nome: i.nomeEtapa,
-          descricao: i.descricao,
-          percentual: i.percentual,
-          valor: i.valor,
-          incluso: i.incluso,
-        }),
-      );
-
-      this.propostaParaPdf = {
-        codigo: this.propostaVinculada.codigo,
-        titulo: this.propostaVinculada.titulo || this.projeto.nome,
-        clienteNome:
-          this.propostaVinculada.clienteNome || this.projeto.clienteNome,
-        metragemQuadrada:
-          this.propostaVinculada.metragemQuadrada ||
-          this.projeto.metragemTotal ||
-          0,
-        padraoImovelNome: this.propostaVinculada.padraoImovelNome,
-        tipoProjetoNome:
-          this.propostaVinculada.tipoProjetoNome || this.tipoProjetoFormatado,
-        valorTotalSugerido: this.propostaVinculada.valorTotalSugerido,
-        valorFinalAjustado: this.propostaVinculada.valorFinalAjustado,
-        criadoEm: this.propostaVinculada.criadoEm,
-        statusNome: this.propostaVinculada.statusNome || "Aprovada",
-        etapas:
-          etapas.length > 0
-            ? etapas
-            : (this.projeto.etapas || []).map((e) => ({
-                nome: e.nome,
-                descricao: e.descricao,
-                percentual: Math.round(
-                  100 / (this.projeto?.etapas?.length || 1),
-                ),
-                valor: 0,
-              })),
-      };
-    } else {
-      const etapas = (this.projeto.etapas || []).map((e) => ({
-        nome: e.nome,
-        descricao: e.descricao,
-        percentual: Math.round(100 / (this.projeto?.etapas?.length || 1)),
-        valor: 0,
-      }));
-
-      this.propostaParaPdf = {
-        codigo: "CONTRATO-" + this.projeto.id.substring(0, 8).toUpperCase(),
-        titulo: this.projeto.nome,
-        clienteNome: this.projeto.clienteNome || "Cliente",
-        metragemQuadrada: this.projeto.metragemTotal || 0,
-        tipoProjetoNome: this.tipoProjetoFormatado,
-        valorFinalAjustado: 0,
-        criadoEm: this.projeto.dataInicio || new Date().toISOString(),
-        statusNome: "Aprovado",
-        etapas,
-      };
-    }
-
-    this.modalPdfAberto = true;
-    if (this.dialogService) {
-      this.dialogService.open(ModalPropostaPdfComponent, {
-        data: { proposta: this.propostaParaPdf },
-      });
-    }
-  }
-
-  fecharModalPdf(): void {
-    this.modalPdfAberto = false;
-    this.propostaParaPdf = null;
   }
 
   normalizarStatus(status: any): StatusProjeto {
@@ -425,6 +325,9 @@ export class PortalClienteComponent implements OnInit {
   }
 
   formatarMoeda(valor?: number): string {
-    return this.configPropostaService.formatarMoeda(valor || 0);
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(valor || 0);
   }
 }

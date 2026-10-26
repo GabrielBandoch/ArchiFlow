@@ -45,17 +45,17 @@ describe("DashboardAcoesRapidasComponent", () => {
     expect(component.novoLead.emit).toHaveBeenCalledTimes(1);
   });
 
-  it("should render navigation links to simulador and clientes with correct destination hrefs", () => {
+  it("should render navigation links to agenda and clientes with correct destination hrefs", () => {
     const links = fixture.nativeElement.querySelectorAll("a.btn-quick");
-    const simuladorLink = Array.from(links).find((l: any) =>
-      l.textContent.includes("Simular Honorários"),
+    const agendaLink = Array.from(links).find((l: any) =>
+      l.textContent.includes("Ver Agenda"),
     ) as HTMLAnchorElement;
     const clientesLink = Array.from(links).find((l: any) =>
       l.textContent.includes("Ver Clientes"),
     ) as HTMLAnchorElement;
 
-    expect(simuladorLink).toBeTruthy();
-    expect(simuladorLink.getAttribute("href")).toBe("/simulador");
+    expect(agendaLink).toBeTruthy();
+    expect(agendaLink.getAttribute("href")).toBe("/agenda");
 
     expect(clientesLink).toBeTruthy();
     expect(clientesLink.getAttribute("href")).toBe("/clientes");

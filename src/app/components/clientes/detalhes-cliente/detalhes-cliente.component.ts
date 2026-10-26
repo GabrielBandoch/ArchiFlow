@@ -1,13 +1,11 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../../shared";
 import { ClienteService, LeadService, ProjetoService } from "../../../core/api";
-import { HonorarioService } from "../../../core/api/honorarios/honorario.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import { Cliente } from "../../../core/models/cliente.model";
 import { Lead, HistoricoContatoLead } from "../../../core/models/lead.model";
 import { Projeto } from "../../../core/models/projeto.model";
-import { PropostaHonorario } from "../../../core/models/honorario.model";
 import { DialogService } from "../../../core/services/dialog.service";
 import { EditarClienteModalComponent } from "../../../dialogs/clientes/editar-cliente-modal/editar-cliente-modal.component";
 import { ClienteHeroCardComponent } from "./components/cliente-hero-card/cliente-hero-card.component";
@@ -41,7 +39,6 @@ export class DetalhesClienteComponent implements OnInit {
   private clienteService = inject(ClienteService);
   private leadService = inject(LeadService);
   private projetoService = inject(ProjetoService);
-  private honorarioService = inject(HonorarioService);
   private notificationService = inject(NotificationService);
   private dialogService = inject(DialogService);
   private fb = inject(FormBuilder);
@@ -50,34 +47,17 @@ export class DetalhesClienteComponent implements OnInit {
   lead?: Lead;
   projetos: Projeto[] = [];
   historico: HistoricoContatoLead[] = [];
-  propostas: PropostaHonorario[] = [];
   representantes: RepresentanteCliente[] = [];
   modalConvidarRepAberto = false;
   salvandoRep = false;
   conviteRepForm: FormGroup = DetalhesClienteForm.createConviteRepForm(this.fb);
   loading = true;
 
-  get totalInvestidoPropostas(): number {
-    return this.propostas.reduce(
-      (acc, p) => acc + (p.valorFinalAjustado || 0),
-      0,
-    );
-  }
-
   get totalMetragem(): number {
-    const metragemProj = this.projetos.reduce(
+    return this.projetos.reduce(
       (acc, p) => acc + (p.metragemTotal || 0),
       0,
     );
-    if (metragemProj > 0) return metragemProj;
-    return this.propostas.reduce(
-      (acc, p) => acc + (p.metragemQuadrada || 0),
-      0,
-    );
-  }
-
-  get propostasAprovadasCount(): number {
-    return this.propostas.filter((p) => p.status === 2).length;
   }
 
   ngOnInit(): void {
@@ -102,7 +82,6 @@ export class DetalhesClienteComponent implements OnInit {
       next: (clienteData) => {
         this.cliente = clienteData;
         this.carregarProjetosCliente(id);
-        this.carregarPropostasCliente(id);
         this.carregarRepresentantes(id);
 
         if (clienteData.leadId) {
@@ -225,25 +204,6 @@ export class DetalhesClienteComponent implements OnInit {
         this.notificationService.error("Erro ao remover representante.");
       },
     });
-  }
-
-  carregarPropostasCliente(clienteId: string): void {
-    this.honorarioService.obterPropostasPorCliente(clienteId).subscribe({
-      next: (propostasData) => {
-        this.propostas = propostasData || [];
-      },
-      error: (err) => {
-        console.error("Erro ao carregar propostas do cliente", err);
-      },
-    });
-  }
-
-  simularNovaProposta(): void {
-    if (this.cliente) {
-      this.router.navigate(["/simulador"], {
-        queryParams: { clienteId: this.cliente.id },
-      });
-    }
   }
 
   carregarProjetosCliente(clienteId: string): void {

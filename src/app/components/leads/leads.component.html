@@ -1,4 +1,4 @@
-<div class="leads-container p-0">
+﻿<div class="leads-container p-0">
   <div
     class="d-flex justify-content-between align-items-center margin-bottom-lg animate-fade-in-up"
   >
@@ -114,16 +114,6 @@
               {{ lead.atualizadoEm || lead.criadoEm | date: "dd/MM/yyyy" }}
             </span>
             <div class="d-flex align-items-center gap-xs">
-              <app-button
-                variant="icon"
-                size="sm"
-                (btnClick)="simularHonorarios(lead, $event)"
-                title="Simular Honorários / Nova Proposta"
-              >
-                <span class="material-symbols-outlined text-secondary"
-                  >request_quote</span
-                >
-              </app-button>
               <app-button
                 *ngIf="
                   col.status !== StatusLeadEnum.Convertido &&

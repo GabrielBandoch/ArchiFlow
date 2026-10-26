@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing";
+﻿import { TestBed } from "@angular/core/testing";
 import {
   HttpClientTestingModule,
   HttpTestingController,
@@ -42,18 +42,13 @@ describe("DashboardService", () => {
         totalLeadsConvertidos: 4,
         taxaConversaoLeads: 50,
         totalClientes: 6,
-        totalPropostas: 10,
-        valorTotalPropostas: 120000,
-        valorMedioProposta: 12000,
       },
       projetosPorStatus: [],
       projetosPorTipo: [],
       leadsPorStatus: [],
       leadsPorOrigem: [],
-      propostasMensais: [],
       projetosRecentes: [],
       leadsRecentes: [],
-      propostasRecentes: [],
     };
 
     service.obterMetricas().subscribe((res) => {

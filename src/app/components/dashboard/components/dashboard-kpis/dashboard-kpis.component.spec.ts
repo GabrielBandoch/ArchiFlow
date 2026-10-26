@@ -13,9 +13,6 @@ describe("DashboardKpisComponent", () => {
     totalLeadsConvertidos: 8,
     taxaConversaoLeads: 65,
     totalClientes: 15,
-    totalPropostas: 20,
-    valorTotalPropostas: 150000,
-    valorMedioProposta: 7500,
   };
 
   beforeEach(async () => {
@@ -37,6 +34,8 @@ describe("DashboardKpisComponent", () => {
     expect(values.length).toBe(4);
     expect(values[0].textContent.trim()).toBe("5");
     expect(values[1].textContent.trim()).toBe("65%");
+    expect(values[2].textContent.trim()).toBe("15");
+    expect(values[3].textContent.trim()).toBe("12");
   });
 
   it('should render semantically correct "leads ativos" label instead of "em negociação"', () => {
@@ -46,9 +45,9 @@ describe("DashboardKpisComponent", () => {
     expect(pill.textContent).not.toContain("em negociação");
   });
 
-  it("should render formatted currency values using dashboard.utils", () => {
+  it("should render client count correctly", () => {
     const text = fixture.nativeElement.textContent;
-    expect(text).toContain("150.000,00");
-    expect(text).toContain("7.500,00");
+    expect(text).toContain("Clientes Cadastrados");
+    expect(text).toContain("15");
   });
 });

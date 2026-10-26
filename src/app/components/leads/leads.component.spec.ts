@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+﻿import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter, Router } from "@angular/router";
 import { of } from "rxjs";
 import { LeadsComponent } from "./leads.component";
@@ -67,18 +67,5 @@ describe("LeadsComponent", () => {
     expect(leadServiceSpy.obterTodos).toHaveBeenCalled();
     expect(component.leads.length).toBe(1);
     expect(component.columns.length).toBe(6);
-  });
-
-  it("should navigate to simulator when simularHonorarios is clicked", () => {
-    spyOn(router, "navigate");
-    const mockEvent = new MouseEvent("click");
-    spyOn(mockEvent, "stopPropagation");
-
-    component.simularHonorarios(mockLeads[0], mockEvent);
-
-    expect(mockEvent.stopPropagation).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(["/simulador"], {
-      queryParams: { leadId: "lead-1" },
-    });
   });
 });

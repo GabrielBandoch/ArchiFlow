@@ -114,51 +114,6 @@
     </div>
 
     <div class="sidebar-column">
-      <div
-        class="portal-card proposta-card d-flex flex-direction-column gap-sm p-lg"
-        *ngIf="propostaVinculada"
-      >
-        <div class="d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-xs">
-            <span class="material-symbols-outlined text-primary"
-              >request_quote</span
-            >
-            <h3 class="font-headline-sm m-0">Proposta & Contrato</h3>
-          </div>
-          <span class="badge-status-aprovado font-label-xs">Aprovado</span>
-        </div>
-
-        <p class="font-body-xs text-on-surface-variant m-0">
-          Acesse a via digital completa da sua proposta técnica, escopo de
-          etapas contratadas e condições comerciais.
-        </p>
-
-        <div
-          class="proposta-meta-box p-sm d-flex flex-direction-column gap-xs"
-          *ngIf="propostaVinculada"
-        >
-          <div class="d-flex justify-content-between font-body-xs">
-            <span class="text-on-surface-variant">Código:</span>
-            <strong class="font-mono">{{ propostaVinculada.codigo }}</strong>
-          </div>
-          <div class="d-flex justify-content-between font-body-xs">
-            <span class="text-on-surface-variant">Investimento Total:</span>
-            <strong class="text-primary">{{
-              formatarMoeda(propostaVinculada.valorFinalAjustado)
-            }}</strong>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          class="btn-ver-pdf d-flex align-items-center justify-content-center gap-xs w-full mt-xs"
-          (click)="abrirPdfProposta()"
-        >
-          <span class="material-symbols-outlined">picture_as_pdf</span>
-          <span>Visualizar / Baixar PDF</span>
-        </button>
-      </div>
-
       <app-portal-documentos
         [arquivos]="arquivos"
         [filtro]="filtroArquivo"

@@ -6,15 +6,12 @@ import { AuthService } from "../../../core/services/auth.service";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { ArquivoService } from "../../../core/api/projetos/arquivo.service";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
-import { HonorarioService } from "../../../core/api/honorarios/honorario.service";
-import { ConfiguracaoPropostaService } from "../../../core/services/configuracao-proposta.service";
 import { ChatService } from "../../../core/services/chat.service";
 import {
   StatusProjeto,
   StatusEtapa,
   TipoProjeto,
 } from "../../../core/models/projeto.model";
-import { CONFIGURACAO_PROPOSTA_PADRAO } from "../../../core/models/configuracao-proposta.model";
 import { DialogService } from "../../../core/services/dialog.service";
 
 describe("PortalClienteComponent", () => {
@@ -25,8 +22,6 @@ describe("PortalClienteComponent", () => {
   let projetoServiceSpy: jasmine.SpyObj<ProjetoService>;
   let arquivoServiceSpy: jasmine.SpyObj<ArquivoService>;
   let clienteServiceSpy: jasmine.SpyObj<ClienteService>;
-  let honorarioServiceSpy: jasmine.SpyObj<HonorarioService>;
-  let configServiceSpy: jasmine.SpyObj<ConfiguracaoPropostaService>;
   let chatServiceSpy: jasmine.SpyObj<ChatService>;
   let routerSpy: jasmine.SpyObj<Router>;
 
@@ -135,13 +130,6 @@ describe("PortalClienteComponent", () => {
       "obterPorProjeto",
     ]);
     clienteServiceSpy = jasmine.createSpyObj("ClienteService", ["obterPorId"]);
-    honorarioServiceSpy = jasmine.createSpyObj("HonorarioService", [
-      "obterPropostas",
-    ]);
-    configServiceSpy = jasmine.createSpyObj("ConfiguracaoPropostaService", [
-      "getConfiguracao",
-      "formatarMoeda",
-    ]);
     chatServiceSpy = jasmine.createSpyObj(
       "ChatService",
       ["obterHistorico", "iniciarConexao", "enviarMensagem", "desconectar"],
@@ -164,25 +152,6 @@ describe("PortalClienteComponent", () => {
     clienteServiceSpy.obterPorId.and.returnValue(
       of({ id: "cli-456", nome: "Carlos Cliente" } as any),
     );
-    honorarioServiceSpy.obterPropostas.and.returnValue(
-      of([
-        {
-          id: "prop-1",
-          codigo: "PROP-2026-01",
-          titulo: "Proposta Residencial",
-          clienteId: "cli-456",
-          valorFinalAjustado: 25000,
-          metragemQuadrada: 250,
-          itensEtapas: [],
-        } as any,
-      ]),
-    );
-    configServiceSpy.getConfiguracao.and.returnValue(
-      CONFIGURACAO_PROPOSTA_PADRAO,
-    );
-    configServiceSpy.formatarMoeda.and.callFake(
-      (val: number) => `R$ ${val.toFixed(2)}`,
-    );
 
     chatServiceSpy.obterHistorico.and.returnValue(of([]));
     chatServiceSpy.iniciarConexao.and.returnValue(Promise.resolve());
@@ -202,8 +171,6 @@ describe("PortalClienteComponent", () => {
         { provide: ProjetoService, useValue: projetoServiceSpy },
         { provide: ArquivoService, useValue: arquivoServiceSpy },
         { provide: ClienteService, useValue: clienteServiceSpy },
-        { provide: HonorarioService, useValue: honorarioServiceSpy },
-        { provide: ConfiguracaoPropostaService, useValue: configServiceSpy },
         { provide: ChatService, useValue: chatServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: DialogService, useValue: dialogSpy },
@@ -232,7 +199,6 @@ describe("PortalClienteComponent", () => {
     expect(arquivoServiceSpy.obterPorProjeto).toHaveBeenCalledWith("proj-123");
     expect(component.projeto).toBeTruthy();
     expect(component.arquivos.length).toBe(3);
-    expect(component.propostaVinculada).toBeTruthy();
   });
 
   it("deve calcular corretamente o progresso do projeto", () => {
@@ -277,17 +243,6 @@ describe("PortalClienteComponent", () => {
       "https://storage/planta.pdf",
       "_blank",
     );
-  });
-
-  it("deve abrir e fechar o modal de PDF da proposta", () => {
-    component.abrirPdfProposta();
-    expect(component.modalPdfAberto).toBeTrue();
-    expect(component.propostaParaPdf).toBeTruthy();
-    expect(component.propostaParaPdf?.codigo).toBe("PROP-2026-01");
-
-    component.fecharModalPdf();
-    expect(component.modalPdfAberto).toBeFalse();
-    expect(component.propostaParaPdf).toBeNull();
   });
 
   it("deve lidar com erro ao carregar projeto", () => {
