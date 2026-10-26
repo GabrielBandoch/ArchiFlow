@@ -36,7 +36,7 @@ src/
         ├── projetos/
         ├── leads/
         ├── clientes/
-        ├── honorarios/
+        ├── fornecedores/
         └── shared/
             └── modals/
 ```
@@ -98,7 +98,5 @@ npm run test:ci       # headless + cobertura (usado no CI)
 | **Projetos** | `/projetos` | Etapas, cronograma, tarefas e repositório de pranchas | Concluído |
 | **Agenda & Google Agenda** | `/agenda` | Calendário de visitas a obras, reuniões e Google Meet | Concluído |
 | **Financeiro** | `/financeiro` | Fluxo de caixa, parcelas de contratos e despesas | Concluído |
-| **Simulador de Honorários** | `/simulador` | Precificação baseada na tabela CAU/BR | Concluído |
-| **Modelos de Proposta** | `/configuracoes/modelo-proposta` | Personalização visual e exportação de PDF | Concluído |
+| **Fornecedores** | `/fornecedores` | Cadastro, categorias e catálogo de parceiros homologados | Concluído |
 | **Gestão de Equipe** | `/configuracoes/equipe` | Arquitetos sócios, colaboradores e perfis RBAC | Concluído |
-

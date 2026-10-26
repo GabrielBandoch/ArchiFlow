@@ -271,15 +271,7 @@ export const appRoutes: Routes = [
           import("./components/configuracoes/templates-projeto/templates-projeto.component").then(
             (m) => m.TemplatesProjetoComponent,
           ),
-      },
-      {
-        path: "modelo-proposta",
-        loadComponent: () =>
-          import("./components/configuracoes/modelo-proposta/modelo-proposta.component").then(
-            (m) => m.ModeloPropostaComponent,
-          ),
-      },
-      {
+      },      {
         path: "origens-lead",
         loadComponent: () =>
           import("./components/leads/origens-lead/origens-lead.component").then(
@@ -308,23 +300,6 @@ export const appRoutes: Routes = [
         loadComponent: () =>
           import("./components/financeiro/financeiro.component").then(
             (m) => m.FinanceiroComponent,
-          ),
-      },
-    ],
-  },
-  {
-    path: "simulador",
-    canActivate: [staffGuard, moduleGuard("simulador")],
-    loadComponent: () =>
-      import("./layout/main-layout/main-layout.component").then(
-        (m) => m.MainLayoutComponent,
-      ),
-    children: [
-      {
-        path: "",
-        loadComponent: () =>
-          import("./components/honorarios/simulador/simulador.component").then(
-            (m) => m.SimuladorComponent,
           ),
       },
     ],

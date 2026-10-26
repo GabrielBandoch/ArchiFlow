@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+﻿import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { of, throwError } from "rxjs";
 import { provideRouter } from "@angular/router";
 import { EventEmitter } from "@angular/core";
@@ -33,9 +33,6 @@ describe("DashboardComponent", () => {
       totalLeadsConvertidos: 3,
       taxaConversaoLeads: 37.5,
       totalClientes: 4,
-      totalPropostas: 6,
-      valorTotalPropostas: 45000,
-      valorMedioProposta: 7500,
     },
     projetosPorStatus: [
       {
@@ -88,22 +85,7 @@ describe("DashboardComponent", () => {
     leadsPorOrigem: [
       { origem: "Instagram", quantidade: 4, percentual: 50 },
       { origem: "Indicação", quantidade: 4, percentual: 50 },
-    ],
-    propostasMensais: [
-      {
-        mesAno: "2026-04",
-        rotuloMes: "Abr/26",
-        quantidade: 1,
-        valorTotal: 7000,
-      },
-      {
-        mesAno: "2026-05",
-        rotuloMes: "Mai/26",
-        quantidade: 2,
-        valorTotal: 15000,
-      },
-    ],
-    projetosRecentes: [
+    ],    projetosRecentes: [
       {
         id: "p1",
         nome: "Casa Modelo",
@@ -125,20 +107,7 @@ describe("DashboardComponent", () => {
         origemNome: "Instagram",
         criadoEm: "2026-09-22T00:00:00Z",
       },
-    ],
-    propostasRecentes: [
-      {
-        id: "pr1",
-        titulo: "Proposta Residencial",
-        codigo: "PROP-01",
-        clienteOuLeadNome: "Cliente X",
-        metragemQuadrada: 200,
-        valorFinal: 12000,
-        status: "Enviada",
-        criadoEm: "2026-09-22T00:00:00Z",
-      },
-    ],
-  };
+    ],  };
 
   beforeEach(async () => {
     dashboardServiceSpy = jasmine.createSpyObj("DashboardService", [

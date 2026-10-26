@@ -51,20 +51,18 @@
     <div
       class="kpi-icon-box kpi-purple d-flex align-items-center justify-content-center"
     >
-      <span class="material-symbols-outlined">description</span>
+      <span class="material-symbols-outlined">groups</span>
     </div>
     <div class="d-flex flex-direction-column gap-xs flex-grow-1 min-w-0">
       <span class="font-label-sm font-weight-medium text-on-surface-variant"
-        >Propostas Emitidas</span
+        >Clientes Cadastrados</span
       >
       <div class="d-flex align-items-baseline gap-sm flex-wrap">
-        <span class="kpi-value text-on-surface">{{ kpis.totalPropostas }}</span>
-        <span class="kpi-pill pill-purple font-label-sm"
-          >Ticket: {{ formatarMoeda(kpis.valorMedioProposta) }}</span
-        >
+        <span class="kpi-value text-on-surface">{{ kpis.totalClientes }}</span>
+        <span class="kpi-pill pill-purple font-label-sm">Carteira ativa</span>
       </div>
       <span class="font-label-sm text-outline truncate"
-        >Média de honorários por projeto</span
+        >Relacionamentos cadastrados</span
       >
     </div>
   </div>
@@ -73,19 +71,22 @@
     <div
       class="kpi-icon-box kpi-green d-flex align-items-center justify-content-center"
     >
-      <span class="material-symbols-outlined">payments</span>
+      <span class="material-symbols-outlined">trending_up</span>
     </div>
     <div class="d-flex flex-direction-column gap-xs flex-grow-1 min-w-0">
       <span class="font-label-sm font-weight-medium text-on-surface-variant"
-        >Receita Potencial</span
+        >Pipeline de Oportunidades</span
       >
       <div class="d-flex align-items-baseline gap-sm flex-wrap">
         <span class="kpi-value text-green-highlight">{{
-          formatarMoeda(kpis.valorTotalPropostas)
+          kpis.totalLeadsAtivos
         }}</span>
+        <span class="kpi-pill pill-neutral font-label-sm"
+          >{{ kpis.totalLeadsConvertidos }} convertidos</span
+        >
       </div>
       <span class="font-label-sm text-outline truncate"
-        >Pipeline total de propostas e contratos</span
+        >Oportunidades em negociação</span
       >
     </div>
   </div>

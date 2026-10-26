@@ -1,4 +1,4 @@
-<div class="layout-container">
+﻿<div class="layout-container">
   <header
     class="mobile-top-bar align-items-center justify-content-between p-md"
   >
@@ -107,16 +107,6 @@
         <span class="nav-label">Financeiro</span>
       </a>
 
-      <a
-        *ngIf="authService.hasModulePermission('simulador')"
-        routerLink="/simulador"
-        routerLinkActive="active"
-        class="nav-item"
-      >
-        <span class="material-symbols-outlined nav-icon">calculate</span>
-        <span class="nav-label">Simulador</span>
-      </a>
-
       <div
         class="nav-group-section"
         *ngIf="authService.hasModulePermission('configuracoes')"
@@ -156,16 +146,6 @@
               >account_tree</span
             >
             <span class="nav-sublabel">Modelos de Projetos</span>
-          </a>
-          <a
-            routerLink="/configuracoes/modelo-proposta"
-            routerLinkActive="active"
-            class="nav-subitem"
-          >
-            <span class="material-symbols-outlined nav-subicon"
-              >picture_as_pdf</span
-            >
-            <span class="nav-sublabel">Modelo de Proposta (PDF)</span>
           </a>
           <a
             routerLink="/configuracoes/origens-lead"

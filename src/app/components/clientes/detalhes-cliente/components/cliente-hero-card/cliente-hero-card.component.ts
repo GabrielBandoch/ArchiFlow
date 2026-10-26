@@ -1,9 +1,8 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+﻿import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Cliente } from "../../../../../core/models/cliente.model";
 import { Lead } from "../../../../../core/models/lead.model";
 import { Projeto } from "../../../../../core/models/projeto.model";
-import { PropostaHonorario } from "../../../../../core/models/honorario.model";
 import { ButtonComponent } from "../../../../../shared/components/button/button.component";
 import { WhatsAppButtonComponent } from "../../../../../shared/components/whatsapp-button/whatsapp-button.component";
 import { PhoneMaskPipe } from "../../../../../core/pipes/phone-mask.pipe";
@@ -24,10 +23,7 @@ export class ClienteHeroCardComponent {
   @Input() cliente!: Cliente;
   @Input() lead?: Lead;
   @Input() projetos: Projeto[] = [];
-  @Input() propostas: PropostaHonorario[] = [];
   @Input() totalMetragem = 0;
-  @Input() totalInvestidoPropostas = 0;
-  @Input() propostasAprovadasCount = 0;
 
   @Output() avatarSelected = new EventEmitter<Event>();
   @Output() removePhoto = new EventEmitter<void>();

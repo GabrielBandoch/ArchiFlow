@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   EventEmitter,
   Input,
@@ -129,12 +129,6 @@ export class MembroEquipeModalComponent implements OnInit {
       nome: "Financeiro",
       icone: "attach_money",
       descricao: "Fluxo de caixa e despesas",
-    },
-    {
-      id: "simulador",
-      nome: "Simulador de Honorários",
-      icone: "calculate",
-      descricao: "Precificação e propostas",
     },
     {
       id: "configuracoes",

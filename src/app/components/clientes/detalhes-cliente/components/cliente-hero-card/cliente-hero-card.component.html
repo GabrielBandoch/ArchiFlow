@@ -1,4 +1,4 @@
-<section class="profile-unified-card" *ngIf="cliente">
+﻿<section class="profile-unified-card" *ngIf="cliente">
   <div
     class="profile-top-row d-flex justify-content-between align-items-center flex-wrap gap-md"
   >
@@ -121,34 +121,6 @@
         <span class="stat-val font-headline-sm">{{
           totalMetragem > 0 ? totalMetragem + " m²" : "Sob Consulta"
         }}</span>
-      </div>
-    </div>
-
-    <div class="stat-card-pill">
-      <div class="stat-icon-box stat-icon-finance">
-        <span class="material-symbols-outlined">payments</span>
-      </div>
-      <div class="d-flex flex-direction-column">
-        <span class="stat-lbl font-label-xs">VOLUME EM PROPOSTAS</span>
-        <span class="stat-val font-headline-sm font-mono text-primary">{{
-          totalInvestidoPropostas | currency: "BRL" : "symbol" : "1.2-2"
-        }}</span>
-      </div>
-    </div>
-
-    <div class="stat-card-pill">
-      <div class="stat-icon-box stat-icon-proposals">
-        <span class="material-symbols-outlined">assignment</span>
-      </div>
-      <div class="d-flex flex-direction-column">
-        <span class="stat-lbl font-label-xs">ORÇAMENTOS EMITIDOS</span>
-        <span class="stat-val font-headline-sm"
-          >{{ propostas.length }}
-          {{ propostas.length === 1 ? "Emitido" : "Emitidos" }} ({{
-            propostasAprovadasCount
-          }}
-          ok)</span
-        >
       </div>
     </div>
   </div>

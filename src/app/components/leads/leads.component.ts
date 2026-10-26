@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { CORE_IMPORTS, DESIGN_SYSTEM } from "../../shared";
 import { LeadService } from "../../core/api";
@@ -239,13 +239,6 @@ export class LeadsComponent implements OnInit {
     });
     ref.instance.saved.subscribe(() => {
       this.carregarLeads();
-    });
-  }
-
-  simularHonorarios(lead: Lead, event: MouseEvent): void {
-    event.stopPropagation();
-    this.router.navigate(["/simulador"], {
-      queryParams: { leadId: lead.id },
     });
   }
 

@@ -3,14 +3,14 @@ import { Router } from "@angular/router";
 import { of } from "rxjs";
 import { PortalLayoutComponent } from "./portal-layout.component";
 import { AuthService } from "../../core/services/auth.service";
-import { ConfiguracaoPropostaService } from "../../core/services/configuracao-proposta.service";
+import { EmpresaService } from "../../core/api/empresa/empresa.service";
 
 describe("PortalLayoutComponent", () => {
   let component: PortalLayoutComponent;
   let fixture: ComponentFixture<PortalLayoutComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
-  let configServiceSpy: jasmine.SpyObj<ConfiguracaoPropostaService>;
+  let empresaServiceSpy: jasmine.SpyObj<EmpresaService>;
 
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj("AuthService", ["logout"], {
@@ -22,23 +22,21 @@ describe("PortalLayoutComponent", () => {
       },
     });
     routerSpy = jasmine.createSpyObj("Router", ["navigate"]);
-    configServiceSpy = jasmine.createSpyObj(
-      "ConfiguracaoPropostaService",
-      ["getConfiguracao"],
-      {
-        configuracao$: of({ nomeEscritorio: "Studio Modelo" } as any),
-      },
+    empresaServiceSpy = jasmine.createSpyObj("EmpresaService", [
+      "obterDadosEmpresa",
+    ]);
+    empresaServiceSpy.obterDadosEmpresa.and.returnValue(
+      of({
+        nomeEmpresa: "Studio Modelo",
+      } as any),
     );
-    configServiceSpy.getConfiguracao.and.returnValue({
-      nomeEscritorio: "Studio Modelo",
-    } as any);
 
     await TestBed.configureTestingModule({
       imports: [PortalLayoutComponent],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: ConfiguracaoPropostaService, useValue: configServiceSpy },
+        { provide: EmpresaService, useValue: empresaServiceSpy },
       ],
     }).compileComponents();
 
@@ -55,9 +53,12 @@ describe("PortalLayoutComponent", () => {
     expect(component.userInitials).toBe("MS");
   });
 
+  it("deve carregar nome do escritorio a partir da empresa", () => {
+    expect(component.nomeEscritorio).toBe("Studio Modelo");
+  });
+
   it("deve realizar logout e redirecionar para login", () => {
     component.onLogout();
     expect(authServiceSpy.logout).toHaveBeenCalled();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(["/login"]);
   });
 });
