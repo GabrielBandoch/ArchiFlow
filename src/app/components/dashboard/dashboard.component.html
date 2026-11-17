@@ -18,6 +18,7 @@
 
     <div class="d-flex align-items-center gap-sm flex-wrap">
       <app-button
+        *ngIf="podeAcessarAgenda"
         variant="outline"
         size="md"
         (btnClick)="abrirModalCompromisso()"
@@ -27,6 +28,7 @@
       </app-button>
 
       <app-button
+        *ngIf="podeAcessarProjetos"
         variant="primary"
         size="md"
         (btnClick)="abrirModalCriarProjeto()"
@@ -69,7 +71,7 @@
   <div *ngIf="!loading && metricas" class="dashboard-grid">
     <ng-container *ngFor="let widget of widgetsOrdenados">
       <div
-        *ngIf="widget.id === 'pendencias_hoje' && widget.visivel"
+        *ngIf="widget.id === 'pendencias_hoje' && widget.visivel && podeAcessarAgenda"
         class="widget-wrapper col-full"
       >
         <app-dashboard-pendencias-hoje
@@ -80,7 +82,7 @@
       </div>
 
       <div
-        *ngIf="widget.id === 'financeiro_semana' && widget.visivel"
+        *ngIf="widget.id === 'financeiro_semana' && widget.visivel && podeAcessarFinanceiro"
         class="widget-wrapper col-full"
       >
         <app-dashboard-financeiro-semana
@@ -95,7 +97,7 @@
       </div>
 
       <div
-        *ngIf="widget.id === 'projetos_por_fase' && widget.visivel"
+        *ngIf="widget.id === 'projetos_por_fase' && widget.visivel && podeAcessarProjetos"
         class="widget-wrapper col-half"
       >
         <app-card>
@@ -176,7 +178,7 @@
       </div>
 
       <div
-        *ngIf="widget.id === 'crm_leads' && widget.visivel"
+        *ngIf="widget.id === 'crm_leads' && widget.visivel && podeAcessarLeads"
         class="widget-wrapper col-half"
       >
         <app-card>
