@@ -57,6 +57,7 @@ export class DashboardComponent implements OnInit {
   compromissosHoje: Compromisso[] = [];
   carregandoAgenda = false;
   agendaBloqueada = false;
+  ocultarModuloAgenda = true; // Temporariamente oculto mesmo para admin
 
   contasPagarSemana: DespesaProjeto[] = [];
   totalPagarSemana = 0;
@@ -69,7 +70,9 @@ export class DashboardComponent implements OnInit {
 
   get podeAcessarAgenda(): boolean {
     return (
-      !this.agendaBloqueada && this.authService.hasModulePermission("agenda")
+      !this.ocultarModuloAgenda &&
+      !this.agendaBloqueada &&
+      this.authService.hasModulePermission("agenda")
     );
   }
 

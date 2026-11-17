@@ -358,7 +358,9 @@ describe("DashboardComponent", () => {
     restaurarEmitter.emit();
 
     expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalled();
-    expect(mockRef.instance.tempWidgets.length).toBe(WIDGETS_DEFAULT.length);
+    expect(mockRef.instance.tempWidgets.length).toBe(
+      WIDGETS_DEFAULT.length - 1,
+    );
     expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       "Layout padrão restaurado com sucesso!",
     );
@@ -426,6 +428,35 @@ describe("DashboardComponent", () => {
   });
 
   describe("Permission handling and widget visibility", () => {
+    it("should hide agenda widget, omit agenda requests, and hide new appointment button even for admins when ocultarModuloAgenda is true", () => {
+      authServiceSpy.hasModulePermission.and.returnValue(true);
+      agendaServiceSpy.obterPorPeriodo.calls.reset();
+      agendaServiceSpy.obterProximos.calls.reset();
+
+      component.carregarDados();
+      fixture.detectChanges();
+
+      expect(component.podeAcessarAgenda).toBeFalse();
+      expect(agendaServiceSpy.obterPorPeriodo).not.toHaveBeenCalled();
+      expect(agendaServiceSpy.obterProximos).not.toHaveBeenCalled();
+
+      expect(component.widgetsOrdenados.map((w) => w.id)).not.toContain(
+        "pendencias_hoje",
+      );
+      expect(component.widgetsPermitidos.map((w) => w.id)).not.toContain(
+        "pendencias_hoje",
+      );
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(
+        compiled.querySelector("app-dashboard-pendencias-hoje"),
+      ).toBeNull();
+      const buttons = Array.from(compiled.querySelectorAll("app-button"));
+      expect(
+        buttons.some((btn) => btn.textContent?.includes("Novo Compromisso")),
+      ).toBeFalse();
+    });
+
     it("should hide agenda widget, omit request, and hide new appointment button when user lacks agenda permission", () => {
       authServiceSpy.hasModulePermission.and.callFake(
         (mod: string) => mod !== "agenda",
@@ -462,6 +493,7 @@ describe("DashboardComponent", () => {
     });
 
     it("should block agenda dynamically and hide widget if API returns 403 Forbidden", () => {
+      component.ocultarModuloAgenda = false;
       authServiceSpy.hasModulePermission.and.returnValue(true);
       agendaServiceSpy.obterPorPeriodo.and.returnValue(
         throwError(() => ({ status: 403, message: "Forbidden" })),

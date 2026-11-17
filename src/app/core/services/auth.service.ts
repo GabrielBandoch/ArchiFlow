@@ -116,7 +116,6 @@ export class AuthService {
       { modulo: "clientes", route: "/clientes" },
       { modulo: "leads", route: "/leads" },
       { modulo: "fornecedores", route: "/fornecedores" },
-      { modulo: "agenda", route: "/agenda" },
       { modulo: "financeiro", route: "/financeiro" },
       { modulo: "configuracoes", route: "/configuracoes" },
     ];
