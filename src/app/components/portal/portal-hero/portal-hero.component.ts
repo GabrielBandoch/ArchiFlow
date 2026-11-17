@@ -18,7 +18,7 @@ export class PortalHeroComponent {
   @Input() totalEtapas = 0;
 
   formatarData(data: any): string {
-    if (!data) return "N�o definida";
+    if (!data) return "Não definida";
     const date = new Date(data);
     return date.toLocaleDateString("pt-BR");
   }

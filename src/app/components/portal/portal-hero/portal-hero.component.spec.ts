@@ -41,7 +41,7 @@ describe("PortalHeroComponent", () => {
   });
 
   it("deve formatar data corretamente", () => {
-    expect(component.formatarData(null)).toBe("N�o definida");
+    expect(component.formatarData(null)).toBe("Não definida");
     expect(component.formatarData("2026-03-10")).toContain("2026");
   });
 });

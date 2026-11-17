@@ -10,6 +10,7 @@
     [class.is-disabled]="disabled"
   >
     <button
+      #triggerBtn
       type="button"
       [id]="id"
       (click)="toggleDropdown()"
@@ -37,7 +38,12 @@
       <span class="material-symbols-outlined arrow-icon">expand_more</span>
     </button>
 
-    <div class="options-list-container" *ngIf="isOpen">
+    <div
+      #optionsContainer
+      class="options-list-container"
+      *ngIf="isOpen"
+      [ngStyle]="dropdownStyles"
+    >
       <ul class="options-list">
         <li
           *ngFor="let opt of options"

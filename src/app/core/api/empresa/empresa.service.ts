@@ -25,6 +25,21 @@ export class EmpresaService {
     TemaHelper.carregarTemaSalvo();
   }
 
+  obterIdentidadeEmpresa(): Observable<Partial<DadosEmpresa>> {
+    const url = new UrlBuilder(environment.apiUrl)
+      .segment("configuracoes")
+      .segment("empresa")
+      .segment("identidade")
+      .build();
+    return this.http.get<Partial<DadosEmpresa>>(url).pipe(
+      tap((dados) => {
+        if (dados?.corPrimaria) {
+          this.aplicarTema(dados.corPrimaria);
+        }
+      }),
+    );
+  }
+
   obterDadosEmpresa(): Observable<DadosEmpresa> {
     const url = new UrlBuilder(environment.apiUrl)
       .segment("configuracoes")

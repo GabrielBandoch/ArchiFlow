@@ -16,7 +16,7 @@ export class PortalTimelineComponent {
   StatusEtapa = StatusEtapa;
 
   formatarData(data: any): string {
-    if (!data) return "N�o definida";
+    if (!data) return "Não definida";
     const date = new Date(data);
     return date.toLocaleDateString("pt-BR");
   }

@@ -153,7 +153,7 @@
       }
 
       <div class="modules-checkbox-grid">
-        @for (mod of modulosDisponiveis; track mod.id) {
+        @for (mod of modulosVisiveis; track mod.id) {
           <label
             class="module-card-checkbox d-flex align-items-center gap-sm p-sm"
             [class.selected]="isModuloSelecionado(mod.id)"

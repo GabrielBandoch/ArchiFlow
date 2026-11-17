@@ -21,7 +21,7 @@ export class PortalLayoutComponent implements OnInit {
   nomeEscritorio = "Escritório de Arquitetura";
 
   ngOnInit(): void {
-    this.empresaService?.obterDadosEmpresa().subscribe({
+    this.empresaService?.obterIdentidadeEmpresa().subscribe({
       next: (dados) => {
         if (dados?.nomeEmpresa) {
           this.nomeEscritorio = dados.nomeEmpresa;

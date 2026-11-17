@@ -34,6 +34,11 @@ export class LoginComponent {
       this.sessionExpired = true;
     }
 
+    if (this.route.snapshot.queryParams["portalSuspended"] === "true") {
+      this.errorMessage =
+        "O acesso ao portal foi suspenso. Entre em contato com o escritório.";
+    }
+
     if (this.authService.isAuthenticated) {
       if (this.authService.isCliente) {
         this.router.navigate(["/portal"]);
@@ -76,7 +81,10 @@ export class LoginComponent {
         }
       },
       error: (err: any) => {
-        this.errorMessage = err.error?.message || "E-mail ou senha incorretos.";
+        this.errorMessage =
+          err.error?.error ||
+          err.error?.message ||
+          "E-mail ou senha incorretos.";
         this.loading = false;
       },
     });

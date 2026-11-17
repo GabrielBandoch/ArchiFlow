@@ -65,13 +65,14 @@ export class MainLayoutComponent implements OnInit {
 
   configuracoesAberto = false;
   sidebarAberta = false;
+  readonly exibirAgendaNoMenu = false; // Temporariamente oculto mesmo para admin
 
   constructor() {
     this.dialogService.registerContainerRef(this.viewContainerRef);
   }
 
   ngOnInit(): void {
-    this.empresaService.obterDadosEmpresa().subscribe({
+    this.empresaService.obterIdentidadeEmpresa().subscribe({
       next: () => {},
       error: () => {},
     });

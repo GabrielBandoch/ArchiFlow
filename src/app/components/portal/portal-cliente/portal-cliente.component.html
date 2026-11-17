@@ -122,7 +122,11 @@
       >
       </app-portal-documentos>
 
-      <app-portal-suporte (abrirChat)="abrirChat()"> </app-portal-suporte>
+      <app-portal-suporte
+        [nomeEscritorio]="nomeEscritorio"
+        (abrirChat)="abrirChat()"
+      >
+      </app-portal-suporte>
     </div>
   </div>
 
@@ -131,7 +135,7 @@
     [projetoId]="projeto.id"
     [projetoNome]="projeto.nome"
     [interlocutorNome]="'Arquiteto Responsável'"
-    [interlocutorCargo]="'Escritório de Arquitetura'"
+    [interlocutorCargo]="nomeEscritorio"
     [floating]="true"
   >
   </app-chat-widget>

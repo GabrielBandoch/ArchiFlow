@@ -59,12 +59,14 @@
       [options]="origensOptions"
     >
     </app-select>
-
-    <div dialog-footer class="d-flex justify-content-end gap-sm">
-      <app-button variant="secondary" (btnClick)="onClose()"
-        >Cancelar</app-button
-      >
-      <app-button type="submit" variant="primary">Criar Lead</app-button>
-    </div>
   </form>
+
+  <div dialog-footer class="d-flex justify-content-end gap-sm">
+    <app-button type="button" variant="secondary" (btnClick)="onClose()"
+      >Cancelar</app-button
+    >
+    <app-button type="button" variant="primary" (btnClick)="onSubmit()"
+      >Criar Lead</app-button
+    >
+  </div>
 </app-dialog>

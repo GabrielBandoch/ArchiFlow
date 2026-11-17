@@ -53,6 +53,7 @@ export class MembroEquipeModalComponent implements OnInit {
   saving = false;
   submitted = false;
   activeTab: "dados" | "permissoes" = "dados";
+  readonly ocultarModuloAgenda = true;
 
   readonly rolesOptions: SelectOption[] = [
     {
@@ -147,6 +148,22 @@ export class MembroEquipeModalComponent implements OnInit {
     return this.form.controls;
   }
 
+  get modulosVisiveis() {
+    return this.ocultarModuloAgenda
+      ? this.modulosDisponiveis.filter((m) => m.id !== "agenda")
+      : this.modulosDisponiveis;
+  }
+
+  private extrairMensagemErro(err: any, fallback: string): string {
+    return (
+      err?.error?.error ||
+      err?.error?.message ||
+      err?.error?.mensagem ||
+      (typeof err?.error === "string" && err.error.trim() ? err.error : null) ||
+      fallback
+    );
+  }
+
   get isAdminRole(): boolean {
     const role = this.form.get("role")?.value;
     return role === "ArquitetoAdmin" || role === "Administrador";
@@ -207,9 +224,10 @@ export class MembroEquipeModalComponent implements OnInit {
           error: (err) => {
             this.saving = false;
             console.error("Erro ao atualizar membro", err);
-            const msg =
-              err.error?.message ||
-              "Erro ao atualizar dados do membro da equipe.";
+            const msg = this.extrairMensagemErro(
+              err,
+              "Erro ao atualizar dados do membro da equipe.",
+            );
             this.notificationService.error(msg);
           },
         });
@@ -236,8 +254,10 @@ export class MembroEquipeModalComponent implements OnInit {
         error: (err) => {
           this.saving = false;
           console.error("Erro ao convidar membro", err);
-          const msg =
-            err.error?.message || "Erro ao convidar novo membro para a equipe.";
+          const msg = this.extrairMensagemErro(
+            err,
+            "Erro ao convidar novo membro para a equipe.",
+          );
           this.notificationService.error(msg);
         },
       });

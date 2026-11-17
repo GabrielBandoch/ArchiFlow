@@ -164,9 +164,11 @@ export class GestaoEquipeComponent implements OnInit {
       },
       error: (err) => {
         console.error("Erro ao alterar status", err);
-        this.notificationService.error(
-          "Erro ao alterar o status do colaborador.",
-        );
+        const msg =
+          err?.error?.error ||
+          err?.error?.message ||
+          "Erro ao alterar o status do colaborador.";
+        this.notificationService.error(msg);
       },
     });
   }
@@ -202,9 +204,11 @@ export class GestaoEquipeComponent implements OnInit {
             },
             error: (err) => {
               console.error("Erro ao excluir membro", err);
-              this.notificationService.error(
-                "Não foi possível remover o colaborador.",
-              );
+              const msg =
+                err?.error?.error ||
+                err?.error?.message ||
+                "Não foi possível remover o colaborador.";
+              this.notificationService.error(msg);
             },
           });
         }
@@ -243,5 +247,9 @@ export class GestaoEquipeComponent implements OnInit {
 
   obterLabelRole(role: string): string {
     return this.obterBadgeRole(role).label;
+  }
+
+  obterModulosVisiveis(modulos?: string[]): string[] {
+    return (modulos || []).filter((m) => m.toLowerCase() !== "agenda");
   }
 }

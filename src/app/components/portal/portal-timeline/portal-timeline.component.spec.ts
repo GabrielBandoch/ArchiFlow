@@ -21,7 +21,7 @@ describe("PortalTimelineComponent", () => {
         descricao: "Fase inicial",
         ordem: 1,
         status: StatusEtapa.Concluida,
-        statusLabel: "Conclu�da",
+        statusLabel: "Concluída",
       },
       {
         id: "e-2",
@@ -45,7 +45,7 @@ describe("PortalTimelineComponent", () => {
   });
 
   it("deve formatar data corretamente", () => {
-    expect(component.formatarData(null)).toBe("N�o definida");
+    expect(component.formatarData(null)).toBe("Não definida");
     expect(component.formatarData("2026-05-20")).toContain("2026");
   });
 });

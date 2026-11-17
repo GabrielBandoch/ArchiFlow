@@ -10,7 +10,7 @@
       </span>
     </div>
 
-    <h1 class="project-title">{{ projeto.nome || "Projeto Arquitet�nico" }}</h1>
+    <h1 class="project-title">{{ projeto.nome || "Projeto Arquitetônico" }}</h1>
     <p class="project-description" *ngIf="projeto.descricao">
       {{ projeto.descricao }}
     </p>
@@ -22,8 +22,8 @@
           <span class="meta-label">Metragem Total</span>
           <span class="meta-value">{{
             projeto.metragemTotal
-              ? projeto.metragemTotal + " m�"
-              : "N�o informada"
+              ? projeto.metragemTotal + " m²"
+              : "Não informada"
           }}</span>
         </div>
       </div>
@@ -31,7 +31,7 @@
       <div class="meta-item">
         <span class="material-symbols-outlined meta-icon">calendar_today</span>
         <div class="meta-texts">
-          <span class="meta-label">In�cio</span>
+          <span class="meta-label">Início</span>
           <span class="meta-value">{{ formatarData(projeto.dataInicio) }}</span>
         </div>
       </div>
@@ -39,7 +39,7 @@
       <div class="meta-item">
         <span class="material-symbols-outlined meta-icon">event_upcoming</span>
         <div class="meta-texts">
-          <span class="meta-label">Previs�o de Conclus�o</span>
+          <span class="meta-label">Previsão de Conclusão</span>
           <span class="meta-value highlight-date">{{
             formatarData(projeto.dataPrevistaEntrega)
           }}</span>
@@ -64,7 +64,7 @@
     <div class="progress-footer">
       <span class="etapas-counter">
         <strong>{{ totalConcluidas }}</strong> de
-        <strong>{{ totalEtapas }}</strong> etapas conclu�das
+        <strong>{{ totalEtapas }}</strong> etapas concluídas
       </span>
     </div>
   </div>

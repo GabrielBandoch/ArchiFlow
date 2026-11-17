@@ -5,6 +5,7 @@ import { AuthService } from "../../../core/services/auth.service";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { ArquivoService } from "../../../core/api/projetos/arquivo.service";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
+import { EmpresaService } from "../../../core/api/empresa/empresa.service";
 import { NotificationService } from "../../../core/services/notification.service";
 import {
   Projeto,
@@ -43,9 +44,11 @@ export class PortalClienteComponent implements OnInit {
   private projetoService = inject(ProjetoService);
   private arquivoService = inject(ArquivoService);
   private clienteService = inject(ClienteService);
+  private empresaService = inject(EmpresaService, { optional: true });
   private notificationService = inject(NotificationService, { optional: true });
   private dialogService = inject(DialogService, { optional: true });
 
+  nomeEscritorio = "Escritório de Arquitetura";
   projetoId = "";
   projeto: Projeto | null = null;
   listaProjetosCliente: Projeto[] = [];
@@ -68,6 +71,15 @@ export class PortalClienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.empresaService?.obterIdentidadeEmpresa().subscribe({
+      next: (dados) => {
+        if (dados?.nomeEmpresa) {
+          this.nomeEscritorio = dados.nomeEmpresa;
+        }
+      },
+      error: () => {},
+    });
+
     this.route.paramMap.subscribe((params) => {
       const paramId = params.get("id");
       if (paramId) {

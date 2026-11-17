@@ -6,6 +6,7 @@ import { AuthService } from "../../../core/services/auth.service";
 import { ProjetoService } from "../../../core/api/projetos/projeto.service";
 import { ArquivoService } from "../../../core/api/projetos/arquivo.service";
 import { ClienteService } from "../../../core/api/clientes/cliente.service";
+import { EmpresaService } from "../../../core/api/empresa/empresa.service";
 import { ChatService } from "../../../core/services/chat.service";
 import {
   StatusProjeto,
@@ -22,6 +23,7 @@ describe("PortalClienteComponent", () => {
   let projetoServiceSpy: jasmine.SpyObj<ProjetoService>;
   let arquivoServiceSpy: jasmine.SpyObj<ArquivoService>;
   let clienteServiceSpy: jasmine.SpyObj<ClienteService>;
+  let empresaServiceSpy: jasmine.SpyObj<EmpresaService>;
   let chatServiceSpy: jasmine.SpyObj<ChatService>;
   let routerSpy: jasmine.SpyObj<Router>;
 
@@ -130,6 +132,9 @@ describe("PortalClienteComponent", () => {
       "obterPorProjeto",
     ]);
     clienteServiceSpy = jasmine.createSpyObj("ClienteService", ["obterPorId"]);
+    empresaServiceSpy = jasmine.createSpyObj("EmpresaService", [
+      "obterIdentidadeEmpresa",
+    ]);
     chatServiceSpy = jasmine.createSpyObj(
       "ChatService",
       ["obterHistorico", "iniciarConexao", "enviarMensagem", "desconectar"],
@@ -152,6 +157,9 @@ describe("PortalClienteComponent", () => {
     clienteServiceSpy.obterPorId.and.returnValue(
       of({ id: "cli-456", nome: "Carlos Cliente" } as any),
     );
+    empresaServiceSpy.obterIdentidadeEmpresa.and.returnValue(
+      of({ nomeEmpresa: "Estúdio Teste" }),
+    );
 
     chatServiceSpy.obterHistorico.and.returnValue(of([]));
     chatServiceSpy.iniciarConexao.and.returnValue(Promise.resolve());
@@ -171,6 +179,7 @@ describe("PortalClienteComponent", () => {
         { provide: ProjetoService, useValue: projetoServiceSpy },
         { provide: ArquivoService, useValue: arquivoServiceSpy },
         { provide: ClienteService, useValue: clienteServiceSpy },
+        { provide: EmpresaService, useValue: empresaServiceSpy },
         { provide: ChatService, useValue: chatServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: DialogService, useValue: dialogSpy },
@@ -195,6 +204,7 @@ describe("PortalClienteComponent", () => {
 
   it("deve criar o componente e carregar projeto e arquivos", () => {
     expect(component).toBeTruthy();
+    expect(component.nomeEscritorio).toBe("Estúdio Teste");
     expect(projetoServiceSpy.obterPorId).toHaveBeenCalledWith("proj-123");
     expect(arquivoServiceSpy.obterPorProjeto).toHaveBeenCalledWith("proj-123");
     expect(component.projeto).toBeTruthy();

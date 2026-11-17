@@ -4,7 +4,6 @@
     fornecedor ? 'Editar Parceiro Especializado' : 'Novo Parceiro Especializado'
   "
   size="md"
-  [overflowVisible]="true"
   (close)="fechar()"
 >
   <form
@@ -119,39 +118,45 @@
       >
       </app-input>
     </div>
-
-    <div
-      class="dialog-actions d-flex justify-content-end align-items-center gap-xs margin-top-md"
-    >
-      <app-button
-        variant="ghost"
-        type="button"
-        (btnClick)="fechar()"
-        [disabled]="salvando"
-      >
-        Cancelar
-      </app-button>
-      <app-button variant="primary" type="submit" [disabled]="salvando">
-        <span
-          class="material-symbols-outlined icon-btn-inline"
-          *ngIf="!salvando"
-        >
-          {{ fornecedor ? "save" : "add_business" }}
-        </span>
-        <span
-          class="material-symbols-outlined icon-btn-inline spinner-icon"
-          *ngIf="salvando"
-        >
-          progress_activity
-        </span>
-        {{
-          salvando
-            ? "Salvando..."
-            : fornecedor
-              ? "Salvar Alterações"
-              : "Cadastrar Parceiro"
-        }}
-      </app-button>
-    </div>
   </form>
+
+  <div
+    dialog-footer
+    class="d-flex justify-content-end align-items-center gap-xs"
+  >
+    <app-button
+      variant="ghost"
+      type="button"
+      (btnClick)="fechar()"
+      [disabled]="salvando"
+    >
+      Cancelar
+    </app-button>
+    <app-button
+      variant="primary"
+      type="button"
+      (btnClick)="salvar()"
+      [disabled]="salvando"
+    >
+      <span
+        class="material-symbols-outlined icon-btn-inline"
+        *ngIf="!salvando"
+      >
+        {{ fornecedor ? "save" : "add_business" }}
+      </span>
+      <span
+        class="material-symbols-outlined icon-btn-inline spinner-icon"
+        *ngIf="salvando"
+      >
+        progress_activity
+      </span>
+      {{
+        salvando
+          ? "Salvando..."
+          : fornecedor
+            ? "Salvar Alterações"
+            : "Cadastrar Parceiro"
+      }}
+    </app-button>
+  </div>
 </app-dialog>

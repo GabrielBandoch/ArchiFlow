@@ -14,8 +14,13 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (err.status === 401 && !req.url.includes("/auth/login")) {
         authService.logout();
         if (!router.url.includes("/login")) {
+          const isSuspended =
+            typeof err.error?.error === "string" &&
+            err.error.error.toLowerCase().includes("suspenso");
           router.navigate(["/login"], {
-            queryParams: { sessionExpired: "true" },
+            queryParams: isSuspended
+              ? { portalSuspended: "true" }
+              : { sessionExpired: "true" },
           });
         }
       }

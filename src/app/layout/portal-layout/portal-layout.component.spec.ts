@@ -23,9 +23,9 @@ describe("PortalLayoutComponent", () => {
     });
     routerSpy = jasmine.createSpyObj("Router", ["navigate"]);
     empresaServiceSpy = jasmine.createSpyObj("EmpresaService", [
-      "obterDadosEmpresa",
+      "obterIdentidadeEmpresa",
     ]);
-    empresaServiceSpy.obterDadosEmpresa.and.returnValue(
+    empresaServiceSpy.obterIdentidadeEmpresa.and.returnValue(
       of({
         nomeEmpresa: "Studio Modelo",
       } as any),
