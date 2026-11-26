@@ -301,8 +301,12 @@ describe("DashboardComponent", () => {
     const novosWidgets = [...WIDGETS_DEFAULT].reverse();
     salvarEmitter.emit(novosWidgets);
 
+    const expectedWidgets = novosWidgets.map((w, idx) => ({
+      ...w,
+      ordem: idx + 1,
+    }));
     expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalledWith(
-      JSON.stringify(novosWidgets),
+      JSON.stringify(expectedWidgets),
     );
     expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       "Layout do painel personalizado com sucesso!",
@@ -515,6 +519,52 @@ describe("DashboardComponent", () => {
       const passedData = dialogServiceSpy.open.calls.mostRecent().args[1]?.data;
       const passedWidgetsIds = passedData.widgets.map((w: any) => w.id);
       expect(passedWidgetsIds).not.toContain("pendencias_hoje");
+    });
+
+    it("should preserve hidden widgets and assign unique sequential ordem values when saving preferences", () => {
+      authServiceSpy.hasModulePermission.and.callFake(
+        (mod: string) => mod !== "agenda",
+      );
+      dashboardServiceSpy.salvarPreferencias.and.returnValue(of({} as any));
+      dialogServiceSpy.open.calls.reset();
+
+      const salvarEmitter = new EventEmitter<DashboardWidgetConfig[]>();
+      const mockModalRef: any = {
+        instance: {
+          salvar: salvarEmitter,
+          restaurar: new EventEmitter<void>(),
+          salvando: false,
+          onClose: jasmine.createSpy("onClose"),
+        },
+      };
+      dialogServiceSpy.open.and.returnValue(mockModalRef);
+
+      component.widgets = WIDGETS_DEFAULT.map((w, idx) => ({
+        ...w,
+        ordem: idx + 1,
+      }));
+
+      component.abrirModalPersonalizar();
+
+      // Reordena apenas os widgets visíveis (sem pendencias_hoje), com ordem 1..3
+      const novosVisiveis = component.widgetsPermitidos
+        .slice()
+        .reverse()
+        .map((w, idx) => ({ ...w, ordem: idx + 1 }));
+
+      salvarEmitter.emit(novosVisiveis);
+
+      expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalled();
+      const savedPayload = dashboardServiceSpy.salvarPreferencias.calls.mostRecent()
+        .args[0] as string;
+      const savedWidgets: DashboardWidgetConfig[] = JSON.parse(savedPayload);
+
+      expect(savedWidgets.length).toBe(WIDGETS_DEFAULT.length);
+      expect(savedWidgets.some((w) => w.id === "pendencias_hoje")).toBeTrue();
+
+      const ordens = savedWidgets.map((w) => w.ordem);
+      expect(new Set(ordens).size).toBe(WIDGETS_DEFAULT.length);
+      expect(ordens).toEqual([1, 2, 3, 4]);
     });
   });
 });

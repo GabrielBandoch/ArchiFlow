@@ -382,10 +382,13 @@ export class DashboardComponent implements OnInit {
     this.salvandoPreferencias = true;
     modalRef.instance.salvando = true;
 
-    // Preserva a nova ordenação e adiciona widgets aos quais o usuário não tem acesso
+    // Preserva a nova ordenação, adiciona widgets aos quais o usuário não tem acesso e renumera tudo para evitar colisão de ordem
     const idSet = new Set(novosWidgets.map((w) => w.id));
     const outrosWidgets = this.widgets.filter((w) => !idSet.has(w.id));
-    const todosWidgets = [...novosWidgets, ...outrosWidgets];
+    const todosWidgets = [...novosWidgets, ...outrosWidgets].map((w, idx) => ({
+      ...w,
+      ordem: idx + 1,
+    }));
 
     const payload = JSON.stringify(todosWidgets);
     this.dashboardService.salvarPreferencias(payload).subscribe({
