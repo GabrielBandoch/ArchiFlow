@@ -92,8 +92,15 @@ Durante o desenvolvimento, o módulo de **Simulador de Honorários e Propostas P
 | **RNF04** | Isolamento estrito de perfis e tenants | **Isolamento em dois níveis:** físico por banco (`cotu_<tenant>`) + autorização `ProjetoOwnerRequirement` / `ModulosPermitidos` / guards Angular. |
 | **RNF05** | Responsividade Desktop/Mobile | Design System SCSS responsivo validado inclusive em **iPad** pela usuária operacional da Duna Arquitetura. |
 | **RNF06** | Disponibilidade e monitoramento | Containers Docker com `restart: unless-stopped`, PostgreSQL `pg_isready` healthcheck e endpoint `/health` com `DatabaseHealthCheck`. |
-| **RNF07** | Arquitetura em camadas e testes >= 60% | Clean Architecture + Facades + Repositories; **84 suítes xUnit** (backend) + **103 arquivos `.spec.ts`** (frontend) + análise **SonarCloud** no CI. |
+| **RNF07** | Arquitetura em camadas e testes >= 75% backend / 25% frontend | Clean Architecture + Facades + Repositories; **Backend com 97,69% de cobertura de linhas e 80,56% de branches (84 suítes xUnit)** + **Frontend com 63,70% de linhas e 62,76% de statements (103 arquivos `.spec.ts`)** + **SonarCloud Quality Gate Passed** no CI. |
 | **RNF08** | LGPD e proteção de dados | Isolamento físico por cliente/escritório, exclusão/desativação sem exposição cruzada, hashes irreversíveis em senhas e tokens, buckets S3 privados/controlados. |
+
+### 4.3 Conformidade com Normas e Regulamentações (`normas.md`)
+
+- **LGPD (Lei nº 13.709/2018):** cada escritório opera em banco PostgreSQL isolado (`cotu_<subdominio>`), facilitando auditoria, backup e exclusão de dados do titular sem afetar outros clientes; senhas protegidas com `BCrypt` (`workFactor: 12`) e tokens de recuperação/convite armazenados apenas por hash SHA-256.
+- **Acessibilidade (WCAG 2.1 AA):** ajuste de contraste em inputs e botões do Design System SCSS (validado na Issue #23 / PR #22) e formulários com labels e mensagens de erro acessíveis.
+- **Desenvolvimento Seguro (OWASP Top 10):** proteção contra SQL Injection (EF Core parametrizado + regex whitelist no provisionador), controle de acesso estrito por role/módulo/propriedade (anti-IDOR no `ProjetoOwnerHandler` e `ChatHub`), validação MIME/tamanho em uploads (`FileSecurityValidator`), HTTPS obrigatório via Caddy e headers/CORS restritos.
+- **Licença de Software:** ambos os repositórios públicos (`ArchiFlow` e `ArchiFlow.API`) adotam a **Licença MIT** (`LICENSE` na raiz) e utilizam exclusivamente dependências open-source compatíveis.
 
 ---
 

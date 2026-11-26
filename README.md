@@ -160,10 +160,22 @@ npm run test:ci
 
 ---
 
+## Qualidade, Cobertura de Testes e Conformidade (Normas)
+
+| Indicador | Resultado Medido (CI) | Meta da Disciplina (Web Apps) |
+| :--- | :--- | :--- |
+| **Cobertura Frontend (Karma/Jasmine)** | **63,70% linhas** · 62,76% statements (`103` specs) | `>= 25%` (**Aprovado**) |
+| **Cobertura Backend (xUnit / Cobertura)** | **97,69% linhas** · 80,56% branches (`84` suítes) | `>= 75%` (**Aprovado**) |
+| **Análise Estática (SonarCloud)** | **Quality Gate Passed** (0 issues / 0 security hotspots) | Obrigatório |
+| **Licença de Software** | **MIT License** ([`LICENSE`](LICENSE)) | Core (`normas.md`) |
+| **Privacidade & Segurança** | **LGPD** (isolamento físico por tenant + BCrypt/JWT) · **OWASP Top 10** · **WCAG 2.1 AA** | Core (`normas.md`) |
+
+---
+
 ## CI/CD
 
 O workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) executa automaticamente em todo `push` e `pull_request` para `main`:
 1. `npm ci` (Node.js 20)
 2. `npm run build:prod`
 3. `npm run test:ci` com upload do relatório de cobertura
-4. Deploy automático em produção (VPS Hostinger) via SSH quando há push na `main`, reconstruindo e reiniciando `cotu-web` e `cotu-web-staging`.
+4. Deploy automático em produção (VPS Hostinger) via GitHub Actions CI/CD quando há push na `main`, reconstruindo e reiniciando `cotu-web` e `cotu-web-staging`.
