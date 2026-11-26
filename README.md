@@ -14,10 +14,26 @@ Plataforma web de gestão de projetos, relacionamento com clientes (CRM), financ
 ## Acesso Rápido para a Banca Avaliadora
 
 - **Ambiente de Demonstração (Tenant TCC):** `https://tcc.cotu.com.br/`
-- **E-mail:** `professores@cotu.com.br`
-- **Senha:** `catolicasc123456`
-- **Perfil:** `Administrador` (acesso completo aos 7 módulos operacionais)
+- **Escritório configurado (White-Label):** `COTU Studio — Demonstração TCC` (Joinville/SC)
 - **Roteiro de testes passo a passo:** [`docs/GUIA_BANCA_DEMONSTRACAO.md`](docs/GUIA_BANCA_DEMONSTRACAO.md)
+
+### Credenciais de Teste Prontas (Admin, Equipe RBAC e Portal do Cliente)
+
+| Perfil / Papel | E-mail | Senha | Módulos / Acesso |
+| :--- | :--- | :--- | :--- |
+| **Arquiteto Sócio / Admin (Banca)** | `professores@cotu.com.br` | `catolicasc123456` | Acesso completo aos **7 módulos operacionais** |
+| **Portal do Cliente (`Família Nogueira`)** | `nogueira.cliente@cotustudio.exemplo.br` | `Cliente@2026` | `/portal` (etapas, arquivos e chat de *Residência Vale Verde*) |
+| **Gerente de Projetos** *(Camila Ferreira)* | `camila.ferreira@cotustudio.exemplo.br` | `Equipe@2026` | Dashboard, Projetos, Clientes, Leads, Fornecedores e Financeiro |
+| **Arquiteto Colaborador** *(Rafael Duarte)* | `rafael.duarte@cotustudio.exemplo.br` | `Equipe@2026` | Dashboard, Projetos, Clientes e Fornecedores |
+| **Administrativo / Financeiro** *(Beatriz Mendes)* | `beatriz.mendes@cotustudio.exemplo.br` | `Equipe@2026` | Dashboard, Financeiro e Clientes |
+| **Estagiário** *(Lucas Andrade)* | `lucas.andrade@cotustudio.exemplo.br` | `Equipe@2026` | Projetos e Fornecedores |
+
+### Massa de Dados Já Populada no Ambiente (`cotu_tcc`)
+
+- **Clientes (4):** `Família Nogueira`, `Helena & Marcos Silveira`, `Clínica OdontoPrime`, `Café Botânico Joinville`.
+- **Projetos (4 · 735 m²):** `Residência Vale Verde — Família Nogueira` (*Desenvolvimento*, 285 m²), `Apartamento Jardins — Interiores` (*Aprovação*, 145 m²), `Clínica OdontoPrime — Sede América` (*Execução*, 210 m²) e `Café Botânico — Consultoria de Fachada` (*Briefing*, 95 m²).
+- **Fornecedores (5 · 3 avaliados):** `Marcenaria Joinville Sob Medida` (5.0), `Lumina Arquitetura em Iluminação` (5.0), `Pedras do Vale Marmoraria` (4.0), `VetroSul Esquadrias & Vidros` e `VerdeVivo Paisagismo Contemporâneo`.
+- **CRM / Leads (9) & Financeiro:** funil distribuído em *Novos*, *Em Contato*, *Proposta Enviada*, *Negociando*, *Convertidos* (4) e *Perdidos* (1); **3 contratos** (`R$ 82.000,00` previstos / `R$ 29.000,00` recebidos em PIX e transferência), **5 despesas** (`R$ 6.345,00`), **2 arquivos** visíveis no portal e **Chat SignalR** ativo.
 
 ---
 
