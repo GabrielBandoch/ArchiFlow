@@ -56,6 +56,7 @@ export class DashboardComponent implements OnInit {
 
   compromissosHoje: Compromisso[] = [];
   carregandoAgenda = false;
+  agendaBloqueada = false;
 
   contasPagarSemana: DespesaProjeto[] = [];
   totalPagarSemana = 0;
@@ -64,9 +65,52 @@ export class DashboardComponent implements OnInit {
   totalReceberSemana = 0;
   parcelasAtrasadas: ParcelaFinanceira[] = [];
   carregandoFinanceiro = false;
+  financeiroBloqueado = false;
+
+  get podeAcessarAgenda(): boolean {
+    return (
+      !this.agendaBloqueada && this.authService.hasModulePermission("agenda")
+    );
+  }
+
+  get podeAcessarFinanceiro(): boolean {
+    return (
+      !this.financeiroBloqueado &&
+      this.authService.hasModulePermission("financeiro")
+    );
+  }
+
+  get podeAcessarProjetos(): boolean {
+    return this.authService.hasModulePermission("projetos");
+  }
+
+  get podeAcessarLeads(): boolean {
+    return this.authService.hasModulePermission("leads");
+  }
+
+  isWidgetPermitido(widgetId: string): boolean {
+    switch (widgetId) {
+      case "pendencias_hoje":
+        return this.podeAcessarAgenda;
+      case "financeiro_semana":
+        return this.podeAcessarFinanceiro;
+      case "projetos_por_fase":
+        return this.podeAcessarProjetos;
+      case "crm_leads":
+        return this.podeAcessarLeads;
+      default:
+        return true;
+    }
+  }
 
   get widgetsOrdenados(): DashboardWidgetConfig[] {
-    return [...this.widgets].sort((a, b) => a.ordem - b.ordem);
+    return [...this.widgets]
+      .filter((w) => this.isWidgetPermitido(w.id))
+      .sort((a, b) => a.ordem - b.ordem);
+  }
+
+  get widgetsPermitidos(): DashboardWidgetConfig[] {
+    return this.widgets.filter((w) => this.isWidgetPermitido(w.id));
   }
 
   ngOnInit(): void {
@@ -75,8 +119,8 @@ export class DashboardComponent implements OnInit {
 
   carregarDados(): void {
     this.loading = true;
-    this.carregandoAgenda = true;
-    this.carregandoFinanceiro = true;
+    this.carregandoAgenda = this.podeAcessarAgenda;
+    this.carregandoFinanceiro = this.podeAcessarFinanceiro;
 
     this.dashboardService.obterMetricas().subscribe({
       next: (dados) => {
@@ -92,40 +136,59 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    const agora = new Date();
-    const ano = agora.getFullYear();
-    const mes = agora.getMonth();
-    const dia = agora.getDate();
-    const inicioHoje = new Date(ano, mes, dia, 0, 0, 0).toISOString();
-    const fimHoje = new Date(ano, mes, dia, 23, 59, 59, 999).toISOString();
+    if (this.podeAcessarAgenda) {
+      const agora = new Date();
+      const ano = agora.getFullYear();
+      const mes = agora.getMonth();
+      const dia = agora.getDate();
+      const inicioHoje = new Date(ano, mes, dia, 0, 0, 0).toISOString();
+      const fimHoje = new Date(ano, mes, dia, 23, 59, 59, 999).toISOString();
 
-    const agendaReq$ = this.agendaService.obterPorPeriodo
-      ? this.agendaService.obterPorPeriodo(inicioHoje, fimHoje)
-      : this.agendaService.obterProximos(15);
+      const agendaReq$ = this.agendaService.obterPorPeriodo
+        ? this.agendaService.obterPorPeriodo(inicioHoje, fimHoje)
+        : this.agendaService.obterProximos(15);
 
-    agendaReq$.subscribe({
-      next: (itens) => {
-        this.carregandoAgenda = false;
-        this.compromissosHoje = (itens || []).filter((c) => {
-          if (c.status === "Cancelado") return false;
-          const dt = new Date(c.dataHoraInicio);
-          return (
-            dt.getFullYear() === ano &&
-            dt.getMonth() === mes &&
-            dt.getDate() === dia
-          );
-        });
-      },
-      error: () => {
-        this.carregandoAgenda = false;
-        this.compromissosHoje = [];
-      },
-    });
+      agendaReq$.subscribe({
+        next: (itens) => {
+          this.carregandoAgenda = false;
+          this.compromissosHoje = (itens || []).filter((c) => {
+            if (c.status === "Cancelado") return false;
+            const dt = new Date(c.dataHoraInicio);
+            return (
+              dt.getFullYear() === ano &&
+              dt.getMonth() === mes &&
+              dt.getDate() === dia
+            );
+          });
+        },
+        error: (err) => {
+          this.carregandoAgenda = false;
+          this.compromissosHoje = [];
+          if (err?.status === 403) {
+            this.agendaBloqueada = true;
+          }
+        },
+      });
+    } else {
+      this.carregandoAgenda = false;
+      this.compromissosHoje = [];
+    }
 
-    this.carregarDadosFinanceiros();
+    if (this.podeAcessarFinanceiro) {
+      this.carregarDadosFinanceiros();
+    } else {
+      this.carregandoFinanceiro = false;
+      this.contasPagarSemana = [];
+      this.totalPagarSemana = 0;
+      this.recebiveisSemana = [];
+      this.totalReceberSemana = 0;
+      this.parcelasAtrasadas = [];
+    }
   }
 
   carregarDadosFinanceiros(): void {
+    if (!this.podeAcessarFinanceiro) return;
+
     const hoje = new Date();
     const diaSemana = hoje.getDay();
     const diffSegunda = hoje.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1);
@@ -148,7 +211,11 @@ export class DashboardComponent implements OnInit {
             0,
           );
         },
-        error: () => {},
+        error: (err) => {
+          if (err?.status === 403) {
+            this.financeiroBloqueado = true;
+          }
+        },
       });
 
     this.financeiroService.obterParcelas().subscribe({
@@ -171,8 +238,11 @@ export class DashboardComponent implements OnInit {
             (p.status === "Pendente" && p.dataVencimento < hojeStr),
         );
       },
-      error: () => {
+      error: (err) => {
         this.carregandoFinanceiro = false;
+        if (err?.status === 403) {
+          this.financeiroBloqueado = true;
+        }
       },
     });
   }
@@ -291,7 +361,7 @@ export class DashboardComponent implements OnInit {
       this.dialogService.open(PersonalizarDashboardModalComponent, {
         data: {
           show: true,
-          widgets: this.widgets,
+          widgets: this.widgetsPermitidos,
           salvando: this.salvandoPreferencias,
         },
       });
@@ -312,12 +382,20 @@ export class DashboardComponent implements OnInit {
     this.salvandoPreferencias = true;
     modalRef.instance.salvando = true;
 
-    const payload = JSON.stringify(novosWidgets);
+    // Preserva a nova ordenação, adiciona widgets aos quais o usuário não tem acesso e renumera tudo para evitar colisão de ordem
+    const idSet = new Set(novosWidgets.map((w) => w.id));
+    const outrosWidgets = this.widgets.filter((w) => !idSet.has(w.id));
+    const todosWidgets = [...novosWidgets, ...outrosWidgets].map((w, idx) => ({
+      ...w,
+      ordem: idx + 1,
+    }));
+
+    const payload = JSON.stringify(todosWidgets);
     this.dashboardService.salvarPreferencias(payload).subscribe({
       next: () => {
         this.salvandoPreferencias = false;
         modalRef.instance.salvando = false;
-        this.widgets = [...novosWidgets].sort((a, b) => a.ordem - b.ordem);
+        this.widgets = [...todosWidgets].sort((a, b) => a.ordem - b.ordem);
         this.notificationService.success(
           "Layout do painel personalizado com sucesso!",
         );
@@ -347,7 +425,9 @@ export class DashboardComponent implements OnInit {
         this.salvandoPreferencias = false;
         modalRef.instance.salvando = false;
         this.widgets = [...padrao];
-        modalRef.instance.tempWidgets = padrao.map((w) => ({ ...w }));
+        modalRef.instance.tempWidgets = this.widgetsPermitidos.map((w) => ({
+          ...w,
+        }));
         this.notificationService.success(
           "Layout padrão restaurado com sucesso!",
         );
@@ -362,6 +442,7 @@ export class DashboardComponent implements OnInit {
   }
 
   abrirModalCompromisso(): void {
+    if (!this.podeAcessarAgenda) return;
     const ref = this.dialogService.open(CompromissoModalComponent, {
       data: {
         show: true,
@@ -374,6 +455,7 @@ export class DashboardComponent implements OnInit {
   }
 
   abrirModalCriarProjeto(): void {
+    if (!this.podeAcessarProjetos) return;
     const ref = this.dialogService.open(CriarProjetoModalComponent);
     ref.instance.projectCreated.subscribe(() => {
       this.carregarDados();
@@ -381,6 +463,7 @@ export class DashboardComponent implements OnInit {
   }
 
   abrirModalCriarLead(): void {
+    if (!this.podeAcessarLeads) return;
     const ref = this.dialogService.open(NovoLeadModalComponent);
     ref.instance.saved.subscribe(() => {
       this.carregarDados();

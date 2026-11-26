@@ -115,14 +115,19 @@ describe("DashboardComponent", () => {
       "obterPreferencias",
       "salvarPreferencias",
     ]);
-    authServiceSpy = jasmine.createSpyObj("AuthService", [], {
-      currentUser$: of({
-        id: "u1",
-        nome: "Gabriel",
-        email: "gabriel@teste.com",
-        role: "Arquiteto",
-      }),
-    });
+    authServiceSpy = jasmine.createSpyObj(
+      "AuthService",
+      ["hasModulePermission"],
+      {
+        currentUser$: of({
+          id: "u1",
+          nome: "Gabriel",
+          email: "gabriel@teste.com",
+          role: "Arquiteto",
+        }),
+      },
+    );
+    authServiceSpy.hasModulePermission.and.returnValue(true);
     dialogServiceSpy = jasmine.createSpyObj("DialogService", ["open"]);
     notificationServiceSpy = jasmine.createSpyObj("NotificationService", [
       "success",
@@ -296,8 +301,12 @@ describe("DashboardComponent", () => {
     const novosWidgets = [...WIDGETS_DEFAULT].reverse();
     salvarEmitter.emit(novosWidgets);
 
+    const expectedWidgets = novosWidgets.map((w, idx) => ({
+      ...w,
+      ordem: idx + 1,
+    }));
     expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalledWith(
-      JSON.stringify(novosWidgets),
+      JSON.stringify(expectedWidgets),
     );
     expect(notificationServiceSpy.success).toHaveBeenCalledWith(
       "Layout do painel personalizado com sucesso!",
@@ -414,5 +423,148 @@ describe("DashboardComponent", () => {
 
     savedEmitter.emit({ id: "new-l" });
     expect(component.carregarDados).toHaveBeenCalled();
+  });
+
+  describe("Permission handling and widget visibility", () => {
+    it("should hide agenda widget, omit request, and hide new appointment button when user lacks agenda permission", () => {
+      authServiceSpy.hasModulePermission.and.callFake(
+        (mod: string) => mod !== "agenda",
+      );
+      agendaServiceSpy.obterPorPeriodo.calls.reset();
+      agendaServiceSpy.obterProximos.calls.reset();
+
+      component.carregarDados();
+      fixture.detectChanges();
+
+      expect(component.podeAcessarAgenda).toBeFalse();
+      expect(agendaServiceSpy.obterPorPeriodo).not.toHaveBeenCalled();
+      expect(agendaServiceSpy.obterProximos).not.toHaveBeenCalled();
+
+      const idsVisiveis = component.widgetsOrdenados.map((w) => w.id);
+      expect(idsVisiveis).not.toContain("pendencias_hoje");
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(
+        compiled.querySelector("app-dashboard-pendencias-hoje"),
+      ).toBeNull();
+
+      // Check header button
+      const buttons = Array.from(compiled.querySelectorAll("app-button"));
+      const temBotaoNovoCompromisso = buttons.some((btn) =>
+        btn.textContent?.includes("Novo Compromisso"),
+      );
+      expect(temBotaoNovoCompromisso).toBeFalse();
+
+      // abrirModalCompromisso should do nothing
+      dialogServiceSpy.open.calls.reset();
+      component.abrirModalCompromisso();
+      expect(dialogServiceSpy.open).not.toHaveBeenCalled();
+    });
+
+    it("should block agenda dynamically and hide widget if API returns 403 Forbidden", () => {
+      authServiceSpy.hasModulePermission.and.returnValue(true);
+      agendaServiceSpy.obterPorPeriodo.and.returnValue(
+        throwError(() => ({ status: 403, message: "Forbidden" })),
+      );
+
+      component.carregarDados();
+      fixture.detectChanges();
+
+      expect(component.agendaBloqueada).toBeTrue();
+      expect(component.podeAcessarAgenda).toBeFalse();
+      const idsVisiveis = component.widgetsOrdenados.map((w) => w.id);
+      expect(idsVisiveis).not.toContain("pendencias_hoje");
+    });
+
+    it("should hide financeiro widget and omit requests when user lacks financeiro permission", () => {
+      authServiceSpy.hasModulePermission.and.callFake(
+        (mod: string) => mod !== "financeiro",
+      );
+      financeiroServiceSpy.obterDespesas.calls.reset();
+      financeiroServiceSpy.obterParcelas.calls.reset();
+
+      component.carregarDados();
+      fixture.detectChanges();
+
+      expect(component.podeAcessarFinanceiro).toBeFalse();
+      expect(financeiroServiceSpy.obterDespesas).not.toHaveBeenCalled();
+      expect(financeiroServiceSpy.obterParcelas).not.toHaveBeenCalled();
+
+      const idsVisiveis = component.widgetsOrdenados.map((w) => w.id);
+      expect(idsVisiveis).not.toContain("financeiro_semana");
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(
+        compiled.querySelector("app-dashboard-financeiro-semana"),
+      ).toBeNull();
+    });
+
+    it("should only include permitted widgets in customize modal", () => {
+      authServiceSpy.hasModulePermission.and.callFake(
+        (mod: string) => mod !== "agenda",
+      );
+      dialogServiceSpy.open.calls.reset();
+
+      const mockModalRef: any = {
+        instance: {
+          salvar: new EventEmitter<any>(),
+          restaurar: new EventEmitter<any>(),
+          onClose: jasmine.createSpy("onClose"),
+        },
+      };
+      dialogServiceSpy.open.and.returnValue(mockModalRef);
+
+      component.abrirModalPersonalizar();
+      expect(dialogServiceSpy.open).toHaveBeenCalled();
+      const passedData = dialogServiceSpy.open.calls.mostRecent().args[1]?.data;
+      const passedWidgetsIds = passedData.widgets.map((w: any) => w.id);
+      expect(passedWidgetsIds).not.toContain("pendencias_hoje");
+    });
+
+    it("should preserve hidden widgets and assign unique sequential ordem values when saving preferences", () => {
+      authServiceSpy.hasModulePermission.and.callFake(
+        (mod: string) => mod !== "agenda",
+      );
+      dashboardServiceSpy.salvarPreferencias.and.returnValue(of({} as any));
+      dialogServiceSpy.open.calls.reset();
+
+      const salvarEmitter = new EventEmitter<DashboardWidgetConfig[]>();
+      const mockModalRef: any = {
+        instance: {
+          salvar: salvarEmitter,
+          restaurar: new EventEmitter<void>(),
+          salvando: false,
+          onClose: jasmine.createSpy("onClose"),
+        },
+      };
+      dialogServiceSpy.open.and.returnValue(mockModalRef);
+
+      component.widgets = WIDGETS_DEFAULT.map((w, idx) => ({
+        ...w,
+        ordem: idx + 1,
+      }));
+
+      component.abrirModalPersonalizar();
+
+      // Reordena apenas os widgets visíveis (sem pendencias_hoje), com ordem 1..3
+      const novosVisiveis = component.widgetsPermitidos
+        .slice()
+        .reverse()
+        .map((w, idx) => ({ ...w, ordem: idx + 1 }));
+
+      salvarEmitter.emit(novosVisiveis);
+
+      expect(dashboardServiceSpy.salvarPreferencias).toHaveBeenCalled();
+      const savedPayload = dashboardServiceSpy.salvarPreferencias.calls.mostRecent()
+        .args[0] as string;
+      const savedWidgets: DashboardWidgetConfig[] = JSON.parse(savedPayload);
+
+      expect(savedWidgets.length).toBe(WIDGETS_DEFAULT.length);
+      expect(savedWidgets.some((w) => w.id === "pendencias_hoje")).toBeTrue();
+
+      const ordens = savedWidgets.map((w) => w.ordem);
+      expect(new Set(ordens).size).toBe(WIDGETS_DEFAULT.length);
+      expect(ordens).toEqual([1, 2, 3, 4]);
+    });
   });
 });
