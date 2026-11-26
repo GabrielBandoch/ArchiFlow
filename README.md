@@ -1,6 +1,6 @@
 # COTU (ArchiFlow) — Frontend Web (Angular 17)
 
-Plataforma web de gestão de projetos, relacionamento com clientes (CRM), financeiro, agenda e portal white-label para escritórios de arquitetura.
+Plataforma web de gestão de projetos, relacionamento com clientes (CRM), financeiro, fornecedores e portal white-label para escritórios de arquitetura.
 
 - **Instituição:** Centro Universitário Católica de Santa Catarina — Joinville/SC (Engenharia de Software — TCC)
 - **Autor:** Gabriel Felipe Alves Bandoch
@@ -16,7 +16,7 @@ Plataforma web de gestão de projetos, relacionamento com clientes (CRM), financ
 - **Ambiente de Demonstração (Tenant TCC):** `https://tcc.cotu.com.br/`
 - **E-mail:** `professores@cotu.com.br`
 - **Senha:** `catolicasc123456`
-- **Perfil:** `Administrador` (acesso completo a todos os módulos)
+- **Perfil:** `Administrador` (acesso completo aos 7 módulos operacionais)
 - **Roteiro de testes passo a passo:** [`docs/GUIA_BANCA_DEMONSTRACAO.md`](docs/GUIA_BANCA_DEMONSTRACAO.md)
 
 ---
@@ -29,8 +29,8 @@ Plataforma web de gestão de projetos, relacionamento com clientes (CRM), financ
 | :--- | :--- |
 | **[`docs/README.md`](docs/README.md)** | Hub central da documentação com índice de ambos os repositórios e roteiro de leitura para a banca. |
 | **[`docs/EVOLUCAO_RFC_VS_ENTREGUE.md`](docs/EVOLUCAO_RFC_VS_ENTREGUE.md)** | Comparativo completo entre o RFC v1.0 e o sistema entregue, justificativas de mudanças, matriz RF/RNF, validação com a Duna Arquitetura e **ADRs 01–09**. |
-| **[`docs/ARQUITETURA_MULTITENANT_E_PROVISIONAMENTO.md`](docs/ARQUITETURA_MULTITENANT_E_PROVISIONAMENTO.md)** | Explicação ponta a ponta do ecossistema SaaS (5 apps), assinatura/pagamento (`Tenants_Assinaturas`), Caddy On-Demand TLS e criação automática da base PostgreSQL. |
-| **[`docs/MODELO_DE_DADOS.md`](docs/MODELO_DE_DADOS.md)** | Diagrama ERD atualizado (**25 tabelas por tenant + 2 no master**) e explicação individual do porquê cada nova tabela foi criada. |
+| **[`docs/ARQUITETURA_MULTITENANT_E_PROVISIONAMENTO.md`](docs/ARQUITETURA_MULTITENANT_E_PROVISIONAMENTO.md)** | Explicação ponta a ponta do ecossistema SaaS, contratação/pagamento (`Tenants_Assinaturas`), Caddy On-Demand TLS e criação automática da base PostgreSQL. |
+| **[`docs/MODELO_DE_DADOS.md`](docs/MODELO_DE_DADOS.md)** | Diagrama ERD atualizado (**23 tabelas por tenant + `Tenants_Assinaturas` no master**) e explicação individual do porquê cada nova tabela foi criada. |
 | **[`docs/GUIA_BANCA_DEMONSTRACAO.md`](docs/GUIA_BANCA_DEMONSTRACAO.md)** | Guia prático de navegação em `https://tcc.cotu.com.br/` módulo a módulo. |
 | **[`docs/rfc.md`](docs/rfc.md)** · **[`docs/rfc_tcc.pdf`](docs/rfc_tcc.pdf)** | Proposta original v1.0 aprovada em Março/2026 (preservada como referência histórica). |
 | **[`docs/Diagramas/`](docs/Diagramas/)** & **[`docs/Mockup/`](docs/Mockup/)** | Diagramas iniciais do RFC e mockups de alta fidelidade do Figma. |
@@ -39,7 +39,7 @@ Plataforma web de gestão de projetos, relacionamento com clientes (CRM), financ
 
 | Documento | O que você encontra |
 | :--- | :--- |
-| **[`ArchiFlow.API/README.md`](https://github.com/GabrielBandoch/ArchiFlow.API/blob/main/README.md)** | Visão geral da API .NET 8, mapa de 18 Controllers + SignalR Hub, camadas Clean Architecture e instruções de execução. |
+| **[`ArchiFlow.API/README.md`](https://github.com/GabrielBandoch/ArchiFlow.API/blob/main/README.md)** | Visão geral da API .NET 8, mapa de 17 Controllers + SignalR Hub, camadas Clean Architecture e instruções de execução. |
 | **[`wiki/Arquitetura.md`](https://github.com/GabrielBandoch/ArchiFlow.API/blob/main/wiki/Arquitetura.md)** | Clean Architecture, Facades, C4 atualizado (Níveis 1, 2 e 3), OWASP Top 10, RBAC e Health Checks. |
 | **[`wiki/Multi-Tenancy-e-Provisionamento.md`](https://github.com/GabrielBandoch/ArchiFlow.API/blob/main/wiki/Multi-Tenancy-e-Provisionamento.md)** | Detalhamento técnico de `TenantResolutionMiddleware`, `TenantContext`, `TenantDatabaseProvisioner` e `DbSeeder`. |
 | **[`wiki/Modelo-de-Dados-e-Migracoes.md`](https://github.com/GabrielBandoch/ArchiFlow.API/blob/main/wiki/Modelo-de-Dados-e-Migracoes.md)** | Catálogo técnico do `ArchiFlowDbContext`, conversor UTC e estratégia de migrations/seeds. |
@@ -52,7 +52,7 @@ Plataforma web de gestão de projetos, relacionamento com clientes (CRM), financ
 
 1. **Rebranding para COTU & Ecossistema SaaS Multi-Tenant:** o sistema passou a operar com **1 banco PostgreSQL isolado por escritório** (`cotu_duna`, `cotu_tcc`, `cotu_staging`), com criação automática sob demanda na primeira requisição e emissão automática de SSL via Caddy.
 2. **Módulos Pós-TCC Antecipados:** **Financeiro** (Contratos, Parcelas, Despesas avulsas/por projeto, comprovantes S3) e **Fornecedores** (diretório, vínculo N:N, avaliações 1–5, WhatsApp) foram totalmente implementados e homologados.
-3. **Novos Módulos Demandados em Campo:** **Agenda com Google Calendar / `.ics` / Google Meet**, **Chat em Tempo Real via SignalR**, **Templates de Workflow de Projeto**, **Portal Multi-Representantes com convite assinado**, **RBAC granular por módulo**, **White-Label (`Dados_Empresa`)** e **Dashboard personalizável**.
+3. **Novos Módulos Demandados em Campo:** **Chat em Tempo Real via SignalR**, **Templates de Workflow de Projeto**, **Portal Multi-Representantes com convite assinado**, **RBAC granular por módulo**, **White-Label (`Dados_Empresa`)** e **Dashboard personalizável**.
 4. **Simulador de Honorários (Pós-TCC):** prototipado e posteriormente consolidado/removido (`ef07535`) para priorizar o núcleo operacional validado com a Duna Arquitetura.
 
 ---
@@ -68,7 +68,7 @@ Plataforma web de gestão de projetos, relacionamento com clientes (CRM), financ
 | Tempo Real | `@microsoft/signalr` 10 |
 | Testes | Karma · Jasmine (`103` arquivos `.spec.ts`) |
 | Container & Proxy | Nginx (SPA) atrás de Caddy 2 (`*.cotu.com.br`) |
-| CI/CD | GitHub Actions (build prod, testes headless, cobertura e deploy via SSH) |
+| CI/CD | GitHub Actions (build prod, testes headless, cobertura e deploy automatizado) |
 
 ---
 
@@ -82,7 +82,7 @@ src/
     ├── app.routes.ts               # Mapa de rotas lazy-loaded com staffGuard, portalGuard e moduleGuard
     ├── commands/                   # Contratos de entrada tipados (POST/PUT/PATCH por módulo)
     ├── core/
-    │   ├── api/                    # Services HTTP por domínio (agenda, arquivos, auth, chat, clientes, dashboard, empresa, financeiro, fornecedores, leads, projetos, usuarios)
+    │   ├── api/                    # Services HTTP por domínio (arquivos, auth, chat, clientes, dashboard, empresa, financeiro, fornecedores, leads, projetos, usuarios)
     │   ├── guards/                 # role.guard.ts (staffGuard, portalGuard) e module.guard.ts (RBAC granular)
     │   ├── handlers/               # GlobalErrorHandler
     │   ├── interceptors/           # AuthInterceptor (injeção do Bearer JWT e tratamento de sessão)
@@ -96,14 +96,13 @@ src/
     │   ├── leads/                  # Quadro Kanban de leads e gestão de origens
     │   ├── clientes/               # Lista de clientes, ficha detalhada e representantes do portal
     │   ├── projetos/               # Lista, detalhes, etapas, tarefas, arquivos e chat do projeto
-    │   ├── agenda/                 # Calendário mensal/semanal, métricas e integração Google Agenda
     │   ├── financeiro/             # Fluxo de caixa, gráficos, contratos, parcelas e despesas
     │   ├── fornecedores/           # Diretório, detalhes, avaliações e vínculo com projetos
     │   ├── portal/                 # Portal do Cliente (leitura de etapas, prazos, arquivos e chat)
     │   ├── configuracoes/          # Dados da Empresa (White-Label), Templates de Projeto, Origens e Equipe/RBAC
     │   ├── perfil/                 # Meu Perfil (dados pessoais, foto e alteração de senha)
     │   └── showcase/               # Showcase de componentes do Design System
-    ├── dialogs/                    # Modais padronizados por módulo (agenda, clientes, configuracoes, dashboard, financeiro, fornecedores, leads, projetos)
+    ├── dialogs/                    # Modais padronizados por módulo (clientes, configuracoes, dashboard, financeiro, fornecedores, leads, projetos)
     ├── layout/                     # auth-layout, main-layout (sidebar dinâmica por permissão), portal-layout
     └── shared/                     # Componentes reutilizáveis do Design System (app-input, app-button, cotu-logo, modais de confirmação, etc.)
 ```
@@ -120,7 +119,6 @@ src/
 | **Leads (Kanban)** | `/leads`, `/leads/origens` | `staffGuard` + `moduleGuard("leads")` | Concluído |
 | **Clientes (CRM)** | `/clientes`, `/clientes/:id` | `staffGuard` + `moduleGuard("clientes")` | Concluído |
 | **Projetos** | `/projetos`, `/projetos/:id` | `staffGuard` + `moduleGuard("projetos")` | Concluído |
-| **Agenda & Google Agenda** | `/agenda` | `staffGuard` + `moduleGuard("agenda")` | Concluído |
 | **Financeiro** | `/financeiro` | `staffGuard` + `moduleGuard("financeiro")` | Concluído |
 | **Fornecedores** | `/fornecedores`, `/fornecedores/:id` | `staffGuard` + `moduleGuard("fornecedores")` | Concluído |
 | **Configurações** | `/configuracoes/empresa`, `templates-projeto`, `origens-lead`, `equipe` | `staffGuard` + `moduleGuard("configuracoes")` | Concluído |

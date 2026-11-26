@@ -4,95 +4,90 @@ Este documento explica em detalhes **como a plataforma COTU (ArchiFlow) opera co
 
 ---
 
-## 1. Visão Geral do Ecossistema (5 Aplicações)
+## 1. Visão Geral do Ecossistema
 
-Ao contrário do esboço monolítico inicial do RFC, a arquitetura em produção foi dividida em **5 serviços especializados** executando em containers Docker atrás de um proxy reverso **Caddy 2**, compartilhando um servidor **PostgreSQL 16** com múltiplos bancos isolados:
+Ao contrário do esboço monolítico inicial do RFC, a arquitetura em produção separa a vitrine comercial, a camada interna privada de controle de assinaturas e o workspace multi-tenant dos escritórios, executando em containers Docker atrás de um proxy reverso **Caddy 2** sobre **PostgreSQL 16** com múltiplos bancos isolados:
 
 ```mermaid
 flowchart TB
     User["Arquiteto / Cliente Final"]
-    AdminUser["Operador / SuperAdmin COTU"]
+    Prospect["Novo Escritório (Lead SaaS)"]
 
     subgraph Edge["Borda & Proxy Reverso (VPS Hostinger)"]
-        Caddy["Caddy 2 (TLS Automático & On-Demand TLS *.cotu.com.br)"]
+        Caddy["Caddy 2 (HTTPS Automático & Roteamento por Subdomínio)"]
     end
 
     subgraph Apps["Containers Frontend & SaaS"]
-        Landing["cotu-landing (Angular SSR/Static)<br/>cotu.com.br"]
-        AdminWeb["cotu-admin (Angular)<br/>app.cotu.com.br"]
+        Landing["cotu-landing (Angular)<br/>cotu.com.br"]
         WebProd["cotu-web (Angular)<br/>*.cotu.com.br (ex: duna, tcc)"]
         WebStg["cotu-web-staging (Angular)<br/>staging.cotu.com.br"]
     end
 
     subgraph APIs["Containers Backend (.NET 8)"]
-        AdminAPI["cotu-api-app (ArchiFlow.Admin.API)<br/>Gestão de Tenants e Assinaturas"]
+        BillingSvc["Serviço Interno Privado de Assinaturas<br/>(Controle de Planos e Pagamentos)"]
         ProdAPI["cotu-api (ArchiFlow.API)<br/>Multi-Tenant Engine + SignalR"]
         StgAPI["cotu-api-staging (ArchiFlow.API)<br/>Homologação"]
     end
 
     subgraph Data["Persistência & Cloud"]
-        PGMaster[("PostgreSQL Master: cotu<br/>(Tenants_Assinaturas, Usuarios Admin)")]
+        PGMaster[("PostgreSQL Master: cotu<br/>(Tenants_Assinaturas)")]
         PGTenants[("PostgreSQL Isolado por Cliente:<br/>cotu_duna | cotu_tcc | cotu_staging")]
         S3["Amazon S3<br/>(Pranchas, Logos, Comprovantes)"]
         Email["SMTP Hostinger / Amazon SES<br/>(Convites e Recuperação de Senha)"]
-        GCal["Google Calendar API<br/>(OAuth 2.0 & Google Meet)"]
     end
 
+    Prospect -->|HTTPS| Caddy
     User -->|HTTPS| Caddy
-    AdminUser -->|HTTPS| Caddy
 
     Caddy -->|"cotu.com.br"| Landing
-    Caddy -->|"app.cotu.com.br"| AdminWeb
-    Caddy -->|"app.cotu.com.br/api/*"| AdminAPI
     Caddy -->|"*.cotu.com.br"| WebProd
     Caddy -->|"*.cotu.com.br/api/* e /hubs/*"| ProdAPI
     Caddy -->|"staging.cotu.com.br"| WebStg
     Caddy -->|"staging.cotu.com.br/api/*"| StgAPI
 
-    AdminAPI --> PGMaster
+    BillingSvc --> PGMaster
     ProdAPI --> PGTenants
     StgAPI --> PGTenants
     ProdAPI --> S3
     ProdAPI --> Email
-    ProdAPI --> GCal
 ```
 
 ---
 
 ## 2. Como Funciona a Criação da Base (Contratação/Pagamento → Provisionamento)
 
-### 2.1 Camada Comercial e Gestão de Assinaturas (`ArchiFlow.Landing` + `ArchiFlow.Admin.API`)
+### 2.1 Camada Comercial e Gestão de Assinaturas (`ArchiFlow.Landing` + `Tenants_Assinaturas`)
 
 1. **Escolha do Plano na Landing Page (`cotu.com.br`):**
    - A `ArchiFlow.Landing` apresenta três planos dimensionados para escritórios de arquitetura (com ciclos mensal e anual com 20% de desconto e 14 dias de trial):
      - **Starter** (R$ 129/mês ou R$ 99/mês anual): até 5 projetos ativos, 3 membros, 15 GB AWS S3.
      - **Professional** (R$ 199/mês ou R$ 159/mês anual): projetos ilimitados, 5 membros, Portal White-Label, Financeiro, Fornecedores, 50 GB AWS S3.
      - **Enterprise** (R$ 399/mês ou R$ 319/mês anual): usuários e projetos ilimitados, 250 GB AWS S3, suporte prioritário.
-   - O cliente preenche seu e-mail profissional no formulário de solicitação de conta/trial.
+   - O escritório preenche seus dados/e-mail profissional para iniciar o onboarding.
 
-2. **Registro da Assinatura e Confirmação de Pagamento (`app.cotu.com.br`):**
-   - Na central **COTU SuperAdmin** (`ArchiFlow.Admin` + `ArchiFlow.Admin.API`), cada escritório contratante é registrado na tabela **`Tenants_Assinaturas`** do banco master `cotu`.
-   - Ao cadastrar um escritório (`POST /api/superadmin/escritorios`), define-se: `NomeEscritorio`, `Subdominio` (ex.: `duna`, `tcc`, `estudioluz`), `EmailResponsavel`, `Plano`, `ValorMensalidade` e `StatusFinanceiro` inicial (`Trial` com 14 dias).
-   - Quando o pagamento é realizado/confirmado (`POST /api/superadmin/escritorios/{id}/registrar-pagamento`), a `Admin.API`:
-     - Atualiza `TAS_Status_Financeiro = "Adimplente"`,
-     - Registra `TAS_Ultimo_Pagamento = UtcNow`,
-     - Prorroga `TAS_Data_Vencimento` (+1 mês),
-     - Garante `TAS_Bloqueado_Inadimplencia = false`.
-   - Em caso de inadimplência, o painel calcula dias de atraso, gera cobrança via WhatsApp e permite bloquear o tenant (`PUT /api/superadmin/escritorios/{id}/bloquear`).
+2. **Registro da Assinatura e Confirmação de Pagamento (`Tenants_Assinaturas`):**
+   - Cada escritório contratante é registrado na tabela **`Tenants_Assinaturas`** do banco master `cotu` pelo serviço interno privado de faturamento da plataforma.
+   - Ao cadastrar um escritório, definem-se `TAS_Nome_Escritorio`, `TAS_Subdominio` (ex.: `duna`, `tcc`, `estudioluz`), `TAS_Email_Responsavel`, `TAS_Plano`, `TAS_Valor_Mensalidade` e `TAS_Status_Financeiro` inicial (`Trial` com 14 dias).
+   - Quando o pagamento é realizado e confirmado, a plataforma atualiza o registro no banco master:
+     - `TAS_Status_Financeiro = "Adimplente"`,
+     - `TAS_Ultimo_Pagamento = UtcNow`,
+     - `TAS_Data_Vencimento` prorrogada (+1 mês),
+     - `TAS_Bloqueado_Inadimplencia = false`.
+   - Em caso de inadimplência prolongada, o serviço calcula os dias de atraso e pode sinalizar o bloqueio do tenant (`TAS_Bloqueado_Inadimplencia = true`).
 
-> **Transparência sobre o escopo atual do pagamento:** A gestão completa de planos, status financeiro (`Trial`, `Adimplente`, `EmDebito`), registro de pagamento e bloqueio já funciona na `ArchiFlow.Admin.API` (`app.cotu.com.br`), enquanto a `ArchiFlow.API` já realiza 100% do provisionamento automático da base de dados sob demanda. A integração direta com webhook de gateway de pagamento externo (checkout PIX/Cartão automático sem aprovação na central) e a tela de autogestão de assinatura dentro do workspace do escritório estão planejadas como próxima evolução comercial pós-TCC.
+> **Transparência sobre o escopo atual do pagamento:** A gestão completa de planos, status financeiro (`Trial`, `Adimplente`, `EmDebito`), registro de pagamento e bloqueio opera no serviço interno privado conectado ao banco master `cotu`, enquanto a `ArchiFlow.API` já realiza 100% do provisionamento automático da base de dados sob demanda. A integração direta com webhook de gateway de pagamento externo (checkout PIX/Cartão automático) está planejada como próxima evolução comercial pós-TCC.
 
 ---
 
 ### 2.2 Fluxo Técnico de Criação Automática da Base de Dados (`ArchiFlow.API`)
 
-Assim que o subdomínio `<tenant>.cotu.com.br` aponta para a VPS (via DNS `A` ou registro wildcard `*.cotu.com.br`) e recebe a **primeira requisição HTTP/HTTPS**, toda a infraestrutura e o banco dedicado são preparados automaticamente sem reiniciar containers nem rodar scripts manuais:
+Assim que o subdomínio `<tenant>.cotu.com.br` aponta para a VPS (via DNS `A`) e recebe a **primeira requisição HTTP/HTTPS**, toda a infraestrutura e o banco dedicado são preparados automaticamente sem reiniciar containers nem rodar scripts manuais:
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Client as Arquiteto / Navegador
-    participant Admin as Admin API (app.cotu.com.br)
+    participant Master as Controle de Assinaturas (cotu)
     participant Caddy as Caddy 2 Proxy
     participant API as ArchiFlow.API (cotu-api)
     participant MW as TenantResolutionMiddleware
@@ -100,10 +95,8 @@ sequenceDiagram
     participant PG as PostgreSQL 16 (cotu-db)
     participant Seed as DbSeeder
 
-    Note over Admin: 1. Escritório contratado/pago em Tenants_Assinaturas (ex: subdomínio "duna" ou "tcc")
+    Note over Master: 1. Escritório contratado/pago em Tenants_Assinaturas (ex: subdomínio "duna" ou "tcc")
     Client->>Caddy: HTTPS GET https://tcc.cotu.com.br/
-    Caddy->>API: On-Demand TLS Ask: GET http://cotu-api:8080/health?domain=tcc.cotu.com.br
-    API-->>Caddy: 200 Healthy (autoriza emissão do SSL)
     Caddy-->>Client: Certificado Let's Encrypt emitido e SPA Angular servida
 
     Client->>Caddy: POST https://tcc.cotu.com.br/api/auth/register (ou /login)
@@ -121,7 +114,7 @@ sequenceDiagram
             Prov->>PG: CREATE DATABASE "cotu_tcc" ENCODING 'UTF8'
         end
         Prov->>Seed: MigrateAndSeedContextAsync(contexto "cotu_tcc")
-        Seed->>PG: Aplica EF Core Migrations + DDL idempotente (25 tabelas)
+        Seed->>PG: Aplica EF Core Migrations + DDL idempotente (23 tabelas)
         Seed->>PG: Semeia Origens_Lead, 4 Templates_Projeto, Dados_Empresa e Admin inicial (BCrypt)
         Prov->>Prov: Marca "tcc" em _initializedTenants (cache O(1) para próximas requisições)
     end
@@ -140,9 +133,9 @@ sequenceDiagram
 | **Contexto Scoped** | `src/ArchiFlow.Infrastructure/MultiTenancy/TenantContext.cs` | Armazena `_tenantId` por requisição HTTP e constrói dinamicamente a `ConnectionString` do Npgsql trocando o `Database` para `cotu` (default) ou `cotu_<tenant>` (ex.: `cotu_duna`, `cotu_staging`, `cotu_tcc`). |
 | **Fábrica do DbContext** | `src/ArchiFlow.API/Extensions/ServiceCollectionExtensions.cs` | No `AddDbContext<ArchiFlowDbContext>`, lê o `ITenantContext` da requisição e injeta a connection string do banco específico do cliente. |
 | **Provisionador** | `src/ArchiFlow.Infrastructure/MultiTenancy/TenantDatabaseProvisioner.cs` | Singleton thread-safe (`ConcurrentDictionary<string, SemaphoreSlim>` + `_initializedTenants`). Cria o banco no PostgreSQL com validação estrita `^[a-z0-9_]+$` contra SQL Injection e executa migrations + seeds. |
-| **Seeder & DDL** | `src/ArchiFlow.Infrastructure/Data/DbSeeder.cs` | Executa `Database.MigrateAsync()`, garante todas as 25 tabelas/índices via `EnsureAdditionalTablesAndColumnsAsync()` e semeia os dados iniciais do escritório. |
+| **Seeder & DDL** | `src/ArchiFlow.Infrastructure/Data/DbSeeder.cs` | Executa `Database.MigrateAsync()`, garante todas as tabelas/índices via `EnsureAdditionalTablesAndColumnsAsync()` e semeia os dados iniciais do escritório. |
 | **Hub SignalR Multi-Tenant** | `src/ArchiFlow.API/Hubs/ChatHub.cs` | Chama `EnsureTenantContext()` na conexão WebSocket lendo a claim `tenant` ou o `Host` antes de resolver o `IMensagemChatFacade`, garantindo que o chat persista no banco do tenant correto. |
-| **Proxy Wildcard SSL** | `deploy/Caddyfile` | Configurado com bloco `*.{$DOMAIN_NAME}` + `on_demand_tls` para atender subdomínios dinâmicos e emitir TLS automaticamente. |
+| **Proxy Caddy SSL** | `deploy/Caddyfile` | Configurado com suporte a subdomínios dinâmicos e emissão automática de certificados TLS via Let's Encrypt. |
 
 ---
 
@@ -150,7 +143,7 @@ sequenceDiagram
 
 Toda nova base (ex.: `cotu_duna`, `cotu_tcc`, `cotu_novoestudio`) nasce pronta para uso imediato com:
 
-1. **Todas as 25 tabelas de negócio** e índices relacionais no PostgreSQL.
+1. **Todas as 23 tabelas operacionais de negócio** e índices relacionais no PostgreSQL.
 2. **5 Origens de Lead padrão** (`Instagram`, `Indicação`, `Site`, `E-mail`, `Outros`) na tabela `Origens_Lead`.
 3. **4 Templates de Projeto Arquitetônico** completos com etapas e checklists de tarefas em `Templates_Projeto` e `Templates_Etapa`:
    - `residencial-completo`: *Projeto Arquitetônico Residencial* (4 etapas)

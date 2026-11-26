@@ -10,7 +10,7 @@ Este documento responde diretamente à pergunta: ***"O que mudou entre a propost
 
 No RFC v1.0, o sistema (então chamado **ArchiFlow**) previa um MVP composto por **4 módulos** (Leads, CRM/Clientes, Projetos e Portal do Cliente) e **3 módulos pós-TCC** (Simulador de Honorários, Gestão Financeira e Gestão de Fornecedores), rodando com **9 tabelas** em um modelo single-tenant simples.
 
-Durante o desenvolvimento em parceria contínua com a **Duna Arquitetura** (Joinville/SC), a validação prática mostrou que o escritório precisava do **ciclo completo operacional** — incluindo **Financeiro**, **Fornecedores**, **Agenda integrada ao Google Calendar**, **Chat em Tempo Real no Portal** e **Templates de Projeto** — para de fato substituir planilhas e WhatsApp no dia a dia. Além disso, para viabilizar o uso real em produção pela Duna Arquitetura e por futuros escritórios com total isolamento de dados (LGPD), o sistema foi reestruturado para **arquitetura SaaS Multi-Tenant com 1 banco PostgreSQL por cliente** sob a marca **COTU**.
+Durante o desenvolvimento em parceria contínua com a **Duna Arquitetura** (Joinville/SC), a validação prática mostrou que o escritório precisava do **ciclo completo operacional** — incluindo **Financeiro**, **Fornecedores**, **Chat em Tempo Real no Portal** e **Templates de Projeto** — para de fato substituir planilhas e WhatsApp no dia a dia. Além disso, para viabilizar o uso real em produção pela Duna Arquitetura e por futuros escritórios com total isolamento de dados (LGPD), o sistema foi reestruturado para **arquitetura SaaS Multi-Tenant com 1 banco PostgreSQL por cliente** sob a marca **COTU**.
 
 ---
 
@@ -26,13 +26,12 @@ Durante o desenvolvimento em parceria contínua com a **Duna Arquitetura** (Join
 | **Módulo 6 — Gestão Financeira** | Previsto para **Pós-TCC** | **Antecipado e Entregue:** Contratos, Parcelas, Baixas, Alertas, Comprovantes S3 e **Despesas (vinculadas ou avulsas do escritório)** | **Antecipado** |
 | **Módulo 7 — Gestão de Fornecedores** | Previsto para **Pós-TCC** | **Antecipado e Entregue:** Diretório, vínculo N:N por projeto, avaliações 1–5 com recálculo de média e contato direto via WhatsApp | **Antecipado** |
 | **Módulo 5 — Simulador de Honorários** | Previsto para **Pós-TCC** | Chegou a ser prototipado com Strategy/Builder GoF, mas foi **consolidado/removido na versão atual** (26/10/2026) para manter foco e simplicidade operacional | **Postergado (Pós-TCC)** |
-| **Agenda & Google Calendar** | Listado como **Fora do Escopo** | **Implementado:** Calendário corporativo, tarefas integradas, exportação `.ics`, Google Meet e sincronização OAuth 2.0 / Service Account | **Adicionado** |
 | **Chat Interno no Portal** | Listado como **Fora do Escopo** | **Implementado:** Chat em tempo real via **SignalR (`/hubs/chat`)** com persistência e proteção anti-IDOR por projeto | **Adicionado** |
 | **Gestão de Equipe & RBAC** | Arquiteto único / sem gestão de equipe | **Implementado:** Múltiplos papéis (`Administrador`, `Gerente`, `Colaborador`, `Estagiario`, `Financeiro`) + **permissão granular por módulo (`ModulosPermitidos`)** | **Adicionado** |
 | **White-Label & Perfil** | Não previsto | **Implementado:** `Dados_Empresa` (logo, cor primária, CAU/CNPJ), perfil próprio e recuperação de senha por token hash | **Adicionado** |
 | **Dashboard Personalizável** | Layout fixo | **Implementado:** Widgets configuráveis persistidos por usuário (`Preferencias_Dashboard`) | **Adicionado** |
-| **Modelo Multi-Tenant SaaS** | Banco único compartilhado | **Implementado:** **Database-per-Tenant (`cotu_<subdominio>`)** com auto-provisionamento, SSL On-Demand + Landing + Painel SuperAdmin | **Adicionado** |
-| **Banco de Dados** | 9 tabelas no DER inicial | **25 tabelas por tenant** (`ArchiFlowDbContext`) + **2 tabelas no banco master** (`AdminDbContext`) | **Expandido (9 → 25+2)** |
+| **Modelo Multi-Tenant SaaS** | Banco único compartilhado | **Implementado:** **Database-per-Tenant (`cotu_<subdominio>`)** com auto-provisionamento, SSL On-Demand + Landing + gestão de assinaturas (`Tenants_Assinaturas`) | **Adicionado** |
+| **Banco de Dados** | 9 tabelas no DER inicial | **23 tabelas por tenant** (`ArchiFlowDbContext`) + **`Tenants_Assinaturas`** no banco master (`cotu`) | **Expandido (9 → 23+1)** |
 | **Infraestrutura de Produção** | Deploy genérico / AWS CDK | **Docker Compose + Caddy 2 (VPS Hostinger)** em produção + **AWS S3/SES** ativos + **AWS CDK** preservado em `infra/` | **Evoluído** |
 
 ---
@@ -44,26 +43,25 @@ Durante o desenvolvimento em parceria contínua com a **Duna Arquitetura** (Join
 - **Gestão de Fornecedores (Módulo 7):** diretório completo de parceiros por especialidade, vínculo N:N (`Projetos_Fornecedores`) com função no projeto, sistema de notas 1–5 (`Avaliacoes_Fornecedores`) com recálculo automático da média na entidade de domínio e geração de link direto para WhatsApp com máscara validada.
 
 ### 3.2 Funcionalidades Novas (além do RFC original)
-1. **Agenda Corporativa & Google Calendar:** compromissos com cliente, projeto ou lead (`Compromissos_Agenda`), fuso horário UTC normalizado, exportação universal `.ics`, criação de link Google Meet e integração via **OAuth 2.0** ou **Service Account** (`Configuracoes_Agenda_Escritorio`).
-2. **Chat em Tempo Real por Projeto:** hub **SignalR** (`/hubs/chat`) com histórico persistido em `Mensagens_Chat`, contagem de mensagens não lidas e validação rigorosa de acesso ao projeto para impedir vazamento entre clientes (anti-IDOR).
-3. **Templates de Workflow de Projeto:** 4 templates arquitetônicos pré-semeados no `DbSeeder` (*Residencial Completo*, *Design de Interiores & Reforma*, *Comercial & Corporativo*, *Consultoria & Viabilidade*), personalizáveis pelo escritório em `/configuracoes/templates-projeto`.
-4. **Gestão de Equipe e RBAC Granular:** convite de colaboradores, redefinição de senha, ativação/desativação, papéis especializados e controle fino de módulos acessíveis (`ModulosApp`: `dashboard`, `leads`, `clientes`, `fornecedores`, `projetos`, `agenda`, `financeiro`, `configuracoes`), aplicado tanto nos guards do Angular (`moduleGuard`) quanto em atributos customizados da API (`[RequireModule]`).
-5. **Portal do Cliente Multi-Representante:** em vez de uma única senha em texto/hash direto na tabela `Clientes`, criou-se `Representantes_Clientes`, permitindo que um mesmo cliente (ex.: casal, sócios de empresa ou construtora) tenha múltiplos usuários convidados por e-mail com token temporário com expiração de 72h (`ConviteTokenHash`), ativando a própria senha em `/ativar-conta` (mantendo fallback compatível com o fluxo legado de `Cliente.SenhaPortal`).
-6. **Recuperação de Senha Segura:** endpoints `/api/recuperacao-senha` + tabela `Tokens_Recuperacao_Senha` (armazenando apenas o hash SHA-256 do token, com expiração e contador de tentativas) e telas `/recuperar-senha` e `/redefinir-senha`.
-7. **White-Label do Escritório & Preferências:** `Dados_Empresa` permite customizar logotipo no S3, cor primária e dados institucionais; `Preferencias_Dashboard` persiste os cards escolhidos pelo usuário.
-8. **Ecossistema SaaS Multi-Tenant:** arquitetura Database-per-Tenant + `ArchiFlow.Landing` + `ArchiFlow.Admin` + `ArchiFlow.Admin.API`.
+1. **Chat em Tempo Real por Projeto:** hub **SignalR** (`/hubs/chat`) com histórico persistido em `Mensagens_Chat`, contagem de mensagens não lidas e validação rigorosa de acesso ao projeto para impedir vazamento entre clientes (anti-IDOR).
+2. **Templates de Workflow de Projeto:** 4 templates arquitetônicos pré-semeados no `DbSeeder` (*Residencial Completo*, *Design de Interiores & Reforma*, *Comercial & Corporativo*, *Consultoria & Viabilidade*), personalizáveis pelo escritório em `/configuracoes/templates-projeto`.
+3. **Gestão de Equipe e RBAC Granular:** convite de colaboradores, redefinição de senha, ativação/desativação, papéis especializados e controle fino de módulos acessíveis (`ModulosApp`: `dashboard`, `leads`, `clientes`, `fornecedores`, `projetos`, `financeiro`, `configuracoes`), aplicado tanto nos guards do Angular (`moduleGuard`) quanto em atributos customizados da API (`[RequireModule]`).
+4. **Portal do Cliente Multi-Representante:** em vez de uma única senha na tabela `Clientes`, criou-se `Representantes_Clientes`, permitindo que um mesmo cliente (ex.: casal, sócios de empresa ou construtora) tenha múltiplos usuários convidados por e-mail com token temporário com expiração de 72h (`ConviteTokenHash`), ativando a própria senha em `/ativar-conta` (mantendo fallback compatível com o fluxo legado de `Cliente.SenhaPortal`).
+5. **Recuperação de Senha Segura:** endpoints `/api/recuperacao-senha` + tabela `Tokens_Recuperacao_Senha` (armazenando apenas o hash SHA-256 do token, com expiração e contador de tentativas) e telas `/recuperar-senha` e `/redefinir-senha`.
+6. **White-Label do Escritório & Preferências:** `Dados_Empresa` permite customizar logotipo no S3, cor primária e dados institucionais; `Preferencias_Dashboard` persiste os cards escolhidos pelo usuário.
+7. **Ecossistema SaaS Multi-Tenant:** arquitetura Database-per-Tenant + `ArchiFlow.Landing` + gestão centralizada de assinaturas (`Tenants_Assinaturas`).
 
 ### 3.3 Por que o Simulador de Honorários foi Consolidado / Postergado
 Durante o desenvolvimento, o módulo de **Simulador de Honorários e Propostas PDF** chegou a ser implementado em branch específica utilizando padrões GoF (*Strategy*, *Factory*, *Builder*). Contudo, em **26/10/2026** (commits `5d1f57d` no backend e `ef07535` no frontend, `"refactor: consolidar modulos centrais e simplificar estrutura do projeto"`), tomou-se a decisão consciente de **remover esse módulo da entrega do TCC**, pelos seguintes motivos:
 1. O próprio RFC já classificava o Módulo 5 como **Pós-TCC**.
-2. Na validação de campo com a **Duna Arquitetura**, a sócia relatou que os escritórios utilizam modelos de proposta comercial muito próprios (inclusive mantendo o modelo atual em adaptação) e que a complexidade de precificação automática distraía da prioridade máxima do escritório: **gestão de projetos, financeiro real (entradas/saídas), agenda e portal do cliente**.
+2. Na validação de campo com a **Duna Arquitetura**, a sócia relatou que os escritórios utilizam modelos de proposta comercial muito próprios (inclusive mantendo o modelo atual em adaptação) e que a complexidade de precificação automática distraía da prioridade máxima do escritório: **gestão de projetos, financeiro real (entradas/saídas) e portal do cliente**.
 3. A remoção reduziu mais de 14.000 linhas entre frontend e backend, elevando a coesão do código, simplificando a UX e concentrando os testes e a qualidade no núcleo usado diariamente em produção.
 
 ---
 
 ## 4. Matriz de Rastreabilidade de Requisitos (RFC vs. Estado Atual)
 
-### 4.1 Requisitos Funcionais do RFC (RF01 a RF32) + Novos Requisitos (RF33 a RF40)
+### 4.1 Requisitos Funcionais do RFC (RF01 a RF32) + Novos Requisitos (RF33 a RF39)
 
 | ID | Módulo | Descrição Resumida | Status Atual | Observação / Onde está |
 | :--- | :--- | :--- | :--- | :--- |
@@ -74,14 +72,13 @@ Durante o desenvolvimento, o módulo de **Simulador de Honorários e Propostas P
 | **RF22–RF24** | Simulador Honorários | Estimativa por metragem/padrão, memória de cálculo e proposta | **Pós-TCC** | Removido na consolidação `5d1f57d` / `ef07535` |
 | **RF25–RF29** | Financeiro | Honorários, parcelas, status, painel consolidado, alertas e saídas | **Entregue + Evoluído** | `FinanceiroController` (inclui `Contratos_Financeiros`, `Parcelas_Financeiras`, `Despesas_Projetos`) |
 | **RF30–RF32** | Fornecedores | Cadastro, vinculação a projetos, avaliações 1–5 e histórico/média | **Entregue** | `FornecedoresController` |
-| **RF33** *(novo)* | Agenda | Compromissos vinculados a projeto/cliente/lead, export `.ics` e Google Calendar OAuth/Meet | **Entregue** | `AgendaController`, `GoogleCalendarService` |
-| **RF34** *(novo)* | Chat em Tempo Real | Troca de mensagens entre equipe e cliente dentro do projeto | **Entregue** | `MensagensChatController` + `ChatHub` (`/hubs/chat`) |
-| **RF35** *(novo)* | Equipe & RBAC | Convite, papéis e permissões granulares por módulo (`ModulosPermitidos`) | **Entregue** | `UsuariosController`, `[RequireModule]`, `moduleGuard` |
-| **RF36** *(novo)* | Templates de Projeto | Modelos reutilizáveis de etapas e tarefas pré-carregados | **Entregue** | `TemplatesProjetoController`, `DbSeeder` |
-| **RF37** *(novo)* | White-Label & Perfil | Personalização de logo, cor primária, dados do escritório e perfil | **Entregue** | `EmpresaConfiguracoesController`, `UsuariosController` |
-| **RF38** *(novo)* | Recuperação de Senha | Fluxo completo de esqueci/redefinir senha via token hash + e-mail | **Entregue** | `RecuperacaoSenhaController` |
-| **RF39** *(novo)* | Dashboard Dinâmico | Personalização e persistência de widgets por usuário | **Entregue** | `DashboardController`, `Preferencias_Dashboard` |
-| **RF40** *(novo)* | Multi-Tenancy & SaaS | Isolamento por banco (`cotu_<tenant>`), auto-provisionamento e gestão SuperAdmin | **Entregue** | `TenantResolutionMiddleware`, `TenantDatabaseProvisioner`, `ArchiFlow.Admin.API` |
+| **RF33** *(novo)* | Chat em Tempo Real | Troca de mensagens entre equipe e cliente dentro do projeto | **Entregue** | `MensagensChatController` + `ChatHub` (`/hubs/chat`) |
+| **RF34** *(novo)* | Equipe & RBAC | Convite, papéis e permissões granulares por módulo (`ModulosPermitidos`) | **Entregue** | `UsuariosController`, `[RequireModule]`, `moduleGuard` |
+| **RF35** *(novo)* | Templates de Projeto | Modelos reutilizáveis de etapas e tarefas pré-carregados | **Entregue** | `TemplatesProjetoController`, `DbSeeder` |
+| **RF36** *(novo)* | White-Label & Perfil | Personalização de logo, cor primária, dados do escritório e perfil | **Entregue** | `EmpresaConfiguracoesController`, `UsuariosController` |
+| **RF37** *(novo)* | Recuperação de Senha | Fluxo completo de esqueci/redefinir senha via token hash + e-mail | **Entregue** | `RecuperacaoSenhaController` |
+| **RF38** *(novo)* | Dashboard Dinâmico | Personalização e persistência de widgets por usuário | **Entregue** | `DashboardController`, `Preferencias_Dashboard` |
+| **RF39** *(novo)* | Multi-Tenancy & SaaS | Isolamento por banco (`cotu_<tenant>`), auto-provisionamento e controle de assinaturas | **Entregue** | `TenantResolutionMiddleware`, `TenantDatabaseProvisioner`, `Tenants_Assinaturas` |
 
 ### 4.2 Requisitos Não Funcionais (RNF01 a RNF08)
 
@@ -108,9 +105,8 @@ Durante o desenvolvimento, o módulo de **Simulador de Honorários e Propostas P
 
 Entre outubro e novembro de 2026, a plataforma foi implantada em produção (`https://duna.cotu.com.br`) e validada continuamente em ciclos de feedback com **Sarah Bandoch** (sócia da Duna Arquitetura):
 
-- **08/10/2026:** Solicitação de exibição de tarefas e entregas na agenda → integrada ao calendário corporativo.
 - **15/10/2026:** Simplificação do Dashboard inicial ("O que fazer hoje", financeiro da semana e projetos por fase) → validada em produção e aprovada.
-- **21/10/2026:** Ajuste de fuso horário UTC nos compromissos da agenda e correção do modal de templates de workflow → aprovados.
+- **21/10/2026:** Correção e estabilização do modal de templates de workflow para criação/edição de etapas e entregáveis customizados → aprovado.
 - **22/10/2026:** Desacoplamento de projeto em despesas operacionais avulsas (`ProjetoId` nullable) e inclusão de prazos editáveis por etapa e tarefa visíveis ao cliente no portal → aprovados em 24/10/2026.
 - **Testes em dispositivos reais:** homologação em iPad e adoção direta pelos clientes finais da Duna Arquitetura no Portal do Cliente.
 
@@ -126,13 +122,13 @@ Entre outubro e novembro de 2026, a plataforma foi implantada em produção (`ht
 
 ### ADR-02 — Auto-Provisionamento sob Demanda + Caddy On-Demand TLS
 - **Contexto:** Criar manualmente banco de dados, rodar migrations, aplicar seeds e emitir certificado SSL para cada novo escritório inviabilizaria a escala do SaaS.
-- **Decisão:** Criar o `TenantDatabaseProvisioner` (com `SemaphoreSlim` por tenant, cache em memória e whitelist regex `^[a-z0-9_]+$`) combinado ao `Caddy` com `*.cotu.com.br` e `on_demand_tls` validado pelo `/health`.
+- **Decisão:** Criar o `TenantDatabaseProvisioner` (com `SemaphoreSlim` por tenant, cache em memória e whitelist regex `^[a-z0-9_]+$`) combinado ao `Caddy` com suporte a subdomínios dinâmicos e emissão automática de TLS.
 - **Consequências:** Um novo subdomínio passa a ter banco criado, migrado, semeado e certificado HTTPS emitido automaticamente na primeira requisição.
 
-### ADR-03 — Separação em Ecossistema de 5 Aplicações (App, API, Admin, Admin API, Landing)
-- **Contexto:** Misturar a gestão interna de assinaturas/faturamento dos escritórios (SuperAdmin) dentro da mesma API dos clientes gerava acoplamento de segurança e risco de privilégios (`AdministradorGeral` cruzando tenants, corrigido no PR #54 da API).
-- **Decisão:** Isolar `ArchiFlow.Landing` (`cotu.com.br`) e a dupla `ArchiFlow.Admin` + `ArchiFlow.Admin.API` (`app.cotu.com.br`) conectada exclusivamente ao banco master `cotu`, separando-os da dupla principal `ArchiFlow` + `ArchiFlow.API` (`*.cotu.com.br`).
-- **Consequências:** Superfície de ataque reduzida, deploy independente e eliminação de bypass entre SuperAdmin e workspaces de escritórios.
+### ADR-03 — Separação entre Landing Comercial, Workspace Multi-Tenant e Controle Interno de Assinaturas
+- **Contexto:** Misturar a gestão interna de planos, faturamento e bloqueios de inadimplência dentro da mesma API operacional dos escritórios gerava acoplamento de segurança e risco de privilégios cruzados entre tenants.
+- **Decisão:** Isolar a vitrine comercial (`ArchiFlow.Landing`), o serviço interno privado de gestão de assinaturas conectado exclusivamente ao banco master `cotu` (`Tenants_Assinaturas`) e o binômio operacional multi-tenant (`ArchiFlow` + `ArchiFlow.API`).
+- **Consequências:** Superfície de ataque reduzida, deploy independente e eliminação de bypass entre governança SaaS e workspaces de clientes.
 
 ### ADR-04 — Evolução do Portal do Cliente para Multi-Representantes com Convite Assinado
 - **Contexto:** No RFC, o acesso ao portal era uma única senha na tabela `Clientes`. Na prática de arquitetura, um cliente pode ser um casal, uma diretoria ou sócios que precisam de acessos individuais com e-mail próprio.
@@ -144,10 +140,10 @@ Entre outubro e novembro de 2026, a plataforma foi implantada em produção (`ht
 - **Decisão:** Tornar `ProjetoId` anulável (`IsRequired(false)`, `DeleteBehavior.SetNull`) em `Contratos_Financeiros`, `Parcelas_Financeiras` e `Despesas_Projetos`, adicionar controle de pagamento em despesas (`DSP_Pago`, `DSP_Data_Pagamento`), e adicionar `ETo_Data_Fim_Prevista` e `TAR_Data_Limite`.
 - **Consequências:** O módulo financeiro passou a refletir o fluxo de caixa real do escritório e o cronograma do portal ganhou previsibilidade real.
 
-### ADR-06 — Inclusão da Agenda com Google Calendar e Chat em Tempo Real (SignalR)
-- **Contexto:** Embora listados fora do escopo no RFC inicial, a entrevista contínua com a parceira mostrou que reuniões/visitas a obra e dúvidas rápidas no portal eram as principais razões pelas quais o escritório ainda dependia de WhatsApp e agendas paralelas.
-- **Decisão:** Implementar `AgendaController` (suportando `.ics`, Google Meet, OAuth 2.0 e Service Account) e `ChatHub` (SignalR autenticado com verificação de acesso ao projeto).
-- **Consequências:** A plataforma passou a centralizar comunicação assíncrona/síncrona e calendário de entregas no mesmo workspace.
+### ADR-06 — Inclusão do Chat em Tempo Real por Projeto (SignalR)
+- **Contexto:** Embora listado fora do escopo no RFC inicial, a entrevista contínua com a parceira mostrou que dúvidas rápidas e alinhamentos entre reuniões eram a principal razão pela qual o escritório ainda dependia de WhatsApp paralelo.
+- **Decisão:** Implementar `MensagensChatController` e `ChatHub` (`/hubs/chat` via SignalR autenticado com verificação de acesso ao projeto).
+- **Consequências:** A plataforma passou a centralizar a comunicação entre arquiteto e cliente no mesmo ambiente das entregas e arquivos do projeto.
 
 ### ADR-07 — Consolidação do Escopo e Remoção Temporária do Simulador de Honorários
 - **Contexto:** Após prototipar o Simulador de Honorários e Gerador de Propostas PDF, constatou-se baixa aderência imediata frente às demandas prioritárias do escritório e aumento expressivo da base de código a manter.
@@ -155,11 +151,11 @@ Entre outubro e novembro de 2026, a plataforma foi implantada em produção (`ht
 - **Consequências:** Código mais enxuto, cobertura de testes concentrada nos módulos centrais e menor carga cognitiva para o usuário.
 
 ### ADR-08 — Clean Architecture + Facade Pattern + RBAC Granular por Módulo
-- **Contexto:** A API precisava crescer para 18 controllers sem acoplar controllers diretamente a múltiplos serviços/repositórios nem restringir permissões apenas por cargo fixo.
+- **Contexto:** A API precisava crescer para 17 controllers sem acoplar controllers diretamente a múltiplos serviços/repositórios nem restringir permissões apenas por cargo fixo.
 - **Decisão:** Adotar camadas estritas (`Domain` ← `Application` ← `Infrastructure` / `API`), introduzir **Facades** por módulo entre Controllers e Services, e combinar Policies de Role com o atributo `[RequireModule]` + `moduleGuard` no Angular baseado em `USR_Modulos_Permitidos`.
 - **Consequências:** Controllers enxutos, alta testabilidade unitária (84 arquivos xUnit) e controle flexível de acesso por membro da equipe.
 
 ### ADR-09 — Estratégia Híbrida de Infraestrutura (VPS Docker/Caddy + AWS S3/SES + AWS CDK)
 - **Contexto:** O projeto modelou infraestrutura corporativa na AWS via CDK (`infra/ArchiFlow.Infra`), porém para viabilizar custo previsível e operação imediata com múltiplos domínios SSL durante o TCC/extensão foi necessário um ambiente enxuto.
-- **Decisão:** Executar a aplicação conteinerizada em VPS Ubuntu (Hostinger) via `docker-compose.prod.yml` + `Caddy` (HTTPS automático) + CI/CD GitHub Actions via SSH, mantendo **Amazon S3** (arquivos/logos/comprovantes) e **Amazon SES / SMTP Hostinger** para e-mails, enquanto o projeto AWS CDK permanece versionado para migração Enterprise futura.
+- **Decisão:** Executar a aplicação conteinerizada em VPS Ubuntu (Hostinger) via `docker-compose.prod.yml` + `Caddy` (HTTPS automático) + CI/CD GitHub Actions, mantendo **Amazon S3** (arquivos/logos/comprovantes) e **Amazon SES / SMTP Hostinger** para e-mails, enquanto o projeto AWS CDK permanece versionado para migração Enterprise futura.
 - **Consequências:** Custo fixo baixo em produção, zero cold start, certificados automáticos e caminho de escala já codificado em IaC.

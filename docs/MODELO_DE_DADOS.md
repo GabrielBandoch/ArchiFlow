@@ -1,20 +1,20 @@
 # Modelo de Dados Atualizado e Justificativa das Novas Tabelas
 
-Este documento detalha a evolução completa da modelagem de dados da plataforma **COTU (ArchiFlow)** — comparando as **9 tabelas previstas no RFC v1.0** com as **25 tabelas de domínio por tenant** (`ArchiFlowDbContext`) e as **2 tabelas de governança SaaS** no banco master (`AdminDbContext`).
+Este documento detalha a evolução completa da modelagem de dados da plataforma **COTU (ArchiFlow)** — comparando as **9 tabelas previstas no RFC v1.0** com as **23 tabelas operacionais por tenant** (`ArchiFlowDbContext`) e a tabela central **`Tenants_Assinaturas`** no banco master (`cotu`).
 
 ---
 
-## 1. Visão Geral da Evolução (9 Tabelas → 25 + 2 Tabelas)
+## 1. Visão Geral da Evolução (9 Tabelas → 23 + 1 Tabelas)
 
-| Banco | Contexto EF Core | Quantidade de Tabelas | Finalidade |
+| Banco | Contexto | Quantidade de Tabelas | Finalidade |
 | :--- | :--- | :---: | :--- |
-| **Banco de cada Tenant** (`cotu`, `cotu_duna`, `cotu_tcc`, `cotu_staging`) | `ArchiFlowDbContext` | **25 tabelas** | Isolamento total dos dados operacionais de cada escritório de arquitetura. |
-| **Banco Master SaaS** (`cotu`) | `AdminDbContext` | **2 tabelas** *(1 específica de governança SaaS + `Usuarios` SuperAdmin)* | Gestão centralizada de assinaturas, mensalidades, bloqueios e operadores da COTU (`app.cotu.com.br`). |
+| **Banco de cada Tenant** (`cotu`, `cotu_duna`, `cotu_tcc`, `cotu_staging`) | `ArchiFlowDbContext` | **23 tabelas** | Isolamento total dos dados operacionais de cada escritório de arquitetura. |
+| **Banco Master SaaS** (`cotu`) | Controle de Assinaturas | **1 tabela (`Tenants_Assinaturas`)** | Registro de planos, mensalidades, status financeiro e bloqueio de assinaturas dos escritórios. |
 
 ### Padrões Adotados na Modelagem Final
 1. **Chaves Primárias UUID (`Guid`):** No RFC original, as PKs eram `int` autoincrementais. Migramos 100% das tabelas para `uuid` (`Guid`) para evitar ataques de enumeração/IDOR (ex.: adivinhar `/projetos/42`), facilitar geração de IDs no domínio e compatibilizar com arquitetura distribuída/multi-tenant.
 2. **Prefixos de Coluna Padronizados (3 letras):** Tabelas principais adotam prefixos explícitos no PostgreSQL (ex.: `PJT_` para `Projetos`, `CLI_` para `Clientes`, `PAR_` para `Parcelas_Financeiras`) aumentando a legibilidade em queries e logs SQL.
-3. **Normalização Temporal em UTC:** O `ArchiFlowDbContext` aplica `UtcDateTimeConverter` e `NullableUtcDateTimeConverter` globalmente em todas as propriedades `DateTime` / `DateTime?`, resolvendo divergências de fuso horário entre servidores Linux (UTC), navegador e Google Calendar.
+3. **Normalização Temporal em UTC:** O `ArchiFlowDbContext` aplica `UtcDateTimeConverter` e `NullableUtcDateTimeConverter` globalmente em todas as propriedades `DateTime` / `DateTime?`, resolvendo divergências de fuso horário entre servidores Linux (UTC) e navegador.
 4. **Integridade com Desacoplamento Opcional:** Lançamentos financeiros (`Contratos_Financeiros`, `Parcelas_Financeiras`, `Despesas_Projetos`) e vínculos de fornecedores (`Projetos_Fornecedores`) usam `OnDelete(DeleteBehavior.SetNull)` e `ProjetoId` anulável, permitindo despesas administrativas do escritório e preservando histórico financeiro mesmo se um projeto for excluído.
 
 ---
@@ -193,30 +193,6 @@ erDiagram
         bool MSG_Lida
     }
 
-    %% === AGENDA ===
-    Compromissos_Agenda {
-        uuid CMP_Id PK
-        uuid CMP_Escritorio_Id
-        uuid CMP_Usuario_Id
-        uuid CMP_Projeto_Id
-        uuid CMP_Cliente_Id
-        uuid CMP_Lead_Id
-        string CMP_Titulo
-        string CMP_Tipo
-        string CMP_Status
-        datetime CMP_Data_Hora_Inicio
-        string CMP_Google_Event_Id
-    }
-
-    Configuracoes_Agenda_Escritorio {
-        uuid CAE_Id PK
-        uuid CAE_Escritorio_Id UK
-        string CAE_Email_Agenda_Empresa
-        string CAE_Google_Calendar_Id
-        string CAE_Tipo_Integracao
-        bool CAE_Sincronizacao_Ativa
-    }
-
     %% === FINANCEIRO ===
     Contratos_Financeiros {
         uuid CTF_Id PK
@@ -274,7 +250,7 @@ erDiagram
 
     %% === RELACIONAMENTOS ===
     Origens_Lead ||--o{ Leads : "origina"
-    Leads ||--o{ Historicos_Contato_Lead : "registra"
+    Leads ||--o{ Historicos_Contato_Lead : "historico"
     Leads |o--o| Clientes : "converte em"
     Clientes ||--o{ Representantes_Clientes : "possui"
     Clientes |o--o{ Projetos : "contrata"
@@ -300,12 +276,11 @@ erDiagram
 
 ## 3. Catálogo Completo: Todas as Tabelas e Por Que Foram Criadas
 
-### 3.1 Governança SaaS (Banco Master `cotu` — `AdminDbContext`)
+### 3.1 Governança SaaS (Banco Master `cotu`)
 
 | Tabela | Status vs. RFC | Prefixo | Por que foi criada / alterada |
 | :--- | :---: | :---: | :--- |
-| **`Tenants_Assinaturas`** | **Nova** | `TAS_*` | Criada para controlar o modelo comercial SaaS na `ArchiFlow.Admin.API`. Armazena o subdomínio único de cada escritório (`TAS_Subdominio`), plano (`Starter`, `Professional`, `Enterprise`), ciclo, valor mensal, vencimento, último pagamento, status financeiro (`Trial`, `Adimplente`, `EmDebito`) e bloqueio por inadimplência. |
-| **`Usuarios`** *(Admin)* | **Nova** | `USR_*` | Separa os operadores internos/SuperAdmin da COTU (`app.cotu.com.br`) dos usuários dos escritórios clientes, evitando vazamento ou mistura de papéis administrativos globais com os tenants. |
+| **`Tenants_Assinaturas`** | **Nova** | `TAS_*` | Criada para controlar o modelo comercial SaaS no banco master. Armazena o subdomínio único de cada escritório (`TAS_Subdominio`), plano (`Starter`, `Professional`, `Enterprise`), ciclo, valor mensal, vencimento, último pagamento, status financeiro (`Trial`, `Adimplente`, `EmDebito`) e bloqueio por inadimplência. |
 
 ---
 
@@ -338,7 +313,7 @@ erDiagram
 | :--- | :---: | :---: | :--- |
 | **`Projetos`** | **RFC Evoluída** | `PJT_*` | Evoluiu para usar enums tipados (`StatusProjeto`, `TipoProjeto`), `PJT_Metragem_Total`, `PJT_Atualizado_Em` e FK opcional (`SetNull`) para `ClienteId`. |
 | **`Etapas_Projeto`** | **Nova (Normalizada)** | `ETo_*` | No RFC, a etapa atual era apenas uma string (`etapa_atual`) na tabela `Projeto`, e as tarefas referenciavam `projeto_id`. Na implementação real, um projeto possui N etapas ordenadas com ciclo de vida próprio (`ETo_Status`, `ETo_Ordem`, `ETo_Data_Fim_Prevista` adicionada após validação com a Duna Arquitetura e `dETo_Data_Conclusao`). |
-| **`Tarefas_Etapa`** | **RFC Evoluída** | `TAR_*` | Passou a pertencer a uma `EtapaProjeto` (`TAR_Etapa_Id`), ganhou flag booleana `TAR_Concluida` e **`TAR_Data_Limite`** (para renderização integrada de prazos na Agenda e no Portal do Cliente). |
+| **`Tarefas_Etapa`** | **RFC Evoluída** | `TAR_*` | Passou a pertencer a uma `EtapaProjeto` (`TAR_Etapa_Id`), ganhou flag booleana `TAR_Concluida` e **`TAR_Data_Limite`** (para exibição organizada de prazos de entregas). |
 | **`Arquivos`** | **RFC** | `ARQ_*` | Mantida conforme RFC com controle explícito de visibilidade (`ARQ_Visivel_Cliente`) e URL do storage (Amazon S3 ou armazenamento local em dev). |
 | **`Templates_Projeto`** | **Nova** | `TMP_*` | Criada para eliminar o retrabalho de cadastrar do zero as mesmas 4–5 fases em todo projeto novo. Armazena modelos reutilizáveis (ex.: *Residencial*, *Interiores*, *Comercial*, *Consultoria*). |
 | **`Templates_Etapa`** | **Nova** | `TME_*` | Armazena as etapas ordenadas de cada template e o checklist padrão de tarefas serializado em `TME_Tarefas_Json`, instanciado automaticamente ao criar um projeto a partir de um template. |
@@ -354,16 +329,7 @@ erDiagram
 
 ---
 
-### 3.6 Agenda Corporativa e Integração Google Calendar
-
-| Tabela | Status vs. RFC | Prefixo | Por que foi criada / alterada |
-| :--- | :---: | :---: | :--- |
-| **`Compromissos_Agenda`** | **Nova** | `CMP_*` | Criada para centralizar visitas a obras, medições, reuniões com leads/clientes e entregas de etapas, com suporte a vínculos opcionais (`CMP_Projeto_Id`, `CMP_Cliente_Id`, `CMP_Lead_Id`), link do Google Meet (`CMP_Link_Google_Meet`) e sincronização bidirecional (`CMP_Google_Event_Id`). |
-| **`Configuracoes_Agenda_Escritorio`** | **Nova** | `CAE_*` | Armazena as credenciais de integração por escritório com o Google Calendar, suportando tanto **Service Account** (`CAE_Chave_Service_Account_Json`) quanto **OAuth 2.0** (`CAE_Google_OAuth_Refresh_Token`, `CAE_Google_Client_Id`, `CAE_Google_Client_Secret`) e o ID da agenda oficial. |
-
----
-
-### 3.7 Gestão Financeira (Antecipada do Pós-TCC)
+### 3.6 Gestão Financeira (Antecipada do Pós-TCC)
 
 | Tabela | Status vs. RFC | Prefixo | Por que foi criada / alterada |
 | :--- | :---: | :---: | :--- |
@@ -373,7 +339,7 @@ erDiagram
 
 ---
 
-### 3.8 Gestão de Fornecedores (Antecipada do Pós-TCC)
+### 3.7 Gestão de Fornecedores (Antecipada do Pós-TCC)
 
 | Tabela | Status vs. RFC | Prefixo | Por que foi criada / alterada |
 | :--- | :---: | :---: | :--- |
